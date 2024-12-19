@@ -11,13 +11,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Penilaian</h4>
+        <h4 class="fs-18 fw-semibold m-0">Audit Bulanan</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Tambah Data Penilaian</li>
+            <li class="breadcrumb-item active">Edit Data Audit Bulanan</li>
         </ol>
     </div>
 </div>
@@ -59,8 +59,8 @@
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('user.evaluation.index')}}" class="btn btn-success"> Back</a>
-                                    <button class="btn btn-primary" type="submit"> Tambah</button>
+                                    <a href="{{route('user.monthly-audit.index')}}" class="btn btn-success"> Back</a>
+                                    <button class="btn btn-primary" type="submit">Edit</button>
                                 </div>
                             </div>
                         </div>

@@ -1,14 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\ListWorkController;
-use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\KeamananController;
+use App\Http\Controllers\Admin\AssesmentController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\EvaluationController;
-use App\Http\Controllers\Admin\PraqualificationController;
+use App\Http\Controllers\Admin\MarturityController;
+use App\Http\Controllers\Admin\MonthlyAuditController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,29 +22,30 @@ use App\Http\Controllers\Admin\PraqualificationController;
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'getLogin'])->name('admin.login');
     Route::get('/home', [DashboardController::class, 'index'])->name('admin.home.index');
-    Route::get('/faq', [FaqController::class, 'index'])->name('admin.faq.index');
-    Route::prefix('praqualification')->group(function () {
-        Route::get('/', [PraqualificationController::class, 'index'])->name('admin.praqualification.index');
-        Route::get('/create', [PraqualificationController::class, 'create'])->name('admin.praqualification.create');
-        Route::get('/edit', [PraqualificationController::class, 'edit'])->name('admin.praqualification.edit');
+    Route::prefix('assesment')->group(function () {
+        Route::get('/', [AssesmentController::class, 'index'])->name('admin.assesment.index');
+        Route::get('/create', [AssesmentController::class, 'create'])->name('admin.assesment.create');
+        Route::get('/edit', [AssesmentController::class, 'edit'])->name('admin.assesment.edit');
+        Route::get('/show', [AssesmentController::class, 'show'])->name('admin.assesment.show');
     });
-    
-    Route::prefix('evaluation')->group(function () {
-        Route::get('/', [EvaluationController::class, 'index'])->name('admin.evaluation.index');
-        Route::get('/create', [EvaluationController::class, 'create'])->name('admin.evaluation.create');
-        Route::get('/edit', [EvaluationController::class, 'edit'])->name('admin.evaluation.edit');
+    Route::prefix('monthly-audit')->group(function () {
+        Route::get('/', [MonthlyAuditController::class, 'index'])->name('admin.monthly-audit.index');
+        Route::get('/create', [MonthlyAuditController::class, 'create'])->name('admin.monthly-audit.create');
+        Route::get('/edit', [MonthlyAuditController::class, 'edit'])->name('admin.monthly-audit.edit');
+        Route::get('/show', [MonthlyAuditController::class, 'show'])->name('admin.monthly-audit.show');
     });
-    Route::prefix('supplier')->group(function () {
-        Route::get('/', [SupplierController::class, 'index'])->name('admin.supplier.index');
+    Route::prefix('marturity')->group(function () {
+        Route::get('/', [MarturityController::class, 'index'])->name('admin.marturity.index');
+        Route::get('/show', [MarturityController::class, 'show'])->name('admin.marturity.show');
     });
-    Route::prefix('list-work')->group(function () {
-        Route::get('/', [ListWorkController::class, 'index'])->name('admin.list-work.index');
-        Route::get('/create', [ListWorkController::class, 'create'])->name('admin.list-work.create');
-        Route::get('/edit', [ListWorkController::class, 'edit'])->name('admin.list-work.edit');
+
+    Route::prefix('keamanan')->group(function () {
+        Route::get('/', [KeamananController::class, 'index'])->name('admin.keamanan.index');
+        Route::get('/show', [KeamananController::class, 'show'])->name('admin.keamanan.show');
     });
-    Route::prefix('faq')->group(function () {
-        Route::get('/', [FaqController::class, 'index'])->name('admin.faq.index');
-        Route::get('/create', [FaqController::class, 'create'])->name('admin.faq.create');
-        Route::get('/edit', [FaqController::class, 'edit'])->name('admin.faq.edit');
+    Route::prefix('unit')->group(function () {
+        Route::get('/', [UnitController::class, 'index'])->name('admin.unit.index');
+        Route::get('/create', [UnitController::class, 'create'])->name('admin.unit.create');
+        Route::get('/edit', [UnitController::class, 'edit'])->name('admin.unit.edit');
     });
 });

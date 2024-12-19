@@ -5,18 +5,17 @@ namespace App\Http\Controllers\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class EvaluationController extends Controller
+class AssesmentController extends Controller
 {
     public function index(){
-        return view('user.evaluation.index');
+        return view('user.assesment.index');
     }
 
     public function create(){
-        return view('user.evaluation.create');
+        return view('user.assesment.create');
     }
 
     public function edit(){
-        return view('user.evaluation.edit');
+        return view('user.assesment.edit');
     }
-
 }

@@ -39,7 +39,7 @@
                                 <div class="mb-0 border-0 p-md-5 p-lg-0 p-4">
                                     <div class="mb-4 p-0 text-center">
                                         <img src="{{asset('logo.png')}}" alt="logo-dark" class="mx-auto" height="50" />
-                                        <h6 class="mt-2">Sign in to CSMS</h6>
+                                        <h6 class="mt-2">Sign in to SIDAK</h6>
                                     </div>
     
                                     <div class="pt-0">

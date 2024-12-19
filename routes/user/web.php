@@ -3,9 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\FaqController;
 use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\KeamananController;
 use App\Http\Controllers\User\ListWorkController;
+use App\Http\Controllers\User\AssesmentController;
 use App\Http\Controllers\User\DashboardController;
-use App\Http\Controllers\User\EvaluationController;
+use App\Http\Controllers\User\MarturityController;
+use App\Http\Controllers\User\MonthlyAuditController;
 use App\Http\Controllers\User\PraqualificationController;
 
 /*
@@ -21,24 +24,35 @@ use App\Http\Controllers\User\PraqualificationController;
 Route::prefix('user')->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('user.home.index');
     Route::get('/faq', [FaqController::class, 'index'])->name('user.faq.index');
-    Route::prefix('praqualification')->group(function () {
-        Route::get('/', [PraqualificationController::class, 'index'])->name('user.praqualification.index');
-        Route::get('/create', [PraqualificationController::class, 'create'])->name('user.praqualification.create');
-        Route::get('/edit', [PraqualificationController::class, 'edit'])->name('user.praqualification.edit');
+    Route::prefix('assesment')->group(function () {
+        Route::get('/', [AssesmentController::class, 'index'])->name('user.assesment.index');
+        Route::get('/create', [AssesmentController::class, 'create'])->name('user.assesment.create');
+        Route::get('/edit', [AssesmentController::class, 'edit'])->name('user.assesment.edit');
     });
 
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'index'])->name('user.profile.index');
     });
     
-    Route::prefix('evaluation')->group(function () {
-        Route::get('/', [EvaluationController::class, 'index'])->name('user.evaluation.index');
-        Route::get('/create', [EvaluationController::class, 'create'])->name('user.evaluation.create');
-        Route::get('/edit', [EvaluationController::class, 'edit'])->name('user.evaluation.edit');
+    Route::prefix('monthly-audit')->group(function () {
+        Route::get('/', [MonthlyAuditController::class, 'index'])->name('user.monthly-audit.index');
+        Route::get('/create', [MonthlyAuditController::class, 'create'])->name('user.monthly-audit.create');
+        Route::get('/edit', [MonthlyAuditController::class, 'edit'])->name('user.monthly-audit.edit');
+        Route::get('/show', [MonthlyAuditController::class, 'show'])->name('user.monthly-audit.show');
     });
-    Route::prefix('list-work')->group(function () {
-        Route::get('/', [ListWorkController::class, 'index'])->name('user.list-work.index');
-        Route::get('/create', [ListWorkController::class, 'create'])->name('user.list-work.create');
-        Route::get('/edit', [ListWorkController::class, 'edit'])->name('user.list-work.edit');
+
+    Route::prefix('marturity')->group(function () {
+        Route::get('/', [MarturityController::class, 'index'])->name('user.marturity.index');
+        Route::get('/create', [MarturityController::class, 'create'])->name('user.marturity.create');
+        Route::get('/edit', [MarturityController::class, 'edit'])->name('user.marturity.edit');
+        Route::get('/show', [MarturityController::class, 'show'])->name('user.marturity.show');
     });
+
+    Route::prefix('keamanan')->group(function () {
+        Route::get('/', [KeamananController::class, 'index'])->name('user.keamanan.index');
+        Route::get('/create', [KeamananController::class, 'create'])->name('user.keamanan.create');
+        Route::get('/edit', [KeamananController::class, 'edit'])->name('user.keamanan.edit');
+        Route::get('/show', [KeamananController::class, 'show'])->name('user.keamanan.show');
+    });
+
 });

@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('adminlayout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -11,13 +11,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Prakualifikasi</h4>
+        <h4 class="fs-18 fw-semibold m-0">Assesment</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Edit Data Prakualifikasi</li>
+            <li class="breadcrumb-item"><a href="{{route('adminhome.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Edit Data Assesment</li>
         </ol>
     </div>
 </div>
@@ -55,14 +55,14 @@
                             <textarea class="form-control" id="example-textarea" rows="5" spellcheck="false"></textarea>
                         </div>
                         <div class="form-group mb-3 col-md-6">
-                            <label for="emailaddress" class="form-label">File Prakualifikasi</label>
+                            <label for="emailaddress" class="form-label">File Assesment</label>
                             <input type="file" class="form-control" id="inputGroupFile01" accept=".pdf">
                         </div>
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('user.praqualification.index')}}" class="btn btn-success"> Back</a>
+                                    <a href="{{route('adminassesment.index')}}" class="btn btn-success"> Back</a>
                                     <button class="btn btn-primary" type="submit">Edit</button>
                                 </div>
                             </div>
