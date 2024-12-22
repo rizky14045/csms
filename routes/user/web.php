@@ -23,6 +23,9 @@ use App\Http\Controllers\User\PraqualificationController;
 */
 Route::prefix('user')->group(function () {
     Route::get('/home', [DashboardController::class, 'index'])->name('user.home.index');
+    Route::get('/login', function () {
+        return view('user.login');
+    })->name('user.login');
     Route::get('/faq', [FaqController::class, 'index'])->name('user.faq.index');
     Route::prefix('assesment')->group(function () {
         Route::get('/', [AssesmentController::class, 'index'])->name('user.assesment.index');

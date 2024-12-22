@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('longitude')->nullable();
             $table->text('address')->nullable();
             $table->string('unit_code')->nullable();
+            $table->string('timezone')->nullable();
             $table->rememberToken();
             $table->softDeletes(); 
             $table->timestamps();
