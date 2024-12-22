@@ -42,7 +42,7 @@
                                             {!! \Session::get('danger') !!}
                                         </div>
                                     @endif
-                                    <form action="#" method="POST">
+                                    <form action="{{route('admin.getLogin')}}" method="POST">
                                         @csrf
                                         <div class="form-group pb-3">
                                             <label class="form-label" for="email-id">Email address</label>
@@ -78,6 +78,7 @@
 
         <!-- App js-->
         <script src="{{asset('assets/js/app.js')}}"></script>
+        @include('sweetalert::alert')
         
     </body>
 </html>

@@ -102,6 +102,7 @@
 
         <!-- App js-->
         <script src="{{asset('assets/js/app.js')}}"></script>
+        @include('sweetalert::alert')
         
     </body>
 </html>

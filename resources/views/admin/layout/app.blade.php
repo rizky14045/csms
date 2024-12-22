@@ -42,6 +42,7 @@
         <!-- END wrapper -->
         @include('admin.partials.scripts')
         @yield('scripts')
+        @include('sweetalert::alert')
 
     </body>
 </html>
