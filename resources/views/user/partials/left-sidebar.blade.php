@@ -60,6 +60,23 @@
                         </ul>
                     </div>
                 </li>
+                <li>
+                    <a href="#sidebarMasterData" data-bs-toggle="collapse">
+                        <i data-feather="database"></i>
+                        <span> Master Data </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarMasterData">
+                        <ul class="nav-second-level">
+                            <li>
+                                <a href="{{route('user.attribute.index')}}" class="tp-link">Attribute</a>
+                            </li>
+                            <li>
+                                <a href="{{route('user.security.index')}}" class="tp-link">Satuan Pengamanan</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
             </ul>
         </div>
         <!-- End Sidebar -->

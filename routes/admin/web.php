@@ -5,9 +5,11 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\KeamananController;
 use App\Http\Controllers\Admin\AssesmentController;
+use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MarturityController;
 use App\Http\Controllers\Admin\MonthlyAuditController;
+use App\Http\Controllers\Admin\VulnerabilityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +53,28 @@ Route::prefix('admin')->group(function () {
         Route::prefix('unit')->group(function () {
             Route::get('/', [UnitController::class, 'index'])->name('admin.unit.index');
             Route::get('/create', [UnitController::class, 'create'])->name('admin.unit.create');
-            Route::get('/edit', [UnitController::class, 'edit'])->name('admin.unit.edit');
+            Route::post('/store', [UnitController::class, 'store'])->name('admin.unit.store');
+            Route::get('/edit/{id}', [UnitController::class, 'edit'])->name('admin.unit.edit');
+            Route::patch('/edit/{id}', [UnitController::class, 'update'])->name('admin.unit.update');
+            Route::delete('/delete/{id}', [UnitController::class, 'destroy'])->name('admin.unit.destroy');
+        });
+
+        Route::prefix('vulnerability')->group(function () {
+            Route::get('/', [VulnerabilityController::class, 'index'])->name('admin.vulnerability.index');
+            Route::get('/create', [VulnerabilityController::class, 'create'])->name('admin.vulnerability.create');
+            Route::post('/store', [VulnerabilityController::class, 'store'])->name('admin.vulnerability.store');
+            Route::get('/edit/{id}', [VulnerabilityController::class, 'edit'])->name('admin.vulnerability.edit');
+            Route::patch('/edit/{id}', [VulnerabilityController::class, 'update'])->name('admin.vulnerability.update');
+            Route::delete('/delete/{id}', [VulnerabilityController::class, 'destroy'])->name('admin.vulnerability.destroy');
+        });
+
+        Route::prefix('attribute')->group(function () {
+            Route::get('/', [AttributeController::class, 'index'])->name('admin.attribute.index');
+            Route::get('/create', [AttributeController::class, 'create'])->name('admin.attribute.create');
+            Route::post('/store', [AttributeController::class, 'store'])->name('admin.attribute.store');
+            Route::get('/edit/{id}', [AttributeController::class, 'edit'])->name('admin.attribute.edit');
+            Route::patch('/edit/{id}', [AttributeController::class, 'update'])->name('admin.attribute.update');
+            Route::delete('/delete/{id}', [AttributeController::class, 'destroy'])->name('admin.attribute.destroy');
         });
     });
 

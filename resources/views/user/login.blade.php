@@ -43,26 +43,24 @@
                                     </div>
     
                                     <div class="pt-0">
-                                        <form action="index.html" class="my-4">
+                                        <form action="{{route('user.getLogin')}}" class="my-4" method="POST">
+                                            @csrf
                                             <div class="form-group mb-3">
-                                                <label for="emailaddress" class="form-label">Username</label>
-                                                <input class="form-control" type="text" id="emailaddress" required="" placeholder="Enter your username">
+                                                <label for="emailaddress" class="form-label">Email</label>
+                                                <input class="form-control" type="email" id="emailaddress" required="" placeholder="Masukan email" name="email">
                                             </div>
                 
                                             <div class="form-group mb-3">
                                                 <label for="password" class="form-label">Password</label>
-                                                <input class="form-control" type="password" required="" id="password" placeholder="Enter your password">
+                                                <input class="form-control" type="password" required="" id="password" placeholder="Masukan password" name="password">
                                             </div>
                 
                                             <div class="form-group d-flex mb-3">
                                                 <div class="col-sm-6">
                                                     <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="checkbox-signin" checked>
+                                                        <input type="checkbox" class="form-check-input" id="checkbox-signin" name="remember" value="1">
                                                         <label class="form-check-label" for="checkbox-signin">Remember me</label>
                                                     </div>
-                                                </div>
-                                                <div class="col-sm-6 text-end">
-                                                    <a class='text-muted fs-14' href='auth-recoverpw.html'>Forgot password?</a>                             
                                                 </div>
                                             </div>
                                             
@@ -74,12 +72,6 @@
                                                 </div>
                                             </div>
                                         </form>
-    
-    
-                                        <div class="text-center text-primary mb-4">
-                                            <a href="{{route('user.faq.index')}}" class="btn btn-success btn-sm"><span class="mdi mdi-help"></span> Faq</a>
-                                            <a class='text-primary ms-2 fw-medium' href='{{url('register')}}'>Registrasi pemasok baru</a>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -71,6 +71,12 @@
                             <li>
                                 <a href="{{route('admin.unit.index')}}" class="tp-link">Unit</a>
                             </li>
+                            <li>
+                                <a href="{{route('admin.vulnerability.index')}}" class="tp-link">Kerawanan</a>
+                            </li>
+                            <li>
+                                <a href="{{route('admin.attribute.index')}}" class="tp-link">Attribute</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
