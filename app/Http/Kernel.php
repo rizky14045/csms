@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'monthly-take-over' => \App\Http\Middleware\MonthlyAccountTakeOver::class,
         'guest.admin' => \App\Http\Middleware\RedirectIfAuthenticatedAdmin::class,
         'guest.vendor' => \App\Http\Middleware\RedirectIfAuthenticatedVendor::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,

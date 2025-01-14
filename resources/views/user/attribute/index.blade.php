@@ -47,7 +47,7 @@
                                     <td>{{$attribute->standard_contract}}</td>
                                     <td>{{$attribute->type_attribute}}</td>
                                     <td class="text-center">
-                                        <a href="{{route('user.attribute.edit',['id'=>$attribute->id])}}" class="btn btn-success btn-sm">Edit</a>
+                                        <a href="{{route('user.attribute.edit',['id'=>$attribute->id])}}" class="btn btn-warning btn-sm">Edit</a>
                                         <form action="{{route('user.attribute.destroy',['id'=>$attribute->id])}}" method="post" class="d-inline">
                                             @csrf
                                             @method('DELETE')

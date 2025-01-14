@@ -19,8 +19,7 @@ class CreateFormAttributesTable extends Migration
             $table->integer('user_id')->refences('id')->on('users')->nullable();
             $table->integer('attribute_id')->refences('id')->on('attributes')->nullable();
             $table->string('condition')->nullable();
-            $table->date('expired_date')->nullable();
-            $table->date('expired_item')->nullable();
+            $table->string('status_item')->nullable();
             $table->string('note')->nullable();
             $table->string('attachment_file')->nullable();
             $table->timestamps();

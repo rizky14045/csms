@@ -25,23 +25,18 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="index.html" class="my-4">
-                    <!-- Formulir Pendaftaran -->
+                <form action="{{route('user.monthly-audit.store')}}" class="my-4" method="POST">
+                    @csrf
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
-                            <label for="company_name" class="form-label">Nama Perusahaan</label>
-                            <input class="form-control" name="company_name" type="text" id="company_name" required="" placeholder="Masukan nama perusahaan">
-                        </div>
-                        <div class="form-group mb-3">
                             <label for="date" class="form-label">Bulan dan Tahun</label>
-                            <input class="form-control" type="month" id="date" required="">
+                            <input class="form-control" type="month" id="date" required="" name="report_date">
                         </div>
                   
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
-
-                                    <a href="{{route('user.monthly-audit.index')}}" class="btn btn-success"> Back</a>
+                                    <a href="{{route('user.monthly-audit.index')}}" class="btn btn-danger"> Back</a>
                                     <button class="btn btn-primary" type="submit"> Tambah</button>
                                 </div>
                             </div>

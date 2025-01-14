@@ -120,7 +120,7 @@ class AttributeController extends Controller
             DB::beginTransaction();
             
             $userId = Auth::user()->id;
-            $attribute = Attribute::where('id',$id)->where('user_id',$id)->first();
+            $attribute = Attribute::where('id',$id)->where('user_id',$userId)->first();
             $attribute->delete();
             
             DB::commit();

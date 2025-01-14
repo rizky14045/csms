@@ -9,4 +9,5 @@ class AghtData extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+    protected $table ='aght_datas';
 }

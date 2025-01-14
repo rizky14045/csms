@@ -61,7 +61,7 @@
                                     <td>{{$security->last_education}}</td>
                                     <td>{{$security->note}}</td>
                                     <td class="text-center text-nowrap">
-                                        <a href="{{route('user.security.edit',['id'=>$security->id])}}" class="btn btn-success btn-sm">Edit</a>
+                                        <a href="{{route('user.security.edit',['id'=>$security->id])}}" class="btn btn-warning btn-sm">Edit</a>
                                         <form action="{{route('user.security.destroy',['id'=>$security->id])}}" method="post" class="d-inline">
                                             @csrf
                                             @method('DELETE')

@@ -16,7 +16,7 @@ class CreateMonthlyReportsTable extends Migration
         Schema::create('monthly_reports', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->refences('id')->on('users')->nullable();
-            $table->date('report_date')->nullable();
+            $table->string('report_date')->nullable();
             $table->boolean('send_status')->default(0);
             $table->date('send_date')->nullable();
             $table->timestamps();

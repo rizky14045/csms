@@ -74,6 +74,9 @@
                             <li>
                                 <a href="{{route('user.security.index')}}" class="tp-link">Satuan Pengamanan</a>
                             </li>
+                            <li>
+                                <a href="{{route('user.security-program.index')}}" class="tp-link">Program Keamanan</a>
+                            </li>
                         </ul>
                     </div>
                 </li>

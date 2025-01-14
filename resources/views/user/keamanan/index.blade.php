@@ -58,7 +58,7 @@
                                 <td>1</td>
                                 <td>19 november 2024</td>
                                 <td>
-                                    <a href="{{route('user.keamanan.edit')}}" class="btn btn-primary btn-sm">Edit</a>
+                                    <a href="{{route('user.keamanan.edit')}}" class="btn btn-warning btn-sm">Edit</a>
                                     <a href="{{route('user.keamanan.show')}}" class="btn btn-success btn-sm">show</a>
                                     <a href="#" class="btn btn-danger btn-sm">Hapus</a>
                                 </td>

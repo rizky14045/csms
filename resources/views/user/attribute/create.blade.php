@@ -60,7 +60,7 @@
                                 <option value="Orang" {{old('unit') == 'Orang' ? 'selected' : ''}} >Orang</option>
                                 <option value="Titik"  {{old('unit') == 'Titik' ? 'selected' : ''}}>Titik</option>
                                 <option value="Meter"{{old('unit') == 'Meter' ? 'selected' : ''}}>Meter</option>
-                              </select> 
+                            </select> 
                             @if($errors->has('unit'))
                                 <div class="error text-danger">{{ $errors->first('unit') }}</div>
                             @endif

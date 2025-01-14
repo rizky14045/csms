@@ -17,7 +17,6 @@ class CreateReportEmployeesTable extends Migration
             $table->id();
             $table->integer('monthly_report_id')->refences('id')->on('monthly_reports')->nullable();
             $table->integer('user_id')->refences('id')->on('users')->nullable();
-            $table->integer('vulnerability_id')->refences('id')->on('vulnerabilities')->nullable();
             $table->integer('employee_man')->default(0);
             $table->integer('employee_woman')->default(0);
             $table->integer('student_man')->default(0);

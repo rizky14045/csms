@@ -44,21 +44,24 @@
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">No</th>
-                                <th scope="col">Nama Perusahaan</th>
+                                <th scope="col">Nama Unit</th>
                                 <th scope="col">Bulan dan Tahun</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>DITAMA NASTARI GEMILANG</td>
-                                <td>November 2024</td>
-                                <td>
-                                    <a href="{{route('user.monthly-audit.show')}}" class="btn btn-primary btn-sm">Show</a>
-                                    <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-                                </td>
-                            </tr>
+                            @foreach ($forms as $form)       
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$form->unit->name ?? ''}}</td>
+                                    <td>{{$form->report_date}}</td>
+                                    <td>
+                                        <a href="{{route('user.monthly-audit.form-formulir.index',['monthlyId'=>$form->id])}}" class="btn btn-primary btn-sm">Show</a>
+                                        <a href="{{route('user.monthly-audit.show')}}" class="btn btn-info btn-sm">Kirim Data</a>
+                                        <a href="#" class="btn btn-danger btn-sm">Hapus</a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

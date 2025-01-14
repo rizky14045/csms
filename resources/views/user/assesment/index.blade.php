@@ -62,7 +62,7 @@
                                 <td>DITAMA NASTARI GEMILANG. CV</td>
                                 <td>19 november 2024</td>
                                 <td>
-                                    <a href="{{route('user.assesment.edit')}}" class="btn btn-primary btn-sm">Edit</a>
+                                    <a href="{{route('user.assesment.edit')}}" class="btn btn-warning btn-sm">Edit</a>
                                     <a href="#" class="btn btn-danger btn-sm">Hapus</a>
                                 </td>
                             </tr>
