@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MarturityController;
 use App\Http\Controllers\Admin\MonthlyAuditController;
 use App\Http\Controllers\Admin\VulnerabilityController;
+use App\Http\Controllers\Admin\ChangePasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,9 @@ Route::prefix('admin')->group(function () {
         
         Route::get('/home', [DashboardController::class, 'index'])->name('admin.home.index');
         Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout');
+        
+        Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('admin.changePassword');
+        Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('admin.updatePassword');
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('admin.assesment.index');
             Route::get('/create', [AssesmentController::class, 'create'])->name('admin.assesment.create');

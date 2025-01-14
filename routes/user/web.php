@@ -28,6 +28,7 @@ use App\Http\Controllers\User\MonthlyAudit\RealizationProgramController;
 use App\Http\Controllers\User\MonthlyAudit\FormSecurityProgramController;
 use App\Http\Controllers\User\MonthlyAudit\FormVulnerabilityExternalController;
 use App\Http\Controllers\User\MonthlyAudit\FormVulnerabilityInternalController;
+use App\Http\Controllers\User\ChangePasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,9 @@ Route::prefix('user')->group(function () {
         
         Route::get('/home', [DashboardController::class, 'index'])->name('user.home.index');
         Route::post('/logout', [AuthController::class, 'logout'])->name('user.logout');
+
+        Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('user.changePassword');
+        Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('user.updatePassword');
 
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('user.assesment.index');

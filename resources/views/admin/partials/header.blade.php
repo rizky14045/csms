@@ -26,7 +26,7 @@
                     <div class="dropdown-menu dropdown-menu-end profile-dropdown ">
 
                         <!-- item-->
-                        <a href="pages-profile.html" class="dropdown-item notify-item">
+                        <a href="{{route('admin.changePassword')}}" class="dropdown-item notify-item">
                             <i class="mdi mdi-lock-outline fs-16 align-middle"></i>
                             <span>Change Password</span>
                         </a>
