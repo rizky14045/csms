@@ -56,9 +56,19 @@
                                     <td>{{$form->unit->name ?? ''}}</td>
                                     <td>{{$form->report_date}}</td>
                                     <td>
-                                        <a href="{{route('user.monthly-audit.form-formulir.index',['monthlyId'=>$form->id])}}" class="btn btn-primary btn-sm">Show</a>
-                                        <a href="{{route('user.monthly-audit.show')}}" class="btn btn-info btn-sm">Kirim Data</a>
-                                        <a href="#" class="btn btn-danger btn-sm">Hapus</a>
+                                        @if ($form->send_status == false)
+                                            <a href="{{route('user.monthly-audit.form-formulir.index',['monthlyId'=>$form->id])}}" class="btn btn-primary btn-sm">Show</a>
+                                            <form action="{{route('user.monthly-audit.send',['monthlyId'=>$form->id])}}" method="post" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-info btn-sm">Kirim Data</button>
+                                            </form>
+                                            <a href="#" class="btn btn-danger btn-sm">Hapus</a>
+                                        @else
+                                            <a href="{{route('user.monthly-audit.show',['monthlyId'=>$form->id])}}" class="btn btn-info btn-sm">Show</a>
+
+                                        @endif
+                                        
                                     </td>
                                 </tr>
                             @endforeach

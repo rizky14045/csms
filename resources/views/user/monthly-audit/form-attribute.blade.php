@@ -276,7 +276,6 @@
                                                 <th scope="col" class="text-nowrap align-middle" colspan="2">Kondisi</th>
                                                 <th scope="col" class="text-nowrap align-middle" colspan="2">Masa Berlaku</th>
                                                 <th scope="col" class="text-nowrap align-middle" rowspan="2">Keterangan</th>
-                                                <th scope="col" class="text-nowrap align-middle" rowspan="2">Action</th>
                                             </tr>
                                             <tr>
                                                 <th scope="col" class="text-nowrap">Ada</th>
@@ -287,54 +286,50 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($saranas as $sarana)
-                                            <tr>
-                                                <td>{{$loop->iteration}}</td>
-                                                <td>{{$sarana->name}}</td>
-                                                <td>{{$sarana->status_ownership}}</td>
-                                                <td>{{$sarana->unit}}</td>
-                                                <td>{{$sarana->standard_contract}}</td>
-                                                <td>
-                                                    <input type="hidden" value="{{$sarana->id}}" name="sarana[]">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="condition_{{$sarana->id}}" id="sarana_radioYes{{$loop->iteration}}" value="1" {{$sarana->condition == 1 ? 'checked' : ''}}>
-                                                        <label class="form-check-label" for="sarana_radioYes{{$loop->iteration}}">
-                                                        Ya
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="condition_{{$sarana->id}}" id="sarana_radiono{{$loop->iteration}}" value="0" {{$sarana->condition == 0 ? 'checked' : ''}}>
-                                                        <label class="form-check-label" for="sarana_radiono{{$loop->iteration}}">
-                                                            Tidak
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input ms-3" type="radio" name="status_item_{{$sarana->id}}" id="sarana_checkyes{{$loop->iteration}}" value="1" {{$sarana->status_item == 1 ? 'checked' : ''}}>
-                                                        <label class="form-check-label" for="sarana_checkyes{{$loop->iteration}}">
-                                                        Ya
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input ms-3" type="radio" name="status_item_{{$sarana->id}}" id="sarana_checkno{{$loop->iteration}}" value="0" {{$sarana->status_item == 0 ? 'checked' : ''}}>
-                                                        <label class="form-check-label" for="sarana_checkno{{$loop->iteration}}">
-                                                            Tidak
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control" name="note_{{$sarana->id}}" value="{{$sarana->note}}">
-                                                </td>
-                                                <td>
-                                                    <input type="file" class="form-control mt-3" name="attachment_{{$sarana->id}}" accept=".pdf">
-                                                    <small class="float-start">Ekstensi file .pdf</small>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                                <tr>
+                                                    <td>{{$loop->iteration}}</td>
+                                                    <td>{{$sarana->name}}</td>
+                                                    <td>{{$sarana->status_ownership}}</td>
+                                                    <td>{{$sarana->unit}}</td>
+                                                    <td>{{$sarana->standard_contract}}</td>
+                                                    <td>
+                                                        <input type="hidden" value="{{$sarana->id}}" name="sarana[]">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="condition_{{$sarana->id}}" id="sarana_radioYes{{$loop->iteration}}" value="1" {{$sarana->condition == 1 ? 'checked' : ''}}>
+                                                            <label class="form-check-label" for="sarana_radioYes{{$loop->iteration}}">
+                                                            Ya
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="condition_{{$sarana->id}}" id="sarana_radiono{{$loop->iteration}}" value="0" {{$sarana->condition == 0 ? 'checked' : ''}}>
+                                                            <label class="form-check-label" for="sarana_radiono{{$loop->iteration}}">
+                                                                Tidak
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input ms-3" type="radio" name="status_item_{{$sarana->id}}" id="sarana_checkyes{{$loop->iteration}}" value="1" {{$sarana->status_item == 1 ? 'checked' : ''}}>
+                                                            <label class="form-check-label" for="sarana_checkyes{{$loop->iteration}}">
+                                                            Ya
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input ms-3" type="radio" name="status_item_{{$sarana->id}}" id="sarana_checkno{{$loop->iteration}}" value="0" {{$sarana->status_item == 0 ? 'checked' : ''}}>
+                                                            <label class="form-check-label" for="sarana_checkno{{$loop->iteration}}">
+                                                                Tidak
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="note_{{$sarana->id}}" value="{{$sarana->note}}">
+                                                    </td>
+                                                </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                     <button type="submit" class="btn btn-sm btn-success float-end">Update</button>

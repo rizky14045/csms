@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('user.layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Detail Audit Bulanan</li>
         </ol>
     </div>
@@ -27,7 +27,7 @@
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title mb-3">Detail Audit Bulanan</h5>
-                <a href="{{route('admin.monthly-audit.index')}}" class="btn btn-danger"> Back</a>
+                <a href="{{route('user.monthly-audit.index')}}" class="btn btn-danger"> Back</a>
             </div><!-- end card header -->
 
             <div class="card-body">

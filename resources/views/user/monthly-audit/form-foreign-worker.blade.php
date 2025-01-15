@@ -172,13 +172,6 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                        {{-- <tr>
-                                            <td>1</td>
-                                            <td>DITAMA NASTARI GEMILANG. CV (LOLOS CSMS)</td>
-                                            <td>
-                                                <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-                                            </td>
-                                        </tr> --}}
                                     </tbody>
                                 </table>
                             </div>

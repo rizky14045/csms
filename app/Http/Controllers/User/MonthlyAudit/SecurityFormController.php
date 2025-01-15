@@ -32,9 +32,9 @@ class SecurityFormController extends Controller
 
             $securityFile = '';
 
-            if($request->hasFile('attachment_file'))
+            if($request->hasFile('attachment_file_'.$formId))
             {      
-                $file= $request->file('attachment_file');
+                $file= $request->file('attachment_file_'.$formId);
                 $file_name = 'security-form-' . time() .'.'. $file->getClientOriginalExtension();
                 $file->move(public_path('uploads/attachment_file_security_form/'),$file_name);   
                 $securityFile = $file_name;

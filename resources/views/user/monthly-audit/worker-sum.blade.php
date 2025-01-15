@@ -122,29 +122,29 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($persons as $person)      
-                                        <tr>
-                                            <td>{{$loop->iteration}}</td>
-                                            <td>{{$person->name}}</td>
-                                            <td>{{$person->position}}</td>
-                                            <td>{{$person->work_unit}}</td>
-                                            <td>{{$person->training_smp}}</td>
-                                            <td>{{$person->auditor_smp}}</td>
-                                            <td>{{$person->main}}</td>
-                                            <td>{{$person->investigation}}</td>
-                                            <td>{{$person->mansrisk}}</td>
-                                            <td>{{$person->stackholder_management}}</td>
-                                            <td>{{$person->last_education}}</td>
-                                            <td>{{$person->note}}</td>
-                                            <td>
-                                                <a href="{{route('user.monthly-audit.responsible-person.edit',['monthlyId'=>$monthlyId,'personId' =>$person->id])}}" class="btn btn-sm btn-info">edit</a>
-                                                <form action="{{route('user.monthly-audit.responsible-person.destroy',['monthlyId'=>$monthlyId,'personId' =>$person->id])}}" method="post" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                            <tr>
+                                                <td>{{$loop->iteration}}</td>
+                                                <td>{{$person->name}}</td>
+                                                <td>{{$person->position}}</td>
+                                                <td>{{$person->work_unit}}</td>
+                                                <td>{{$person->training_smp}}</td>
+                                                <td>{{$person->auditor_smp}}</td>
+                                                <td>{{$person->main}}</td>
+                                                <td>{{$person->investigation}}</td>
+                                                <td>{{$person->mansrisk}}</td>
+                                                <td>{{$person->stackholder_management}}</td>
+                                                <td>{{$person->last_education}}</td>
+                                                <td>{{$person->note}}</td>
+                                                <td>
+                                                    <a href="{{route('user.monthly-audit.responsible-person.edit',['monthlyId'=>$monthlyId,'personId' =>$person->id])}}" class="btn btn-sm btn-info">edit</a>
+                                                    <form action="{{route('user.monthly-audit.responsible-person.destroy',['monthlyId'=>$monthlyId,'personId' =>$person->id])}}" method="post" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

@@ -45,14 +45,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>DITAMA NASTARI GEMILANG</td>
-                                <td>November 2024</td>
-                                <td>
-                                    <a href="{{route('admin.monthly-audit.show')}}" class="btn btn-primary btn-sm">Show</a>
-                                </td>
-                            </tr>
+                            @foreach ($forms as $form)       
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$form->unit->name ?? ''}}</td>
+                                    <td>{{$form->report_date}}</td>
+                                    <td>
+                                        <a href="{{route('admin.monthly-audit.show',['monthlyId'=>$form->id])}}" class="btn btn-info btn-sm">Show</a>          
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

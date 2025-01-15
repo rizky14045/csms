@@ -70,7 +70,8 @@ Route::prefix('user')->group(function () {
             Route::get('/create', [MonthlyAuditController::class, 'create'])->name('user.monthly-audit.create');
             Route::post('/store', [MonthlyAuditController::class, 'store'])->name('user.monthly-audit.store');
             Route::get('/edit', [MonthlyAuditController::class, 'edit'])->name('user.monthly-audit.edit');
-            Route::get('/show', [MonthlyAuditController::class, 'show'])->name('user.monthly-audit.show');
+            Route::get('/show/{monthlyId}', [MonthlyAuditController::class, 'show'])->name('user.monthly-audit.show');
+            Route::patch('/send/{monthlyId}', [MonthlyAuditController::class, 'sendReport'])->name('user.monthly-audit.send');
             
             Route::middleware(['monthly-take-over'])->group(function () {    
                 Route::get('/form-formulir/{monthlyId}', [FormFormulirController::class, 'index'])->name('user.monthly-audit.form-formulir.index');
