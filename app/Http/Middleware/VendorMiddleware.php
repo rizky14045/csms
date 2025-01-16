@@ -22,7 +22,7 @@ class VendorMiddleware
         if(!empty($vendor)){
             return $next($request);
         } else {
-            return redirect()->route('admin.login');
+            return redirect()->route('bujp.login');
         }
     }
 }

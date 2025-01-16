@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\FaqController;
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\VendorController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\KeamananController;
 use App\Http\Controllers\User\ListWorkController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\User\AttributeController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\MarturityController;
 use App\Http\Controllers\User\MonthlyAuditController;
+use App\Http\Controllers\User\ChangePasswordController;
 use App\Http\Controllers\User\SecurityProgramController;
 use App\Http\Controllers\User\PraqualificationController;
 use App\Http\Controllers\User\MonthlyAudit\AGHTController;
@@ -28,7 +30,6 @@ use App\Http\Controllers\User\MonthlyAudit\RealizationProgramController;
 use App\Http\Controllers\User\MonthlyAudit\FormSecurityProgramController;
 use App\Http\Controllers\User\MonthlyAudit\FormVulnerabilityExternalController;
 use App\Http\Controllers\User\MonthlyAudit\FormVulnerabilityInternalController;
-use App\Http\Controllers\User\ChangePasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,6 +155,14 @@ Route::prefix('user')->group(function () {
             Route::get('/show', [KeamananController::class, 'show'])->name('user.keamanan.show');
         });
         
+        Route::prefix('vendor')->group(function () {
+            Route::get('/', [VendorController::class, 'index'])->name('user.vendor.index');
+            Route::get('/create', [VendorController::class, 'create'])->name('user.vendor.create');
+            Route::post('/store', [VendorController::class, 'store'])->name('user.vendor.store');
+            Route::get('/edit/{id}', [VendorController::class, 'edit'])->name('user.vendor.edit');
+            Route::patch('/edit/{id}', [VendorController::class, 'update'])->name('user.vendor.update');
+            Route::delete('/delete/{id}', [VendorController::class, 'destroy'])->name('user.vendor.destroy');
+        });
         Route::prefix('attribute')->group(function () {
             Route::get('/', [AttributeController::class, 'index'])->name('user.attribute.index');
             Route::get('/create', [AttributeController::class, 'create'])->name('user.attribute.create');

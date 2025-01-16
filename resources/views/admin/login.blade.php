@@ -47,10 +47,16 @@
                                         <div class="form-group pb-3">
                                             <label class="form-label" for="email-id">Email address</label>
                                             <input type="email" class="form-control mb-0" id="email-id" placeholder="Enter email" name="email">
+                                            @if($errors->has('email'))
+                                                <div class="error text-danger">{{ $errors->first('email') }}</div>
+                                            @endif
                                         </div>
                                         <div class="form-group pb-3">
                                             <label class="form-label" for="password">Password</label>
                                             <input type="password" class="form-control mb-0" id="password" placeholder="Enter password" name="password">
+                                            @if($errors->has('password'))
+                                                <div class="error text-danger">{{ $errors->first('password') }}</div>
+                                            @endif
                                         </div>
                                         <div class="text-center pb-3">
                                             <button type="submit" class="btn btn-info">Login</button>

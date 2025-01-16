@@ -43,7 +43,7 @@
                                     </div>
     
                                     <div class="pt-0">
-                                        <form action="{{route('user.getLogin')}}" class="my-4" method="POST">
+                                        <form action="{{route('bujp.getLogin')}}" class="my-4" method="POST">
                                             @csrf
                                             <div class="form-group mb-3">
                                                 <label for="emailaddress" class="form-label">Email</label>

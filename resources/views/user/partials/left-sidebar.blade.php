@@ -80,6 +80,12 @@
                         </ul>
                     </div>
                 </li>
+                <li>
+                    <a href="{{route('user.vendor.index')}}" class="tp-link">
+                        <i data-feather="user"></i>
+                        <span> Vendor / BUJP </span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- End Sidebar -->

@@ -23,3 +23,4 @@ Route::get('/register', function () {
 
 require_once('user/web.php');
 require_once('admin/web.php');
+require_once('bujp/web.php');

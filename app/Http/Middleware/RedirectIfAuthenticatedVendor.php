@@ -22,8 +22,8 @@ class RedirectIfAuthenticatedVendor
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
-            if (Auth::guard('admin')->check()) {
-                return redirect()->route('user.home.index');
+            if (Auth::guard('vendor')->check()) {
+                return redirect()->route('bujp.home.index');
             }
         }
 
