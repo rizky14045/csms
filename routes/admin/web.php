@@ -11,6 +11,9 @@ use App\Http\Controllers\Admin\MarturityController;
 use App\Http\Controllers\Admin\MonthlyAuditController;
 use App\Http\Controllers\Admin\VulnerabilityController;
 use App\Http\Controllers\Admin\ChangePasswordController;
+use App\Http\Controllers\Admin\LevelAssesmentController;
+use App\Http\Controllers\Admin\CategoryAssesmentController;
+use App\Http\Controllers\Admin\QuestionAssesmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +57,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [KeamananController::class, 'index'])->name('admin.keamanan.index');
             Route::get('/show', [KeamananController::class, 'show'])->name('admin.keamanan.show');
         });
+        
         Route::prefix('unit')->group(function () {
             Route::get('/', [UnitController::class, 'index'])->name('admin.unit.index');
             Route::get('/create', [UnitController::class, 'create'])->name('admin.unit.create');
@@ -61,6 +65,31 @@ Route::prefix('admin')->group(function () {
             Route::get('/edit/{id}', [UnitController::class, 'edit'])->name('admin.unit.edit');
             Route::patch('/edit/{id}', [UnitController::class, 'update'])->name('admin.unit.update');
             Route::delete('/delete/{id}', [UnitController::class, 'destroy'])->name('admin.unit.destroy');
+        });
+
+        Route::prefix('category-assesment')->group(function () {
+            Route::get('/', [CategoryAssesmentController::class, 'index'])->name('admin.category-assesment.index');
+            Route::get('/create', [CategoryAssesmentController::class, 'create'])->name('admin.category-assesment.create');
+            Route::post('/store', [CategoryAssesmentController::class, 'store'])->name('admin.category-assesment.store');
+            Route::get('/edit/{categoryId}', [CategoryAssesmentController::class, 'edit'])->name('admin.category-assesment.edit');
+            Route::patch('/edit/{categoryId}', [CategoryAssesmentController::class, 'update'])->name('admin.category-assesment.update');
+            Route::delete('/delete/{categoryId}', [CategoryAssesmentController::class, 'destroy'])->name('admin.category-assesment.destroy');
+        });
+
+        Route::prefix('question-assesment')->group(function () {
+            Route::get('/create/{categoryId}', [QuestionAssesmentController::class, 'create'])->name('admin.question-assesment.create');
+            Route::post('/store/{categoryId}', [QuestionAssesmentController::class, 'store'])->name('admin.question-assesment.store');
+            Route::get('{questionId}/edit/{categoryId}', [QuestionAssesmentController::class, 'edit'])->name('admin.question-assesment.edit');
+            Route::patch('{questionId}/edit/{categoryId}', [QuestionAssesmentController::class, 'update'])->name('admin.question-assesment.update');
+            Route::delete('{questionId}/delete/{categoryId}', [QuestionAssesmentController::class, 'destroy'])->name('admin.question-assesment.destroy');
+        });
+
+        Route::prefix('level-assesment')->group(function () {
+            Route::get('/create/{questionId}', [LevelAssesmentController::class, 'create'])->name('admin.level-assesment.create');
+            Route::post('/store/{questionId}', [LevelAssesmentController::class, 'store'])->name('admin.level-assesment.store');
+            Route::get('{levelId}/edit/{questionId}', [LevelAssesmentController::class, 'edit'])->name('admin.level-assesment.edit');
+            Route::patch('{levelId}/edit/{questionId}', [LevelAssesmentController::class, 'update'])->name('admin.level-assesment.update');
+            Route::delete('{levelId}/delete/{questionId}', [LevelAssesmentController::class, 'destroy'])->name('admin.level-assesment.destroy');
         });
 
         Route::prefix('vulnerability')->group(function () {

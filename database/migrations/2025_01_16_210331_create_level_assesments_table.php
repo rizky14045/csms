@@ -18,6 +18,7 @@ class CreateLevelAssesmentsTable extends Migration
             $table->integer('question_id')->refences('id')->on('question_assesments')->nullable();
             $table->integer('level')->nullable();
             $table->string('level_description')->nullable();
+            $table->integer('order')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

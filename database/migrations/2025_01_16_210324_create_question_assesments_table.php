@@ -17,6 +17,7 @@ class CreateQuestionAssesmentsTable extends Migration
             $table->id();
             $table->integer('category_id')->refences('id')->on('category_assesments')->nullable();
             $table->text('indicator')->nullable();
+            $table->integer('order')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

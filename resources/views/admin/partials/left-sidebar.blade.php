@@ -77,6 +77,9 @@
                             <li>
                                 <a href="{{route('admin.attribute.index')}}" class="tp-link">Attribute</a>
                             </li>
+                            <li>
+                                <a href="{{route('admin.category-assesment.index')}}" class="tp-link">Assesment</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
