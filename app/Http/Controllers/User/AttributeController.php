@@ -60,7 +60,8 @@ class AttributeController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Atribut gagal dibuat!');
+            return redirect()->route('user.attribute.index');
         }
     }
 
@@ -96,6 +97,9 @@ class AttributeController extends Controller
             $userId = Auth::user()->id;
 
             $attribute = Attribute::where('id',$id)->where('user_id',$userId)->first();
+            if(!$attribute){
+                abort(404);
+            }
             $attribute->name = $request->name;
             $attribute->status_ownership = $request->status_ownership;
             $attribute->unit = $request->unit;
@@ -110,7 +114,8 @@ class AttributeController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'Atribut gagal diubah!');
+            return redirect()->route('user.attribute.index');
         }
     }
 
@@ -121,6 +126,9 @@ class AttributeController extends Controller
             
             $userId = Auth::user()->id;
             $attribute = Attribute::where('id',$id)->where('user_id',$userId)->first();
+            if(!$attribute){
+                abort(404);
+            }
             $attribute->delete();
             
             DB::commit();
@@ -130,7 +138,8 @@ class AttributeController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete Gagal', 'Atribut gagal dihapus!');
+            return redirect()->route('user.attribute.index');
         }
     }
 }

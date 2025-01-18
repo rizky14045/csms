@@ -138,7 +138,8 @@ class MonthlyAuditController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Laporan bulanan gagal dibuat!');
+            return redirect()->route('user.monthly-audit.index');
         }
     }
 
@@ -161,7 +162,8 @@ class MonthlyAuditController extends Controller
             return redirect()->route('user.monthly-audit.index');
         } catch (\Throwable $th) {
             DB::rollback();
-            throw $th;
+            Alert::error('Gagal Dikirim', 'Laporan bulanan gagal dikirim!');
+            return redirect()->route('user.monthly-audit.index');
         }
     }
     public function show($monthlyId){

@@ -77,11 +77,11 @@
                                             
                                             <tr>
                                                 <td class="text-center">{{$loop->iteration}}</td>
-                                                <td class="text-nowrap">{{$question->indicator}}</td>
+                                                <td class="text-nowrap text-start">{{$question->indicator}}</td>
                                                 <td class="">
                                                     <div class="d-flex justify-content-end gap-2">
 
-                                                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#accordionRow1" aria-expanded="false" aria-controls="accordionRow1">
+                                                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#accordionRow{{$question->id}}" aria-expanded="false" aria-controls="accordionRow{{$question->id}}">
                                                             Lihat Detail Level
                                                         </button>
                                                         <a href="{{route('admin.level-assesment.create',['questionId'=> $question->id])}}" class="btn btn-success btn-sm">Tambah Level</a>
@@ -95,7 +95,7 @@
                                                 </td>
                                                 
                                             </tr>
-                                            <tr id="accordionRow1" class="collapse accordion-content">
+                                            <tr id="accordionRow{{$question->id}}" class="collapse accordion-content">
                                                 <td colspan="6">
                                                     <table class="table table-bordered text-center">
                                                         <thead class="table-light">
@@ -111,7 +111,7 @@
                                                                 <tr>
                                                                     <td>{{$loop->iteration}}</td>
                                                                     <td>Level {{$level->level}}</td>
-                                                                    <td>{{$level->level_description}}</td>
+                                                                    <td class="text-start">{{$level->level_description}}</td>
                                                                     <td class="">
                                                                         <div class="d-flex justify-content-end gap-2">
 

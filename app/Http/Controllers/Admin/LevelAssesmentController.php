@@ -53,7 +53,8 @@ class LevelAssesmentController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Level assesment gagal dibuat!');
+            return redirect()->route('admin.category-assesment.index');
         }
     }
 
@@ -95,7 +96,8 @@ class LevelAssesmentController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'Level assesment gagal diubah!');
+            return redirect()->route('admin.category-assesment.index');
         }
     }
 
@@ -113,7 +115,8 @@ class LevelAssesmentController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete Gagal', 'Level assesment gagal dihapus!');
+            return redirect()->route('admin.category-assesment.index');
         }
     }
 }

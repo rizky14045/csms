@@ -12,7 +12,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class AttributeController extends Controller
 {
     public function index(){
-        $data['attributes'] = Attribute::paginate(25);
+        $data['attributes'] = Attribute::where('type_attribute','Administrasi')->paginate(25);
         return view('admin.attribute.index',$data);
     }
 
@@ -50,7 +50,8 @@ class AttributeController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Atribut gagal dibuat!');
+            return redirect()->route('admin.attribute.index');
         }
     }
 
@@ -96,7 +97,8 @@ class AttributeController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'Atribut gagal diubah!');
+            return redirect()->route('admin.attribute.index');
         }
     }
 
@@ -115,7 +117,8 @@ class AttributeController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete Gagal', 'Atribut gagal dihapus!');
+            return redirect()->route('admin.attribute.index');
         }
     }
 }

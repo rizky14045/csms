@@ -62,7 +62,8 @@ class VendorController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'BUJP / Vendor gagal dibuat!');
+            return redirect()->route('user.vendor.index');
         }
     }
 
@@ -120,7 +121,8 @@ class VendorController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'BUJP / Vendor gagal diubah!');
+            return redirect()->route('user.vendor.index');
         }
     }
 
@@ -140,7 +142,8 @@ class VendorController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete Gagal', 'BUJP / Vendor gagal dihapus!');
+            return redirect()->route('user.vendor.index');
         }
     }
 }

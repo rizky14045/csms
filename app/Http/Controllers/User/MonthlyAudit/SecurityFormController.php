@@ -47,8 +47,9 @@ class SecurityFormController extends Controller
             Alert::success('Upload file berhasil', 'File berhasil diupload!');
             return redirect()->back();
         } catch (\Throwable $th) {
-            throw $th;
             DB::rollback();
+            Alert::error('Upload file gagal', 'File gagal diupload!');
+            return redirect()->back();
         }
     }
 }

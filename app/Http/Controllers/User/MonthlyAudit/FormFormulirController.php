@@ -64,9 +64,12 @@ class FormFormulirController extends Controller
             DB::commit();
             Alert::success('Update berhasil', 'Data berhasil di update!');
             return redirect()->back();
+
         } catch (\Throwable $th) {
-            throw $th;
+
             DB::rollback();
+            Alert::error('Update gagal', 'Data gagal di update!');
+            return redirect()->back();
         }
     }
 

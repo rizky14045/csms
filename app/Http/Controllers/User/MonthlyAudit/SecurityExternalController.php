@@ -57,7 +57,9 @@ class SecurityExternalController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah gagal', 'Data Keamanan external gagal dibuat!');
+            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+
         }
     }
     public function edit($monthlyId,$securityId){
@@ -109,7 +111,8 @@ class SecurityExternalController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update gagal', 'Data Keamanan external gagal diubah!');
+            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
         }
 
     }
@@ -128,7 +131,8 @@ class SecurityExternalController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete gagal', 'Data Keamanan external gagal dihapus!');
+            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
         }
 
     }

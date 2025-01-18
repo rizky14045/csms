@@ -61,7 +61,8 @@ class AgreementExternalController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Data kerja sama external gagal dibuat!');
+            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
         }
     }
     public function edit($monthlyId,$agreementId){
@@ -117,7 +118,8 @@ class AgreementExternalController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'Data kerja sama external gagal diubah!');
+            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
         }
 
     }
@@ -136,7 +138,8 @@ class AgreementExternalController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete Gagal', 'Data kerja sama external gagal dihapus!');
+            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
         }
 
     }

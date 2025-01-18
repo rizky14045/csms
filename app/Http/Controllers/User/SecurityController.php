@@ -81,7 +81,8 @@ class SecurityController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Satuan Pengamanan gagal dibuat!');
+            return redirect()->route('user.security.index');
         }
     }
 
@@ -134,6 +135,9 @@ class SecurityController extends Controller
             ]);
 
             $security = Security::where('id',$id)->where('user_id',$userId)->first();
+            if(!$security){
+                abort(404);
+            }
             $security->name = $request->name;
             $security->unit_work = $request->unit_work;
             $security->nid = $request->nid;
@@ -155,7 +159,9 @@ class SecurityController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+
+            Alert::error('Ubah Gagal', 'Satuan Pengamanan gagal diubah!');
+            return redirect()->route('user.security.index');
         }
     }
 
@@ -166,6 +172,9 @@ class SecurityController extends Controller
 
             $userId = Auth::user()->id;
             $security = Security::where('id',$id)->where('user_id',$id)->first();
+            if(!$security){
+                abort(404);
+            }
             $security->delete();
             
             DB::commit();
@@ -175,7 +184,8 @@ class SecurityController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Hapus Gagal', 'Satuan Pengamanan gagal dihapus!');
+            return redirect()->route('user.security.index');
         }
     }
 }

@@ -61,7 +61,9 @@ class ResponsiblePersonController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Data penanggung jawab keamanan gagal dibuat!');
+            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+
         }
     }
     public function edit($monthlyId,$personId){
@@ -117,7 +119,8 @@ class ResponsiblePersonController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'Data penanggung jawab keamanan gagal diubah!');
+            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
         }
 
     }
@@ -136,7 +139,8 @@ class ResponsiblePersonController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete Gagal', 'Data penanggung jawab keamanan gagal dihapus!');
+            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
         }
 
     }

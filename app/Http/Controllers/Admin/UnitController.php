@@ -59,7 +59,8 @@ class UnitController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Unit gagal dibuat!');
+            return redirect()->route('admin.unit.index');
         }
     }
 
@@ -113,7 +114,8 @@ class UnitController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'Unit gagal diubah!');
+            return redirect()->route('admin.unit.index');
         }
     }
 
@@ -131,7 +133,8 @@ class UnitController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete Gagal', 'Unit gagal dihapus!');
+            return redirect()->route('admin.unit.index');
         }
     }
 }

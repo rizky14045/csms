@@ -87,7 +87,8 @@ class FormForeignWorkerController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::success('Tambah Gagal', 'Data TKA gagal dibuat!');
+            return redirect()->route('user.monthly-audit.form-foreign-worker.index',['monthlyId'=>$monthlyId]);
         }
     }
 
@@ -168,13 +169,14 @@ class FormForeignWorkerController extends Controller
             $foreign->save();
             
             DB::commit();
-            Alert::success('Update Berhasil', 'Data TKA berhasil dibuat!');
+            Alert::success('Update Berhasil', 'Data TKA berhasil diubah!');
             return redirect()->route('user.monthly-audit.form-foreign-worker.index',['monthlyId'=>$monthlyId]);
             
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::success('Update Gagal', 'Data TKA gagal diubah!');
+            return redirect()->route('user.monthly-audit.form-foreign-worker.index',['monthlyId'=>$monthlyId]);
         }
     }
     public function destroy($monthlyId,$foreignId){
@@ -201,7 +203,8 @@ class FormForeignWorkerController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::success('Delete Gagal', 'Data TKA gagal dihapus!');
+            return redirect()->route('user.monthly-audit.form-foreign-worker.index',['monthlyId'=>$monthlyId]);
         }
     }
 

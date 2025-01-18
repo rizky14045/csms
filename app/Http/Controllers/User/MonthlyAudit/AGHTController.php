@@ -72,7 +72,8 @@ class AGHTController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Data AGHT gagal dibuat!');
+            return redirect()->route('user.monthly-audit.aght.index',['monthlyId'=>$monthlyId]);
         }
     }
 
@@ -138,7 +139,8 @@ class AGHTController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'Data AGHT gagal diubah!');
+            return redirect()->route('user.monthly-audit.aght.index',['monthlyId'=>$monthlyId]);
         }
     }
 
@@ -162,7 +164,8 @@ class AGHTController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete Gagal', 'Data AGHT gagal dihapus!');
+            return redirect()->route('user.monthly-audit.aght.index',['monthlyId'=>$monthlyId]);
         }
     }
 

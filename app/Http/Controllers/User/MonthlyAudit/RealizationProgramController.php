@@ -68,7 +68,8 @@ class RealizationProgramController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'Program Keamanan gagal diubah!');
+            return redirect()->route('user.monthly-audit.realization-program.index',['monthlyId' => $monthlyId,'programId'=>$programId]);
         }
     }
 

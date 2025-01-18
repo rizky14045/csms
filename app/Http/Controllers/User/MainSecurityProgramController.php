@@ -69,7 +69,8 @@ class MainSecurityProgramController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Program Keamanan gagal dibuat!');
+            return redirect()->route('user.main-security-program.index',['programId' => $programId]);
         }
     }
 
@@ -123,7 +124,8 @@ class MainSecurityProgramController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'Program Keamanan gagal diubah!');
+            return redirect()->route('user.main-security-program.index',['programId' => $programId]);
         }
     }
 
@@ -143,7 +145,8 @@ class MainSecurityProgramController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete Gagal', 'Program Keamanan gagal dihapus!');
+            return redirect()->route('user.main-security-program.index',['programId' => $programId]);
         }
     }
 

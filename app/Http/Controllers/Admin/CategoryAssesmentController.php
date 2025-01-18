@@ -48,7 +48,8 @@ class CategoryAssesmentController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Tambah Gagal', 'Kategori gagal dibuat!');
+            return redirect()->route('admin.category-assesment.index');
         }
     }
 
@@ -84,7 +85,8 @@ class CategoryAssesmentController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Gagal', 'Kategori gagal diubah!');
+            return redirect()->route('admin.category-assesment.index');
         }
     }
 
@@ -110,7 +112,8 @@ class CategoryAssesmentController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Delete Gagal', 'Kategori gagal dihapus!');
+            return redirect()->route('admin.category-assesment.index');
         }
     }
 }

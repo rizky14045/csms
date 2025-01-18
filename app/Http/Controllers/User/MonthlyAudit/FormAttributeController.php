@@ -50,7 +50,8 @@ class FormAttributeController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Berhasil', 'Data Attribute gagal diupdate!');
+            return redirect()->route('user.monthly-audit.form-attribute.index',['monthlyId'=>$monthlyId]);
         }
     }
 
@@ -95,7 +96,8 @@ class FormAttributeController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Berhasil', 'Data Attribute gagal diupdate!');
+            return redirect()->route('user.monthly-audit.form-attribute.index',['monthlyId'=>$monthlyId]);
         }
     }
 
@@ -124,7 +126,8 @@ class FormAttributeController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            throw $th;
+            Alert::error('Update Berhasil', 'Data Attribute gagal diupdate!');
+            return redirect()->route('user.monthly-audit.form-attribute.index',['monthlyId'=>$monthlyId]);
         }
     }
 }
