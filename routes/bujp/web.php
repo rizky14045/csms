@@ -35,7 +35,14 @@ Route::prefix('bujp')->group(function () {
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('bujp.assesment.index');
             Route::get('/create', [AssesmentController::class, 'create'])->name('bujp.assesment.create');
-            Route::get('/edit', [AssesmentController::class, 'edit'])->name('bujp.assesment.edit');
+            Route::post('/create', [AssesmentController::class, 'store'])->name('bujp.assesment.store');
+            Route::get('/edit/{assesmentId}', [AssesmentController::class, 'edit'])->name('bujp.assesment.edit');
+            Route::patch('/edit/{assesmentId}', [AssesmentController::class, 'update'])->name('bujp.assesment.update');
+            Route::delete('/destroy/{assesmentId}', [AssesmentController::class, 'destroy'])->name('bujp.assesment.destroy');
+            Route::patch('/send/{assesmentId}', [AssesmentController::class, 'send'])->name('bujp.assesment.send');
+            Route::get('/show/{assesmentId}', [AssesmentController::class, 'show'])->name('bujp.assesment.show');
+            Route::get('/preview/{assesmentId}', [AssesmentController::class, 'preview'])->name('bujp.assesment.preview');
+            Route::patch('/update-question/{questionId}', [AssesmentController::class, 'updateQuestion'])->name('bujp.assesment.updateQuestion');
         });
 
         Route::prefix('profile')->group(function () {

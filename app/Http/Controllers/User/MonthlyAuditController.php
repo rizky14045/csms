@@ -12,6 +12,7 @@ use App\Models\FormAttribute;
 use App\Models\MonthlyReport;
 use App\Models\Vulnerability;
 use App\Models\ReportEmployee;
+use App\Models\SecurityPerson;
 use App\Models\SecurityProgram;
 use App\Models\SecurityExternal;
 use App\Models\AgreementExternal;
@@ -147,6 +148,38 @@ class MonthlyAuditController extends Controller
         return view('user.monthly-audit.edit');
     }
 
+    public function destroy($monthlyId){
+        try {
+
+            DB::beginTransaction();
+            
+            MonthlyReport::where('id', $monthlyId)->delete();
+            ReportEmployee::where('monthly_report_id', $monthlyId)->delete();
+            FormAttribute::where('monthly_report_id', $monthlyId)->delete();
+            SecurityForm::where('monthly_report_id', $monthlyId)->delete();
+            ExternalVulnerability::where('monthly_report_id', $monthlyId)->delete();
+            InternalVulnerability::where('monthly_report_id', $monthlyId)->delete();
+            MonthlySecurityProgram::where('monthly_report_id', $monthlyId)->delete();
+            MonthlyMainSecurityProgram::where('monthly_report_id', $monthlyId)->delete();
+            ResponsiblePerson::where('monthly_report_id', $monthlyId)->delete();
+            OutsourceEmployee::where('monthly_report_id', $monthlyId)->delete();
+            SecurityExternal::where('monthly_report_id', $monthlyId)->delete();
+            SecurityPerson::where('monthly_report_id', $monthlyId)->delete();
+            AgreementExternal::where('monthly_report_id', $monthlyId)->delete();
+            AghtData::where('monthly_report_id', $monthlyId)->delete();
+            ForeignWorker::where('monthly_report_id', $monthlyId)->delete();
+
+            DB::commit();
+            Alert::success('Berhasil Dihapus', 'Laporan bulanan berhasil dihapus!');
+            return redirect()->route('user.monthly-audit.index');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw $th;
+            Alert::error('Gagal dihapus', 'Laporan bulanan gagal dihapus!');
+            return redirect()->route('user.monthly-audit.index');
+        }
+    }
+
     public function sendReport($monthlyId){
 
         try {
@@ -158,7 +191,7 @@ class MonthlyAuditController extends Controller
             $report->save();
 
             DB::commit();
-            Alert::success('Berhasil Dikirim', 'Laporan bulanan berhasil dikirm!');
+            Alert::success('Berhasil Dikirim', 'Laporan bulanan berhasil dikirim!');
             return redirect()->route('user.monthly-audit.index');
         } catch (\Throwable $th) {
             DB::rollback();

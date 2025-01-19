@@ -40,7 +40,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('admin.assesment.index');
             Route::get('/create', [AssesmentController::class, 'create'])->name('admin.assesment.create');
             Route::get('/edit', [AssesmentController::class, 'edit'])->name('admin.assesment.edit');
-            Route::get('/show', [AssesmentController::class, 'show'])->name('admin.assesment.show');
+            Route::get('/show/{assesmentId}', [AssesmentController::class, 'show'])->name('admin.assesment.show');
         });
         Route::prefix('monthly-audit')->group(function () {
             Route::get('/', [MonthlyAuditController::class, 'index'])->name('admin.monthly-audit.index');

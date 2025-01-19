@@ -49,23 +49,37 @@
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">No</th>
-                                <th scope="col">Kode Supplier</th>
+                                <th scope="col">NPWP</th>
                                 <th scope="col">Nama Perusahaan</th>
+                                <th scope="col">Tanggal</th>
+                                <th scope="col">Triwulan</th>
                                <th scope="col">Tanggal Kirim</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>V03166</td>
-                                <td>DITAMA NASTARI GEMILANG. CV</td>
-                                <td>19 november 2024</td>
-                                <td>
-                                    <a href="{{route('user.assesment.edit')}}" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-                                </td>
-                            </tr>
+                            @foreach ($assesments as $assesment)
+                                
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$assesment->vendor->npwp}}</td>
+                                    <td>{{$assesment->vendor->name}}</td>
+                                    <td>{{$assesment->date}}</td>
+                                    <td>{{$assesment->triwulan}}</td>
+                                    <td>{{$assesment->send_date}}</td>
+                                    <td>
+                                        @if ($assesment->send_status == 2)
+                                            <form action="{{route('user.assesment.send',['assesmentId'=>$assesment->id])}}" method="post" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="button" class="btn btn-success btn-sm" onclick="sendItem(this)">Kirim</button>
+                                            </form>
+                                        @endif
+                                        <a href="{{route('user.assesment.show',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
+                                        
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -75,4 +89,25 @@
     </div><!-- end col -->
 </div> <!-- end row -->
 @endsection
+@section('scripts')
+<script>
+    function sendItem(e){
+            // console.log(form);
+            Swal.fire({
+                title: 'Kirim Data',
+                text: "Data yang sudah dikirim sudah tidak bisa diedit , apakah anda ingin mengirim data?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Iya !'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(e).parent().submit();
+                }
+            })
+        }
+</script>
+@endsection
+
 

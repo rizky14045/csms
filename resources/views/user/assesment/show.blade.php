@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('user.layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Data Assesment</li>
         </ol>
     </div>
@@ -95,7 +95,7 @@
                         <div class="form-group row mt-5">
                             <div class="col-12">
                                 <div class="d-flex gap-1 justify-content-end">
-                                    <a href="{{route('admin.assesment.index')}}" class="btn btn-danger"> Back</a>
+                                    <a href="{{route('user.assesment.index')}}" class="btn btn-danger"> Back</a>
                                 </div>
                             </div>
                         </div>

@@ -9,4 +9,6 @@ class SecurityPerson extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+
+    protected $table = 'security_persons';
 }

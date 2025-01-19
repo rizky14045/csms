@@ -60,6 +60,8 @@ Route::prefix('user')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('user.assesment.index');
             Route::get('/create', [AssesmentController::class, 'create'])->name('user.assesment.create');
             Route::get('/edit', [AssesmentController::class, 'edit'])->name('user.assesment.edit');
+            Route::get('/show/{assesmentId}', [AssesmentController::class, 'show'])->name('user.assesment.show');
+            Route::patch('/send/{assesmentId}', [AssesmentController::class, 'send'])->name('user.assesment.send');
         });
 
         Route::prefix('profile')->group(function () {
@@ -73,6 +75,7 @@ Route::prefix('user')->group(function () {
             Route::get('/edit', [MonthlyAuditController::class, 'edit'])->name('user.monthly-audit.edit');
             Route::get('/show/{monthlyId}', [MonthlyAuditController::class, 'show'])->name('user.monthly-audit.show');
             Route::patch('/send/{monthlyId}', [MonthlyAuditController::class, 'sendReport'])->name('user.monthly-audit.send');
+            Route::delete('/destroy/{monthlyId}', [MonthlyAuditController::class, 'destroy'])->name('user.monthly-audit.destroy');
             
             Route::middleware(['monthly-take-over'])->group(function () {    
                 Route::get('/form-formulir/{monthlyId}', [FormFormulirController::class, 'index'])->name('user.monthly-audit.form-formulir.index');

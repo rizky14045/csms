@@ -61,9 +61,13 @@
                                             <form action="{{route('user.monthly-audit.send',['monthlyId'=>$form->id])}}" method="post" class="d-inline">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="btn btn-info btn-sm">Kirim Data</button>
+                                                <button type="button" class="btn btn-success btn-sm" onclick="sendItem(this)">Kirim Data</button>
                                             </form>
-                                            <a href="#" class="btn btn-danger btn-sm">Hapus</a>
+                                            <form action="{{route('user.monthly-audit.destroy',['monthlyId'=>$form->id])}}" method="post" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteItem(this)">Hapus</button>
+                                            </form>
                                         @else
                                             <a href="{{route('user.monthly-audit.show',['monthlyId'=>$form->id])}}" class="btn btn-info btn-sm">Show</a>
 
@@ -80,5 +84,43 @@
         </div><!-- end card -->
     </div><!-- end col -->
 </div> <!-- end row -->
+@endsection
+@section('scripts')
+<script>
+    function deleteItem(e){
+            // console.log(form);
+            Swal.fire({
+                title: 'Hapus Data',
+                text: "Apakah kamu ingin menghapus data ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Iya !'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(e).parent().submit();
+                }
+            })
+        }
+</script>
+<script>
+    function sendItem(e){
+            // console.log(form);
+            Swal.fire({
+                title: 'Kirim Data',
+                text: "Data yang sudah dikirim sudah tidak bisa diedit , apakah anda ingin mengirim data?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Iya !'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(e).parent().submit();
+                }
+            })
+        }
+</script>
 @endsection
 

@@ -40,20 +40,31 @@
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">No</th>
-                                <th scope="col">Kode Supplier</th>
+                                <th scope="col">Unit</th>
+                                <th scope="col">NPWP</th>
                                 <th scope="col">Nama Perusahaan</th>
+                                <th scope="col">Tanggal</th>
+                                <th scope="col">Triwulan</th>
+                               <th scope="col">Tanggal Kirim</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>V03166</td>
-                                <td>DITAMA NASTARI GEMILANG. CV</td>
-                                <td>
-                                    <a href="{{route('admin.assesment.show')}}" class="btn btn-primary btn-sm">Show</a>
-                                </td>
-                            </tr>
+                            @foreach ($assesments as $assesment)
+                                
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$assesment->unit->name}}</td>
+                                    <td>{{$assesment->vendor->npwp}}</td>
+                                    <td>{{$assesment->vendor->name}}</td>
+                                    <td>{{$assesment->date}}</td>
+                                    <td>{{$assesment->triwulan}}</td>
+                                    <td>{{$assesment->send_date}}</td>
+                                    <td>
+                                        <a href="{{route('admin.assesment.show',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
