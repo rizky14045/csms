@@ -38,11 +38,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="button-add col-md-12">
-                        <div class="d-flex justify-content-end pe-3 pt-3 col-md-6">
-                            <a href="{{route('user.assesment.create')}}" class="btn btn-success">Tambah Data</a>
-                        </div>
-                    </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered text-center align-middle">
