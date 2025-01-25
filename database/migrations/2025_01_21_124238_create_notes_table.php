@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMarturitySubAreasTable extends Migration
+class CreateNotesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateMarturitySubAreasTable extends Migration
      */
     public function up()
     {
-        Schema::create('marturity_sub_areas', function (Blueprint $table) {
+        Schema::create('notes', function (Blueprint $table) {
             $table->id();
-            $table->integer('marturity_area_id')->refences('id')->on('marturity_areas')->nullable();
-            $table->string('name')->nullable();
-            $table->text('description')->nullable();
-            $table->string('reference')->nullable();
+            $table->integer('level_id')->refences('id')->on('levels')->nullable();
+            $table->string('note')->nullable();
             $table->integer('order')->nullable();
+            $table->enum('type', ['marturity', 'kpi'])->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateMarturitySubAreasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('marturity_sub_areas');
+        Schema::dropIfExists('notes');
     }
 }

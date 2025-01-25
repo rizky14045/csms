@@ -3,15 +3,23 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\KPIAreaController;
+use App\Http\Controllers\Admin\KPINoteController;
 use App\Http\Controllers\Admin\KeamananController;
+use App\Http\Controllers\Admin\KPILevelController;
 use App\Http\Controllers\Admin\AssesmentController;
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MarturityController;
+use App\Http\Controllers\Admin\KPISubAreaController;
 use App\Http\Controllers\Admin\MonthlyAuditController;
+use App\Http\Controllers\Admin\MarturityAreaController;
+use App\Http\Controllers\Admin\MarturityNoteController;
 use App\Http\Controllers\Admin\VulnerabilityController;
 use App\Http\Controllers\Admin\ChangePasswordController;
 use App\Http\Controllers\Admin\LevelAssesmentController;
+use App\Http\Controllers\Admin\MarturityLevelController;
+use App\Http\Controllers\Admin\MarturitySubAreaController;
 use App\Http\Controllers\Admin\CategoryAssesmentController;
 use App\Http\Controllers\Admin\QuestionAssesmentController;
 
@@ -90,6 +98,70 @@ Route::prefix('admin')->group(function () {
             Route::get('{levelId}/edit/{questionId}', [LevelAssesmentController::class, 'edit'])->name('admin.level-assesment.edit');
             Route::patch('{levelId}/edit/{questionId}', [LevelAssesmentController::class, 'update'])->name('admin.level-assesment.update');
             Route::delete('{levelId}/delete/{questionId}', [LevelAssesmentController::class, 'destroy'])->name('admin.level-assesment.destroy');
+        });
+
+        Route::prefix('marturity-area')->group(function () {
+            Route::get('/', [MarturityAreaController::class, 'index'])->name('admin.marturity-area.index');
+            Route::get('/create', [MarturityAreaController::class, 'create'])->name('admin.marturity-area.create');
+            Route::post('/store', [MarturityAreaController::class, 'store'])->name('admin.marturity-area.store');
+            Route::get('/edit/{areaId}', [MarturityAreaController::class, 'edit'])->name('admin.marturity-area.edit');
+            Route::patch('/edit/{areaId}', [MarturityAreaController::class, 'update'])->name('admin.marturity-area.update');
+            Route::delete('/delete/{areaId}', [MarturityAreaController::class, 'destroy'])->name('admin.marturity-area.destroy');
+        });
+
+        Route::prefix('marturity-sub-area')->group(function () {
+            Route::get('/create/{areaId}', [MarturitySubAreaController::class, 'create'])->name('admin.marturity-sub-area.create');
+            Route::post('/store/{areaId}', [MarturitySubAreaController::class, 'store'])->name('admin.marturity-sub-area.store');
+            Route::get('/{subAreaId}/edit/{areaId}', [MarturitySubAreaController::class, 'edit'])->name('admin.marturity-sub-area.edit');
+            Route::patch('/{subAreaId}/edit/{areaId}', [MarturitySubAreaController::class, 'update'])->name('admin.marturity-sub-area.update');
+            Route::delete('/{subAreaId}/delete/{areaId}', [MarturitySubAreaController::class, 'destroy'])->name('admin.marturity-sub-area.destroy');
+        });
+        Route::prefix('marturity-level')->group(function () {
+            Route::get('/create/{subAreaId}', [MarturityLevelController::class, 'create'])->name('admin.marturity-level.create');
+            Route::post('/store/{subAreaId}', [MarturityLevelController::class, 'store'])->name('admin.marturity-level.store');
+            Route::get('/{levelId}/edit/{subAreaId}', [MarturityLevelController::class, 'edit'])->name('admin.marturity-level.edit');
+            Route::patch('/{levelId}/edit/{subAreaId}', [MarturityLevelController::class, 'update'])->name('admin.marturity-level.update');
+            Route::delete('/{levelId}/delete/{subAreaId}', [MarturityLevelController::class, 'destroy'])->name('admin.marturity-level.destroy');
+        });
+
+        Route::prefix('marturity-note')->group(function () {
+            Route::get('/create/{levelId}', [MarturityNoteController::class, 'create'])->name('admin.marturity-note.create');
+            Route::post('/store/{levelId}', [MarturityNoteController::class, 'store'])->name('admin.marturity-note.store');
+            Route::get('/{noteId}/edit/{levelId}', [MarturityNoteController::class, 'edit'])->name('admin.marturity-note.edit');
+            Route::patch('/{noteId}/edit/{levelId}', [MarturityNoteController::class, 'update'])->name('admin.marturity-note.update');
+            Route::delete('/{noteId}/delete/{levelId}', [MarturityNoteController::class, 'destroy'])->name('admin.marturity-note.destroy');
+        });
+        
+        Route::prefix('kpi-area')->group(function () {
+            Route::get('/', [KPIAreaController::class, 'index'])->name('admin.kpi-area.index');
+            Route::get('/create', [KPIAreaController::class, 'create'])->name('admin.kpi-area.create');
+            Route::post('/store', [KPIAreaController::class, 'store'])->name('admin.kpi-area.store');
+            Route::get('/edit/{areaId}', [KPIAreaController::class, 'edit'])->name('admin.kpi-area.edit');
+            Route::patch('/edit/{areaId}', [KPIAreaController::class, 'update'])->name('admin.kpi-area.update');
+            Route::delete('/delete/{areaId}', [KPIAreaController::class, 'destroy'])->name('admin.kpi-area.destroy');
+        });
+
+        Route::prefix('kpi-sub-area')->group(function () {
+            Route::get('/create/{areaId}', [KPISubAreaController::class, 'create'])->name('admin.kpi-sub-area.create');
+            Route::post('/store/{areaId}', [KPISubAreaController::class, 'store'])->name('admin.kpi-sub-area.store');
+            Route::get('/{subAreaId}/edit/{areaId}', [KPISubAreaController::class, 'edit'])->name('admin.kpi-sub-area.edit');
+            Route::patch('/{subAreaId}/edit/{areaId}', [KPISubAreaController::class, 'update'])->name('admin.kpi-sub-area.update');
+            Route::delete('/{subAreaId}/delete/{areaId}', [KPISubAreaController::class, 'destroy'])->name('admin.kpi-sub-area.destroy');
+        });
+        Route::prefix('kpi-level')->group(function () {
+            Route::get('/create/{subAreaId}', [KPILevelController::class, 'create'])->name('admin.kpi-level.create');
+            Route::post('/store/{subAreaId}', [KPILevelController::class, 'store'])->name('admin.kpi-level.store');
+            Route::get('/{levelId}/edit/{subAreaId}', [KPILevelController::class, 'edit'])->name('admin.kpi-level.edit');
+            Route::patch('/{levelId}/edit/{subAreaId}', [KPILevelController::class, 'update'])->name('admin.kpi-level.update');
+            Route::delete('/{levelId}/delete/{subAreaId}', [KPILevelController::class, 'destroy'])->name('admin.kpi-level.destroy');
+        });
+
+        Route::prefix('kpi-note')->group(function () {
+            Route::get('/create/{levelId}', [KPINoteController::class, 'create'])->name('admin.kpi-note.create');
+            Route::post('/store/{levelId}', [KPINoteController::class, 'store'])->name('admin.kpi-note.store');
+            Route::get('/{noteId}/edit/{levelId}', [KPINoteController::class, 'edit'])->name('admin.kpi-note.edit');
+            Route::patch('/{noteId}/edit/{levelId}', [KPINoteController::class, 'update'])->name('admin.kpi-note.update');
+            Route::delete('/{noteId}/delete/{levelId}', [KPINoteController::class, 'destroy'])->name('admin.kpi-note.destroy');
         });
 
         Route::prefix('vulnerability')->group(function () {
