@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use App\Models\Note;
+use App\Models\MarturityNote;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Level extends Model
+class MarturityLevel extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory;
     protected $guarded = ['id'];
 
     public function notes()
     {
-        return $this->hasMany(Note::class, 'level_id', 'id');
+        return $this->hasMany(MarturityNote::class, 'level_id', 'id');
     }
 }

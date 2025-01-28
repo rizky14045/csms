@@ -105,6 +105,10 @@ class KPILevelController extends Controller
             DB::beginTransaction();
 
             $level = Level::where('sub_area_id',$subAreaId)->where('id',$levelId)->first();
+            $notes = Note::where('level_id',$level->id)->get();
+            foreach ($notes as $note){
+                $note->delete();
+            }
             $level->delete();
             
             DB::commit();

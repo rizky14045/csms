@@ -58,7 +58,7 @@ Route::prefix('admin')->group(function () {
         });
         Route::prefix('marturity')->group(function () {
             Route::get('/', [MarturityController::class, 'index'])->name('admin.marturity.index');
-            Route::get('/show', [MarturityController::class, 'show'])->name('admin.marturity.show');
+            Route::get('/show/{marturityId}', [MarturityController::class, 'show'])->name('admin.marturity.show');
         });
 
         Route::prefix('keamanan')->group(function () {

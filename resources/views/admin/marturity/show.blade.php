@@ -25,83 +25,85 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <a href="{{route('admin.marturity.index')}}" class="btn btn-success mb-3"> Back</a>
-                <table class="table table-bordered">
-                    <thead class="table-light text-center text-nowrap">
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Area</th>
-                        <th scope="col">Sub Area</th>
-                        <th scope="col">Level</th>
-                        <th scope="col">Uraian</th>
-                        <th scope="col">Catatan Assesment ( Eviden )</th>
-                        <th scope="col">File</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center" rowspan="5">1</td>
-                            <td class="text-nowrap" rowspan="5">PENGENDALIAN KOMITMEN DAN KEBIJAKAN</td>
-                            <td class="" align="justify" rowspan="5">Komitmen dan Kebijakan Keamanan:
-                                Deskripsi: Bentuk dukungan pimpinan puncak dengan jajarannya untuk menerapkan seluruh elemen SMP, yang dibuktikan dengan pernyataan kebijakan yang diikuti seluruh jajarannya mengenai strategi implementasi penerapan SMP terkait dengan alokasi, sumber daya, mekanisme evaluasi, dan perbaikan berkesinambungan untuk mencapai tujuan organisasi.
-                                
-                                Referensi: Perpol 07 Tahun 2019; </td>
-                            <td rowspan="5"> 
-                                <p><b>Fire Fighting (Melakukan tindakan setelah ada kejadian)</b></p>
-                            </td>
-                            <td rowspan="5">
-                                <p align="justify">Terdapat dokumen kebijakan pengamanan yang bertanggal dan di tanda tangani pimpinan puncak organisasi, ditetapkan sesuai dengan perkiraan ancaman didasarkan pada sifat dan skala risiko keamanan, dan dievaluasi secara berkala serta adanya Struktur Organisasi Pengamanan termasuk tanggung jawab & wewenang juga terdapat alokasi anggaran dan/atau biaya pengamanan serta Sumber Daya Dan Infrastruktur terinventarisasi guna menunjang Penerapan SMP</p>
-                            </td>
-                            <td> 1. Kebijakan Sistem Manajemen Terintegrasi Direksi</td>
-                            <td><button type="button" class="btn btn-primary">Download</button></td>
-                        </tr>
-                        <tr>
-                            <td> 2. Komitmen Implementasi Sistem Manajemen Pengamanan Unit</td>
-                            <td><button type="button" class="btn btn-primary">Download</button></td>
-                        </tr>
-                        <tr>
-                            <td> 3. Perdir 0006.P/019/DIR/2022 tentang Peraturan Pelaksanaan Penerapan Manajemen Risiko Terintegrasi</td>
-                            <td><button type="button" class="btn btn-primary">Download</button></td>
-                        </tr>
-                        <tr>
-                            <td> 4. Prosedur Penilaian Risiko Keamanan Unit</td>
-                            <td><button type="button" class="btn btn-primary">Download</button></td>
-                        </tr>
-                        <tr>
-                            <td> 5. Hasil RTM (Daftar Hadir, Notulen)</td>
-                            <td><button type="button" class="btn btn-primary">Download</button></td>
-                        </tr>
+                <a href="{{route('admin.marturity.index')}}" class="btn btn-danger mb-3"> Back</a>
+                 <!-- Komitmen Management -->
+                 <div class="accordion" id="formAccordion">
 
-                        {{-- level2 --}}
-                        <tr>
-                            <td class="text-center" rowspan="4"></td>
-                            <td class="text-nowrap" rowspan="4"></td>
-                            <td class="" align="justify" rowspan="4"></td>
-                            <td rowspan="4"> 
-                                <p><b>Stabilizing (Bertindak sebatas merespon kejadian)</b></p>
-                            </td>
-                            <td rowspan="4">
-                                <p align="justify"><b>Level 1 ditambah :</b><br>
-                                    Kebijakan pengamanan dikomunikasikan kepada pihak internal organisasi (unsur manajemen dan pegawai/karyawan) dan pihak eksternal organisasi (masyarakat lingkungan sekitar) serta terdapat ketentuan untuk melaksanakan Audit SMP & mekanisme pelaksanaan Tinjauan manajemen  tentang penerapan SMP sesuai dengan ketentuan yang berlaku"</p>
-                            </td>
-                            <td> 1. Bukti Sosialiasi internal & eksternal  (Undangan, Daftar Hadir)</td>
-                            <td><button type="button" class="btn btn-primary">Download</button></td>
-                        </tr>
-                        <tr>
-                            <td> 2. Prosedur Audit</td>
-                            <td><button type="button" class="btn btn-primary">Download</button></td>
-                        </tr>
-                        <tr>
-                            <td> 3. Materi & Notulen RTM</td>
-                            <td><button type="button" class="btn btn-primary">Download</button></td>
-                        </tr>
-                        <tr>
-                            <td> 4.Prosedur Tinjauan Manajemen</td>
-                            <td><button type="button" class="btn btn-primary">Download</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-                
+                    @foreach ($areas as $area)
+
+                    <!-- Section for Each area -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header bg-light" id="heading{{$area->id}}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$area->id}}" aria-expanded="false" aria-controls="collapse{{$area->id}}">
+                                {{$area->name}}
+                            </button>
+                        </h2>
+                        <div id="collapse{{$area->id}}" class="accordion-collapse collapse" aria-labelledby="heading{{$area->id}}" data-bs-parent="#formAccordion">
+                            <div class="accordion-body">
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col" class="align-middle text-center">No</th>
+                                            <th scope="col" class="align-middle text-center">Sub Area</th>
+                                            <th scope="col" class="align-middle text-center">Level</th>
+                                            <th scope="col" class="align-middle text-center">Uraian</th>
+                                            <th scope="col" class="align-middle text-center">Catatan Assesment ( Eviden )</th>
+                                            <th scope="col" class="align-middle text-center">File</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($area->subAreas as $subArea)
+                                            @php
+                                                $totalRowspan = $subArea->levels->reduce(function ($carry, $level) {
+                                                    return $carry + 1 + $level->notes()->count();
+                                                }, 0); // Total rowspan pertama
+                                            @endphp
+                                            <tr>
+                                                <td class="text-left" rowspan="{{ $totalRowspan }}">{{ $loop->iteration }}</td>
+                                                <td class="text-left w-25" rowspan="{{ $totalRowspan }}">
+                                                    <h6 class="fw-bold">{{ $subArea->name }}</h6>
+                                                    <p class="text-justify">Deskripsi : {{ $subArea->description }}</p>
+                                                    <span>Referensi : {{ $subArea->reference }}</span>
+                                                </td>
+                                        
+                                                @php $firstLevel = true; @endphp
+                                                @foreach ($subArea->levels as $level)
+                                                    @if (!$firstLevel)
+                                                        <tr>
+                                                    @endif
+                                                    <td rowspan="{{ $level->notes()->count() + 1 }}">{{ $level->level }}</td>
+                                                    <td rowspan="{{ $level->notes()->count() + 1 }}" class="w-25 text-justify">
+                                                        <p class="text-justify">
+                                                            {{ $level->description }}
+                                                        </p></td>
+                                                </tr>
+                                        
+                                                @foreach ($level->notes as $note)
+                                                    <tr>
+                                                        <td>{{ $note->note }}</td>
+                                                        <td>
+                                                            <div class="d-flex gap-2 align-items-center">
+
+                                                                @if ($note->attachment_file)
+                                                                <a href="{{ asset('uploads/attachment_file_marturity_file/'.$note->attachment_file) }}" class="btn btn-info btn-sm" download>Download</a>
+                                                                @endif
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                        
+                                                @php $firstLevel = false; @endphp
+                                                @endforeach
+                                            </tr>
+                                        @endforeach
+                                    
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div> <!-- end card body -->
         </div><!-- end card -->
     </div><!-- end col -->

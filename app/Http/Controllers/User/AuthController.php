@@ -35,7 +35,7 @@ class AuthController extends Controller
 
         if( Hash::check($request->password,$user->password) ){
             $remember = $request->has('remember') ? true : false;
-            Auth::guard('web')->login($user);
+            Auth::guard('web')->login($user,$remember);
             Alert::success('Login Berhasil', 'User berhasil login!' ,$remember);
             return redirect()->route('user.home.index');
 

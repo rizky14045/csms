@@ -147,8 +147,14 @@ Route::prefix('user')->group(function () {
         Route::prefix('marturity')->group(function () {
             Route::get('/', [MarturityController::class, 'index'])->name('user.marturity.index');
             Route::get('/create', [MarturityController::class, 'create'])->name('user.marturity.create');
-            Route::get('/edit', [MarturityController::class, 'edit'])->name('user.marturity.edit');
-            Route::get('/show', [MarturityController::class, 'show'])->name('user.marturity.show');
+            Route::post('/store', [MarturityController::class, 'store'])->name('user.marturity.store');
+            Route::get('/edit/{marturityId}', [MarturityController::class, 'edit'])->name('user.marturity.edit');
+            Route::patch('/edit/{marturityId}', [MarturityController::class, 'update'])->name('user.marturity.update');
+            Route::get('/show/{marturityId}', [MarturityController::class, 'show'])->name('user.marturity.show');
+            Route::get('/preview/{marturityId}', [MarturityController::class, 'preview'])->name('user.marturity.preview');
+            Route::patch('/send/{marturityId}', [MarturityController::class, 'send'])->name('user.marturity.send');
+            Route::patch('{marturityId}/upload-note/{areaId}/{noteId}', [MarturityController::class, 'uploadNote'])->name('user.marturity.uploadNote');
+            Route::delete('/destroy/{marturityId}', [MarturityController::class, 'destroy'])->name('user.marturity.destroy');
         });
 
         Route::prefix('keamanan')->group(function () {

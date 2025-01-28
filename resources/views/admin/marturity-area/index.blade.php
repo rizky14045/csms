@@ -53,7 +53,7 @@
                         
                                 <!-- Tombol yang bisa diklik -->
                                     
-                                    <a href="{{route('admin.marturity-area.edit',['areaId' => $area->id])}}" class="btn btn-warning btn-sm mt-1">Edit Kategori</a>
+                                    <a href="{{route('admin.marturity-area.edit',['areaId' => $area->id])}}" class="btn btn-warning btn-sm mt-1">Edit Area</a>
                                     <form action="{{route('admin.marturity-area.destroy',['areaId'=>$area->id])}}" method="post" class="d-block ms-3">
                                         @csrf
                                         @method('DELETE')
@@ -101,7 +101,7 @@
                                             </tr>
                                             <tr id="accordionRow{{$subArea->id}}" class="collapse accordion-content">
                                                 <td colspan="6">
-                                                    <table class="table table-bordered text-center">
+                                                    <table class="table table-bordered">
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th class="text-center align-middle">No</th>
@@ -134,6 +134,38 @@
                                                                             </div>
                                                                         </td>
                                                                     </tr>
+                                                                    <tr id="noteRow{{$level->id}}" class="collapse accordion-content">
+                                                                        <td colspan="6">
+                                                                            <table class="table table-bordered">
+                                                                                <thead class="table-light">
+                                                                                    <tr>
+                                                                                        <th class="text-center align-middle">No</th>
+                                                                                        <th class="text-center align-middle">Note</th>
+                                                                                        <th class="text-center align-middle">Action</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    @foreach ($level->notes as $note)   
+                                                                                        <tr>
+                                                                                            <td class="text-left">{{$loop->iteration}}</td>
+                                                                                            <td class="text-left">{{$note->note}}</td>
+                                                                                            <td class="">
+                                                                                                <div class="d-flex justify-content-end gap-2">
+
+                                                                                                    <a href="{{route('admin.marturity-note.edit',['noteId' => $note->id,'levelId'=> $level->id,])}}" class="btn btn-warning btn-sm">Edit</a>
+                                                                                                    <form action="{{route('admin.marturity-note.destroy',['noteId' => $note->id,'levelId'=> $level->id])}}" method="post" class="d-block">
+                                                                                                        @csrf
+                                                                                                        @method('DELETE')
+                                                                                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                                                                                    </form>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    @endforeach
+                                                                                </tbody>
+                                                                            </table>  
+                                                                        </td>
+                                                                    </tr>
                                                                 @endforeach
                                                             @endif
 
@@ -141,40 +173,6 @@
                                                     </table>  
                                                 </td>
                                             </tr>
-                                            @if ($subArea->levels->isNotEmpty())
-                                            <tr id="noteRow{{$level->id ?? ''}}" class="collapse accordion-content">
-                                                <td colspan="6">
-                                                    <table class="table table-bordered text-center">
-                                                        <thead class="table-light">
-                                                            <tr>
-                                                                <th class="text-center align-middle">No</th>
-                                                                <th class="text-center align-middle">Note</th>
-                                                                <th class="text-center align-middle">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach ($level->notes as $note)   
-                                                                <tr>
-                                                                    <td>{{$loop->iteration}}</td>
-                                                                    <td>{{$note->note}}</td>
-                                                                    <td class="">
-                                                                        <div class="d-flex justify-content-end gap-2">
-
-                                                                            <a href="{{route('admin.marturity-note.edit',['noteId' => $note->id,'levelId'=> $level->id,])}}" class="btn btn-warning btn-sm">Edit</a>
-                                                                            <form action="{{route('admin.marturity-note.destroy',['noteId' => $note->id,'levelId'=> $level->id])}}" method="post" class="d-block">
-                                                                                @csrf
-                                                                                @method('DELETE')
-                                                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                                                            </form>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>  
-                                                </td>
-                                            </tr>
-                                            @endif
                                         @endforeach
 
                                         

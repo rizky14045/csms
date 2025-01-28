@@ -19,6 +19,7 @@ class CreateNotesTable extends Migration
             $table->string('note')->nullable();
             $table->integer('order')->nullable();
             $table->enum('type', ['marturity', 'kpi'])->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

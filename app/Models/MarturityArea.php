@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use App\Models\SubArea;
+use App\Models\MarturitySubArea;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Area extends Model
+class MarturityArea extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory;
     protected $guarded = ['id'];
 
     public function subAreas()
     {
-        return $this->hasMany(SubArea::class, 'area_id', 'id');
+        return $this->hasMany(MarturitySubArea::class, 'area_id', 'id');
     }
 }

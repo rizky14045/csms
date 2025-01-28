@@ -25,19 +25,33 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="index.html" class="my-4">
+                <form action="{{route('user.marturity.store')}}" class="my-4" method="POST">
+                    @csrf
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
-                            <label for="date" class="form-label">Bulan dan Tahun</label>
-                            <input class="form-control" type="month" id="date" required="">
+                            <label for="date" class="form-label">Tanggal</label>
+                            <input class="form-control" type="date" id="date" required="" name="date" value="{{old('date')}}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="emailaddress" class="form-label">Triwulan</label>
+                            <select class="form-select" aria-label="Default select example" name="triwulan" required>
+                                <option value="">Pilih Triwulan</option>
+                                <option value="1" {{old('triwulan') == '1' ? 'selected' : ''}}>1</option>
+                                <option value="2" {{old('triwulan') == '2' ? 'selected' : ''}}>2</option>
+                                <option value="3" {{old('triwulan') == '3' ? 'selected' : ''}}>3</option>
+                                <option value="4" {{old('triwulan') == '4' ? 'selected' : ''}}>4</option>
+                              </select> 
+                            @if($errors->has('triwulan'))
+                                <div class="error text-danger">{{ $errors->first('triwulan') }}</div>
+                            @endif
                         </div>
                   
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('user.marturity.index')}}" class="btn btn-success"> Back</a>
+                                    <a href="{{route('user.marturity.index')}}" class="btn btn-danger"> Back</a>
                                     <button class="btn btn-primary" type="submit"> Tambah</button>
                                 </div>
                             </div>

@@ -50,19 +50,41 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Tanggal</th>
+                                <th scope="col">Triwulan</th>
+                                <th scope="col">Tanggal Kirim</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>19 november 2024</td>
-                                <td>
-                                    <a href="{{route('user.marturity.edit')}}" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="{{route('user.marturity.show')}}" class="btn btn-success btn-sm">show</a>
-                                    <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-                                </td>
-                            </tr>
+                            @foreach ($marturities as $marturity)
+                                
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$marturity->date}}</td>
+                                    <td>{{$marturity->triwulan}}</td>
+                                    <td>{{$marturity->send_date}}</td>
+                                    <td>
+                                        @if ($marturity->send_status == false)
+                                            <a href="{{route('user.marturity.show',['marturityId'=>$marturity->id])}}" class="btn btn-info btn-sm">show</a>
+                                            <form action="{{route('user.marturity.send',['marturityId'=>$marturity->id])}}" method="post" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="button" class="btn btn-success btn-sm" onclick="sendItem(this)">Kirim</button>
+                                            </form>
+                                            <a href="{{route('user.marturity.edit',['marturityId'=>$marturity->id])}}" class="btn btn-warning btn-sm">Edit</a>
+                                            <form action="{{route('user.marturity.destroy',['marturityId'=>$marturity->id])}}" method="post" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteItem(this)">Hapus</button>
+                                            </form>
+                                        @else
+                                            <a href="{{route('user.marturity.preview',['marturityId'=>$marturity->id])}}" class="btn btn-info btn-sm">show</a>
+                                        
+                                        @endif
+                                      
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -71,5 +93,44 @@
         </div><!-- end card -->
     </div><!-- end col -->
 </div> <!-- end row -->
+@endsection
+@section('scripts')
+<script>
+    function sendItem(e){
+            // console.log(form);
+            Swal.fire({
+                title: 'Kirim Data',
+                text: "Data yang sudah dikirim sudah tidak bisa diedit , apakah anda ingin mengirim data?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Iya !'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(e).parent().submit();
+                }
+            })
+        }
+</script>
+<script>
+   function deleteItem(e){
+            // console.log(form);
+            Swal.fire({
+                title: 'Hapus Data',
+                text: "Apakah kamu ingin menghapus data ?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Iya !'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(e).parent().submit();
+                }
+            })
+        }
+</script>
+    
 @endsection
 

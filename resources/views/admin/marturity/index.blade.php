@@ -45,19 +45,25 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Nama Unit</th>
-                                <th scope="col">Tanggal</th>
+                                <th scope="col">Tanggal Kirim</th>
+                                <th scope="col">Triwulan</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>PLN Nusantara Power</td>
-                                <td>19 november 2024</td>
-                                <td>
-                                    <a href="{{route('admin.marturity.show')}}" class="btn btn-success btn-sm">show</a>
-                                </td>
-                            </tr>
+                            @foreach ($marturities as $marturity)
+                                
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$marturity->unit->name}}</td>
+                                    <td>{{$marturity->send_date}}</td>
+                                    <td>{{$marturity->triwulan}}</td>
+                                    <td>
+                                        <a href="{{route('admin.marturity.show',['marturityId'=>$marturity->id])}}" class="btn btn-success btn-sm">show</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+
                         </tbody>
                     </table>
                 </div>

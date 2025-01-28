@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use App\Models\Level;
+use App\Models\MarturityLevel;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class SubArea extends Model
+class MarturitySubArea extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory;
     protected $guarded = ['id'];
 
     public function levels()
     {
-        return $this->hasMany(Level::class, 'sub_area_id', 'id');
+        return $this->hasMany(MarturityLevel::class, 'sub_area_id', 'id');
     }
 }

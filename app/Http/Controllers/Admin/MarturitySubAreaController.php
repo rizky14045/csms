@@ -109,7 +109,16 @@ class MarturitySubAreaController extends Controller
             DB::beginTransaction();
 
             $subArea = SubArea::where('area_id',$areaId)->where('id',$subAreaId)->first();
-           
+            $levels = Level::where('sub_area_id',$subArea->id)->get();
+            foreach ($levels as $level){
+                $notes = Note::where('level_id',$level->id)->get();
+                foreach ($notes as $note){
+                    $note->delete();
+                }
+            }
+            foreach ($levels as $level){
+                $level->delete();
+            }
             $subArea->delete();
             
             DB::commit();
