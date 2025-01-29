@@ -85,8 +85,8 @@
                                                         <form action="{{route('user.marturity.uploadNote',['marturityId'=>$note->marturity_id,'areaId'=>$subArea->area_id,'noteId'=>$note->id])}}" method="POST" enctype="multipart/form-data">
                                                             @csrf
                                                             @method('PATCH')
-                                                            <td>
-                                                                <input type="file" class="form-control" name="attachment_file_{{$note->id}}" accept=".pdf">
+                                                            <td style="width:20%;">
+                                                                <input type="file" class="form-control" name="attachment_file_{{$note->id}}" accept=".pdf" required>
                                                                 @if($errors->has('attachment_file_'.$note->id))
                                                                 <div class="error text-danger">{{ $errors->first('attachment_file_'.$note->id) }}</div>
                                                                 @endif

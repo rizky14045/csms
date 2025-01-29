@@ -38,7 +38,7 @@
                                 {{$area->name}}
                             </button>
                         </h2>
-                        <div id="collapse{{$area->id}}" class="accordion-collapse collapse {{request('areaId') == $area->id ? 'show' :''}}" aria-labelledby="heading{{$area->id}}" data-bs-parent="#formAccordion">
+                        <div id="collapse{{$area->id}}" class="accordion-collapse collapse" aria-labelledby="heading{{$area->id}}" data-bs-parent="#formAccordion">
                             <div class="accordion-body">
                                 <table class="table table-bordered">
                                     <thead class="table-light">
@@ -49,7 +49,6 @@
                                             <th scope="col" class="align-middle text-center">Uraian</th>
                                             <th scope="col" class="align-middle text-center">Catatan Assesment ( Eviden )</th>
                                             <th scope="col" class="align-middle text-center">File</th>
-                                            <th scope="col" class="align-middle text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -72,8 +71,8 @@
                                                     @if (!$firstLevel)
                                                         <tr>
                                                     @endif
-                                                    <td rowspan="{{ $level->notes()->count() + 1 }}" class="">{{ $level->level }}</td>
-                                                    <td rowspan="{{ $level->notes()->count() + 1 }}" class=" text-justify">
+                                                    <td rowspan="{{ $level->notes()->count() + 1 }}">{{ $level->level }}</td>
+                                                    <td rowspan="{{ $level->notes()->count() + 1 }}" class="w-25 text-justify">
                                                         <p class="text-justify">
                                                             {{ $level->description }}
                                                         </p></td>
@@ -82,25 +81,14 @@
                                                 @foreach ($level->notes as $note)
                                                     <tr>
                                                         <td>{{ $note->note }}</td>
-                                                        <form action="{{route('user.keamanan.uploadNote',['keamananId'=>$note->kpi_id,'areaId'=>$subArea->area_id,'noteId'=>$note->id])}}" method="POST" enctype="multipart/form-data">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <td style="width: 20%;">
-                                                                <input type="file" class="form-control" name="attachment_file_{{$note->id}}" accept=".pdf" required>
-                                                                @if($errors->has('attachment_file_'.$note->id))
-                                                                <div class="error text-danger">{{ $errors->first('attachment_file_'.$note->id) }}</div>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                <div class="d-flex gap-2 align-items-center">
+                                                        <td>
+                                                            <div class="d-flex gap-2 align-items-center">
 
-                                                                    @if ($note->attachment_file)
-                                                                    <a href="{{ asset('uploads/attachment_file_kpi_file/'.$note->attachment_file) }}" class="btn btn-info btn-sm" download>Download</a>
-                                                                    @endif
-                                                                    <button type="submit" class="btn btn-sm btn-success">Upload</button>
-                                                                </div>
-                                                            </td>
-                                                        </form>
+                                                                @if ($note->attachment_file)
+                                                                <a href="{{ asset('uploads/attachment_file_kpi_file/'.$note->attachment_file) }}" class="btn btn-info btn-sm" download>Download</a>
+                                                                @endif
+                                                            </div>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                         

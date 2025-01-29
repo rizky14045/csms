@@ -160,8 +160,14 @@ Route::prefix('user')->group(function () {
         Route::prefix('keamanan')->group(function () {
             Route::get('/', [KeamananController::class, 'index'])->name('user.keamanan.index');
             Route::get('/create', [KeamananController::class, 'create'])->name('user.keamanan.create');
-            Route::get('/edit', [KeamananController::class, 'edit'])->name('user.keamanan.edit');
-            Route::get('/show', [KeamananController::class, 'show'])->name('user.keamanan.show');
+            Route::post('/store', [KeamananController::class, 'store'])->name('user.keamanan.store');
+            Route::get('/edit/{keamananId}', [KeamananController::class, 'edit'])->name('user.keamanan.edit');
+            Route::patch('/edit/{keamananId}', [KeamananController::class, 'update'])->name('user.keamanan.update');
+            Route::get('/show/{keamananId}', [KeamananController::class, 'show'])->name('user.keamanan.show');
+            Route::get('/preview/{keamananId}', [KeamananController::class, 'preview'])->name('user.keamanan.preview');
+            Route::patch('/send/{keamananId}', [KeamananController::class, 'send'])->name('user.keamanan.send');
+            Route::patch('{keamananId}/upload-note/{areaId}/{noteId}', [KeamananController::class, 'uploadNote'])->name('user.keamanan.uploadNote');
+            Route::delete('/destroy/{keamananId}', [KeamananController::class, 'destroy'])->name('user.keamanan.destroy');
         });
         
         Route::prefix('vendor')->group(function () {

@@ -13,6 +13,6 @@ class KpiSubArea extends Model
 
     public function levels()
     {
-        return $this->hasMany(KpiLevel::class, 'kpi_sub_area_id', 'id');
+        return $this->hasMany(KpiLevel::class, 'sub_area_id', 'id');
     }
 }

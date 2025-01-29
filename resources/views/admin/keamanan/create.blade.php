@@ -11,13 +11,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Keamanan</h4>
+        <h4 class="fs-18 fw-semibold m-0">Marturity</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Tambah Data Keamanan</li>
+            <li class="breadcrumb-item active">Tambah Data Marturity</li>
         </ol>
     </div>
 </div>
@@ -37,7 +37,7 @@
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('user.keamanan.index')}}" class="btn btn-success"> Back</a>
+                                    <a href="{{route('user.marturity.index')}}" class="btn btn-success"> Back</a>
                                     <button class="btn btn-primary" type="submit"> Tambah</button>
                                 </div>
                             </div>

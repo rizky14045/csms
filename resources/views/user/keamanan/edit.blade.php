@@ -11,13 +11,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Keamanan</h4>
+        <h4 class="fs-18 fw-semibold m-0">KPI</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Edit Data Keamanan</li>
+            <li class="breadcrumb-item active">Edit Data KPI</li>
         </ol>
     </div>
 </div>
@@ -25,19 +25,35 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="index.html" class="my-4">
+                <form action="{{route('user.keamanan.update',['keamananId' =>$kpi->id])}}" class="my-4" method="POST">
+                    @csrf
+                    @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
-                            <label for="date" class="form-label">Bulan dan Tahun</label>
-                            <input class="form-control" type="month" id="date" required="">
+                            <label for="date" class="form-label">Tanggal</label>
+                            <input class="form-control" type="date" id="date" required="" name="date" value="{{$kpi->date}}">
                         </div>
+                        <div class="form-group mb-3">
+                            <label for="emailaddress" class="form-label">Triwulan</label>
+                            <select class="form-select" aria-label="Default select example" name="triwulan" required>
+                                <option value="">Pilih Triwulan</option>
+                                <option value="1" {{$kpi->triwulan == '1' ? 'selected' : ''}}>1</option>
+                                <option value="2" {{$kpi->triwulan == '2' ? 'selected' : ''}}>2</option>
+                                <option value="3" {{$kpi->triwulan == '3' ? 'selected' : ''}}>3</option>
+                                <option value="4" {{$kpi->triwulan == '4' ? 'selected' : ''}}>4</option>
+                              </select> 
+                            @if($errors->has('triwulan'))
+                                <div class="error text-danger">{{ $errors->first('triwulan') }}</div>
+                            @endif
+                        </div>
+                  
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('user.keamanan.index')}}" class="btn btn-success"> Back</a>
-                                    <button class="btn btn-primary" type="submit"> Tambah</button>
+                                    <a href="{{route('user.keamanan.index')}}" class="btn btn-danger"> Back</a>
+                                    <button class="btn btn-primary" type="submit"> Ubah</button>
                                 </div>
                             </div>
                         </div>

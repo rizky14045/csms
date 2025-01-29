@@ -63,7 +63,7 @@ Route::prefix('admin')->group(function () {
 
         Route::prefix('keamanan')->group(function () {
             Route::get('/', [KeamananController::class, 'index'])->name('admin.keamanan.index');
-            Route::get('/show', [KeamananController::class, 'show'])->name('admin.keamanan.show');
+            Route::get('/show/{keamananId}', [KeamananController::class, 'show'])->name('admin.keamanan.show');
         });
         
         Route::prefix('unit')->group(function () {

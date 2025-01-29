@@ -11,13 +11,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Keamanan ( KPI )</h4>
+        <h4 class="fs-18 fw-semibold m-0">KPI</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Keamanan ( KPI )</li>
+            <li class="breadcrumb-item active">KPI</li>
         </ol>
     </div>
 </div>
@@ -45,19 +45,25 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Nama Unit</th>
-                                <th scope="col">Tanggal</th>
+                                <th scope="col">Tanggal Kirim</th>
+                                <th scope="col">Triwulan</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>PLN Nusantara Power</td>
-                                <td>19 november 2024</td>
-                                <td>
-                                    <a href="{{route('admin.keamanan.show')}}" class="btn btn-success btn-sm">show</a>
-                                </td>
-                            </tr>
+                            @foreach ($kpis as $kpi)
+                                
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$kpi->unit->name}}</td>
+                                    <td>{{$kpi->send_date}}</td>
+                                    <td>{{$kpi->triwulan}}</td>
+                                    <td>
+                                        <a href="{{route('admin.keamanan.show',['keamananId'=>$kpi->id])}}" class="btn btn-success btn-sm">show</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+
                         </tbody>
                     </table>
                 </div>
