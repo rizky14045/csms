@@ -20,7 +20,7 @@ class CreateSignQuestionAssesmentsTable extends Migration
             $table->integer('question_assesment_id')->refences('id')->on('question_assesments')->nullable();
             $table->integer('sign_category_id')->refences('id')->on('sign_category_assesments')->nullable();
             $table->string('indicator')->nullable();
-            $table->integer('level')->nullable();
+            $table->integer('level')->default(0);
             $table->string('attachment_file')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();

@@ -33,13 +33,13 @@
                 <li>
                     <a href="{{route('user.monthly-audit.index')}}" class="tp-link">
                         <i data-feather="user"></i>
-                        <span> Audit Bulanan </span>
+                        <span> Laporan Bulanan </span>
                     </a>
                 </li>
                 <li>
                     <a href="{{route('user.assesment.index')}}" class="tp-link">
                         <i data-feather="user"></i>
-                        <span> Assesment </span>
+                        <span> Assesment BUJP </span>
                     </a>
                 </li>
                 <li>

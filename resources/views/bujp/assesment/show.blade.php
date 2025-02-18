@@ -95,7 +95,7 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <input type="file" class="form-control" name="attachment_file_{{$question->id}}" accept=".pdf">
+                                                        <input type="file" class="form-control" name="attachment_file_{{$question->id}}" accept=".pdf" required>
                                                         @if ($errors->has('attachment_file_'.$question->id))
                                                             <div class="text-danger">{{ $errors->first('attachment_file_'.$question->id) }}</div>
                                                         @endif

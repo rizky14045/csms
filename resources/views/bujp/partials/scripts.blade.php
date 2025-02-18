@@ -27,6 +27,7 @@
 
 <!-- Apexcharts JS -->
 <script src="{{asset('assets/libs/apexcharts/apexcharts.min.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
 <!-- for basic area chart -->

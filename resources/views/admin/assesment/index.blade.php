@@ -43,6 +43,7 @@
                                 <th scope="col">Unit</th>
                                 <th scope="col">NPWP</th>
                                 <th scope="col">Nama Perusahaan</th>
+                                <th scope="col">Nomor Kontrak</th>
                                 <th scope="col">Tanggal</th>
                                 <th scope="col">Triwulan</th>
                                <th scope="col">Tanggal Kirim</th>
@@ -57,11 +58,13 @@
                                     <td>{{$assesment->unit->name}}</td>
                                     <td>{{$assesment->vendor->npwp}}</td>
                                     <td>{{$assesment->vendor->name}}</td>
+                                    <td>{{$assesment->contract}}</td>
                                     <td>{{$assesment->date}}</td>
                                     <td>{{$assesment->triwulan}}</td>
                                     <td>{{$assesment->send_date}}</td>
                                     <td>
                                         <a href="{{route('admin.assesment.show',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
+                                        <a href="{{route('admin.assesment.report',['assesmentId'=>$assesment->id])}}" class="btn btn-success btn-sm">Report</a>
                                     </td>
                                 </tr>
                             @endforeach

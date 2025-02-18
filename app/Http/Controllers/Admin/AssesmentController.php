@@ -25,4 +25,27 @@ class AssesmentController extends Controller
         $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesmentId)->get();
         return view('admin.assesment.show',$data);
     }
+    public function report($assesmentId){
+
+        $assesment = Assesment::find($assesmentId);
+        $categories = SignCategoryAssesment::with('questions', 'questions.levels')
+        ->where('assesment_id', $assesmentId)
+        ->get()
+        ->map(function ($category) {
+            // Hitung rata-rata untuk setiap kategori berdasarkan level dalam pertanyaan
+            $category->average = number_format($category->questions->avg('evaluation_unit'),2);
+    
+            return $category;
+        });
+
+        $chartData = [
+            'labels' => $categories->pluck('category_name'), // Ambil category_name sebagai label
+            'data' => $categories->pluck('average'), // Ambil nilai rata-rata untuk data
+        ];
+        $chartJson = json_encode($chartData);
+        $data['assesment'] = $assesment;
+        $data['categories'] = $categories;
+        $data['chartJson'] = $chartJson;
+        return view('admin.assesment.report',$data);
+    }
 }

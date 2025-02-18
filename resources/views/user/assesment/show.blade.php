@@ -37,7 +37,7 @@
                                 {{$category->category_name}}
                             </button>
                         </h2>
-                        <div id="collapse{{$category->id}}" class="accordion-collapse collapse" aria-labelledby="heading{{$category->id}}" data-bs-parent="#formAccordion">
+                        <div id="collapse{{$category->id}}" class="accordion-collapse collapse  {{request('signCategoryId') == $category->id ? 'show' :''}}" aria-labelledby="heading{{$category->id}}" data-bs-parent="#formAccordion">
                             <div class="accordion-body">
                                 <table class="table table-bordered">
                                     <thead class="table-light">
@@ -49,6 +49,8 @@
                                             <th scope="col">Nilai</th>
                                             <th scope="col">Note</th>
                                             <th scope="col">File</th>
+                                            <th scope="col">Penilaian Unit</th>
+                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -82,6 +84,26 @@
                                                         @endif
                                                     </div>
                                                 </td>
+                                                <form action="{{ route('user.assesment.updateQuestion', ['questionId' => $question->id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <td>
+                                                        <select class="form-select" name="evaluation_unit_{{$question->id}}" required>
+                                                            <option value="">Pilih Level</option>
+                                                            <option value="1" {{$question->evaluation_unit == 1 ? 'selected' : ''}}>1</option>
+                                                            <option value="2" {{$question->evaluation_unit == 2 ? 'selected' : ''}}>2</option>
+                                                            <option value="3" {{$question->evaluation_unit == 3 ? 'selected' : ''}}>3</option>
+                                                            <option value="4" {{$question->evaluation_unit == 4 ? 'selected' : ''}}>4</option>
+                                                            <option value="5" {{$question->evaluation_unit == 5 ? 'selected' : ''}}>5</option>
+                                                        </select>
+                                                        @if ($errors->has('evaluation_unit_'.$question->id))
+                                                            <div class="text-danger">{{ $errors->first('evaluation_unit_'.$question->id) }}</div>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <button type="submit" class="btn btn-success btn-sm">Update</button>
+                                                    </td>
+                                                </form>
                                             </tr>
                                             @endforeach
                                         </tbody>

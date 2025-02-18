@@ -33,7 +33,7 @@
                 <li>
                     <a href="{{route('bujp.assesment.index')}}" class="tp-link">
                         <i data-feather="user"></i>
-                        <span> Assesment </span>
+                        <span> Assesment BUJP </span>
                     </a>
                 </li>
                 

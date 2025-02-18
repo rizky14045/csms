@@ -46,6 +46,7 @@
                                 <th scope="col">No</th>
                                 <th scope="col">NPWP</th>
                                 <th scope="col">Nama Perusahaan</th>
+                                <th scope="col">Nomor Kontrak</th>
                                 <th scope="col">Tanggal</th>
                                 <th scope="col">Triwulan</th>
                                <th scope="col">Tanggal Kirim</th>
@@ -59,6 +60,7 @@
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$assesment->vendor->npwp}}</td>
                                     <td>{{$assesment->vendor->name}}</td>
+                                    <td>{{$assesment->contract}}</td>
                                     <td>{{$assesment->date}}</td>
                                     <td>{{$assesment->triwulan}}</td>
                                     <td>{{$assesment->send_date}}</td>
@@ -69,8 +71,12 @@
                                                 @method('PATCH')
                                                 <button type="button" class="btn btn-success btn-sm" onclick="sendItem(this)">Kirim</button>
                                             </form>
+                                            <a href="{{route('user.assesment.show',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
+                                        @else
+                                            <a href="{{route('user.assesment.preview',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
+                                            <a href="{{route('user.assesment.report',['assesmentId'=>$assesment->id])}}" class="btn btn-success btn-sm">Report</a>
+                                        
                                         @endif
-                                        <a href="{{route('user.assesment.show',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
                                         
                                     </td>
                                 </tr>

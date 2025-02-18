@@ -39,6 +39,7 @@ class AssesmentController extends Controller
                 'unit_id' => $vendor->parent_user_id,
                 'vendor_id' => $vendor->id,
                 'date' => $request->date,
+                'contract' => $request->contract,
                 'triwulan' => $request->triwulan,
             ]);
             
@@ -107,6 +108,7 @@ class AssesmentController extends Controller
             Assesment::where('id',$assesmentId)->update([
                 'date' => $request->date,
                 'triwulan' => $request->triwulan,
+                'contract' => $request->contract,
             ]);
 
             DB::commit();
@@ -174,6 +176,30 @@ class AssesmentController extends Controller
 
         $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesmentId)->get();
         return view('bujp.assesment.preview',$data);
+    }
+
+    public function report($assesmentId){
+
+        $assesment = Assesment::find($assesmentId);
+        $categories = SignCategoryAssesment::with('questions', 'questions.levels')
+        ->where('assesment_id', $assesmentId)
+        ->get()
+        ->map(function ($category) {
+            // Hitung rata-rata untuk setiap kategori berdasarkan level dalam pertanyaan
+            $category->average = number_format($category->questions->avg('level'),2);
+    
+            return $category;
+        });
+
+        $chartData = [
+            'labels' => $categories->pluck('category_name'), // Ambil category_name sebagai label
+            'data' => $categories->pluck('average'), // Ambil nilai rata-rata untuk data
+        ];
+        $chartJson = json_encode($chartData);
+        $data['assesment'] = $assesment;
+        $data['categories'] = $categories;
+        $data['chartJson'] = $chartJson;
+        return view('bujp.assesment.report',$data);
     }
 
     public function updateQuestion(Request $request,$questionId){

@@ -52,7 +52,13 @@
                                                 <div class="error text-danger">{{ $errors->first('triwulan') }}</div>
                                             @endif
                                         </div>
-                                  
+                                        <div class="form-group mb-3">
+                                            <label for="contract" class="form-label">Kontrak</label>
+                                            <input class="form-control" type="text" id="contract" required="" name="contract" value="{{old('contract')}}">
+                                            @if($errors->has('contract'))
+                                                <div class="error text-danger">{{ $errors->first('contract') }}</div>
+                                            @endif
+                                        </div>
                                         <div class="form-group row">
                                             <div class="col-12">
                                                 <div class="d-flex gap-3 justify-content-end">

@@ -53,6 +53,13 @@
                                                 <div class="error text-danger">{{ $errors->first('triwulan') }}</div>
                                             @endif
                                         </div>
+                                        <div class="form-group mb-3">
+                                            <label for="contract" class="form-label">Kontrak</label>
+                                            <input class="form-control" type="text" id="contract" required="" name="contract" value="{{$assesment->contract}}">
+                                            @if($errors->has('contract'))
+                                                <div class="error text-danger">{{ $errors->first('contract') }}</div>
+                                            @endif
+                                        </div>
                                   
                                         <div class="form-group row">
                                             <div class="col-12">

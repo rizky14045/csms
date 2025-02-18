@@ -43,6 +43,7 @@ Route::prefix('bujp')->group(function () {
             Route::get('/show/{assesmentId}', [AssesmentController::class, 'show'])->name('bujp.assesment.show');
             Route::get('/preview/{assesmentId}', [AssesmentController::class, 'preview'])->name('bujp.assesment.preview');
             Route::patch('/update-question/{questionId}', [AssesmentController::class, 'updateQuestion'])->name('bujp.assesment.updateQuestion');
+            Route::get('/report/{assesmentId}', [AssesmentController::class, 'report'])->name('bujp.assesment.report');
         });
 
         Route::prefix('profile')->group(function () {
