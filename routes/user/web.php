@@ -12,20 +12,21 @@ use App\Http\Controllers\User\AssesmentController;
 use App\Http\Controllers\User\AttributeController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\MarturityController;
+use App\Http\Controllers\User\WorkerSumController;
 use App\Http\Controllers\User\MonthlyAuditController;
 use App\Http\Controllers\User\ChangePasswordController;
 use App\Http\Controllers\User\SecurityProgramController;
 use App\Http\Controllers\User\PraqualificationController;
+use App\Http\Controllers\User\SecurityExternalController;
+use App\Http\Controllers\User\AgreementExternalController;
 use App\Http\Controllers\User\MonthlyAudit\AGHTController;
+use App\Http\Controllers\User\ResponsiblePersonController;
 use App\Http\Controllers\User\MainSecurityProgramController;
-use App\Http\Controllers\User\MonthlyAudit\WorkerSumController;
 use App\Http\Controllers\User\MonthlyAudit\FormFormulirController;
 use App\Http\Controllers\User\MonthlyAudit\SecurityFormController;
 use App\Http\Controllers\User\MonthlyAudit\FormAttributeController;
-use App\Http\Controllers\User\MonthlyAudit\SecurityExternalController;
-use App\Http\Controllers\User\MonthlyAudit\AgreementExternalController;
+use App\Http\Controllers\User\MonthlyAudit\MonthlyWorkerSumController;
 use App\Http\Controllers\User\MonthlyAudit\FormForeignWorkerController;
-use App\Http\Controllers\User\MonthlyAudit\ResponsiblePersonController;
 use App\Http\Controllers\User\MonthlyAudit\RealizationProgramController;
 use App\Http\Controllers\User\MonthlyAudit\FormSecurityProgramController;
 use App\Http\Controllers\User\MonthlyAudit\FormVulnerabilityExternalController;
@@ -70,7 +71,27 @@ Route::prefix('user')->group(function () {
         Route::prefix('profile')->group(function () {
             Route::get('/', [ProfileController::class, 'index'])->name('user.profile.index');
         });
+
+        Route::get('/worker-sum', [WorkerSumController::class, 'index'])->name('user.worker-sum.index');
         
+        Route::get('/responsible-person/create', [ResponsiblePersonController::class, 'create'])->name('user.responsible-person.create');
+        Route::post('/responsible-person/create', [ResponsiblePersonController::class, 'store'])->name('user.responsible-person.store');
+        Route::get('/responsible-person/edit/{personId}', [ResponsiblePersonController::class, 'edit'])->name('user.responsible-person.edit');
+        Route::patch('/responsible-person/update/{personId}', [ResponsiblePersonController::class, 'update'])->name('user.responsible-person.update');
+        Route::delete('/responsible-person/destroy/{personId}', [ResponsiblePersonController::class, 'destroy'])->name('user.responsible-person.destroy');
+        
+        Route::get('/security-external/create', [SecurityExternalController::class, 'create'])->name('user.security-external.create');
+        Route::post('/security-external/create', [SecurityExternalController::class, 'store'])->name('user.security-external.store');
+        Route::get('/security-external/edit/{securityId}', [SecurityExternalController::class, 'edit'])->name('user.security-external.edit');
+        Route::patch('/security-external/update/{securityId}', [SecurityExternalController::class, 'update'])->name('user.security-external.update');
+        Route::delete('/security-external/destroy/{securityId}', [SecurityExternalController::class, 'destroy'])->name('user.security-external.destroy');
+
+        Route::get('/agreement-external/create', [AgreementExternalController::class, 'create'])->name('user.agreement-external.create');
+        Route::post('/agreement-external/create', [AgreementExternalController::class, 'store'])->name('user.agreement-external.store');
+        Route::get('/agreement-external/edit/{agreementId}', [AgreementExternalController::class, 'edit'])->name('user.agreement-external.edit');
+        Route::patch('/agreement-external/update/{agreementId}', [AgreementExternalController::class, 'update'])->name('user.agreement-external.update');
+        Route::delete('/agreement-external/destroy/{agreementId}', [AgreementExternalController::class, 'destroy'])->name('user.agreement-external.destroy');
+
         Route::prefix('monthly-audit')->group(function () {
             Route::get('/', [MonthlyAuditController::class, 'index'])->name('user.monthly-audit.index');
             Route::get('/create', [MonthlyAuditController::class, 'create'])->name('user.monthly-audit.create');
@@ -79,31 +100,12 @@ Route::prefix('user')->group(function () {
             Route::get('/show/{monthlyId}', [MonthlyAuditController::class, 'show'])->name('user.monthly-audit.show');
             Route::patch('/send/{monthlyId}', [MonthlyAuditController::class, 'sendReport'])->name('user.monthly-audit.send');
             Route::delete('/destroy/{monthlyId}', [MonthlyAuditController::class, 'destroy'])->name('user.monthly-audit.destroy');
-            
+
+            Route::get('/worker-sum/{monthlyId}', [MonthlyWorkerSumController::class, 'index'])->name('user.monthly-audit.worker-sum.index');
+
             Route::middleware(['monthly-take-over'])->group(function () {    
                 Route::get('/form-formulir/{monthlyId}', [FormFormulirController::class, 'index'])->name('user.monthly-audit.form-formulir.index');
                 Route::post('/form-formulir/{monthlyId}', [FormFormulirController::class, 'saveFormulir'])->name('user.monthly-audit.form-formulir.saveFormulir');
-                Route::get('/worker-sum/{monthlyId}', [WorkerSumController::class, 'index'])->name('user.monthly-audit.worker-sum.index');
-
-                Route::get('/worker-sum/{monthlyId}', [WorkerSumController::class, 'index'])->name('user.monthly-audit.worker-sum.index');
-                
-                Route::get('/responsible-person/{monthlyId}/create', [ResponsiblePersonController::class, 'create'])->name('user.monthly-audit.responsible-person.create');
-                Route::post('/responsible-person/{monthlyId}/create', [ResponsiblePersonController::class, 'store'])->name('user.monthly-audit.responsible-person.store');
-                Route::get('/responsible-person/{monthlyId}/edit/{personId}', [ResponsiblePersonController::class, 'edit'])->name('user.monthly-audit.responsible-person.edit');
-                Route::patch('/responsible-person/{monthlyId}/update/{personId}', [ResponsiblePersonController::class, 'update'])->name('user.monthly-audit.responsible-person.update');
-                Route::delete('/responsible-person/{monthlyId}/destroy/{personId}', [ResponsiblePersonController::class, 'destroy'])->name('user.monthly-audit.responsible-person.destroy');
-                
-                Route::get('/security-external/{monthlyId}/create', [SecurityExternalController::class, 'create'])->name('user.monthly-audit.security-external.create');
-                Route::post('/security-external/{monthlyId}/create', [SecurityExternalController::class, 'store'])->name('user.monthly-audit.security-external.store');
-                Route::get('/security-external/{monthlyId}/edit/{securityId}', [SecurityExternalController::class, 'edit'])->name('user.monthly-audit.security-external.edit');
-                Route::patch('/security-external/{monthlyId}/update/{securityId}', [SecurityExternalController::class, 'update'])->name('user.monthly-audit.security-external.update');
-                Route::delete('/security-external/{monthlyId}/destroy/{securityId}', [SecurityExternalController::class, 'destroy'])->name('user.monthly-audit.security-external.destroy');
-
-                Route::get('/agreement-external/{monthlyId}/create', [AgreementExternalController::class, 'create'])->name('user.monthly-audit.agreement-external.create');
-                Route::post('/agreement-external/{monthlyId}/create', [AgreementExternalController::class, 'store'])->name('user.monthly-audit.agreement-external.store');
-                Route::get('/agreement-external/{monthlyId}/edit/{agreementId}', [AgreementExternalController::class, 'edit'])->name('user.monthly-audit.agreement-external.edit');
-                Route::patch('/agreement-external/{monthlyId}/update/{agreementId}', [AgreementExternalController::class, 'update'])->name('user.monthly-audit.agreement-external.update');
-                Route::delete('/agreement-external/{monthlyId}/destroy/{agreementId}', [AgreementExternalController::class, 'destroy'])->name('user.monthly-audit.agreement-external.destroy');
 
                 Route::get('/security-form/{monthlyId}', [SecurityFormController::class, 'index'])->name('user.monthly-audit.security-form.index');
                 Route::post('/security-form/{monthlyId}/upload/{formId}', [SecurityFormController::class, 'upload'])->name('user.monthly-audit.security-form.upload');

@@ -75,6 +75,9 @@
                                 <a href="{{route('user.security.index')}}" class="tp-link">Satuan Pengamanan</a>
                             </li>
                             <li>
+                                <a href="{{route('user.worker-sum.index')}}" class="tp-link">Jumlah Pekerja</a>
+                            </li>
+                            <li>
                                 <a href="{{route('user.security-program.index')}}" class="tp-link">Program Keamanan</a>
                             </li>
                         </ul>

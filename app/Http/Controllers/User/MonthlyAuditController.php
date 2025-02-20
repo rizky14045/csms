@@ -25,6 +25,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\ExternalVulnerability;
 use App\Models\InternalVulnerability;
 use App\Models\MonthlySecurityProgram;
+use App\Models\MonthlySecurityExternal;
+use App\Models\MonthlyAgreementExternal;
+use App\Models\MonthlyResponsiblePerson;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\MonthlyMainSecurityProgram;
 
@@ -49,6 +52,9 @@ class MonthlyAuditController extends Controller
             $date = explode("-",$request->report_date);
             $administrations = Attribute::select('id')->where('type_attribute','Administrasi')->get();
             $attributes = Attribute::select('id')->where('user_id',$userId)->get();
+            $persons = ResponsiblePerson::select('id')->where('user_id',$userId)->get();
+            $agreements = AgreementExternal::select('id')->where('user_id',$userId)->get();
+            $securityExternals = SecurityExternal::select('id')->where('user_id',$userId)->get();
             $securities = Security::select('id')->where('user_id',$userId)->get();
             $externals = Vulnerability::select('id')->where('type','eksternal')->get();
             $internals = Vulnerability::select('id')->where('type','internal')->get();
@@ -88,6 +94,33 @@ class MonthlyAuditController extends Controller
                         'monthly_report_id' => $report->id,
                         'user_id' => $userId,
                         'security_id' => $security->id
+                    ]);
+                }
+            }
+            if ($persons) {
+                foreach ($persons as $person) {
+                    MonthlyResponsiblePerson::create([
+                        'monthly_report_id' => $report->id,
+                        'user_id' => $userId,
+                        'responsible_person_id' => $person->id
+                    ]);
+                }
+            }
+            if ($agreements) {
+                foreach ($agreements as $agreement) {
+                    MonthlyAgreementExternal::create([
+                        'monthly_report_id' => $report->id,
+                        'user_id' => $userId,
+                        'agreement_external_id' => $agreement->id
+                    ]);
+                }
+            }
+            if ($securityExternals) {
+                foreach ($securityExternals as $item) {
+                    MonthlySecurityExternal::create([
+                        'monthly_report_id' => $report->id,
+                        'user_id' => $userId,
+                        'security_external_id' => $item->id
                     ]);
                 }
             }
@@ -139,6 +172,7 @@ class MonthlyAuditController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
+            dd($th);
             Alert::error('Tambah Gagal', 'Laporan bulanan gagal dibuat!');
             return redirect()->route('user.monthly-audit.index');
         }
@@ -161,11 +195,11 @@ class MonthlyAuditController extends Controller
             InternalVulnerability::where('monthly_report_id', $monthlyId)->delete();
             MonthlySecurityProgram::where('monthly_report_id', $monthlyId)->delete();
             MonthlyMainSecurityProgram::where('monthly_report_id', $monthlyId)->delete();
-            ResponsiblePerson::where('monthly_report_id', $monthlyId)->delete();
+            MonthlyResponsiblePerson::where('monthly_report_id', $monthlyId)->delete();
             OutsourceEmployee::where('monthly_report_id', $monthlyId)->delete();
-            SecurityExternal::where('monthly_report_id', $monthlyId)->delete();
+            MonthlySecurityExternal::where('monthly_report_id', $monthlyId)->delete();
             SecurityPerson::where('monthly_report_id', $monthlyId)->delete();
-            AgreementExternal::where('monthly_report_id', $monthlyId)->delete();
+            MonthlyAgreementExternal::where('monthly_report_id', $monthlyId)->delete();
             AghtData::where('monthly_report_id', $monthlyId)->delete();
             ForeignWorker::where('monthly_report_id', $monthlyId)->delete();
 
@@ -210,7 +244,7 @@ class MonthlyAuditController extends Controller
         $data['securityAnggota'] = (clone $security)->where('securities.position', 'Anggota')->get()->count();
         $data['securityChief'] = (clone $security)->where('securities.position', 'Chief')->get()->count();
         $data['security'] = (clone $security)->get()->count();
-        $securityExternal = SecurityExternal::where('monthly_report_id', $monthlyId);
+        $securityExternal = MonthlySecurityExternal::join('security_externals','security_externals.id','monthly_security_externals.security_external_id')->where('monthly_report_id', $monthlyId);
         $data['securityPolri'] = (clone $securityExternal)->where('note', 'Polri')->get()->count();
         $data['securityTNI'] = (clone $securityExternal)->where('note', 'TNI')->get()->count();
         $data['securityExternal'] = (clone $securityExternal)->get()->count();
@@ -220,9 +254,9 @@ class MonthlyAuditController extends Controller
         $data['foreignStaff'] = (clone $foreign)->where('position', 'staff')->get()->count();
         $data['foreign'] = (clone $foreign)->get()->count();
 
-        $data['persons'] = ResponsiblePerson::where('monthly_report_id', $monthlyId)->get();
-        $data['securities'] = SecurityExternal::where('monthly_report_id', $monthlyId)->get();
-        $data['agreements'] = AgreementExternal::where('monthly_report_id', $monthlyId)->get();
+        $data['persons'] = MonthlyResponsiblePerson::with('person')->where('monthly_report_id', $monthlyId)->get();
+        $data['securities'] = MonthlySecurityExternal::with('security')->where('monthly_report_id', $monthlyId)->get();
+        $data['agreements'] = MonthlyAgreementExternal::with('agreement')->where('monthly_report_id', $monthlyId)->get();
         
         $data['securityForms'] = SecurityForm::with('security')->where('monthly_report_id', $monthlyId)->get();
         

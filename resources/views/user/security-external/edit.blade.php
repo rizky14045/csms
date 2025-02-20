@@ -28,7 +28,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('user.monthly-audit.security-external.update',['monthlyId'=>$monthlyId,'securityId' =>$security->id])}}" class="my-4" method="POST" enctype="multipart/form-data">
+                <form action="{{route('user.security-external.update',['securityId' =>$security->id])}}" class="my-4" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
@@ -75,7 +75,7 @@
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
-                                    <a href="{{route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId])}}" class="btn btn-danger"> Back</a>
+                                    <a href="{{route('user.worker-sum.index')}}" class="btn btn-danger"> Back</a>
                                     <button class="btn btn-primary" type="submit"> Ubah</button>
                                 </div>
                             </div>

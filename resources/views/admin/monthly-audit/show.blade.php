@@ -330,17 +330,17 @@
                                         @foreach ($persons as $person)      
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
-                                            <td>{{$person->name}}</td>
-                                            <td>{{$person->position}}</td>
-                                            <td>{{$person->work_unit}}</td>
-                                            <td>{{$person->training_smp}}</td>
-                                            <td>{{$person->auditor_smp}}</td>
-                                            <td>{{$person->main}}</td>
-                                            <td>{{$person->investigation}}</td>
-                                            <td>{{$person->mansrisk}}</td>
-                                            <td>{{$person->stackholder_management}}</td>
-                                            <td>{{$person->last_education}}</td>
-                                            <td>{{$person->note}}</td>
+                                            <td>{{$person->person->name}}</td>
+                                            <td>{{$person->person->position}}</td>
+                                            <td>{{$person->person->work_unit}}</td>
+                                            <td>{{$person->person->training_smp}}</td>
+                                            <td>{{$person->person->auditor_smp}}</td>
+                                            <td>{{$person->person->main}}</td>
+                                            <td>{{$person->person->investigation}}</td>
+                                            <td>{{$person->person->mansrisk}}</td>
+                                            <td>{{$person->person->stackholder_management}}</td>
+                                            <td>{{$person->person->last_education}}</td>
+                                            <td>{{$person->person->note}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -367,11 +367,11 @@
                                         @foreach ($securities as $security)      
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
-                                            <td>{{$security->name}}</td>
-                                            <td>{{$security->instansi}}</td>
-                                            <td>{{$security->regional_unit}}</td>
-                                            <td>{{$security->warrant_number}}</td>
-                                            <td>{{$security->note}}</td>
+                                            <td>{{$security->security->name}}</td>
+                                            <td>{{$security->security->instansi}}</td>
+                                            <td>{{$security->security->regional_unit}}</td>
+                                            <td>{{$security->security->warrant_number}}</td>
+                                            <td>{{$security->security->note}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -400,13 +400,13 @@
                                         @foreach ($agreements as $agreement)      
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
-                                            <td>{{$agreement->instansi}}</td>
-                                            <td>{{$agreement->name}}</td>
-                                            <td>{{$agreement->regional_unit}}</td>
-                                            <td>{{$agreement->pkt_number}}</td>
-                                            <td>{{$agreement->pkt_title}}</td>
-                                            <td>{{$agreement->expired_date}}</td>
-                                            <td>{{$agreement->note}}</td>
+                                            <td>{{$agreement->agreement->instansi}}</td>
+                                            <td>{{$agreement->agreement->name}}</td>
+                                            <td>{{$agreement->agreement->regional_unit}}</td>
+                                            <td>{{$agreement->agreement->pkt_number}}</td>
+                                            <td>{{$agreement->agreement->pkt_title}}</td>
+                                            <td>{{$agreement->agreement->expired_date}}</td>
+                                            <td>{{$agreement->agreement->note}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

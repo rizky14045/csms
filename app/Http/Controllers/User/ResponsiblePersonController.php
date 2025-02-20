@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User\MonthlyAudit;
+namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Helper\BlockMonthly;
@@ -12,13 +12,12 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ResponsiblePersonController extends Controller
 {
-    public function create($monthlyId){
+    public function create(){
 
-        $data['monthlyId'] = $monthlyId;
-        return view('user.monthly-audit.responsible-person.create',$data);
+        return view('user.responsible-person.create');
 
     }
-    public function store(Request $request,$monthlyId){
+    public function store(Request $request){
 
         try {
             DB::beginTransaction();
@@ -39,7 +38,6 @@ class ResponsiblePersonController extends Controller
             ]);
 
             ResponsiblePerson::create([
-                'monthly_report_id' => $monthlyId,
                 'user_id' => $userId,
                 'name' => $request->name,
                 'position' => $request->position,
@@ -56,29 +54,28 @@ class ResponsiblePersonController extends Controller
             
             DB::commit();
             Alert::success('Tambah Berhasil', 'Data penanggung jawab keamanan berhasil dibuat!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
             
         } catch (\Throwable $th) {
 
             DB::rollback();
             Alert::error('Tambah Gagal', 'Data penanggung jawab keamanan gagal dibuat!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
 
         }
     }
-    public function edit($monthlyId,$personId){
+    public function edit($personId){
 
-        $person = ResponsiblePerson::where('id',$personId)->where('monthly_report_id', $monthlyId)->first();
+        $person = ResponsiblePerson::where('id',$personId)->first();
         if (!$person) {
             Alert::warning('Warning', 'Data tidak ditemukan!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
         }
-        $data['monthlyId'] = $monthlyId;
         $data['person'] = $person;
-        return view('user.monthly-audit.responsible-person.edit',$data);
+        return view('user.responsible-person.edit',$data);
     }
 
-    public function update(Request $request, $monthlyId,$personId){
+    public function update(Request $request,$personId){
 
         try {
             DB::beginTransaction();
@@ -98,7 +95,7 @@ class ResponsiblePersonController extends Controller
 
             ]);
 
-            ResponsiblePerson::where('monthly_report_id',$monthlyId)->where('id',$personId)->update([
+            ResponsiblePerson::where('id',$personId)->update([
                 'name' => $request->name,
                 'position' => $request->position,
                 'work_unit' => $request->work_unit,
@@ -114,13 +111,13 @@ class ResponsiblePersonController extends Controller
             
             DB::commit();
             Alert::success('Update Berhasil', 'Data penanggung jawab keamanan berhasil diubah!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
             
         } catch (\Throwable $th) {
 
             DB::rollback();
             Alert::error('Update Gagal', 'Data penanggung jawab keamanan gagal diubah!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
         }
 
     }
@@ -130,17 +127,17 @@ class ResponsiblePersonController extends Controller
             
             DB::beginTransaction();
 
-            ResponsiblePerson::where('monthly_report_id',$monthlyId)->where('id',$personId)->delete();
+            ResponsiblePerson::where('id',$personId)->delete();
             
             DB::commit();
             Alert::success('Delete Berhasil', 'Data penanggung jawab keamanan berhasil dihapus!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
             
         } catch (\Throwable $th) {
 
             DB::rollback();
             Alert::error('Delete Gagal', 'Data penanggung jawab keamanan gagal dihapus!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
         }
 
     }

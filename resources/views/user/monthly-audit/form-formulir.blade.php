@@ -223,7 +223,7 @@
                                         </tr>
                                       </thead>
                                     <tbody>
-                                      <tr><td>4.1 PAM OBVIT</td><td>0 Orang</td></tr>
+                                      <tr><td>4.1 POLRI</td><td>0 Orang</td></tr>
                                       <tr><td>4.2 TNI</td><td>0 Orang</td></tr>
                                       <tr class="fw-bold"><td>Jumlah</td><td>0 Orang</td></tr>
                                     </tbody>

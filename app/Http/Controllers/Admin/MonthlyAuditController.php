@@ -17,6 +17,9 @@ use App\Http\Controllers\Controller;
 use App\Models\ExternalVulnerability;
 use App\Models\InternalVulnerability;
 use App\Models\MonthlySecurityProgram;
+use App\Models\MonthlySecurityExternal;
+use App\Models\MonthlyAgreementExternal;
+use App\Models\MonthlyResponsiblePerson;
 
 class MonthlyAuditController extends Controller
 {
@@ -36,7 +39,7 @@ class MonthlyAuditController extends Controller
         $data['securityAnggota'] = (clone $security)->where('securities.position', 'Anggota')->get()->count();
         $data['securityChief'] = (clone $security)->where('securities.position', 'Chief')->get()->count();
         $data['security'] = (clone $security)->get()->count();
-        $securityExternal = SecurityExternal::where('monthly_report_id', $monthlyId);
+        $securityExternal = MonthlySecurityExternal::join('security_externals','security_externals.id','monthly_security_externals.security_external_id')->where('monthly_report_id', $monthlyId);
         $data['securityPolri'] = (clone $securityExternal)->where('note', 'Polri')->get()->count();
         $data['securityTNI'] = (clone $securityExternal)->where('note', 'TNI')->get()->count();
         $data['securityExternal'] = (clone $securityExternal)->get()->count();
@@ -46,9 +49,9 @@ class MonthlyAuditController extends Controller
         $data['foreignStaff'] = (clone $foreign)->where('position', 'staff')->get()->count();
         $data['foreign'] = (clone $foreign)->get()->count();
 
-        $data['persons'] = ResponsiblePerson::where('monthly_report_id', $monthlyId)->get();
-        $data['securities'] = SecurityExternal::where('monthly_report_id', $monthlyId)->get();
-        $data['agreements'] = AgreementExternal::where('monthly_report_id', $monthlyId)->get();
+        $data['persons'] = MonthlyResponsiblePerson::with('person')->where('monthly_report_id', $monthlyId)->get();
+        $data['securities'] = MonthlySecurityExternal::with('security')->where('monthly_report_id', $monthlyId)->get();
+        $data['agreements'] = MonthlyAgreementExternal::with('agreement')->where('monthly_report_id', $monthlyId)->get();
         
         $data['securityForms'] = SecurityForm::with('security')->where('monthly_report_id', $monthlyId)->get();
         

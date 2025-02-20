@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User\MonthlyAudit;
+namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Models\SecurityExternal;
@@ -12,13 +12,12 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class SecurityExternalController extends Controller
 {
-    public function create($monthlyId){
+    public function create(){
 
-        $data['monthlyId'] = $monthlyId;
-        return view('user.monthly-audit.security-external.create',$data);
+        return view('user.security-external.create');
 
     }
-    public function store(Request $request,$monthlyId){
+    public function store(Request $request){
 
         try {
             DB::beginTransaction();
@@ -41,7 +40,6 @@ class SecurityExternalController extends Controller
             ]);
 
             SecurityExternal::create([
-                'monthly_report_id' => $monthlyId,
                 'user_id' => $userId,
                 'name' => $request->name,
                 'instansi' => $request->instansi,
@@ -52,29 +50,28 @@ class SecurityExternalController extends Controller
             
             DB::commit();
             Alert::success('Tambah Berhasil', 'Data Keamanan external berhasil dibuat!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
             
         } catch (\Throwable $th) {
 
             DB::rollback();
             Alert::error('Tambah gagal', 'Data Keamanan external gagal dibuat!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
 
         }
     }
-    public function edit($monthlyId,$securityId){
+    public function edit($securityId){
 
-        $security = SecurityExternal::where('id',$securityId)->where('monthly_report_id', $monthlyId)->first();
+        $security = SecurityExternal::where('id',$securityId)->first();
         if (!$security) {
             Alert::warning('Warning', 'Data tidak ditemukan!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
         }
-        $data['monthlyId'] = $monthlyId;
         $data['security'] = $security;
-        return view('user.monthly-audit.security-external.edit',$data);
+        return view('user.security-external.edit',$data);
     }
 
-    public function update(Request $request, $monthlyId,$securityId){
+    public function update(Request $request,$securityId){
 
         try {
             DB::beginTransaction();
@@ -96,7 +93,7 @@ class SecurityExternalController extends Controller
                 'note.required' => 'Keterangan harus diisi!',
             ]);
 
-            SecurityExternal::where('monthly_report_id',$monthlyId)->where('id',$securityId)->update([
+            SecurityExternal::where('id',$securityId)->update([
                 'name' => $request->name,
                 'instansi' => $request->instansi,
                 'regional_unit' => $request->regional_unit,
@@ -106,33 +103,33 @@ class SecurityExternalController extends Controller
             
             DB::commit();
             Alert::success('Update Berhasil', 'Data Keamanan external berhasil diubah!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
             
         } catch (\Throwable $th) {
 
             DB::rollback();
             Alert::error('Update gagal', 'Data Keamanan external gagal diubah!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
         }
 
     }
-    public function destroy($monthlyId,$securityId){
+    public function destroy($securityId){
 
         try {
             
             DB::beginTransaction();
 
-            SecurityExternal::where('monthly_report_id',$monthlyId)->where('id',$securityId)->delete();
+            SecurityExternal::where('id',$securityId)->delete();
             
             DB::commit();
             Alert::success('Delete Berhasil', 'Data Keamanan external berhasil dihapus!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
             
         } catch (\Throwable $th) {
 
             DB::rollback();
             Alert::error('Delete gagal', 'Data Keamanan external gagal dihapus!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
         }
 
     }

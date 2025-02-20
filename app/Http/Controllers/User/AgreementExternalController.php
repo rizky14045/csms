@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User\MonthlyAudit;
+namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Helper\BlockMonthly;
@@ -12,13 +12,12 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class AgreementExternalController extends Controller
 {
-    public function create($monthlyId){
+    public function create(){
 
-        $data['monthlyId'] = $monthlyId;
-        return view('user.monthly-audit.agreement-external.create',$data);
+        return view('user.agreement-external.create');
 
     }
-    public function store(Request $request,$monthlyId){
+    public function store(Request $request){
 
         try {
             DB::beginTransaction();
@@ -43,7 +42,6 @@ class AgreementExternalController extends Controller
             ]);
 
             AgreementExternal::create([
-                'monthly_report_id' => $monthlyId,
                 'user_id' => $userId,
                 'regional_unit' => $request->regional_unit,
                 'instansi' => $request->instansi,
@@ -56,28 +54,27 @@ class AgreementExternalController extends Controller
             
             DB::commit();
             Alert::success('Tambah Berhasil', 'Data kerja sama external berhasil dibuat!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
             
         } catch (\Throwable $th) {
 
             DB::rollback();
             Alert::error('Tambah Gagal', 'Data kerja sama external gagal dibuat!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
         }
     }
-    public function edit($monthlyId,$agreementId){
+    public function edit($agreementId){
 
-        $agreement = AgreementExternal::where('id',$agreementId)->where('monthly_report_id', $monthlyId)->first();
+        $agreement = AgreementExternal::where('id',$agreementId)->first();
         if (!$agreement) {
             Alert::warning('Warning', 'Data tidak ditemukan!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
         }
-        $data['monthlyId'] = $monthlyId;
         $data['agreement'] = $agreement;
-        return view('user.monthly-audit.agreement-external.edit',$data);
+        return view('user.agreement-external.edit',$data);
     }
 
-    public function update(Request $request, $monthlyId,$agreementId){
+    public function update(Request $request,$agreementId){
 
         try {
             DB::beginTransaction();
@@ -101,7 +98,7 @@ class AgreementExternalController extends Controller
                 'expired_date.required' => 'Tanggal masa berlaku harus diisi!',
             ]);
 
-            AgreementExternal::where('monthly_report_id',$monthlyId)->where('id',$agreementId)->update([
+            AgreementExternal::where('id',$agreementId)->update([
                 'regional_unit' => $request->regional_unit,
                 'instansi' => $request->instansi,
                 'name' => $request->name,
@@ -113,33 +110,33 @@ class AgreementExternalController extends Controller
             
             DB::commit();
             Alert::success('Update Berhasil', 'Data kerja sama external berhasil diubah!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
             
         } catch (\Throwable $th) {
 
             DB::rollback();
             Alert::error('Update Gagal', 'Data kerja sama external gagal diubah!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
         }
 
     }
-    public function destroy($monthlyId,$agreementId){
+    public function destroy($agreementId){
 
         try {
             
             DB::beginTransaction();
 
-            AgreementExternal::where('monthly_report_id',$monthlyId)->where('id',$agreementId)->delete();
+            AgreementExternal::where('id',$agreementId)->delete();
             
             DB::commit();
             Alert::success('Delete Berhasil', 'Data kerja sama external berhasil dihapus!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
             
         } catch (\Throwable $th) {
 
             DB::rollback();
             Alert::error('Delete Gagal', 'Data kerja sama external gagal dihapus!');
-            return redirect()->route('user.monthly-audit.worker-sum.index',['monthlyId'=>$monthlyId]);
+            return redirect()->route('user.worker-sum.index');
         }
 
     }

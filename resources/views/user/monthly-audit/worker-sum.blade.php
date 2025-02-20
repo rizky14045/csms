@@ -93,7 +93,6 @@
                         <div class="security mb-3">
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="title fw-bold">Data Penanggung Jawab Keamanan</span>
-                                <a href="{{route('user.monthly-audit.responsible-person.create',['monthlyId'=>$monthlyId])}}" class="btn btn-success btn-sm float-right">Tambah Data</a>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered text-center align-middle">
@@ -105,7 +104,6 @@
                                             <th scope="col" class="text-nowrap align-middle" rowspan="3">Unit Kerja</th>
                                             <th scope="col" class="text-nowrap align-middle" colspan="7">Pelatihan Unit Pengamanan</th>
                                             <th scope="col" class="text-nowrap align-middle" rowspan="3">Keterangan</th>
-                                            <th scope="col" class="text-nowrap align-middle" rowspan="3">Action</th>
                                         </tr>
                                         <tr>
                                             <th scope="col" class="text-nowrap" colspan="7">Kualifikasi</th>
@@ -124,25 +122,17 @@
                                         @foreach ($persons as $person)      
                                             <tr>
                                                 <td>{{$loop->iteration}}</td>
-                                                <td>{{$person->name}}</td>
-                                                <td>{{$person->position}}</td>
-                                                <td>{{$person->work_unit}}</td>
-                                                <td>{{$person->training_smp}}</td>
-                                                <td>{{$person->auditor_smp}}</td>
-                                                <td>{{$person->main}}</td>
-                                                <td>{{$person->investigation}}</td>
-                                                <td>{{$person->mansrisk}}</td>
-                                                <td>{{$person->stackholder_management}}</td>
-                                                <td>{{$person->last_education}}</td>
-                                                <td>{{$person->note}}</td>
-                                                <td>
-                                                    <a href="{{route('user.monthly-audit.responsible-person.edit',['monthlyId'=>$monthlyId,'personId' =>$person->id])}}" class="btn btn-sm btn-info">edit</a>
-                                                    <form action="{{route('user.monthly-audit.responsible-person.destroy',['monthlyId'=>$monthlyId,'personId' =>$person->id])}}" method="post" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                                    </form>
-                                                </td>
+                                                <td>{{$person->person->name}}</td>
+                                                <td>{{$person->person->position}}</td>
+                                                <td>{{$person->person->work_unit}}</td>
+                                                <td>{{$person->person->training_smp}}</td>
+                                                <td>{{$person->person->auditor_smp}}</td>
+                                                <td>{{$person->person->main}}</td>
+                                                <td>{{$person->person->investigation}}</td>
+                                                <td>{{$person->person->mansrisk}}</td>
+                                                <td>{{$person->person->stackholder_management}}</td>
+                                                <td>{{$person->person->last_education}}</td>
+                                                <td>{{$person->person->note}}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -152,7 +142,6 @@
                         <div class="security-personil mb-3">
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="fw-bold">Data Personil Keamanan Eksternal</span>
-                                <a href="{{route('user.monthly-audit.security-external.create',['monthlyId'=>$monthlyId])}}" class="btn btn-success btn-sm float-right">Tambah Data</a>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered text-center align-middle">
@@ -164,26 +153,17 @@
                                             <th scope="col">Satuan Wilayah</th>
                                             <th scope="col">Nomor Surat Perintah</th>
                                             <th scope="col">Keterangan</th>
-                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($securities as $security)      
                                             <tr>
                                                 <td>{{$loop->iteration}}</td>
-                                                <td>{{$security->name}}</td>
-                                                <td>{{$security->instansi}}</td>
-                                                <td>{{$security->regional_unit}}</td>
-                                                <td>{{$security->warrant_number}}</td>
-                                                <td>{{$security->note}}</td>
-                                                <td>
-                                                    <a href="{{route('user.monthly-audit.security-external.edit',['monthlyId'=>$monthlyId,'securityId' =>$security->id])}}" class="btn btn-sm btn-info">edit</a>
-                                                    <form action="{{route('user.monthly-audit.security-external.destroy',['monthlyId'=>$monthlyId,'securityId' =>$security->id])}}" method="post" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                                    </form>
-                                                </td>
+                                                <td>{{$security->security->name}}</td>
+                                                <td>{{$security->security->instansi}}</td>
+                                                <td>{{$security->security->regional_unit}}</td>
+                                                <td>{{$security->security->warrant_number}}</td>
+                                                <td>{{$security->security->note}}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -193,7 +173,6 @@
                         <div class="cooperation mb-3">
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="title fw-bold">Data Perjanjian Kerjasama Eksternal</span>
-                                <a href="{{route('user.monthly-audit.agreement-external.create',['monthlyId'=>$monthlyId])}}" class="btn btn-success btn-sm float-right">Tambah Data</a>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered text-center align-middle">
@@ -207,28 +186,19 @@
                                             <th scope="col">Judul PKT</th>
                                             <th scope="col">Masa Berlaku</th>
                                             <th scope="col">Keterangan</th>
-                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($agreements as $agreement)      
                                             <tr>
                                                 <td>{{$loop->iteration}}</td>
-                                                <td>{{$agreement->instansi}}</td>
-                                                <td>{{$agreement->name}}</td>
-                                                <td>{{$agreement->regional_unit}}</td>
-                                                <td>{{$agreement->pkt_number}}</td>
-                                                <td>{{$agreement->pkt_title}}</td>
-                                                <td>{{$agreement->expired_date}}</td>
-                                                <td>{{$agreement->note}}</td>
-                                                <td>
-                                                    <a href="{{route('user.monthly-audit.agreement-external.edit',['monthlyId'=>$monthlyId,'agreementId' =>$agreement->id])}}" class="btn btn-sm btn-info">edit</a>
-                                                    <form action="{{route('user.monthly-audit.agreement-external.destroy',['monthlyId'=>$monthlyId,'agreementId' =>$agreement->id])}}" method="post" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                                    </form>
-                                                </td>
+                                                <td>{{$agreement->agreement->instansi}}</td>
+                                                <td>{{$agreement->agreement->name}}</td>
+                                                <td>{{$agreement->agreement->regional_unit}}</td>
+                                                <td>{{$agreement->agreement->pkt_number}}</td>
+                                                <td>{{$agreement->agreement->pkt_title}}</td>
+                                                <td>{{$agreement->agreement->expired_date}}</td>
+                                                <td>{{$agreement->agreement->note}}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -242,4 +212,3 @@
     </div> <!-- end col -->
 </div> <!-- end row -->
 @endsection
-
