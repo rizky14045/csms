@@ -33,6 +33,7 @@
                                 <th scope="col">Nama Program</th>
                                 <th scope="col">Planning Program</th>
                                 <th scope="col">Realiasasi Program</th>
+                                <th scope="col">Keterangan</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -50,6 +51,9 @@
                                         <span>Mulai  :Bulan {{$main->start_month}} - Minggu : {{$main->start_week}} </span>
                                         <br>
                                         <span>Selesai  :Bulan {{$main->end_month}} - Minggu : {{$main->end_week}} </span>
+                                    </td>
+                                    <td>
+                                        {{$main->note}}
                                     </td>
                                     <td class="text-center">
                                         <a href="{{route('user.monthly-audit.realization-program.edit',['monthlyId'=>$monthlyId,'programId'=>$programId,'mainId'=> $main->id])}}" class="btn btn-info btn-sm">Update Realiasasi</a>

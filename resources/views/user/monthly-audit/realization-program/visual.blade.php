@@ -1,6 +1,17 @@
 @extends('user.layout.app')
 @section('styles')
 
+<style>
+    /* Gaya tooltip agar posisinya bisa diatur */
+    .custom-tooltip {
+        position: absolute !important;
+        will-change: transform;
+        display: block !important; /* Pastikan tooltip selalu terlihat */
+        pointer-events: none; /* Agar tooltip tidak mengganggu interaksi */
+    }
+    </style>
+    
+    
 @stop
 @section('content')
     
@@ -28,7 +39,7 @@
                     <table class="table table-bordered text-center">
                         <thead class="table-light">
                             <tr>
-                                <th colspan="53">{{$securityProgram->program_name}}</th>
+                                <th colspan="53">{{$securityProgram->program_name ?? ''}}</th>
                             </tr>
                             <tr>
                                 <th rowspan="2" class="text-center align-middle">No</th>
@@ -78,7 +89,7 @@
                                         @endfor
                                     @endforeach
                                 </tr>
-                                <tr>
+                                <tr data-bs-toggle="tooltip" title="{{$program->note}}">
                                     <td>Realisasi</td>
                                     @foreach(['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $monthIndex => $month)
                                         @for($week = 1; $week <= 4; $week++)
@@ -115,5 +126,8 @@
         </div><!-- end card -->
     </div><!-- end col -->
 </div> <!-- end row -->
+@endsection
+@section('scripts')
+    
 @endsection
 

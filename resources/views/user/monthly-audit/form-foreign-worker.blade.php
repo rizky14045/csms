@@ -99,28 +99,41 @@
                                 <table class="table table-bordered text-center align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th scope="col" class="text-nowarp align-middle" rowspan="3">No</th>
-                                            <th scope="col" class="text-nowarp align-middle" rowspan="3">Nama</th>
-                                            <th scope="col" class="text-nowarp align-middle" rowspan="3">Kebangsaan</th>
-                                            <th scope="col" class="text-nowarp align-middle" rowspan="3">Perusahaan</th>
-                                            <th scope="col" class="text-nowarp align-middle" rowspan="3">Jabatan / Keahlian</th>
-                                            <th scope="col" class="text-nowarp align-middle" colspan="6">Kategori</th>
-                                            <th scope="col" class="text-nowarp align-middle" rowspan="2" colspan="2">Tanggal</th>
-                                            <th scope="col" class="text-nowarp align-middle" rowspan="3">Keterangan</th>
-                                            <th scope="col" class="text-nowarp align-middle" rowspan="3">File</th>
-                                            <th scope="col" class="text-nowarp align-middle" rowspan="3">Action</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">No</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Nama</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Kebangsaan</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Perusahaan</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Jabatan / Keahlian</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="12">Kategori</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="3" colspan="2">Tanggal</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Keterangan</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Action</th>
                                         </tr>
                                         <tr>
-                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Tamu</th>
-                                            <th scope="col" class="text-nowarp align-middle" colspan="4">Pekerja</th>  
+                                            <th scope="col" class="text-nowarp align-middle" colspan="4">Tamu</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="8">Pekerja</th>  
+                                        </tr>
+                                        <tr>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Paspor</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Visa</th>  
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Paspor</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Vitas</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Kitas</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">RPTKA</th>
                                         </tr>
                                         <tr>
                                             <th scope="col" class="text-nowarp align-middle">Paspor</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
                                             <th scope="col" class="text-nowarp align-middle">Visa Kunjungan</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
                                             <th scope="col" class="text-nowarp align-middle">Paspor</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
                                             <th scope="col" class="text-nowarp align-middle">Vitas</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
                                             <th scope="col" class="text-nowarp align-middle">Kitas</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
                                             <th scope="col" class="text-nowarp align-middle">RPTKA</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
                                             <th scope="col" class="text-nowarp align-middle">Datang</th>
                                             <th scope="col" class="text-nowarp align-middle">Kembali</th>
                                         </tr>
@@ -135,18 +148,59 @@
                                                 <td>{{$foreign->position}}</td>
                                                 @if ($foreign->category == 'Tamu')
                                                     <td>{{$foreign->paspor == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->paspor_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->paspor_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
                                                     <td>{{$foreign->visa == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->visa_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->visa_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
                                                 @else
+                                                    <td></td>
+                                                    <td></td>
                                                     <td></td>
                                                     <td></td>
                                                 @endif
                                                
                                                 @if ($foreign->category == 'Pekerja')
+                                                    {{-- paspor --}}
                                                     <td>{{$foreign->paspor == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->paspor_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->paspor_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
+                                                    {{-- vitas --}}
                                                     <td>{{$foreign->vitas == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->vitas_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->vitas_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
+                                                    {{-- kitas --}}
                                                     <td>{{$foreign->kitas == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->kitas_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->kitas_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
+                                                    {{-- rptka --}}
                                                     <td>{{$foreign->rptka == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->rptka_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->rptka_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
+  
                                                 @else
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
@@ -158,17 +212,15 @@
                                                 <td>{{$foreign->return_date}}</td>
                                                 <td>{{$foreign->note}}</td>
                                                 <td>
-                                                    @if ($foreign->attachment_file)
-                                                        <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->attachment_file)}}" download="" class="btn btn-success btn-sm">download</a>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <a href="{{route('user.monthly-audit.form-foreign-worker.edit',['monthlyId'=>$monthlyId,'foreignId' =>$foreign->id])}}" class="btn btn-sm btn-warning">edit</a>
-                                                    <form action="{{route('user.monthly-audit.form-foreign-worker.destroy',['monthlyId'=>$monthlyId,'foreignId' =>$foreign->id])}}" method="post" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                                    </form>
+                                                    <div class="d-flex gap-2">
+                                                        
+                                                        <a href="{{route('user.monthly-audit.form-foreign-worker.edit',['monthlyId'=>$monthlyId,'foreignId' =>$foreign->id])}}" class="btn btn-sm btn-warning">edit</a>
+                                                        <form action="{{route('user.monthly-audit.form-foreign-worker.destroy',['monthlyId'=>$monthlyId,'foreignId' =>$foreign->id])}}" method="post" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                                        </form>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach

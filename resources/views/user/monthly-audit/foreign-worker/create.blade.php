@@ -76,40 +76,116 @@
                             @endif
                         </div>
                         <div class="form-group mb-3">
-                            <label for="" class="mb-2">Jenis Identitas</label>
-                            <div class="row ps-3">
-                                <div class="form-check col-md-2">
-                                    <input class="form-check-input" type="checkbox" id="kategoriview" value="1" name="paspor" {{old('company') == 1 ? 'checked' :''}}>
-                                    <label class="form-check-label" for="kategoriview">
-                                        Paspor
-                                    </label>
+                            <label for="emailaddress" class="form-label">Paspor</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select class="form-select" aria-label="Default select example" name="paspor" required>
+                                        <option value="">Ketersediaan Paspor</option>
+                                        <option value="1" {{old('paspor') == '1' ? 'selected' : ''}}>Ada</option>
+                                        <option value="0" {{old('paspor') == '0' ? 'selected' : ''}}>Tidak Ada</option>
+                                      </select> 
+                                    @if($errors->has('paspor'))
+                                        <div class="error text-danger">{{ $errors->first('paspor') }}</div>
+                                    @endif
                                 </div>
-                                <div class="form-check col-md-2">
-                                    <input class="form-check-input" type="checkbox" id="kategoricreate" value="1" name="visa" {{old('visa') == 1 ? 'checked' :''}}>
-                                    <label class="form-check-label" for="kategoricreate">
-                                        Visa Kunjungan
-                                    </label>
-                                </div>
-                                <div class="form-check col-md-2">
-                                    <input class="form-check-input" type="checkbox" id="kategoriedit" value="1" name="vitas" {{old('vitas') == 1 ? 'checked' :''}}>
-                                    <label class="form-check-label" for="kategoriedit">
-                                        Vitas
-                                    </label>
-                                </div>
-                                <div class="form-check col-md-2">
-                                    <input class="form-check-input" type="checkbox" id="kategoridelete" value="1" name="kitas" {{old('kitas') == 1 ? 'checked' :''}}>
-                                    <label class="form-check-label" for="kategoridelete">
-                                        Kitas
-                                    </label>
-                                </div>
-                                <div class="form-check col-md-2">
-                                    <input class="form-check-input" type="checkbox" id="rptka" value="1" name="rptka" {{old('rptka') == 1 ? 'checked' :''}}>
-                                    <label class="form-check-label" for="rptka">
-                                        RPTKA
-                                    </label>
+                                <div class="col-md-6">
+                                    <input class="form-control" type="file" accept=".pdf,.jpg,.jpeg.png" name="paspor_file" required>
+                                    <small>Ekstensi file pdf,png,jpg,jpeg <span class="text-danger">( wajib )</span></small>
+                                    @if($errors->has('paspor_file'))
+                                        <div class="error text-danger">{{ $errors->first('paspor_file') }}</div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group mb-3">
+                            <label for="emailaddress" class="form-label">Visa Kunjungan</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select class="form-select" aria-label="Default select example" name="visa">
+                                        <option value="">Ketersediaan Visa Kunjungan</option>
+                                        <option value="1" {{old('visa') == '1' ? 'selected' : ''}}>Ada</option>
+                                        <option value="0" {{old('visa') == '0' ? 'selected' : ''}}>Tidak Ada</option>
+                                      </select> 
+                                    @if($errors->has('visa'))
+                                        <div class="error text-danger">{{ $errors->first('visa') }}</div>
+                                    @endif
+                                </div>
+                                <div class="col-md-6">
+                                    <input class="form-control" type="file" accept=".pdf,.jpg,.jpeg.png" name="visa_file">
+                                    <small>Ekstensi file pdf,png,jpg,jpeg ( optional )</small>
+                                    @if($errors->has('visa_file'))
+                                        <div class="error text-danger">{{ $errors->first('visa_file') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="emailaddress" class="form-label">VITAS</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select class="form-select" aria-label="Default select example" name="vitas">
+                                        <option value="">Ketersediaan VITAS</option>
+                                        <option value="1" {{old('vitas') == '1' ? 'selected' : ''}}>Ada</option>
+                                        <option value="0" {{old('vitas') == '0' ? 'selected' : ''}}>Tidak Ada</option>
+                                      </select> 
+                                    @if($errors->has('vitas'))
+                                        <div class="error text-danger">{{ $errors->first('vitas') }}</div>
+                                    @endif
+                                </div>
+                                <div class="col-md-6">
+                                    <input class="form-control" type="file" accept=".pdf,.jpg,.jpeg.png" name="vitas_file">
+                                    <small>Ekstensi file pdf,png,jpg,jpeg ( optional )</small>
+                                    @if($errors->has('vitas_file'))
+                                        <div class="error text-danger">{{ $errors->first('vitas_file') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="emailaddress" class="form-label">KITAS</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select class="form-select" aria-label="Default select example" name="kitas">
+                                        <option value="">Ketersediaan KITAS</option>
+                                        <option value="1" {{old('kitas') == '1' ? 'selected' : ''}}>Ada</option>
+                                        <option value="0" {{old('kitas') == '0' ? 'selected' : ''}}>Tidak Ada</option>
+                                      </select> 
+                                    @if($errors->has('kitas'))
+                                        <div class="error text-danger">{{ $errors->first('kitas') }}</div>
+                                    @endif
+                                </div>
+                                <div class="col-md-6">
+                                    <input class="form-control" type="file" accept=".pdf,.jpg,.jpeg.png" name="kitas_file">
+                                    <small>Ekstensi file pdf,png,jpg,jpeg ( optional )</small>
+                                    @if($errors->has('kitas_file'))
+                                        <div class="error text-danger">{{ $errors->first('kitas_file') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="emailaddress" class="form-label">RPTKA</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select class="form-select" aria-label="Default select example" name="rptka">
+                                        <option value="">Ketersediaan RPTKA</option>
+                                        <option value="1" {{old('rptka') == '1' ? 'selected' : ''}}>Ada</option>
+                                        <option value="0" {{old('rptka') == '0' ? 'selected' : ''}}>Tidak Ada</option>
+                                      </select> 
+                                    @if($errors->has('rptka'))
+                                        <div class="error text-danger">{{ $errors->first('rptka') }}</div>
+                                    @endif
+                                </div>
+                                <div class="col-md-6">
+                                    <input class="form-control" type="file" accept=".pdf,.jpg,.jpeg.png" name="rptka_file">
+                                    <small>Ekstensi file pdf,png,jpg,jpeg ( optional )</small>
+                                    @if($errors->has('rptka_file'))
+                                        <div class="error text-danger">{{ $errors->first('rptka_file') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="form-group mb-3">
                             <label for="emailaddress" class="form-label">Tanggal Datang</label>
                             <input class="form-control" type="date" required="" name="arrived_date" value="{{old('arrived_date')}}">
@@ -129,14 +205,6 @@
                             <input class="form-control" type="text" id="emailaddress" placeholder="Masukan note" name="note" value="{{old('note')}}">
                             @if($errors->has('note'))
                                 <div class="error text-danger">{{ $errors->first('note') }}</div>
-                            @endif
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Attachment File</label>
-                            <input class="form-control" type="file" accept=".pdf" name="attachment_file" value="{{old('attachment_file')}}">
-                            <small>Ekstensi file .pdf</small>
-                            @if($errors->has('attachment_file'))
-                                <div class="error text-danger">{{ $errors->first('attachment_file') }}</div>
                             @endif
                         </div>
                         <div class="form-group row">

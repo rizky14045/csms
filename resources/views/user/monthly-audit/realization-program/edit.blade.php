@@ -41,7 +41,7 @@
                             @endif
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Pilih Planning Mulai Bulan</label>
+                            <label for="emailaddress" class="form-label">Pilih Realisasi Mulai Bulan</label>
                             <select class="form-select" aria-label="Default select example" name="start_month" required>
                                 <option value="">Pilih Bulan</option>
                                 <option value="Januari" {{$main->start_month == 'Januari' ? 'selected' : ''}}>Januari</option>
@@ -62,7 +62,7 @@
                             @endif
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Pilih Planning Mulai Minggu</label>
+                            <label for="emailaddress" class="form-label">Pilih Realisasi Mulai Minggu</label>
                             <select class="form-select" aria-label="Default select example" name="start_week" required>
                                 <option value="">Pilih Minggu</option>
                                 <option value="1" {{$main->start_week == '1' ? 'selected' : ''}}>Minggu 1</option>
@@ -75,7 +75,7 @@
                             @endif
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Pilih Planning Selesai Bulan</label>
+                            <label for="emailaddress" class="form-label">Pilih Realisasi Selesai Bulan</label>
                             <select class="form-select" aria-label="Default select example" name="end_month" required>
                                 <option value="">Pilih Bulan</option>
                                 <option value="Januari" {{$main->end_month == 'Januari' ? 'selected' : ''}}>Januari</option>
@@ -96,7 +96,7 @@
                             @endif
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Pilih Planning Selesai Minggu</label>
+                            <label for="emailaddress" class="form-label">Pilih Realisasi Selesai Minggu</label>
                             <select class="form-select" aria-label="Default select example" name="end_week" required>
                                 <option value="">Pilih Minggu</option>
                                 <option value="1" {{$main->end_week == '1' ? 'selected' : ''}}>Minggu 1</option>
@@ -106,6 +106,13 @@
                             </select> 
                             @if($errors->has('end_month'))
                                 <div class="error text-danger">{{ $errors->first('end_month') }}</div>
+                            @endif
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="emailaddress" class="form-label">Keterangan</label>
+                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan Keterangan" name="note" value="{{$main->note}}">
+                            @if($errors->has('note'))
+                                <div class="error text-danger">{{ $errors->first('note') }}</div>
                             @endif
                         </div>
                         <div class="form-group row">

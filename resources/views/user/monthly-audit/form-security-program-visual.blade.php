@@ -170,7 +170,7 @@
                                                                     @endfor
                                                                 @endforeach
                                                             </tr>
-                                                            <tr>
+                                                            <tr data-bs-toggle="tooltip" title="{{$program->note}}">
                                                                 <td>Realisasi</td>
                                                                 @foreach(['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $monthIndex => $month)
                                                                     @for($week = 1; $week <= 4; $week++)

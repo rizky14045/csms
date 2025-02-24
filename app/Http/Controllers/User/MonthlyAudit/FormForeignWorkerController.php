@@ -40,7 +40,12 @@ class FormForeignWorkerController extends Controller
                 'category' => 'required',
                 'arrived_date' => 'required',
                 'return_date' => 'required',
-                'attachment_file' => 'mimes:pdf'
+                'paspor_file' => 'mimes:pdf,jpg,png,jpeg',
+                'visa_file' => 'mimes:pdf,jpg,png,jpeg',
+                'vitas_file' => 'mimes:pdf,jpg,png,jpeg',
+                'kitas_file' => 'mimes:pdf,jpg,png,jpeg',
+                'rptka_file' => 'mimes:pdf,jpg,png,jpeg',
+
             ],[
                 'name.required' => 'Nama harus diisi!',
                 'nationality.required' => 'Kebangsaan harus diisi!',
@@ -49,18 +54,55 @@ class FormForeignWorkerController extends Controller
                 'category.required' => 'Kategori Tamu harus diisi!',
                 'arrived_date.required' => 'Tanggal Datang harus diisi!',
                 'return_date.required' => 'Tanggal Kembali harus diisi!',
-                'attachment_file.mimes' => 'File harus beresktensi .pdf!',
+                'paspor_file.mimes' => 'Esktensi file salah!',
+                'visa_file.mimes' => 'Esktensi file salah!',
+                'vitas_file.mimes' => 'Esktensi file salah!',
+                'kitas_file.mimes' => 'Esktensi file salah!',
+                'rptka_file.mimes' => 'Esktensi file salah!',
             ]);
 
-            $attachmentFile = '';
+            $pasporFile = null;
+            $visaFile = null;
+            $vitasFile = null;
+            $kitasFile = null;
+            $rptkaFile = null;
 
-            if($request->hasFile('attachment_file'))
+            if($request->hasFile('paspor_file'))
             {     
-                $file= $request->file('attachment_file');
-                $file_name = 'foreign-worker-' . time() .'.'. $file->getClientOriginalExtension();
-                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$file_name);   
-                $attachmentFile = $file_name;
+                $file= $request->file('paspor_file');
+                $paspor_name = 'paspor-' . time() .'.'. $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$paspor_name);   
+                $pasporFile = $paspor_name;
             }
+            if($request->hasFile('visa_file'))
+            {     
+                $file= $request->file('visa_file');
+                $visa_name = 'visa-' . time() .'.'. $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$visa_name);   
+                $visaFile = $visa_name;
+            }
+            if($request->hasFile('vitas_file'))
+            {     
+                $file= $request->file('vitas_file');
+                $vitas_name = 'vitas-' . time() .'.'. $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$vitas_name);   
+                $vitasFile = $vitas_name;
+            }
+            if($request->hasFile('kitas_file'))
+            {     
+                $file= $request->file('kitas_file');
+                $kitas_name = 'kitas-' . time() .'.'. $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$kitas_name);   
+                $kitasFile = $kitas_name;
+            }
+            if($request->hasFile('rptka_file'))
+            {     
+                $file= $request->file('rptka_file');
+                $rptka_name = 'rptka-' . time() .'.'. $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$rptka_name);   
+                $rptkaFile = $rptka_name;
+            }
+
             ForeignWorker::create([
                 'monthly_report_id' => $monthlyId,
                 'user_id' => $userId,
@@ -77,7 +119,11 @@ class FormForeignWorkerController extends Controller
                 'arrived_date'=> $request->arrived_date,
                 'return_date'=> $request->return_date,
                 'note'=> $request->note,
-                'attachment_file'=> $attachmentFile,
+                'paspor_file'=> $pasporFile,
+                'visa_file'=> $visaFile,
+                'vitas_file'=> $vitasFile,
+                'kitas_file'=> $kitasFile,
+                'rptka_file'=> $rptkaFile,
             ]);
             
             DB::commit();
@@ -87,7 +133,7 @@ class FormForeignWorkerController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            Alert::success('Tambah Gagal', 'Data TKA gagal dibuat!');
+            Alert::error('Tambah Gagal', 'Data TKA gagal dibuat!');
             return redirect()->route('user.monthly-audit.form-foreign-worker.index',['monthlyId'=>$monthlyId]);
         }
     }
@@ -119,7 +165,12 @@ class FormForeignWorkerController extends Controller
                 'category' => 'required',
                 'arrived_date' => 'required',
                 'return_date' => 'required',
-                'attachment_file' => 'mimes:pdf'
+                'paspor_file' => 'mimes:pdf,jpg,png,jpeg',
+                'visa_file' => 'mimes:pdf,jpg,png,jpeg',
+                'vitas_file' => 'mimes:pdf,jpg,png,jpeg',
+                'kitas_file' => 'mimes:pdf,jpg,png,jpeg',
+                'rptka_file' => 'mimes:pdf,jpg,png,jpeg',
+
             ],[
                 'name.required' => 'Nama harus diisi!',
                 'nationality.required' => 'Kebangsaan harus diisi!',
@@ -128,7 +179,11 @@ class FormForeignWorkerController extends Controller
                 'category.required' => 'Kategori Tamu harus diisi!',
                 'arrived_date.required' => 'Tanggal Datang harus diisi!',
                 'return_date.required' => 'Tanggal Kembali harus diisi!',
-                'attachment_file.mimes' => 'File harus beresktensi .pdf!',
+                'paspor_file.mimes' => 'Esktensi file salah!',
+                'visa_file.mimes' => 'Esktensi file salah!',
+                'vitas_file.mimes' => 'Esktensi file salah!',
+                'kitas_file.mimes' => 'Esktensi file salah!',
+                'rptka_file.mimes' => 'Esktensi file salah!',
             ]);
             
             $foreign = ForeignWorker::where('id',$foreignId)->where('monthly_report_id', $monthlyId)->first();
@@ -137,17 +192,62 @@ class FormForeignWorkerController extends Controller
                 return redirect()->route('user.monthly-audit.form-foreign-worker.index',['monthlyId'=>$monthlyId]);
             }
 
-            $attachmentFile = null;
+            
+            $pasporFile = null;
+            $visaFile = null;
+            $vitasFile = null;
+            $kitasFile = null;
+            $rptkaFile = null;
 
-            if($request->hasFile('attachment_file'))
+            if($request->hasFile('paspor_file'))
             {    
-                if ($foreign->attachment_file) {
-                    unlink(public_path('uploads/attachment_file_foreign_worker/'.$foreign->attachment_file));
+                if ($foreign->paspor_file) {
+                    unlink(public_path('uploads/attachment_file_foreign_worker/'.$foreign->paspor_file));
                 }
-                $file= $request->file('attachment_file');
-                $file_name = 'foreign-worker-' . time() .'.'. $file->getClientOriginalExtension();
-                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$file_name);   
-                $attachmentFile = $file_name;
+                $file= $request->file('paspor_file');
+                $paspor_name = 'paspor-' . time() .'.'. $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$paspor_name);   
+                $pasporFile = $paspor_name;
+            }
+            if($request->hasFile('visa_file'))
+            {    
+                if ($foreign->visa_file) {
+                    unlink(public_path('uploads/attachment_file_foreign_worker/'.$foreign->visa_file));
+                }
+                $file= $request->file('visa_file');
+                $visa_name = 'visa-' . time() .'.'. $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$visa_name);   
+                $visaFile = $visa_name;
+            }
+            if($request->hasFile('vitas_file'))
+            {    
+                if ($foreign->vitas_file) {
+                    unlink(public_path('uploads/attachment_file_foreign_worker/'.$foreign->vitas_file));
+                }
+                $file= $request->file('vitas_file');
+                $vitas_name = 'vitas-' . time() .'.'. $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$vitas_name);   
+                $vitasFile = $vitas_name;
+            }
+            if($request->hasFile('kitas_file'))
+            {    
+                if ($foreign->kitas_file) {
+                    unlink(public_path('uploads/attachment_file_foreign_worker/'.$foreign->kitas_file));
+                }
+                $file= $request->file('kitas_file');
+                $kitas_name = 'kitas-' . time() .'.'. $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$kitas_name);   
+                $kitasFile = $kitas_name;
+            }
+            if($request->hasFile('rptka_file'))
+            {    
+                if ($foreign->rptka_file) {
+                    unlink(public_path('uploads/attachment_file_foreign_worker/'.$foreign->rptka_file));
+                }
+                $file= $request->file('rptka_file');
+                $rptka_name = 'rptka-' . time() .'.'. $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/attachment_file_foreign_worker/'),$rptka_name);   
+                $rptkaFile = $rptka_name;
             }
 
             $foreign->monthly_report_id =  $monthlyId;
@@ -165,7 +265,11 @@ class FormForeignWorkerController extends Controller
             $foreign->arrived_date = $request->arrived_date;
             $foreign->return_date = $request->return_date;
             $foreign->note = $request->note;
-            $foreign->attachment_file = $attachmentFile ?? $foreign->attachment_file;
+            $foreign->paspor_file = $pasporFile ?? $foreign->paspor_file;
+            $foreign->visa_file = $visaFile ?? $foreign->visa_file;
+            $foreign->vitas_file = $vitasFile ?? $foreign->vitas_file;
+            $foreign->kitas_file = $kitasFile ?? $foreign->kitas_file;
+            $foreign->rptka_file = $rptkaFile ?? $foreign->rptka_file;
             $foreign->save();
             
             DB::commit();
@@ -175,7 +279,7 @@ class FormForeignWorkerController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            Alert::success('Update Gagal', 'Data TKA gagal diubah!');
+            Alert::error('Update Gagal', 'Data TKA gagal diubah!');
             return redirect()->route('user.monthly-audit.form-foreign-worker.index',['monthlyId'=>$monthlyId]);
         }
     }

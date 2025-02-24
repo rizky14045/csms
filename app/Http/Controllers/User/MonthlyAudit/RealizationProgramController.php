@@ -59,6 +59,7 @@ class RealizationProgramController extends Controller
             $program->start_week = $request->start_week;
             $program->end_month = $request->end_month;
             $program->end_week = $request->end_week;
+            $program->note = $request->note;
             $program->save();
             
             DB::commit();

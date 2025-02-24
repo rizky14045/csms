@@ -752,70 +752,119 @@
                                 <table class="table table-bordered text-center align-middle">
                                     <thead class="table-light">
                                         <tr>
-                                            <th scope="col" class="text-nowarp" rowspan="3">No</th>
-                                            <th scope="col" class="text-nowarp" rowspan="3">Nama</th>
-                                            <th scope="col" class="text-nowarp" rowspan="3">Kebangsaan</th>
-                                            <th scope="col" class="text-nowarp" rowspan="3">Perusahaan</th>
-                                            <th scope="col" class="text-nowarp" rowspan="3">Jabatan / Keahlian</th>
-                                            <th scope="col" class="text-nowarp" colspan="6">Kategori</th>
-                                            <th scope="col" class="text-nowarp" rowspan="2" colspan="2">Tanggal</th>
-                                            <th scope="col" class="text-nowarp" rowspan="3">Keterangan</th>
-                                            <th scope="col" class="text-nowarp" rowspan="3">Action</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">No</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Nama</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Kebangsaan</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Perusahaan</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Jabatan / Keahlian</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="12">Kategori</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="3" colspan="2">Tanggal</th>
+                                            <th scope="col" class="text-nowarp align-middle" rowspan="4">Keterangan</th>
                                         </tr>
                                         <tr>
-                                            <th scope="col" class="text-nowarp" colspan="2">Tamu</th>
-                                            <th scope="col" class="text-nowarp" colspan="4">Pekerja</th>  
+                                            <th scope="col" class="text-nowarp align-middle" colspan="4">Tamu</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="8">Pekerja</th>  
                                         </tr>
                                         <tr>
-                                            <th scope="col" class="text-nowarp">Paspor</th>
-                                            <th scope="col" class="text-nowarp">Visa Kunjungan</th>
-                                            <th scope="col" class="text-nowarp">Paspor</th>
-                                            <th scope="col" class="text-nowarp">Vitas</th>
-                                            <th scope="col" class="text-nowarp">Kitas</th>
-                                            <th scope="col" class="text-nowarp">RPTKA</th>
-                                            <th scope="col" class="text-nowarp">Datang</th>
-                                            <th scope="col" class="text-nowarp">Kembali</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Paspor</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Visa</th>  
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Paspor</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Vitas</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">Kitas</th>
+                                            <th scope="col" class="text-nowarp align-middle" colspan="2">RPTKA</th>
+                                        </tr>
+                                        <tr>
+                                            <th scope="col" class="text-nowarp align-middle">Paspor</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
+                                            <th scope="col" class="text-nowarp align-middle">Visa Kunjungan</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
+                                            <th scope="col" class="text-nowarp align-middle">Paspor</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
+                                            <th scope="col" class="text-nowarp align-middle">Vitas</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
+                                            <th scope="col" class="text-nowarp align-middle">Kitas</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
+                                            <th scope="col" class="text-nowarp align-middle">RPTKA</th>
+                                            <th scope="col" class="text-nowarp align-middle">File Attachment</th>
+                                            <th scope="col" class="text-nowarp align-middle">Datang</th>
+                                            <th scope="col" class="text-nowarp align-middle">Kembali</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($foreignWorkers as $foreign)
-                                        <tr>
-                                            <td>{{$loop->iteration}}</td>
-                                            <td>{{$foreign->name}}</td>
-                                            <td>{{$foreign->nationality}}</td>
-                                            <td>{{$foreign->company}}</td>
-                                            <td>{{$foreign->position}}</td>
-                                            @if ($foreign->category == 'Tamu')
-                                                <td>{{$foreign->paspor == 1 ? 'v' :''}}</td>
-                                                <td>{{$foreign->visa == 1 ? 'v' :''}}</td>
-                                            @else
-                                                <td></td>
-                                                <td></td>
-                                            @endif
-                                           
-                                            @if ($foreign->category == 'Pekerja')
-                                                <td>{{$foreign->paspor == 1 ? 'v' :''}}</td>
-                                                <td>{{$foreign->vitas == 1 ? 'v' :''}}</td>
-                                                <td>{{$foreign->kitas == 1 ? 'v' :''}}</td>
-                                                <td>{{$foreign->rptka == 1 ? 'v' :''}}</td>
-                                            @else
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            @endif
-                                           
-                                           
-                                            <td>{{$foreign->arrived_date}}</td>
-                                            <td>{{$foreign->return_date}}</td>
-                                            <td>{{$foreign->note}}</td>
-                                            <td>
-                                                @if ($foreign->attachment_file)
-                                                    <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->attachment_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                            <tr>
+                                                <td>{{$loop->iteration}}</td>
+                                                <td>{{$foreign->name}}</td>
+                                                <td>{{$foreign->nationality}}</td>
+                                                <td>{{$foreign->company}}</td>
+                                                <td>{{$foreign->position}}</td>
+                                                @if ($foreign->category == 'Tamu')
+                                                    <td>{{$foreign->paspor == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->paspor_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->paspor_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{$foreign->visa == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->visa_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->visa_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
                                                 @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                               
+                                                @if ($foreign->category == 'Pekerja')
+                                                    {{-- paspor --}}
+                                                    <td>{{$foreign->paspor == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->paspor_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->paspor_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
+                                                    {{-- vitas --}}
+                                                    <td>{{$foreign->vitas == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->vitas_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->vitas_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
+                                                    {{-- kitas --}}
+                                                    <td>{{$foreign->kitas == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->kitas_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->kitas_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
+                                                    {{-- rptka --}}
+                                                    <td>{{$foreign->rptka == 1 ? 'v' :''}}</td>
+                                                    <td>
+                                                        @if ($foreign->rptka_file)
+                                                            <a href="{{asset('uploads/attachment_file_foreign_worker/'.$foreign->rptka_file)}}" download="" class="btn btn-success btn-sm">download</a>
+                                                        @endif
+                                                    </td>
+  
+                                                @else
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                @endif
+                                               
+                                               
+                                                <td>{{$foreign->arrived_date}}</td>
+                                                <td>{{$foreign->return_date}}</td>
+                                                <td>{{$foreign->note}}</td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -903,7 +952,7 @@
                                                                     @endfor
                                                                 @endforeach
                                                             </tr>
-                                                            <tr>
+                                                            <tr data-bs-toggle="tooltip" title="{{$program->note}}">
                                                                 <td>Realisasi</td>
                                                                 @foreach(['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $monthIndex => $month)
                                                                     @for($week = 1; $week <= 4; $week++)
