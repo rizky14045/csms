@@ -11,13 +11,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Marturity</h4>
+        <h4 class="fs-18 fw-semibold m-0">Maturity</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Marturity</li>
+            <li class="breadcrumb-item active">Maturity</li>
         </ol>
     </div>
 </div>

@@ -149,7 +149,7 @@ Route::prefix('user')->group(function () {
 
         });
 
-        Route::prefix('marturity')->group(function () {
+        Route::prefix('maturity')->group(function () {
             Route::get('/', [MarturityController::class, 'index'])->name('user.marturity.index');
             Route::get('/create', [MarturityController::class, 'create'])->name('user.marturity.create');
             Route::post('/store', [MarturityController::class, 'store'])->name('user.marturity.store');

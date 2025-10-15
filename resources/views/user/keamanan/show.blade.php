@@ -45,6 +45,9 @@
                                         <tr>
                                             <th scope="col" class="align-middle text-center">No</th>
                                             <th scope="col" class="align-middle text-center">Sub Area</th>
+                                            <th scope="col" class="align-middle text-center">Bobot</th>
+                                            <th scope="col" class="align-middle text-center">Hasil Assesment</th>
+                                            <th scope="col" class="align-middle text-center">Skor ML</th>
                                             <th scope="col" class="align-middle text-center">Level</th>
                                             <th scope="col" class="align-middle text-center">Uraian</th>
                                             <th scope="col" class="align-middle text-center">Catatan Assesment ( Eviden )</th>
@@ -58,6 +61,9 @@
                                                 $totalRowspan = $subArea->levels->reduce(function ($carry, $level) {
                                                     return $carry + 1 + $level->notes()->count();
                                                 }, 0); // Total rowspan pertama
+
+                                                $totalSub = $subArea->levels->count();
+                                                $bobot = number_format(1 / $totalSub ,2);
                                             @endphp
                                             <tr>
                                                 <td class="text-left" rowspan="{{ $totalRowspan }}">{{ $loop->iteration }}</td>
@@ -66,6 +72,9 @@
                                                     <p class="text-justify">Deskripsi : {{ $subArea->description }}</p>
                                                     <span>Referensi : {{ $subArea->reference }}</span>
                                                 </td>
+                                                <td class="text-center align-middle" rowspan="{{ $totalRowspan }}">{{ $bobot }}</td>
+                                                <td class="text-center align-middle" rowspan="{{ $totalRowspan }}">{{ $totalSub }}</td>
+                                                <td class="text-center align-middle" rowspan="{{ $totalRowspan }}">{{ $loop->iteration }}</td>
                                         
                                                 @php $firstLevel = true; @endphp
                                                 @foreach ($subArea->levels as $level)

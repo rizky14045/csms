@@ -57,7 +57,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/edit', [MonthlyAuditController::class, 'edit'])->name('admin.monthly-audit.edit');
             Route::get('/show/{monthlyId}', [MonthlyAuditController::class, 'show'])->name('admin.monthly-audit.show');
         });
-        Route::prefix('marturity')->group(function () {
+        Route::prefix('maturity')->group(function () {
             Route::get('/', [MarturityController::class, 'index'])->name('admin.marturity.index');
             Route::get('/show/{marturityId}', [MarturityController::class, 'show'])->name('admin.marturity.show');
         });

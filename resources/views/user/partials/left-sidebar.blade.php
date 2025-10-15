@@ -52,10 +52,10 @@
 
                         <ul class="nav-second-level">
                             <li>
-                                <a href="{{route('user.marturity.index')}}" class="tp-link">Marturity Level</a>
+                                <a href="{{route('user.marturity.index')}}" class="tp-link">Maturity Level</a>
                             </li>
                             <li>
-                                <a href="{{route('user.keamanan.index')}}" class="tp-link">Kemanan KPI</a>
+                                <a href="{{route('user.keamanan.index')}}" class="tp-link">Keamanan KPI</a>
                             </li>
                         </ul>
                     </div>
