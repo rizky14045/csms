@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Models\User;
 use App\Models\Vendor;
 use App\Models\Attribute;
+use App\Models\BujpProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -16,7 +17,7 @@ class VendorController extends Controller
     public function index(){
 
         $userId = Auth::user()->id;
-        $data['vendors'] = Vendor::where('parent_user_id',$userId)->paginate(25);
+        $data['vendors'] = User::with('bujpProfile')->where('type','bujp')->paginate(25);
         return view('user.vendor.index',$data);
 
     }
@@ -46,11 +47,17 @@ class VendorController extends Controller
                 'adress.required' => 'Alamat harus diisi!',
             ]);
 
-            Vendor::create([
-                'parent_user_id' => $userId,
+            $vendor = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => bcrypt($request->npwp),
+                'type' => 'bujp',
+                'created_by' => Auth::user()->id
+               
+            ]);
+
+            BujpProfile::create([
+                'user_id' => $vendor->id,
                 'npwp' => $request->npwp,
                 'address' => $request->address,
             ]);
@@ -70,7 +77,7 @@ class VendorController extends Controller
     public function edit($id){
 
         $userId = Auth::user()->id;
-        $vendor = Vendor::where('id', $id)->where('parent_user_id',$userId)->first();
+        $vendor = User::with('bujpProfile')->where('id', $id)->first();
         if(!$vendor){
             abort(404);
         }
@@ -86,7 +93,7 @@ class VendorController extends Controller
 
             $userId = Auth::user()->id;
 
-            $vendor = Vendor::where('id',$id)->where('parent_user_id',$userId)->first();
+            $vendor = User::where('id',$id)->first();
 
             if(!$vendor){
                 abort(404);
@@ -110,9 +117,14 @@ class VendorController extends Controller
 
             $vendor->name = $request->name;
             $vendor->email = $request->email;
-            $vendor->npwp = $request->npwp;
-            $vendor->address = $request->address;
+            $vendor->updated_by = Auth::user()->id;
             $vendor->save();
+
+            $profile = BujpProfile::where('user_id',$id)->first();
+            $profile->npwp = $request->npwp;
+            $profile->address = $request->address;
+            $profile->save();
+
             
             DB::commit();
             Alert::success('Update Berhasil', 'BUJP / Vendor berhasil diubah!');
@@ -132,7 +144,9 @@ class VendorController extends Controller
             DB::beginTransaction();
             
             $userId = Auth::user()->id;
-            $vendor = Vendor::where('id',$id)->where('parent_user_id',$userId)->first();
+            $vendor = User::where('id',$id)->first();
+            $vendor->deleted_by = Auth::user()->id;
+            $vendor->save();
             $vendor->delete();
             
             DB::commit();

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,8 +19,8 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $admin = Admin::find(Auth::guard('admin')->id());
-        if(!empty($admin)){
+        $admin = User::find(Auth::user()->id);
+        if($admin->type == 'admin'){
             return $next($request);
         } else {
             return redirect()->route('admin.login');

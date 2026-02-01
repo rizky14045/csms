@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\KPIAreaController;
 use App\Http\Controllers\Admin\KPINoteController;
 use App\Http\Controllers\Admin\KeamananController;
@@ -37,7 +38,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'getLogin'])->name('admin.login')->middleware('guest.admin');
     Route::post('/login', [AuthController::class, 'login'])->name('admin.getLogin')->middleware('guest.admin');
 
-    Route::middleware(['auth.admin'])->group(function () {
+    Route::middleware(['auth','auth.admin'])->group(function () {
         
         Route::get('/home', [DashboardController::class, 'index'])->name('admin.home.index');
         Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout');
@@ -74,6 +75,14 @@ Route::prefix('admin')->group(function () {
             Route::get('/edit/{id}', [UnitController::class, 'edit'])->name('admin.unit.edit');
             Route::patch('/edit/{id}', [UnitController::class, 'update'])->name('admin.unit.update');
             Route::delete('/delete/{id}', [UnitController::class, 'destroy'])->name('admin.unit.destroy');
+        });
+        Route::prefix('admin')->group(function () {
+            Route::get('/', [AdminController::class, 'index'])->name('admin.admin.index');
+            Route::get('/create', [AdminController::class, 'create'])->name('admin.admin.create');
+            Route::post('/store', [AdminController::class, 'store'])->name('admin.admin.store');
+            Route::get('/edit/{id}', [AdminController::class, 'edit'])->name('admin.admin.edit');
+            Route::patch('/edit/{id}', [AdminController::class, 'update'])->name('admin.admin.update');
+            Route::delete('/delete/{id}', [AdminController::class, 'destroy'])->name('admin.admin.destroy');
         });
 
         Route::prefix('category-assesment')->group(function () {

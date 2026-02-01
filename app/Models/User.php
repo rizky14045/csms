@@ -2,15 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\BujpProfile;
+use App\Models\UserProfile;
+use App\Models\AdminProfile;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable,SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -36,5 +40,19 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'session_expired_date' => 'datetime',
     ];
+
+    public function adminProfile()
+    {
+        return $this->hasOne(AdminProfile::class, 'user_id', 'id');
+    }
+    public function userProfile()
+    {
+        return $this->hasOne(UserProfile::class, 'user_id', 'id');
+    }
+    public function bujpProfile()
+    {
+        return $this->hasOne(BujpProfile::class, 'user_id', 'id');
+    }
 }

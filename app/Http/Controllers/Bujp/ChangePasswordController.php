@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Bujp;
 use App\Models\User;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
+use App\Models\PasswordHistory;
+use App\Http\Helper\PasswordHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -34,9 +36,29 @@ class ChangePasswordController extends Controller
             'repeat_password.same' => 'Kata sandi tidak cocok!',
         ]);
 
-        $user = Vendor::find(Auth::guard('vendor')->user()->id);
+        $user = User::find(Auth::user()->id);
         if( Hash::check($request->old_password,$user->password) ){
-            $user->password = bcrypt($request->new_password);
+            
+            $isAllowed = PasswordHelper::isPasswordAllowed(
+                        $user->id,
+                        $request->new_password
+                    );
+
+            if (!$isAllowed) {
+                Alert::warning(
+                    'Peringatan',
+                    'Password baru tidak boleh sama dengan password sebelumnya.'
+                );
+                return redirect()->back();
+            }
+            $password = bcrypt($request->new_password);
+
+            PasswordHistory::create([
+                'user_id' => $user->id,
+                'password_hash' => $password,
+            ]);
+            
+            $user->password = $password;
             $user->save();
 
             Alert::success('Berhasil', 'Berhasil merubah password!');

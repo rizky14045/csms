@@ -39,7 +39,7 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$unit->name}}</td>
-                                    <td>{{$unit->address}}</td>
+                                    <td>{{$unit->userProfile->address}}</td>
                                     <td class="text-center">
                                         <a href="{{route('admin.unit.edit',['id'=>$unit->id])}}" class="btn btn-success btn-sm">Edit</a>
                                         <form action="{{route('admin.unit.destroy',['id'=>$unit->id])}}" method="post" class="d-inline">

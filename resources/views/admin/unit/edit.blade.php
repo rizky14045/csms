@@ -35,7 +35,7 @@
                     <div class="col-xl-9">
                         <div class="form-group mb-3">
                             <label for="emailaddress" class="form-label">Kode Unit</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan kode unit" name="unit_code" value="{{$unit->unit_code}}">
+                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan kode unit" name="unit_code" value="{{$unit->userProfile->unit_code}}">
                             @if($errors->has('unit_code'))
                                 <div class="error text-danger">{{ $errors->first('unit_code') }}</div>
                             @endif
@@ -56,21 +56,21 @@
                         </div>
                         <div class="form-group mb-3">
                             <label for="emailaddress" class="form-label">Alamat</label>
-                            <textarea class="form-control" id="example-textarea" rows="5" spellcheck="false" name="address">{{$unit->address}}</textarea>
+                            <textarea class="form-control" id="example-textarea" rows="5" spellcheck="false" name="address">{{$unit->userProfile->address}}</textarea>
                             @if($errors->has('address'))
                                 <div class="error text-danger">{{ $errors->first('address') }}</div>
                             @endif
                         </div>
                         <div class="form-group mb-3">
                             <label for="emailaddress" class="form-label">Latitude</label>
-                            <input class="form-control" type="text" id="latitude" required="" placeholder="Masukan latitude" name="latitude" value="{{$unit->latitude}}">
+                            <input class="form-control" type="text" id="latitude" required="" placeholder="Masukan latitude" name="latitude" value="{{$unit->userProfile->latitude}}">
                             @if($errors->has('latitude'))
                                 <div class="error text-danger">{{ $errors->first('latitude') }}</div>
                             @endif
                         </div>
                         <div class="form-group mb-3">
                             <label for="emailaddress" class="form-label">Longitude</label>
-                            <input class="form-control" type="text" id="longitude" required="" placeholder="Masukan longitude" name="longitude" value="{{$unit->longitude}}">
+                            <input class="form-control" type="text" id="longitude" required="" placeholder="Masukan longitude" name="longitude" value="{{$unit->userProfile->longitude}}">
                             @if($errors->has('longitude'))
                                 <div class="error text-danger">{{ $errors->first('longitude') }}</div>
                             @endif

@@ -39,7 +39,7 @@
                         </div>
                         <div class="form-group mb-3">
                             <label for="emailaddress" class="form-label">NPWP</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan npwp" name="npwp" value="{{$vendor->npwp}}">
+                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan npwp" name="npwp" value="{{$vendor->bujpProfile->npwp}}">
                             @if($errors->has('npwp'))
                                 <div class="error text-danger">{{ $errors->first('npwp') }}</div>
                             @endif
@@ -53,7 +53,7 @@
                         </div>
                         <div class="form-group mb-3">
                             <label for="emailaddress" class="form-label">Alamat</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan alamat" name="address" value="{{$vendor->address}}">
+                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan alamat" name="address" value="{{$vendor->bujpProfile->address}}">
                             @if($errors->has('address'))
                                 <div class="error text-danger">{{ $errors->first('address') }}</div>
                             @endif

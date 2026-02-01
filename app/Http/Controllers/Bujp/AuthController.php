@@ -27,21 +27,37 @@ class AuthController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        $user = Vendor::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
         if(!$user){
             Alert::error('Login gagal','Email atau password salah!!');
             return redirect()->route('bujp.login');
         }
+        if ($user->locked_until && now()->lessThan($user->locked_until)) {
+
+            $diff = number_format(now()->diffInMinutes($user->locked_until));
+            Alert::warning('Warning', "Akun dikunci. Coba lagi dalam {$diff} menit.");
+            return redirect()->back();
+        }
 
         if( Hash::check($request->password,$user->password) ){
 
-            $remember = $request->has('remember') ? true : false;
-            Auth::guard('vendor')->login($user);
-            Alert::success('Login Berhasil', 'User berhasil login!' ,$remember);
+            Auth::login($user,true);
+            Alert::success('Login Berhasil', 'User berhasil login!');
             return redirect()->route('bujp.home.index');
 
         }else{
+            $user->access_failed_count++;
+            $user->save();
+
+            if ($user->access_failed_count >= 3) {
+                $user->locked_until = now()->addMinutes(5);
+                $user->access_failed_count = 0; // reset counter setelah dikunci
+                $user->save();
+
+                Alert::warning('Akun Dikunci','Karena kesalahan input password beberapa kali, akun dikunci selama 5 menit!.');
+                return redirect()->route('bujp.login');
+            }
             
             Alert::error('Login gagal','Email atau password salah!!');
             return redirect()->route('bujp.login');
@@ -51,7 +67,7 @@ class AuthController extends Controller
 
     public function logout(Request $request){
 
-        Auth::guard('vendor')->logout();
+        Auth::logout();
 
         Alert::success('Logout Berhasil', 'User berhasil logout!');
         return redirect()->route('bujp.login');

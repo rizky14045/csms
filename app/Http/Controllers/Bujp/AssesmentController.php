@@ -19,7 +19,7 @@ class AssesmentController extends Controller
 {
     public function index(){
 
-        $vendorId = Auth::guard('vendor')->user()->id;
+        $vendorId = Auth::user()->id;
         $data['assesments'] = Assesment::with('vendor')->where('vendor_id', $vendorId)->latest()->get();
         return view('bujp.assesment.index',$data);
 
@@ -33,7 +33,7 @@ class AssesmentController extends Controller
 
         try {
             DB::beginTransaction();
-            $vendor = Auth::guard('vendor')->user();
+            $vendor = Auth::user();
             
             $assesment = Assesment::create([
                 'unit_id' => $vendor->parent_user_id,
@@ -92,7 +92,7 @@ class AssesmentController extends Controller
     }
     public function edit($assesmentId){
 
-        $vendorId = Auth::guard('vendor')->user()->id;
+        $vendorId = Auth::user()->id;
         $assesment = Assesment::where('vendor_id', $vendorId)->where('id', $assesmentId)->first();
         if(!$assesment){
             abort(404);

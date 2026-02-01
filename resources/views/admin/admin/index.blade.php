@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('admin.layout.app')
 @section('styles')
 
 @stop
@@ -7,13 +7,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">BUJP / Vendor</h4>
+        <h4 class="fs-18 fw-semibold m-0">Admin</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">BUJP / Vendor</li>
+            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Admin</li>
         </ol>
     </div>
 </div>
@@ -21,7 +21,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="d-flex justify-content-end pe-3 pt-3">
-                <a href="{{route('user.vendor.create')}}" class="btn btn-success">Tambah Data</a>
+                <a href="{{route('admin.admin.create')}}" class="btn btn-success">Tambah Data</a>
             </div>
             <div class="card-body">  
                 <div class="table-responsive">
@@ -30,23 +30,19 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Nama</th>
-                                <th scope="col">NPWP</th>
                                 <th scope="col">Email</th>
-                                <th scope="col">Alamat</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($vendors as $vendor)    
+                            @foreach ($admins as $admin)    
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
-                                    <td>{{$vendor->name}}</td>
-                                    <td>{{$vendor->bujpProfile->npwp ?? ''}}</td>
-                                    <td>{{$vendor->email}}</td>
-                                    <td>{{$vendor->bujpProfile->address ?? ''}}</td>
+                                    <td>{{$admin->adminProfile->name ?? ''}}</td>
+                                    <td>{{$admin->email}}</td>
                                     <td class="text-center">
-                                        <a href="{{route('user.vendor.edit',['id'=>$vendor->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                        <form action="{{route('user.vendor.destroy',['id'=>$vendor->id])}}" method="post" class="d-inline">
+                                        <a href="{{route('admin.admin.edit',['id'=>$admin->id])}}" class="btn btn-success btn-sm">Edit</a>
+                                        <form action="{{route('admin.admin.destroy',['id'=>$admin->id])}}" method="post" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
@@ -56,7 +52,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{$vendors->links()}}
+                    {{$admins->links()}}
                 </div>
          
             </div> <!-- end card body -->

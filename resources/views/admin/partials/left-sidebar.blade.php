@@ -69,6 +69,9 @@
                     <div class="collapse" id="sidebarMasterData">
                         <ul class="nav-second-level">
                             <li>
+                                <a href="{{route('admin.admin.index')}}" class="tp-link">Admin</a>
+                            </li>
+                            <li>
                                 <a href="{{route('admin.unit.index')}}" class="tp-link">Unit</a>
                             </li>
                             <li>

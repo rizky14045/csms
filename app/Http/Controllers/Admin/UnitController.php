@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class UnitController extends Controller
 {
     public function index(){
-        $data['units'] = User::paginate(25);
+        $data['units'] = User::with('userProfile')->where('type','user')->paginate(25);
         return view('admin.unit.index',$data);
     }
 
@@ -42,12 +44,18 @@ class UnitController extends Controller
        
             ]);
 
-            User::create([
-                'unit_code' => $request->unit_code,
+            $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'address' => $request->address,
                 'password' => bcrypt($request->email),
+                'type' => 'user',
+                'created_by' => Auth::user()->id
+            ]);
+
+            UserProfile::create([
+                'user_id' => $user->id,
+                'unit_code' => $request->unit_code,
+                'address' => $request->address,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
             ]);
@@ -65,7 +73,7 @@ class UnitController extends Controller
     }
 
     public function edit($id){
-        $unit = User::where('id', $id)->first();
+        $unit = User::with('userProfile')->where('type','user')->where('id', $id)->first();
         if(!$unit){
             abort(404);
         }
@@ -99,13 +107,17 @@ class UnitController extends Controller
        
             ]);
 
-            $unit->unit_code = $request->unit_code;
             $unit->name = $request->name;
             $unit->email = $request->email;
-            $unit->address = $request->address;
-            $unit->latitude = $request->latitude;
-            $unit->longitude = $request->longitude;
+            $unit->updated_by = Auth::user()->id;
             $unit->save();
+
+            $profile = UserProfile::where('user_id',$id)->first();
+            $profile->address = $request->address;
+            $profile->latitude = $request->latitude;
+            $profile->longitude = $request->longitude;
+            $profile->unit_code = $request->unit_code;
+            $profile->save();
             
             DB::commit();
             Alert::success('Update Berhasil', 'Unit berhasil diubah!');
@@ -114,6 +126,7 @@ class UnitController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
+            dd($th);
             Alert::error('Update Gagal', 'Unit gagal diubah!');
             return redirect()->route('admin.unit.index');
         }
@@ -124,6 +137,8 @@ class UnitController extends Controller
             DB::beginTransaction();
 
             $unit = User::where('id',$id)->first();
+            $unit->deleted_by = Auth::user()->id;
+            $unit->save();
             $unit->delete();
             
             DB::commit();

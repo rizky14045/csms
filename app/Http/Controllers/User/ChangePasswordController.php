@@ -4,6 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\PasswordHistory;
+use App\Http\Helper\PasswordHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -33,16 +35,41 @@ class ChangePasswordController extends Controller
             'repeat_password.same' => 'Kata sandi tidak cocok!',
         ]);
 
-        $user = User::find(Auth::guard('web')->user()->id);
-        if( Hash::check($request->old_password,$user->password) ){
-            $user->password = bcrypt($request->new_password);
-            $user->save();
+        try {
+            $user = User::find(Auth::guard('web')->user()->id);
+            if( Hash::check($request->old_password,$user->password) ){
+            
+                $isAllowed = PasswordHelper::isPasswordAllowed(
+                            $user->id,
+                            $request->new_password
+                        );
 
-            Alert::success('Berhasil', 'Berhasil merubah password!');
-            return redirect()->back();
-        } else {
-            Alert::error('Gagal', 'Gagal merubah password!');
-            return redirect()->back();
+                if (!$isAllowed) {
+                    Alert::warning(
+                        'Peringatan',
+                        'Password baru tidak boleh sama dengan password sebelumnya.'
+                    );
+                    return redirect()->back();
+                }
+                
+                $password = bcrypt($request->new_password);
+
+                PasswordHistory::create([
+                    'user_id' => $user->id,
+                    'password_hash' => $password,
+                ]);
+                $user->password = $password;
+                $user->save();
+
+                Alert::success('Berhasil', 'Berhasil merubah password!');
+                return redirect()->back();
+                }
+                else {
+                Alert::error('Gagal', 'Gagal merubah password!');
+                return redirect()->back();
+            }
+        } catch (\Throwable $th) {
+            throw $th;
         }
 
     }
