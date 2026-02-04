@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\KPIAreaController;
@@ -35,13 +34,9 @@ use App\Http\Controllers\Admin\QuestionAssesmentController;
 |
 */
 Route::prefix('admin')->group(function () {
-    Route::get('/login', [AuthController::class, 'getLogin'])->name('admin.login')->middleware('guest.admin');
-    Route::post('/login', [AuthController::class, 'login'])->name('admin.getLogin')->middleware('guest.admin');
-
     Route::middleware(['auth','auth.admin'])->group(function () {
         
         Route::get('/home', [DashboardController::class, 'index'])->name('admin.home.index');
-        Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout');
         
         Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('admin.changePassword');
         Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('admin.updatePassword');

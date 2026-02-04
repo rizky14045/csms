@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+
+class RefreshSessionExpiry
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function handle(Request $request, Closure $next)
+    {
+        if (Auth::check()) {
+
+            $user = Auth::user();
+            $currentSessionId = session()->getId();
+
+            if ($user->session_id !== $currentSessionId) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()
+                    ->route('login')
+                    ->withErrors('Session Anda sudah tidak valid.');
+            }
+
+            if (
+                $user->session_expired_date &&
+                now()->greaterThanOrEqualTo($user->session_expired_date)
+            ) {
+                $user->update([
+                    'session_id' => null,
+                    'session_expired_date' => null,
+                ]);
+
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()
+                    ->route('login')
+                    ->withErrors('Session Anda telah berakhir. Silakan login kembali.');
+            }
+
+            $user->update([
+                'session_expired_date' =>
+                    now()->addMinutes(config('session.lifetime'))
+            ]);
+        }
+
+        return $next($request);
+    }
+
+}

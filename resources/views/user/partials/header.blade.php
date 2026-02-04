@@ -34,7 +34,7 @@
                         <div class="dropdown-divider"></div>
 
                         <!-- item-->
-                        <form action="{{route('user.logout')}}" method="POST">
+                        <form action="{{route('logout')}}" method="POST">
                             @csrf
                             <button type="submit" class="dropdown-item notify-item" ><i class="mdi mdi-location-exit fs-16 align-middle"></i>
                                 <span>Logout</span></button>

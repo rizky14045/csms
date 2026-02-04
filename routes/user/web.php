@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\FaqController;
-use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\VendorController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\KeamananController;
@@ -43,16 +42,12 @@ use App\Http\Controllers\User\MonthlyAudit\FormVulnerabilityInternalController;
 |
 */
 Route::prefix('user')->group(function () {
-    
-    Route::get('/login', [AuthController::class, 'getLogin'])->name('user.login')->middleware('guest');
-    Route::post('/login', [AuthController::class, 'login'])->name('user.getLogin')->middleware('guest');
     Route::get('/faq', [FaqController::class, 'index'])->name('user.faq.index');
 
 
     Route::middleware(['auth'])->group(function () {
         
         Route::get('/home', [DashboardController::class, 'index'])->name('user.home.index');
-        Route::post('/logout', [AuthController::class, 'logout'])->name('user.logout');
 
         Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('user.changePassword');
         Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('user.updatePassword');
