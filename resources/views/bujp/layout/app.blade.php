@@ -14,7 +14,7 @@
             <!-- end Topbar -->
 
             <!-- Left Sidebar Start -->
-            @include('bujp.partials.left-sidebar')
+            @include('components.sidebar')
             <!-- Left Sidebar End -->
 
             <!-- ============================================================== -->

@@ -20,7 +20,7 @@
                 <li class="dropdown notification-list topbar-dropdown">
                     <a class="nav-link dropdown-toggle nav-user me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                         <span class="pro-user-name ms-1">
-                            {{Auth::user()->adminProfile->name ?? ''}} <i class="mdi mdi-chevron-down"></i> 
+                            {{Auth::user()->name ?? ''}} <i class="mdi mdi-chevron-down"></i> 
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end profile-dropdown ">
@@ -33,11 +33,23 @@
 
                         <div class="dropdown-divider"></div>
 
-                        <form action="{{route('logout')}}" method="POST">
+                        <form
+                            id="form-logout"
+                            action="{{ route('logout') }}"
+                            method="POST"
+                        >
                             @csrf
-                            <button type="submit" class="dropdown-item notify-item" ><i class="mdi mdi-location-exit fs-16 align-middle"></i>
-                                <span>Logout</span></button>
+
+                            <button
+                                type="button"
+                                class="dropdown-item notify-item"
+                                onclick="confirmLogout('form-logout')"
+                            >
+                                <i class="mdi mdi-location-exit fs-16 align-middle"></i>
+                                <span>Logout</span>
+                            </button>
                         </form>
+
 
                     </div>
                 </li>
