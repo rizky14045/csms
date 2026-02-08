@@ -26,19 +26,30 @@
                     <div class="dropdown-menu dropdown-menu-end profile-dropdown ">
 
                         <!-- item-->
-                        <a href="{{route('user.changePassword')}}" class="dropdown-item notify-item">
+                        <a href="{{route('admin.changePassword')}}" class="dropdown-item notify-item">
                             <i class="mdi mdi-lock-outline fs-16 align-middle"></i>
                             <span>Change Password</span>
                         </a>
 
                         <div class="dropdown-divider"></div>
 
-                        <!-- item-->
-                        <form action="{{route('logout')}}" method="POST">
+                        <form
+                            id="form-logout"
+                            action="{{ route('logout') }}"
+                            method="POST"
+                        >
                             @csrf
-                            <button type="submit" class="dropdown-item notify-item" ><i class="mdi mdi-location-exit fs-16 align-middle"></i>
-                                <span>Logout</span></button>
+
+                            <button
+                                type="button"
+                                class="dropdown-item notify-item"
+                                onclick="confirmLogout('form-logout')"
+                            >
+                                <i class="mdi mdi-location-exit fs-16 align-middle"></i>
+                                <span>Logout</span>
+                            </button>
                         </form>
+
 
                     </div>
                 </li>
