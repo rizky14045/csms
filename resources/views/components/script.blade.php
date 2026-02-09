@@ -111,4 +111,40 @@
     // Panggil fungsi saat halaman selesai di-load
     window.addEventListener('DOMContentLoaded', enablePickerOnFocus);
 </script>
+
+<script>
+    $('#togglePassword').on('click', function() {
+
+        const password = $('#password');
+        const icon = $('#eyeIcon');
+
+        if (password.attr('type') === 'password') {
+            password.attr('type', 'text');
+            icon.attr('data-feather', 'eye-off');
+        } else {
+            password.attr('type', 'password');
+            icon.attr('data-feather', 'eye');
+        }
+
+        feather.replace();
+    });
+
+    $('#togglePasswordConfirmation').on('click', function() {
+
+        const password = $('#password_confirmation');
+        const icon = $('#eyeIconConfirmation');
+
+        if (password.attr('type') === 'password') {
+            password.attr('type', 'text');
+            icon.attr('data-feather', 'eye-off');
+        } else {
+            password.attr('type', 'password');
+            icon.attr('data-feather', 'eye');
+        }
+
+        feather.replace();
+    });
+
+    feather.replace();
+</script>
 @yield('scripts')

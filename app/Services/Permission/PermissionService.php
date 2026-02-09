@@ -53,6 +53,16 @@ class PermissionService
             
             return JsonResponse::success($permission , 'Permission found', 200);
         } catch (Exception $e) {
+            $this->logService->log(
+                'permission.fetch',
+                'Failed to fetch permissions',
+                500,
+                [
+                    'error' => $e->getMessage(),
+                    'params' => request()->all(),
+                ]
+            );
+            
             return JsonResponse::error($e->getMessage() , 'Permission not found', 404);
         }
     }

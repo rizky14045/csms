@@ -51,7 +51,17 @@ class RoleService
             }
             return JsonResponse::success($role , 'Role found', 200);
         } catch (Exception $e) {
-            return JsonResponse::error($e->getMessage() , 'Role not found', 404);
+            $this->logService->log(
+                'role.fetch',
+                'Failed to fetch roles',
+                500,
+                [
+                    'error' => $e->getMessage(),
+                    'params' => request()->all(),
+                ]
+            );
+
+            return JsonResponse::error($e->getMessage() , 'Failed to fetch roles', 500);
         }
     }
 

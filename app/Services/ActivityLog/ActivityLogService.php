@@ -1,8 +1,8 @@
 <?php
+
 namespace App\Services\ActivityLog;
 
 use App\Models\ActivityLog;
-use Illuminate\Http\Request;
 
 class ActivityLogService
 {
@@ -12,17 +12,20 @@ class ActivityLogService
         int $statusCode,
         array $properties = []
     ) {
+        $request = request();
+
         return ActivityLog::create([
             'type'            => $type,
+            'method'          => $request->method(),   // GET, POST, PUT, DELETE
+            'url'             => $request->fullUrl(),  // Full URL
             'error_code'      => $statusCode,
             'time'            => now(),
-            'ip'              => request()->ip(),
+            'ip'              => $request->ip(),
             'user_id'         => auth()->id(),
             'activity'        => $activity,
-            'browser'         => request()->header('User-Agent'),
+            'browser'         => $request->header('User-Agent'),
             'os'              => php_uname('s'),
             'properties_data' => $properties,
         ]);
     }
 }
-

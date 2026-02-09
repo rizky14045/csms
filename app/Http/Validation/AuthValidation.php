@@ -36,6 +36,28 @@ class AuthValidation
         ];
     }
 
+    public static function rulesForUpdateProfile()
+    {
+        return [
+            'old_password' => [
+                'required',
+            ],
+
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(12)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+            ],
+
+            'password_confirmation' => [
+                'required',
+            ],
+        ];
+    }
+
     public static function messages(){
         return [
             'email.required' => 'Email wajib diisi.',

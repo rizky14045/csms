@@ -21,10 +21,12 @@ Route::get('/register', function () {
     return view('user.register');
 });
 
+require_once('lists/auth.php');
+require_once('lists/role.php');
+require_once('lists/permission.php');
+require_once('lists/user.php');
+
 require_once('user/web.php');
 require_once('admin/web.php');
 require_once('bujp/web.php');
 
-require_once('lists/auth.php');
-require_once('lists/role.php');
-require_once('lists/permission.php');
