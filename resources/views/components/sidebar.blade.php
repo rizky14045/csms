@@ -100,6 +100,11 @@
                     </a>
                     <div class="collapse" id="sidebarSetting">
                         <ul class="nav-second-level">
+                            @can('view.user')
+                            <li>
+                                <a href="{{route('users.index')}}" class="tp-link">User Management</a>
+                            </li>
+                            @endcan
                             @can('view.role')
                             <li>
                                 <a href="{{route('roles.index')}}" class="tp-link">Role Management</a>

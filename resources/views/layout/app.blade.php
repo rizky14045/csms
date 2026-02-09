@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    @include('layout.head')
+    @include('components.head')
     @yield('styles')
 
     <body data-menu-color="dark" data-sidebar="default">
@@ -10,7 +10,7 @@
         <div id="app-layout">
 
             <!-- Topbar Start -->
-            @include('layout.header')
+            @include('components.header')
             <!-- end Topbar -->
 
             <!-- Left Sidebar Start -->
@@ -30,7 +30,7 @@
                 </div> <!-- content -->
 
                 <!-- Footer Start -->
-                @include('layout.footer')
+                @include('components.footer')
                 <!-- end Footer -->
                 
             </div>
@@ -41,7 +41,7 @@
         </div>
         <!-- END wrapper -->
         @include('sweetalert::alert')
-        @include('layout.script')
+        @include('components.script')
         @yield('scripts')
     </body>
 </html>

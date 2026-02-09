@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Helper\PasswordHelper;
 use App\Http\Validation\AuthValidation;
+use App\Models\PasswordHistory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -177,5 +178,49 @@ class AuthController extends Controller
 
         Alert::success('Success', 'Password berhasil direset.');
         return redirect()->route('login');
+    }
+
+    public function editProfile(){
+        return view('auth.edit-profile');
+    }
+
+    public function updateProfile(Request $request){
+        $user = Auth::user();
+
+        // Validation rules
+        $validator = $this->validator($request->all(), AuthValidation::rulesForUpdateProfile($user->id), AuthValidation::messages());
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $isAllowed = PasswordHelper::isPasswordAllowed(
+                    $user->id,
+                    $request->password
+                );
+
+        if (!$isAllowed) {
+            Alert::warning(
+                'Peringatan',
+                'Password baru tidak boleh sama dengan password sebelumnya.'
+            );
+            return redirect()->back();
+        }
+
+        // check old password
+        if (!Hash::check($request->old_password, $user->password)) {
+            Alert::error('Error', 'Password lama tidak sesuai.');
+            return redirect()->back();
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        PasswordHistory::create([
+            'user_id' => $user->id,
+            'password_hash' => $user->password,
+        ]);
+
+        Alert::success('Success', 'Profile berhasil diupdate.');
+        return redirect()->route('profile.edit');
     }
 }

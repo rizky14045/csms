@@ -20,9 +20,10 @@ class RoleController extends Controller
         $this->roleService = $roleService;
         $this->permissionService = $permissionService;
 
-        // $this->middleware('can:view.role')->only(['index']);
-        // $this->middleware('can:create.role')->only(['create', 'store']);
-        // $this->middleware('can:edit.role')->only(['edit', 'update']);
+        $this->middleware('can:view.role')->only(['index']);
+        $this->middleware('can:create.role')->only(['create', 'store']);
+        $this->middleware('can:edit.role')->only(['edit', 'update']);
+        $this->middleware('can:delete.role')->only(['destroy']);
     }
 
     protected function validator(array $data, $validation, array $messages = [])

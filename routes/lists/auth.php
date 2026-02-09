@@ -12,3 +12,6 @@ Route::get('/forgot-password', [AuthController::class, 'getForgotPassword'])->na
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email')->middleware('guest');
 Route::get('/reset-password/{token}', [AuthController::class, 'getResetPassword'])->name('password.reset')->middleware('guest');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update')->middleware('guest');
+
+Route::get('/edit-profile', [AuthController::class, 'editProfile'])->name('profile.edit')->middleware('auth');
+Route::patch('/edit-profile', [AuthController::class, 'updateProfile'])->name('profile.update')->middleware('auth');
