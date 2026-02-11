@@ -26,6 +26,7 @@
                     id="form-permission"
                     action="{{ route('permissions.store') }}"
                     method="POST"
+                    onsubmit="confirmSave('form-permission', 'Permission akan disimpan')"
                 >
                     @csrf
 
@@ -50,9 +51,8 @@
                             Kembali
                         </a>
                         <button
-                            type="button"
+                            type="submit"
                             class="btn btn-success"
-                            onclick="confirmSave('form-permission', 'Permission akan disimpan')"
                         >
                             Simpan
                         </button>

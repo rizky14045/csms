@@ -23,7 +23,7 @@
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" id="form-edit-profile">
+                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" id="form-edit-profile" onsubmit="confirmSave('form-edit-profile', 'Password akan disimpan')">
                         @csrf
                         @method('PATCH')
                         <div class="row justify-content-center">
@@ -81,9 +81,8 @@
                             <a href="{{ route('admin.home.index') }}" class="btn btn-danger">Batal</a>
 
                             <button
-                            type="button"
+                            type="submit"
                             class="btn btn-success"
-                            onclick="confirmSave('form-edit-profile', 'Password akan disimpan')"
                         >
                             Simpan
                         </button>

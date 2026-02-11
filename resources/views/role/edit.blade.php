@@ -26,6 +26,7 @@
                     id="form-role"
                     action="{{ route('roles.update', $role->id) }}"
                     method="POST"
+                    onsubmit="confirmSave('form-role', 'Perubahan role akan disimpan')"
                 >
                     @csrf
                     @method('PUT')
@@ -115,9 +116,8 @@
                             Kembali
                         </a>
                         <button
-                            type="button"
+                            type="submit"
                             class="btn btn-success"
-                            onclick="confirmSave('form-role', 'Perubahan role akan disimpan')"
                         >
                             Update
                         </button>

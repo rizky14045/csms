@@ -68,21 +68,27 @@
                     </a>
                     <div class="collapse" id="sidebarMasterData">
                         <ul class="nav-second-level">
-                            <li>
+                            {{-- <li>
                                 <a href="{{route('admin.admin.index')}}" class="tp-link">Admin</a>
-                            </li>
-                            <li>
+                            </li> --}}
+                            {{-- <li>
                                 <a href="{{route('admin.unit.index')}}" class="tp-link">Unit</a>
-                            </li>
+                            </li> --}}
+                            @can('view.vulnerability')
                             <li>
                                 <a href="{{route('admin.vulnerability.index')}}" class="tp-link">Kerawanan</a>
                             </li>
+                            @endcan
+                            @can('view.attribute')
                             <li>
                                 <a href="{{route('admin.attribute.index')}}" class="tp-link">Attribute</a>
                             </li>
+                            @endcan
+                            @can('view.category.assesment')
                             <li>
                                 <a href="{{route('admin.category-assesment.index')}}" class="tp-link">Assesment</a>
                             </li>
+                            @endcan
                             <li>
                                 <a href="{{route('admin.marturity-area.index')}}" class="tp-link">Marturity</a>
                             </li>

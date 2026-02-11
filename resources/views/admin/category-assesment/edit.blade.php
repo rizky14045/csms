@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -25,23 +25,28 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.category-assesment.update',['categoryId' => $category->id])}}" class="my-4" method="POST">
+                <form action="{{route('admin.category-assesment.update',['category_assesment' => $category->id])}}" class="my-4" method="POST" id="form-category-assesment" onsubmit="confirmSave('form-category-assesment', 'Data kategori akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
-                            <label for="username" class="form-label">Nama</label>
-                            <input class="form-control" name="name" type="text" id="username" required="" placeholder="Masukan nama" value="{{$category->name}}">
-                            @if($errors->has('name'))
-                                <div class="error text-danger">{{ $errors->first('name') }}</div>
-                            @endif
+                            <label for="name" class="form-label">Nama</label>
+                            <input class="form-control" name="name" type="text" id="name" required="" placeholder="Masukan nama" value="{{old('name', $category->name)}}">
+                            @error('name')
+                                <span class="text-danger">{{$message}}</span>
+                            @enderror
                         </div>
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
                                     <a href="{{route('admin.category-assesment.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit">Ubah</button>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

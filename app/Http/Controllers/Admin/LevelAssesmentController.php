@@ -5,116 +5,92 @@ namespace App\Http\Controllers\Admin;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\LevelAssesment;
-use App\Models\CategoryAssesment;
+use App\Http\Validation\LevelAssesmentValidation;
 use App\Models\QuestionAssesment;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Services\LevelAssesment\LevelAssesmentService;
+use Illuminate\Support\Facades\Validator;
 
 class LevelAssesmentController extends Controller
 {
-    public function create($questionId){
+    protected $levelAssesmentService;
 
-        $data['questionId'] = $questionId;
+    public function __construct(LevelAssesmentService $levelAssesmentService)
+    {
+        $this->levelAssesmentService = $levelAssesmentService;
+
+        $this->middleware('can:create.level.assesment')->only(['create', 'store']);
+        $this->middleware('can:edit.level.assesment')->only(['edit', 'update']);
+        $this->middleware('can:delete.level.assesment')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
+    public function create(QuestionAssesment $question_assesment){
+        $data['question'] = $question_assesment;
         return view('admin.level-assesment.create',$data);
 
     }
 
-    public function store(Request $request,$questionId){
+    public function store(Request $request, QuestionAssesment $question_assesment){
 
         try {
-            DB::beginTransaction();
+            // Validation rules
+            $validator = $this->validator($request->all(), LevelAssesmentValidation::rulesForCreate(), LevelAssesmentValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
 
-            $request->validate([
-                'level' => 'required',
-                'level_description' => 'required',
-
-            ],[
-                'level.required' => 'Level harus diisi!',
-                'level_description.required' => 'Level Penilaian harus diisi!',
-       
-            ]);
-
-            $lastLevel = LevelAssesment::where('question_id',$questionId)->latest()->first();
-            $order = $lastLevel ? $lastLevel->order + 1 : 1; 
-
-            LevelAssesment::create([
-                'question_id' => $questionId,
-                'level' => $request->level,
-                'level_description' => $request->level_description,
-                'order' => $order,
-
-            ]);
+            $this->levelAssesmentService->createLevelAssesment($request->all(), $question_assesment);
             
-            DB::commit();
             Alert::success('Tambah Berhasil', 'Level assesment berhasil dibuat!');
             return redirect()->route('admin.category-assesment.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Tambah Gagal', 'Level assesment gagal dibuat!');
             return redirect()->route('admin.category-assesment.index');
         }
     }
 
-    public function edit($questionId,$levelId){
-
-        $level = LevelAssesment::where('question_id', $questionId)->where('id',$questionId)->first();
-        if(!$level){
-            abort(404);
-        }
-        $data['questionId'] = $questionId;
-        $data['level'] = $level;
+    public function edit(LevelAssesment $level_assesment, QuestionAssesment $question_assesment){
+        $data['question'] = $question_assesment;
+        $data['level'] = $level_assesment;
         return view('admin.level-assesment.edit',$data);
     }
 
-    public function update(Request $request,$questionId,$levelId){
+    public function update(Request $request, LevelAssesment $level_assesment, QuestionAssesment $question_assesment){
 
         try {
-            DB::beginTransaction();
-
-            $level = LevelAssesment::where('question_id', $questionId)->where('id',$levelId)->first();
-
-            $request->validate([
-                'level' => 'required',
-                'level_description' => 'required',
-
-            ],[
-                'level.required' => 'Level harus diisi!',
-                'level_description.required' => 'Level Penilaian harus diisi!',
-       
-            ]);
-            $level->level = $request->level;
-            $level->level_description = $request->level_description;
-            $level->save();
+            // Validation rules
+            $validator = $this->validator($request->all(), LevelAssesmentValidation::rulesForUpdate(), LevelAssesmentValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
             
-            DB::commit();
+            $this->levelAssesmentService->updateLevelAssesment($level_assesment, $request->all());
+
             Alert::success('Update Berhasil', 'Level berhasil diubah!');
             return redirect()->route('admin.category-assesment.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Update Gagal', 'Level assesment gagal diubah!');
             return redirect()->route('admin.category-assesment.index');
         }
     }
 
-    public function destroy($levelId,$questionId){
+    public function destroy(LevelAssesment $level_assesment, QuestionAssesment $question_assesment){
         try {
-            DB::beginTransaction();
+            $this->levelAssesmentService->deleteLevelAssesment($level_assesment);
 
-            $level = LevelAssesment::where('question_id', $questionId)->where('id',$levelId)->first();
-            $level->delete();
-            
-            DB::commit();
             Alert::success('Delete Berhasil', 'Level berhasil dihapus!');
             return redirect()->route('admin.category-assesment.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Delete Gagal', 'Level assesment gagal dihapus!');
             return redirect()->route('admin.category-assesment.index');
         }

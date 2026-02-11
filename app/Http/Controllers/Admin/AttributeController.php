@@ -2,17 +2,37 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
 use App\Models\Attribute;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Validation\AttributeValidation;
+use App\Services\Attribute\AttributeService;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class AttributeController extends Controller
 {
+    protected $attributeService;
+
+    public function __construct(AttributeService $attributeService)
+    {
+        $this->attributeService = $attributeService;
+
+        $this->middleware('can:view.attribute')->only(['index']);
+        $this->middleware('can:create.attribute')->only(['create', 'store']);
+        $this->middleware('can:edit.attribute')->only(['edit', 'update']);
+        $this->middleware('can:delete.attribute')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
     public function index(){
-        $data['attributes'] = Attribute::where('type_attribute','Administrasi')->paginate(25);
+        $result = $this->attributeService->getAllAttribute(25, true, 'Administrasi');
+        $data['attributes'] = getPaginate($result);
+        $data['request'] = request();
         return view('admin.attribute.index',$data);
     }
 
@@ -22,101 +42,63 @@ class AttributeController extends Controller
 
     public function store(Request $request){
         try {
-            DB::beginTransaction();
-            $request->validate([
-                'name' => 'required',
-                'status_ownership' => 'required',
-                'unit' => 'required',
-                'standard_contract' => 'required',
-            ],[
-                'name.required' => 'Nama harus diisi!',
-                'status_ownership.required' => 'Status kepemilikan harus diisi!',
-                'unit.required' => 'Satuan harus diisi!',
-                'standard_contract.required' => 'Jumlah standard kontrak harus diisi!',
-            ]);
+            // Validation rules
+            $validator = $this->validator($request->all(), AttributeValidation::rulesForCreate(), AttributeValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
 
-            Attribute::create([
-                'name' => $request->name,
-                'status_ownership' => $request->status_ownership,
-                'unit' => $request->unit,
-                'standard_contract' => $request->standard_contract,
-                'type_attribute' => 'Administrasi',
-            ]);
-            
-            DB::commit();
+            $type_attribute = 'Administrasi';
+            $request->merge(['type_attribute' => $type_attribute]);
+
+            $this->attributeService->createAttribute($request->all());
+
             Alert::success('Tambah Berhasil', 'Atribut berhasil dibuat!');
             return redirect()->route('admin.attribute.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Tambah Gagal', 'Atribut gagal dibuat!');
             return redirect()->route('admin.attribute.index');
         }
     }
 
-    public function edit($id){
-
-        $attribute = Attribute::where('id', $id)->first();
-        if(!$attribute){
-            abort(404);
-        }
+    public function edit(Attribute $attribute){
         $data['attribute'] = $attribute;
         return view('admin.attribute.edit',$data);
     }
 
-    public function update(Request $request,$id){
+    public function update(Request $request, Attribute $attribute){
 
         try {
+            // Validation rules
+            $validator = $this->validator($request->all(), AttributeValidation::rulesForUpdate(), AttributeValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
 
-            DB::beginTransaction();
+            $type_attribute = 'Administrasi';
+            $request->merge(['type_attribute' => $type_attribute]);
+            
+            $this->attributeService->updateAttribute($attribute, $request->all());
 
-            $request->validate([
-                'name' => 'required',
-                'status_ownership' => 'required',
-                'unit' => 'required',
-                'standard_contract' => 'required',
-            ],[
-                'name.required' => 'Nama harus diisi!',
-                'status_ownership.required' => 'Status kepemilikan harus diisi!',
-                'unit.required' => 'Satuan harus diisi!',
-                'standard_contract.required' => 'Jumlah standard kontrak harus diisi!',
-            ]);
-            
-            $attribute = Attribute::where('id',$id)->first();
-            $attribute->name = $request->name;
-            $attribute->status_ownership = $request->status_ownership;
-            $attribute->unit = $request->unit;
-            $attribute->standard_contract = $request->standard_contract;
-            $attribute->save();
-            
-            DB::commit();
             Alert::success('Update Berhasil', 'Atribut berhasil diubah!');
             return redirect()->route('admin.attribute.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Update Gagal', 'Atribut gagal diubah!');
             return redirect()->route('admin.attribute.index');
         }
     }
 
-    public function destroy($id){
+    public function destroy(Attribute $attribute){
         
         try {
-            DB::beginTransaction();
+             $this->attributeService->deleteAttribute($attribute);
 
-            $attribute = Attribute::where('id',$id)->first();
-            $attribute->delete();
-            
-            DB::commit();
             Alert::success('Delete Berhasil', 'Atribut berhasil dihapus!');
             return redirect()->route('admin.attribute.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Delete Gagal', 'Atribut gagal dihapus!');
             return redirect()->route('admin.attribute.index');
         }

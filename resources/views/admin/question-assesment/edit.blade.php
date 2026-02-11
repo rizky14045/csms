@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -25,23 +25,28 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.question-assesment.update',['questionId'=> $question->id,'categoryId'=>$categoryId])}}" class="my-4" method="POST">
+                <form action="{{route('admin.question-assesment.update',['question_assesment'=> $question->id,'category_assesment'=>$categoryId])}}" class="my-4" method="POST"  id="form-edit-question" onsubmit="confirmSave('form-edit-question', 'Data indikator akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
-                            <label for="username" class="form-label">Indikator</label>
-                            <input class="form-control" name="indicator" type="text" id="username" required="" placeholder="Masukan indikator" value="{{$question->indicator}}">
-                            @if($errors->has('indicator'))
-                                <div class="error text-danger">{{ $errors->first('indicator') }}</div>
-                            @endif
+                            <label for="indicator" class="form-label">Indikator</label>
+                            <input class="form-control" name="indicator" type="text" id="indicator" required="" placeholder="Masukan indikator" value="{{old('indicator',$question->indicator)}}">
+                            @error('indicator')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
-                                    <a href="{{route('admin.category-assesment.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit">Ubah</button>
+                                    <a href="{{route('admin.category-assesment.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

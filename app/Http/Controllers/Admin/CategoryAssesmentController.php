@@ -2,19 +2,37 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\LevelAssesment;
 use App\Models\CategoryAssesment;
-use App\Models\QuestionAssesment;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Validation\CategoryAssesmentValidation;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
+use App\Services\CategoryAssesment\CategoryAssesmentService;
 
 class CategoryAssesmentController extends Controller
 {
+    protected $categoryAssesmentService;
+
+    public function __construct(CategoryAssesmentService $categoryAssesmentService)
+    {
+        $this->categoryAssesmentService = $categoryAssesmentService;
+
+        $this->middleware('can:view.category.assesment')->only(['index']);
+        $this->middleware('can:create.category.assesment')->only(['create', 'store']);
+        $this->middleware('can:edit.category.assesment')->only(['edit', 'update']);
+        $this->middleware('can:delete.category.assesment')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
     public function index(){
-        $data['categories'] = CategoryAssesment::with('questions','questions.levels')->get();
+        $result = $this->categoryAssesmentService->getAllCategoryAssesment(100, true, ['questions','questions.levels']);
+        $data['categories'] = getPaginate($result);
+        $data['request'] = request();
         return view('admin.category-assesment.index',$data);
     }
 
@@ -24,94 +42,56 @@ class CategoryAssesmentController extends Controller
 
     public function store(Request $request){
         try {
-            DB::beginTransaction();
-
-            $request->validate([
-                'name' => 'required',
-
-            ],[
-                'name.required' => 'Nama harus diisi!',
-       
-            ]);
-            $lastCategory = CategoryAssesment::latest()->first();
-            $order = $lastCategory ? $lastCategory->order + 1 : 1; 
-            CategoryAssesment::create([
-                'name' => $request->name,
-                'order' => $order,
-
-            ]);
+            // Validation rules
+            $validator = $this->validator($request->all(), CategoryAssesmentValidation::rulesForCreate(), CategoryAssesmentValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
             
-            DB::commit();
+            $this->categoryAssesmentService->createCategoryAssesment($request->all());
+
             Alert::success('Tambah Berhasil', 'Kategori berhasil dibuat!');
             return redirect()->route('admin.category-assesment.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Tambah Gagal', 'Kategori gagal dibuat!');
             return redirect()->route('admin.category-assesment.index');
         }
     }
 
-    public function edit($categoryId){
-        $category = CategoryAssesment::where('id', $categoryId)->first();
-        if(!$category){
-            abort(404);
-        }
-        $data['category'] = $category;
+    public function edit(CategoryAssesment $category_assesment ){
+        $data['category'] = $category_assesment;
         return view('admin.category-assesment.edit',$data);
     }
 
-    public function update(Request $request,$categoryId){
+    public function update(Request $request, CategoryAssesment $category_assesment){
 
         try {
-            DB::beginTransaction();
+           // Validation rules
+            $validator = $this->validator($request->all(), CategoryAssesmentValidation::rulesForUpdate(), CategoryAssesmentValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
 
-            $category = CategoryAssesment::where('id',$categoryId)->first();
+            $this->categoryAssesmentService->updateCategoryAssesment($category_assesment, $request->all());
 
-            $request->validate([
-                'name' => 'required',
-            ],[
-                'name.required' => 'Nama harus diisi!',
-            ]);
-
-            $category->name = $request->name;
-            $category->save();
-            
-            DB::commit();
             Alert::success('Update Berhasil', 'Kategori berhasil diubah!');
             return redirect()->route('admin.category-assesment.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Update Gagal', 'Kategori gagal diubah!');
             return redirect()->route('admin.category-assesment.index');
         }
     }
 
-    public function destroy($categoryId){
+    public function destroy(CategoryAssesment $category_assesment){
         try {
-            DB::beginTransaction();
-
-            $category = CategoryAssesment::where('id',$categoryId)->first();
-            $questions = QuestionAssesment::where('category_id',$category->id)->get();
-
-            foreach ($questions as $question){
-                LevelAssesment::where('question_id',$question->id)->delete();
-            }
-            foreach ($questions as $question) {
-                $question->delete();
-            }
-            $category->delete();
+            $this->categoryAssesmentService->deleteCategoryAssesment($category_assesment);
             
-            DB::commit();
             Alert::success('Delete Berhasil', 'Kategori berhasil dihapus!');
             return redirect()->route('admin.category-assesment.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Delete Gagal', 'Kategori gagal dihapus!');
             return redirect()->route('admin.category-assesment.index');
         }

@@ -26,6 +26,7 @@
                     id="form-role"
                     action="{{ route('roles.store') }}"
                     method="POST"
+                    onsubmit="confirmSave('form-role', 'Role dan permission akan disimpan')"
                 >
                     @csrf
 
@@ -111,9 +112,8 @@
                             Kembali
                         </a>
                         <button
-                            type="button"
+                            type="submit"
                             class="btn btn-success"
-                            onclick="confirmSave('form-role', 'Role dan permission akan disimpan')"
                         >
                             Simpan
                         </button>

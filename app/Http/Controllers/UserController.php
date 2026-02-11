@@ -19,9 +19,10 @@ class UserController extends Controller
         $this->userService = $userService;
         $this->roleService = $roleService;
 
-        // $this->middleware('can:view.user')->only(['index']);
-        // $this->middleware('can:create.user')->only(['create', 'store']);
-        // $this->middleware('can:edit.user')->only(['edit', 'update']);
+        $this->middleware('can:view.user')->only(['index']);
+        $this->middleware('can:create.user')->only(['create', 'store']);
+        $this->middleware('can:edit.user')->only(['edit', 'update']);
+        $this->middleware('can:delete.user')->only(['destroy']);
     }
 
     protected function validator(array $data, $validation, array $messages = [])

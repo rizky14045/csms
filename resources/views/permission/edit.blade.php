@@ -26,6 +26,7 @@
                     id="form-permission"
                     action="{{ route('permissions.update', $permission->id) }}"
                     method="POST"
+                    onsubmit="confirmSave('form-permission', 'Perubahan permission akan disimpan')"
                 >
                     @csrf
                     @method('PUT')
@@ -51,9 +52,8 @@
                             Kembali
                         </a>
                         <button
-                            type="button"
+                            type="submit"
                             class="btn btn-success"
-                            onclick="confirmSave('form-permission', 'Perubahan permission akan disimpan')"
                         >
                             Update
                         </button>

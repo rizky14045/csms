@@ -26,6 +26,7 @@
                     id="form-user"
                     action="{{ route('users.store') }}"
                     method="POST"
+                    onsubmit="confirmSave('form-user', 'User akan disimpan')"
                 >
                     @csrf
 
@@ -124,9 +125,8 @@
                             Kembali
                         </a>
                         <button
-                            type="button"
+                            type="submit"
                             class="btn btn-success"
-                            onclick="confirmSave('form-user', 'User akan disimpan')"
                         >
                             Simpan
                         </button>

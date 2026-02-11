@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -25,37 +25,42 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.level-assesment.update',['levelId'=>$level->id,'questionId'=>$questionId])}}" class="my-4" method="POST">
+                <form action="{{route('admin.level-assesment.update',['level_assesment'=>$level->id,'question_assesment'=>$question->id])}}" class="my-4" method="POST" id="form-level-assesment" onsubmit="confirmSave('form-level-assesment', 'Data level akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Level</label>
+                            <label for="level" class="form-label">Level</label>
                             <select class="form-select" aria-label="Default select example" name="level" required>
                                 <option value="">Pilih Level</option>
-                                <option value="1" {{$level->level == '1' ? 'selected' : ''}}>Level 1</option>
-                                <option value="2" {{$level->level == '2' ? 'selected' : ''}}>Level 2</option>
-                                <option value="3" {{$level->level == '3' ? 'selected' : ''}}>Level 3</option>
-                                <option value="4" {{$level->level == '4' ? 'selected' : ''}}>Level 4</option>
-                                <option value="5" {{$level->level == '5' ? 'selected' : ''}}>Level 5</option>
+                                <option value="1" {{old('level',$level->level) == '1' ? 'selected' : ''}}>Level 1</option>
+                                <option value="2" {{old('level',$level->level) == '2' ? 'selected' : ''}}>Level 2</option>
+                                <option value="3" {{old('level',$level->level) == '3' ? 'selected' : ''}}>Level 3</option>
+                                <option value="4" {{old('level',$level->level) == '4' ? 'selected' : ''}}>Level 4</option>
+                                <option value="5" {{old('level',$level->level) == '5' ? 'selected' : ''}}>Level 5</option>
                               </select> 
-                            @if($errors->has('level'))
-                                <div class="error text-danger">{{ $errors->first('level') }}</div>
-                            @endif
+                            @error('level')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="username" class="form-label">Level Penilaian</label>
-                            <input class="form-control" name="level_description" type="text" id="username" required="" placeholder="Masukan level penilaian" value="{{$level->level_description}}">
-                            @if($errors->has('level'))
-                                <div class="error text-danger">{{ $errors->first('level') }}</div>
-                            @endif
+                            <label for="level_descriptioin" class="form-label">Level Penilaian</label>
+                            <input class="form-control" name="level_description" type="text" id="level_descriptioin" required="" placeholder="Masukan level penilaian" value="{{old('level_description',$level->level_description)}}">
+                            @error('level_description')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
-                                    <a href="{{route('admin.category-assesment.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit">Ubah</button>
+                                    <a href="{{route('admin.category-assesment.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

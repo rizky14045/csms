@@ -35,6 +35,8 @@
      * @param {string} message
      */
     function confirmSave(formId, message = 'Pastikan data sudah benar.') {
+        event.preventDefault();
+
         Swal.fire({
             title: 'Simpan Data?',
             text: message,
@@ -48,7 +50,10 @@
                 document.getElementById(formId).submit();
             }
         });
+
+        return false; // extra safety
     }
+
 
     /**
      * Konfirmasi hapus data

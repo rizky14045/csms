@@ -26,6 +26,7 @@
                     id="form-user"
                     action="{{ route('users.update', $user->id) }}"
                     method="POST"
+                    onsubmit="confirmSave('form-user', 'Perubahan user akan disimpan')"
                 >
                     @csrf
                     @method('PUT')
@@ -146,9 +147,8 @@
                             Kembali
                         </a>
                         <button
-                            type="button"
+                            type="submit"
                             class="btn btn-success"
-                            onclick="confirmSave('form-user', 'Perubahan user akan disimpan')"
                         >
                             Simpan
                         </button>
