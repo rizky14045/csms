@@ -10,125 +10,90 @@ use App\Models\Level;
 use App\Models\QuestionAssesment;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Validation\SubAreaValidation;
+use App\Models\Area;
+use App\Services\SubArea\SubAreaService;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class MarturitySubAreaController extends Controller
 {
+    protected $subareaService;
 
-    public function create($areaId){
-        $data['areaId'] = $areaId;
+    public function __construct(SubAreaService $subareaService)
+    {
+        $this->subareaService = $subareaService;
+
+        $this->middleware('can:create.marturity.subarea')->only(['create', 'store']);
+        $this->middleware('can:edit.marturity.subarea')->only(['edit', 'update']);
+        $this->middleware('can:delete.marturity.subarea')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
+    public function create(Area $area){
+        $data['area'] = $area;
         return view('admin.marturity-sub-area.create',$data);
     }
 
-    public function store(Request $request,$areaId){
+    public function store(Request $request, Area $area){
 
         try {
-            DB::beginTransaction();
+            // Validation rules
+            $validator = $this->validator($request->all(), SubAreaValidation::rulesForCreate(), SubAreaValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+    
+            $type = 'marturity';
+            $request->merge(['type' => $type]);
+            $this->subareaService->createSubArea($request->all(), $area);
 
-            $request->validate([
-                'name' => 'required',
-                'description' => 'required',
-                'reference' => 'required',
-            ],[
-                'name.required' => 'Nama harus diisi!',
-                'description.required' => 'Uraian harus diisi!',
-                'reference.required' => 'Referensi harus diisi!',
-            ]);
-
-            $lastSubArea = SubArea::where('type','marturity')->latest()->first();
-            $order = $lastSubArea ? $lastSubArea->order + 1 : 1; 
-            SubArea::create([
-                'area_id' => $areaId,
-                'name' => $request->name,
-                'description' => $request->description,
-                'reference' => $request->reference,
-                'order' => $order,
-                'type' =>'marturity'
-            ]);
-            
-            DB::commit();
             Alert::success('Tambah Berhasil', 'Sub Area berhasil dibuat!');
             return redirect()->route('admin.marturity-area.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
-            throw $th;
             Alert::error('Tambah Gagal', 'Sub Area gagal dibuat!');
             return redirect()->route('admin.marturity-area.index');
         }
     }
 
-    public function edit($subAreaId,$areaId){
-        $subArea = SubArea::where('area_id',$areaId)->where('id', $subAreaId)->first();
-        if(!$subArea){
-            abort(404);
-        }
-        $data['subArea'] = $subArea;
-        $data['areaId'] = $areaId;
+    public function edit(SubArea $sub_area, Area $area){
+        $data['subArea'] = $sub_area;
+        $data['area'] = $area;
         return view('admin.marturity-sub-area.edit',$data);
     }
 
-    public function update(Request $request,$subAreaId,$areaId){
+    public function update(Request $request, SubArea $subArea, Area $area){
 
         try {
-            DB::beginTransaction();
+            // Validation rules
+            $validator = $this->validator($request->all(), SubAreaValidation::rulesForUpdate(), SubAreaValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
 
-            $subArea = SubArea::where('area_id',$areaId)->where('id',$subAreaId)->first();
+            $this->subareaService->updateSubArea($subArea,$request->all());
 
-            $request->validate([
-                'name' => 'required',
-                'description' => 'required',
-                'reference' => 'required',
-            ],[
-                'name.required' => 'Nama harus diisi!',
-                'description.required' => 'Uraian harus diisi!',
-                'reference.required' => 'Referensi harus diisi!',
-            ]);
-
-            $subArea->name = $request->name;
-            $subArea->description = $request->description;
-            $subArea->reference = $request->reference;
-            $subArea->save();
-            
-            DB::commit();
             Alert::success('Update Berhasil', 'Sub Area berhasil diubah!');
             return redirect()->route('admin.marturity-area.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
-            throw $th;
             Alert::error('Update Gagal', 'Sub Area gagal diubah!');
             return redirect()->route('admin.marturity-area.index');
         }
     }
 
-    public function destroy($subAreaId,$areaId){
+    public function destroy(SubArea $subArea, Area $area){
         try {
-            DB::beginTransaction();
-
-            $subArea = SubArea::where('area_id',$areaId)->where('id',$subAreaId)->first();
-            $levels = Level::where('sub_area_id',$subArea->id)->get();
-            foreach ($levels as $level){
-                $notes = Note::where('level_id',$level->id)->get();
-                foreach ($notes as $note){
-                    $note->delete();
-                }
-            }
-            foreach ($levels as $level){
-                $level->delete();
-            }
-            $subArea->delete();
-            
-            DB::commit();
+            $this->subareaService->deleteSubArea($subArea);
             Alert::success('Delete Berhasil', 'Sub Area berhasil dihapus!');
             return redirect()->route('admin.marturity-area.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
-            throw $th;
             Alert::error('Delete Gagal', 'Sub Area gagal dihapus!');
             return redirect()->route('admin.marturity-area.index');
         }

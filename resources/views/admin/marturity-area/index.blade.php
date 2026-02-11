@@ -17,7 +17,7 @@
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Tambah Data Marturity</li>
+            <li class="breadcrumb-item active">Data Marturity</li>
         </ol>
     </div>
 </div>
@@ -25,7 +25,11 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <a href="{{route('admin.marturity-area.create')}}" class="btn btn-sm btn-success mb-3">Tambah Area</a>
+                <div class="d-flex justify-content-end pe-3">
+                    @can('create.marturity.area')
+                        <a href="{{route('admin.marturity-area.create')}}" class="btn btn-sm btn-primary mb-3">Tambah Area</a>
+                    @endcan
+                </div>
                 <!-- Komitmen Management -->
                 <div class="accordion" id="formAccordion">
 
@@ -52,18 +56,41 @@
                                 </div>
                         
                                 <!-- Tombol yang bisa diklik -->
-                                    
-                                    <a href="{{route('admin.marturity-area.edit',['areaId' => $area->id])}}" class="btn btn-warning btn-sm mt-1">Edit Area</a>
-                                    <form action="{{route('admin.marturity-area.destroy',['areaId'=>$area->id])}}" method="post" class="d-block ms-3">
+                                <div style="display: flex; gap: 10px;align-items: center;">
+                                    @can('edit.marturity.area')
+                                    <a href="{{route('admin.marturity-area.edit',['area' => $area->id])}}" class="btn btn-warning btn-sm mt-1">Edit Area</a>
+                                    @endcan
+                                    @can('delete.marturity.area')
+                                    <form
+                                        id="delete-maturity-area-{{ $area->id }}"
+                                        action="{{route('admin.marturity-area.destroy',['area'=>$area->id])}}"
+                                        method="POST"
+                                        class="d-inline"
+                                    >
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-danger btn-sm"
+                                            onclick="confirmDelete(
+                                                'delete-maturity-area-{{ $area->id }}',
+                                                'Area akan dihapus.'
+                                            )"
+                                        >
+                                            Hapus
+                                        </button>
                                     </form>
+                                    @endcan
+                                </div>
                             </div>
                         </h2>
+                        @can('view.marturity.subarea')
                         <div id="area_{{$area->id}}" class="accordion-collapse collapse" aria-labelledby="category{{$area->id}}" data-bs-parent="#formAccordion">
                             <div class="accordion-body">
-                                <a href="{{route('admin.marturity-sub-area.create',['areaId'=>$area->id])}}" class="btn btn-success btn-sm mb-3">Tambah Sub Area</a>
+                                @can('create.marturity.subarea')
+                                <a href="{{route('admin.marturity-sub-area.create',['area'=>$area->id])}}" class="btn btn-primary btn-sm mb-3">Tambah Sub Area</a>
+                                @endcan
                                 <table class="table table-bordered text-center">
                                     <thead class="table-light">
                                     <tr>
@@ -75,7 +102,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($area->subAreas as $subArea)
+                                        @foreach ($area->sub_areas as $subArea)
                                             
                                             <tr>
                                                 <td class="text-center">{{$loop->iteration}}</td>
@@ -84,21 +111,44 @@
                                                 <td class="text-start">{{$subArea->reference}}</td>
                                                 <td class="">
                                                     <div class="d-flex flex-wrap gap-2">
-                                                        <a href="{{route('admin.marturity-level.create',['subAreaId'=> $subArea->id])}}" class="btn btn-success btn-sm">Tambah Level</a>
-                                                       
-                                                        <a href="{{route('admin.marturity-sub-area.edit',['subAreaId'=>$subArea->id,'areaId'=> $area->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                                        <form action="{{route('admin.marturity-sub-area.destroy',['subAreaId'=>$subArea->id,'areaId'=> $area->id])}}" method="post" class="d-block">
+                                                        @can('create.marturity.level')
+                                                        <a href="{{route('admin.marturity-level.create',['sub_area'=> $subArea->id])}}" class="btn btn-success btn-sm">Tambah Level</a>
+                                                        @endcan
+                                                        @can('edit.marturity.subarea')
+                                                        <a href="{{route('admin.marturity-sub-area.edit',['sub_area'=>$subArea->id,'area'=> $area->id])}}" class="btn btn-warning btn-sm">Edit</a>
+                                                        @endcan
+                                                        @can('delete.marturity.subarea')
+                                                        <form
+                                                            id="delete-maturity-subarea-{{ $subArea->id }}"
+                                                            action="{{route('admin.marturity-sub-area.destroy',['sub_area'=>$subArea->id,'area'=>$area->id])}}"
+                                                            method="POST"
+                                                            class="d-inline"
+                                                        >
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-danger btn-sm"
+                                                                onclick="confirmDelete(
+                                                                    'delete-maturity-subarea-{{ $subArea->id }}',
+                                                                    'Sub Area akan dihapus.'
+                                                                )"
+                                                            >
+                                                                Hapus
+                                                            </button>
                                                         </form>
+                                                        @endcan
+                                                        @can('view.marturity.level')
                                                         <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#accordionRow{{$subArea->id}}" aria-expanded="false" aria-controls="accordionRow{{$subArea->id}}">
                                                             Lihat Detail Level
                                                         </button>
+                                                        @endcan
                                                     </div>
                                                 </td>
                                                 
                                             </tr>
+                                            @can('view.marturity.level')
                                             <tr id="accordionRow{{$subArea->id}}" class="collapse accordion-content">
                                                 <td colspan="6">
                                                     <table class="table table-bordered">
@@ -111,7 +161,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @if ($subArea->levels->isNotEmpty())
+                                                            @if (isset($subArea->levels))
                                                                 
                                                                 @foreach ($subArea->levels as $level)   
                                                                     <tr>
@@ -120,20 +170,43 @@
                                                                         <td class="text-start">{{$level->description}}</td>
                                                                         <td class="">
                                                                             <div class="d-flex flex-wrap gap-2">
-                                                                                <a href="{{route('admin.marturity-note.create',['levelId'=> $level->id])}}" class="btn btn-success btn-sm">Tambah Note</a>
-                                                        
-                                                                                <a href="{{route('admin.marturity-level.edit',['levelId'=> $level->id,'subAreaId' => $subArea->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                                                                <form action="{{route('admin.marturity-level.destroy',['levelId'=> $level->id,'subAreaId' => $subArea->id])}}" method="post" class="d-block">
+                                                                                @can('create.marturity.note')
+                                                                                <a href="{{route('admin.marturity-note.create',['level'=> $level->id])}}" class="btn btn-success btn-sm">Tambah Note</a>
+                                                                                @endcan
+                                                                                @can('edit.marturity.level')
+                                                                                <a href="{{route('admin.marturity-level.edit',['level'=> $level->id,'sub_area' => $subArea->id])}}" class="btn btn-warning btn-sm">Edit</a>
+                                                                                @endcan
+                                                                                @can('delete.marturity.level')
+                                                                                <form
+                                                                                    id="delete-maturity-level-{{ $level->id }}"
+                                                                                    action="{{route('admin.marturity-level.destroy',['level'=>$level->id,'sub_area'=>$subArea->id])}}"
+                                                                                    method="POST"
+                                                                                    class="d-inline"
+                                                                                >
                                                                                     @csrf
                                                                                     @method('DELETE')
-                                                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        class="btn btn-danger btn-sm"
+                                                                                        onclick="confirmDelete(
+                                                                                            'delete-maturity-level-{{ $level->id }}',
+                                                                                            'Level akan dihapus.'
+                                                                                        )"
+                                                                                    >
+                                                                                        Hapus
+                                                                                    </button>
                                                                                 </form>
+                                                                                @endcan
+                                                                                @can('view.marturity.note')
                                                                                 <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#noteRow{{$level->id}}" aria-expanded="false" aria-controls="noteRow{{$level->id}}">
                                                                                     Lihat Detail Note
                                                                                 </button>
+                                                                                @endcan
                                                                             </div>
                                                                         </td>
                                                                     </tr>
+                                                                    @can('view.marturity.note')
                                                                     <tr id="noteRow{{$level->id}}" class="collapse accordion-content">
                                                                         <td colspan="6">
                                                                             <table class="table table-bordered">
@@ -151,13 +224,31 @@
                                                                                             <td class="text-left">{{$note->note}}</td>
                                                                                             <td class="">
                                                                                                 <div class="d-flex justify-content-end gap-2">
-
-                                                                                                    <a href="{{route('admin.marturity-note.edit',['noteId' => $note->id,'levelId'=> $level->id,])}}" class="btn btn-warning btn-sm">Edit</a>
-                                                                                                    <form action="{{route('admin.marturity-note.destroy',['noteId' => $note->id,'levelId'=> $level->id])}}" method="post" class="d-block">
+                                                                                                    @can('edit.marturity.note')
+                                                                                                    <a href="{{route('admin.marturity-note.edit',['note' => $note->id,'level'=> $level->id,])}}" class="btn btn-warning btn-sm">Edit</a>
+                                                                                                    @endcan
+                                                                                                    @can('delete.marturity.note')
+                                                                                                    <form
+                                                                                                        id="delete-maturity-note-{{ $note->id }}"
+                                                                                                        action="{{route('admin.marturity-note.destroy',['note'=>$note->id,'level'=>$level->id])}}"
+                                                                                                        method="POST"
+                                                                                                        class="d-inline"
+                                                                                                    >
                                                                                                         @csrf
                                                                                                         @method('DELETE')
-                                                                                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+
+                                                                                                        <button
+                                                                                                            type="button"
+                                                                                                            class="btn btn-danger btn-sm"
+                                                                                                            onclick="confirmDelete(
+                                                                                                                'delete-maturity-note-{{ $note->id }}',
+                                                                                                                'Catatan akan dihapus.'
+                                                                                                            )"
+                                                                                                        >
+                                                                                                            Hapus
+                                                                                                        </button>
                                                                                                     </form>
+                                                                                                    @endcan
                                                                                                 </div>
                                                                                             </td>
                                                                                         </tr>
@@ -166,6 +257,7 @@
                                                                             </table>  
                                                                         </td>
                                                                     </tr>
+                                                                    @endcan
                                                                 @endforeach
                                                             @endif
 
@@ -173,6 +265,7 @@
                                                     </table>  
                                                 </td>
                                             </tr>
+                                            @endcan
                                         @endforeach
 
                                         
@@ -180,6 +273,7 @@
                                 </table>
                             </div>
                         </div>
+                        @endcan
                         @endforeach
                     </div>
                 </div>

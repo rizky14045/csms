@@ -2,21 +2,41 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Area;
 use App\Models\Note;
 use App\Models\Level;
 use App\Models\SubArea;
-use App\Models\QuestionAssesment;
+use App\Http\Validation\AreaValidation;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Services\Area\AreaService;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class MarturityAreaController extends Controller
 {
+    protected $areaService;
+
+    public function __construct(AreaService $areaService)
+    {
+        $this->areaService = $areaService;
+
+        $this->middleware('can:view.marturity.area')->only(['index']);
+        $this->middleware('can:create.marturity.area')->only(['create', 'store']);
+        $this->middleware('can:edit.marturity.area')->only(['edit', 'update']);
+        $this->middleware('can:delete.marturity.area')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
     public function index(){
-        $data['areas'] = Area::where('type','marturity')->get();
+        $result = $this->areaService->getAllArea(100, true, 'marturity', ['subAreas.levels.notes']);
+        $data['areas'] = getPaginate($result);
+        $data['request'] = request();
         return view('admin.marturity-area.index',$data);
     }
 
@@ -26,100 +46,57 @@ class MarturityAreaController extends Controller
 
     public function store(Request $request){
         try {
-            DB::beginTransaction();
+            // Validation rules
+            $validator = $this->validator($request->all(), AreaValidation::rulesForCreate(), AreaValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
 
-            $request->validate([
-                'name' => 'required',
-            ],[
-                'name.required' => 'Nama harus diisi!',
-            ]);
-            $lastarea = Area::where('type','marturity')->latest()->first();
-            $order = $lastarea ? $lastarea->order + 1 : 1; 
-            Area::create([
-                'name' => $request->name,
-                'order' => $order,
-                'type' => 'marturity',
-            ]);
-            
-            DB::commit();
+            $type = 'marturity';
+            $request->merge(['type' => $type]);
+            $this->areaService->createArea($request->all());
+
             Alert::success('Tambah Berhasil', 'Area berhasil dibuat!');
             return redirect()->route('admin.marturity-area.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Tambah Gagal', 'Area gagal dibuat!');
             return redirect()->route('admin.marturity-area.index');
         }
     }
 
-    public function edit($areaId){
-        $area = Area::where('id', $areaId)->first();
-        if(!$area){
-            abort(404);
-        }
+    public function edit(Area $area){
         $data['area'] = $area;
         return view('admin.marturity-area.edit',$data);
     }
 
-    public function update(Request $request,$areaId){
+    public function update(Request $request, Area $area){
 
         try {
-            DB::beginTransaction();
+            // Validation rules
+            $validator = $this->validator($request->all(), AreaValidation::rulesForUpdate(), AreaValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
 
-            $area = Area::where('id',$areaId)->first();
+            $this->areaService->updateArea($area, $request->all());
 
-            $request->validate([
-                'name' => 'required',
-            ],[
-                'name.required' => 'Nama harus diisi!',
-            ]);
-
-            $area->name = $request->name;
-            $area->save();
-            
-            DB::commit();
             Alert::success('Update Berhasil', 'Area berhasil diubah!');
             return redirect()->route('admin.marturity-area.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Update Gagal', 'Area gagal diubah!');
             return redirect()->route('admin.marturity-area.index');
         }
     }
 
-    public function destroy($areaId){
+    public function destroy(Area $area){
         try {
-            DB::beginTransaction();
-
-            $area = Area::where('id',$areaId)->first();
-            $subAreas = SubArea::where('area_id',$area->id)->get();
-            $notes = Note::where('area_id',$area->id)->get();
-            
-            foreach ($subAreas as $subArea){
-
-                $levels = Level::where('sub_area_id',$subArea->id)->get();
-                foreach ($levels as $level){
-                    Note::where('level_id',$level->id)->delete();
-                }
-                foreach ($levels as $level){
-                    $level->delete();
-                }
-            }
-            foreach ($subAreas as $subArea) {
-                $subArea->delete();
-            }
-            $area->delete();
-            
-            DB::commit();
+            $this->areaService->deleteArea($area);
             Alert::success('Delete Berhasil', 'Area berhasil dihapus!');
             return redirect()->route('admin.marturity-area.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Delete Gagal', 'Area gagal dihapus!');
             return redirect()->route('admin.marturity-area.index');
         }

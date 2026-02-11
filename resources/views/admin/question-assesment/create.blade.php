@@ -25,7 +25,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.question-assesment.store',['category_assesment'=>$category->id])}}" class="my-4" method="POST"  id="form-question-assesment" onsubmit="confirmSave('form-question-assesment', 'Data pertanyaan akan disimpan')">
+                <form action="{{route('admin.question-assesment.store',['category_assesment'=>$category->id])}}" class="my-4" method="POST" id="form-question-assesment" onsubmit="confirmSave('form-question-assesment', 'Data pertanyaan akan disimpan')">
                     @csrf
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">

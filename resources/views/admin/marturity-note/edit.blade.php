@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -25,23 +25,28 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.marturity-note.update',['noteId'=>$note->id,'levelId' =>$levelId])}}" class="my-4" method="POST">
+                <form action="{{route('admin.marturity-note.update',['note'=>$note->id,'level'=>$level->id])}}" class="my-4" method="POST" id="form-marturity-note" onsubmit="confirmSave('form-marturity-note', 'Data note akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
-                            <label for="username" class="form-label">Note</label>
-                            <input class="form-control" name="note" type="text" id="username" required="" placeholder="Masukan note" value="{{$note->note}}">
-                            @if($errors->has('note'))
-                                <div class="error text-danger">{{ $errors->first('note') }}</div>
-                            @endif
+                            <label for="note" class="form-label">Note</label>
+                            <input class="form-control @error('note') is-invalid @enderror" name="note" type="text" id="note" required="" placeholder="Masukan note" value="{{old('note',$note->note)}}">
+                            @error('note')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
-                                    <a href="{{route('admin.marturity-area.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit">Ubah</button>
+                                    <a href="{{route('admin.marturity-area.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

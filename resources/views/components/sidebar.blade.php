@@ -89,9 +89,11 @@
                                 <a href="{{route('admin.category-assesment.index')}}" class="tp-link">Assesment</a>
                             </li>
                             @endcan
+                            @can('view.marturity.area')
                             <li>
                                 <a href="{{route('admin.marturity-area.index')}}" class="tp-link">Marturity</a>
                             </li>
+                            @endcan
                             <li>
                                 <a href="{{route('admin.kpi-area.index')}}" class="tp-link">KPI</a>
                             </li>
