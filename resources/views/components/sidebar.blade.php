@@ -99,9 +99,20 @@
                                 <a href="{{route('admin.kpi-area.index')}}" class="tp-link">KPI</a>
                             </li>
                             @endcan
+                            @can('view.attribute.unit')
+                            <li>
+                                <a href="{{route('user.attribute.index')}}" class="tp-link">Attribute</a>
+                            </li>
+                            @endcan
+                            @can('view.security.unit')
+                            <li>
+                                <a href="{{route('user.security.index')}}" class="tp-link">Satuan Pengaman</a>
+                            </li>
+                            @endcan
                         </ul>
                     </div>
                 </li>
+                @canany(['view.user', 'view.role', 'view.permission'])
                 <li>
                     <a href="#sidebarSetting" data-bs-toggle="collapse">
                         <i data-feather="settings"></i>
@@ -128,6 +139,7 @@
                         </ul>
                     </div>
                 </li>
+                @endcanany
             </ul>
         </div>
         <!-- End Sidebar -->

@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -19,7 +19,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Edit Data Satuan Pengamanan</li>
         </ol>
     </div>
@@ -28,116 +28,121 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('user.security.update',['id'=>$security->id])}}" class="my-4" method="POST">
+                <form action="{{route('user.security.update',['security'=>$security->id])}}" class="my-4" method="POST" id="form-security" onsubmit="confirmSave('form-security', 'Data satuan pengaman akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-9">
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Nama</label>
-                            <input class="form-control" type="text" required="" placeholder="Masukan nama" name="name" value="{{$security->name}}">
-                            @if($errors->has('name'))
-                                <div class="error text-danger">{{ $errors->first('name') }}</div>
-                            @endif
+                            <label for="name" class="form-label"><span class="text-danger">*</span> Nama</label>
+                            <input class="form-control @error('name') is-invalid @enderror" id="name" type="text" required="" placeholder="Masukan nama" name="name" value="{{ old('name', $security->name) }}">
+                            @error('name')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Jenis Kelamin</label>
-                            <select class="form-select" aria-label="Default select example" name="gender" required>
+                            <label for="gender" class="form-label"><span class="text-danger">*</span> Jenis Kelamin</label>
+                            <select class="form-select @error('gender') is-invalid @enderror" id="gender" aria-label="Default select example" name="gender" required>
                                 <option value="">Pilih Jenis Kelamin</option>
-                                <option value="Pratama" {{$security->gender == 'Pria' ? 'selected' : ''}}>Pria</option>
-                                <option value="Madya" {{$security->gender == 'Wanita' ? 'selected' : ''}}>Wanita</option>
+                                <option value="Pria" {{old('gender', $security->gender) == 'Pria' ? 'selected' : ''}}>Pria</option>
+                                <option value="Wanita" {{old('gender', $security->gender) == 'Wanita' ? 'selected' : ''}}>Wanita</option>
                               </select> 
-                            @if($errors->has('gender'))
-                                <div class="error text-danger">{{ $errors->first('gender') }}</div>
-                            @endif
+                            @error('gender')
+                                <div gender="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Unit Kerja</label>
-                            <input class="form-control" type="text" required="" placeholder="Masukan unit kerja" name="unit_work" value="{{$security->unit_work}}">
-                            @if($errors->has('unit_work'))
-                                <div class="error text-danger">{{ $errors->first('unit_work') }}</div>
-                            @endif
+                            <label for="unit_work" class="form-label"><span class="text-danger">*</span> Unit Kerja</label>
+                            <input class="form-control @error('unit_work') is-invalid @enderror" id="unit_work" type="text" required="" placeholder="Masukan unit kerja" name="unit_work" value="{{ old('unit_work', $security->unit_work) }}">
+                            @error('unit_work')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">NID</label>
-                            <input class="form-control" type="text" required="" placeholder="Masukan nid" name="nid" value="{{$security->nid}}">
-                            @if($errors->has('nid'))
-                                <div class="error text-danger">{{ $errors->first('nid') }}</div>
-                            @endif
+                            <label for="nid" class="form-label"><span class="text-danger">*</span> NID</label>
+                            <input class="form-control @error('nid') is-invalid @enderror" id="nid" type="text" required="" placeholder="Masukan nid" name="nid" value="{{ old('nid', $security->nid) }}">
+                            @error('nid')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Nomor REG KTA</label>
-                            <input class="form-control" type="text" required="" placeholder="Masukan nomor reg kta" name="registration_number" value="{{$security->registration_number}}">
-                            @if($errors->has('registration_number'))
-                                <div class="error text-danger">{{ $errors->first('registration_number') }}</div>
-                            @endif
+                            <label for="registration_number" class="form-label"><span class="text-danger">*</span> Nomor REG KTA</label>
+                            <input class="form-control @error('registration_number') is-invalid @enderror" id="registration_number" type="text" required="" placeholder="Masukan nomor reg kta" name="registration_number" value="{{ old('registration_number', $security->registration_number) }}">
+                            @error('registration_number')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Expired KTA</label>
-                            <input class="form-control" type="date" required="" name="expired_card_date" value="{{$security->expired_card_date}}">
-                            @if($errors->has('expired_card_date'))
-                                <div class="error text-danger">{{ $errors->first('expired_card_date') }}</div>
-                            @endif
+                            <label for="expired_card_date" class="form-label"><span class="text-danger">*</span> Expired KTA</label>
+                            <input class="form-control @error('expired_card_date') is-invalid @enderror" id="expired_card_date" type="date" required="" name="expired_card_date" value="{{ old('expired_card_date', $security->expired_card_date) }}">
+                            @error('expired_card_date')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Jabatan</label>
-                            <select class="form-select" aria-label="Default select example" name="position" required>
+                            <label for="position" class="form-label"><span class="text-danger">*</span> Jabatan</label>
+                            <select class="form-select @error('position') is-invalid @enderror" id="position" aria-label="Default select example" name="position" required>
                                 <option value="">Pilih Jabatan</option>
-                                <option value="Komandan" {{$security->position == 'Komandan' ? 'selected' : ''}}>Komandan</option>
-                                <option value="Anggota" {{$security->position == 'Anggota' ? 'selected' : ''}}>Anggota</option>
-                                <option value="Chief" {{$security->position == 'Chief' ? 'selected' : ''}}>Chief</option>
+                                <option value="Komandan" {{old('position', $security->position) == 'Komandan' ? 'selected' : ''}}>Komandan</option>
+                                <option value="Anggota" {{old('position', $security->position) == 'Anggota' ? 'selected' : ''}}>Anggota</option>
+                                <option value="Chief" {{old('position', $security->position) == 'Chief' ? 'selected' : ''}}>Chief</option>
                               </select> 
-                            @if($errors->has('position'))
-                                <div class="error text-danger">{{ $errors->first('position') }}</div>
-                            @endif
+                            @error('position')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Tempat Lahir</label>
-                            <input class="form-control" type="text" required="" placeholder="Masukan tempat lahir" name="birth_place" value="{{$security->birth_place}}">
-                            @if($errors->has('birth_place'))
-                                <div class="error text-danger">{{ $errors->first('birth_place') }}</div>
-                            @endif
+                            <label for="birth_place" class="form-label"><span class="text-danger">*</span> Tempat Lahir</label>
+                            <input class="form-control @error('birth_place') is-invalid @enderror" id="birth_place" type="text" required="" placeholder="Masukan tempat lahir" name="birth_place" value="{{ old('birth_place', $security->birth_place) }}">
+                            @error('birth_place')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Tanggal Lahir</label>
-                            <input class="form-control" type="date" required="" name="birth_date" value="{{$security->birth_date}}">
-                            @if($errors->has('birth_date'))
-                                <div class="error text-danger">{{ $errors->first('birth_date') }}</div>
-                            @endif
+                            <label for="birth_date" class="form-label"><span class="text-danger">*</span> Tanggal Lahir</label>
+                            <input class="form-control @error('birth_date') is-invalid @enderror" id="birth_date" type="date" required="" name="birth_date" value="{{ old('birth_date', $security->birth_date) }}">
+                            @error('birth_date')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Kualifikasi</label>
-                            <select class="form-select" aria-label="Default select example" name="qualification" required>
+                            <label for="qualification" class="form-label"><span class="text-danger">*</span> Kualifikasi</label>
+                            <select class="form-select @error('qualification') is-invalid @enderror" id="qualification" aria-label="Default select example" name="qualification" required>
                                 <option value="">Pilih Kualifikasi</option>
-                                <option value="Pratama" {{$security->qualification == 'Pratama' ? 'selected' : ''}}>Pratama</option>
-                                <option value="Madya" {{$security->qualification == 'Madya' ? 'selected' : ''}}>Madya</option>
-                                <option value="Utama" {{$security->qualification == 'Utama' ? 'selected' : ''}}>Utama</option>
+                                <option value="Pratama" {{old('qualification', $security->qualification) == 'Pratama' ? 'selected' : ''}}>Pratama</option>
+                                <option value="Madya" {{old('qualification', $security->qualification) == 'Madya' ? 'selected' : ''}}>Madya</option>
+                                <option value="Utama" {{old('qualification', $security->qualification) == 'Utama' ? 'selected' : ''}}>Utama</option>
                               </select> 
-                            @if($errors->has('qualification'))
-                                <div class="error text-danger">{{ $errors->first('qualification') }}</div>
-                            @endif
+                            @error('qualification')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Pendidikan Terakhir</label>
-                            <input class="form-control" type="text" required="" placeholder="Masukan pendidikan terakhir" name="last_education" value="{{$security->last_education}}">
-                            @if($errors->has('last_education'))
-                                <div class="error text-danger">{{ $errors->first('last_education') }}</div>
-                            @endif
+                            <label for="last_education" class="form-label"><span class="text-danger">*</span> Pendidikan Terakhir</label>
+                            <input class="form-control @error('last_education') is-invalid @enderror" id="last_education" type="text" required="" placeholder="Masukan pendidikan terakhir" name="last_education" value="{{ old('last_education', $security->last_education) }}">
+                            @error('last_education')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Note</label>
-                            <input class="form-control" type="text" required="" placeholder="Masukan note" name="note" value="{{$security->note}}">
-                            @if($errors->has('note'))
-                                <div class="error text-danger">{{ $errors->first('note') }}</div>
-                            @endif
+                            <label for="note" class="form-label"><span class="text-danger">*</span> Note</label>
+                            <input class="form-control @error('note') is-invalid @enderror" id="note" type="text" required="" placeholder="Masukan note" name="note" value="{{ old('note', $security->note) }}">
+                            @error('note')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('user.security.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit"> Edit</button>
+                                    <a href="{{route('user.security.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -37,6 +37,44 @@ class AttributeValidation
         ];
     }
 
+    public static function rulesForCreateAttributeUnit(){
+        return [
+            'name' => 'required',
+            'status_ownership' => [
+                'required',
+                'in:BUJP,PNP',
+            ],
+            'unit' => [
+                'required',
+                'in:Unit,Lembar,Jumlah,Orang,Titik,Meter',
+            ],
+            'standard_contract' => 'required',
+            'type_attribute' => [
+                'required',
+                'in:Attribute,Sarana',
+            ],
+        ];
+    }
+
+    public static function rulesForUpdateAttributeUnit(){
+        return [
+            'name' => 'required',
+            'status_ownership' => [
+                'required',
+                'in:BUJP,PNP',
+            ],
+            'unit' => [
+                'required',
+                'in:Unit,Lembar,Jumlah,Orang,Titik,Meter',
+            ],
+            'standard_contract' => 'required',
+            'type_attribute' => [
+                'required',
+                'in:Attribute,Sarana',
+            ],
+        ];
+    }
+
     public static function messages()
     {
         return [
@@ -46,6 +84,8 @@ class AttributeValidation
             'unit.required' => 'Satuan harus diisi!',
             'unit.in' => 'Satuan harus berupa Unit, Lembar, Jumlah, Orang, Titik, atau Meter!',
             'standard_contract.required' => 'Jumlah Standar Kontrak harus diisi!',
+            'type_attribute.required' => 'Type atribut harus diisi!',
+            'type_attribute.in' => 'Tipe atribut harus berupa Attribute atau Sarana!',
         ];
     }
 }

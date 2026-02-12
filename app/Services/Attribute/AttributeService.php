@@ -4,9 +4,6 @@ namespace App\Services\Attribute;
 
 use App\Helpers\JsonResponse;
 use App\Models\Attribute;
-use App\Models\Role;
-use App\Models\User;
-use App\Models\Vulnerability;
 use App\Services\ActivityLog\ActivityLogService;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +17,7 @@ class AttributeService
         $this->logService = $logService;
     }
     
-   public function getAllAttribute($limit = 10, $paginate = true, $type_attribute = null)
+   public function getAllAttribute($limit = 10, $paginate = true, $type_attribute = null, $user_id = null)
     {
         try {
             $order  = request('order', 'DESC');
@@ -39,6 +36,10 @@ class AttributeService
 
             if (!empty($type_attribute)) {
                 $query->where('type_attribute', $type_attribute);
+            }
+
+            if($user_id){
+                $query->where('user_id', $user_id);
             }
 
             if ($start && $end) {
@@ -87,12 +88,76 @@ class AttributeService
         }
     }
 
+    public function getAttributeById(int $id, $user_id = null)
+    {
+        try {
+
+            $query = Attribute::where('id', $id);
+
+            if (!empty($user_id)) {
+                $query->where('user_id', $user_id);
+            }
+
+            $attribute = $query->first();
+
+            if (!$attribute) {
+
+                $this->logService->log(
+                    'attribute.fetch_one',
+                    'Attribute not found',
+                    404,
+                    [
+                        'id' => $id,
+                        'user_id' => $user_id,
+                    ]
+                );
+
+                return JsonResponse::error(
+                    'Attribute not found',
+                    'Attribute not found',
+                    404
+                );
+            }
+
+            return JsonResponse::success(
+                $attribute,
+                'Attribute found',
+                200
+            );
+
+        } catch (Exception $e) {
+
+            $this->logService->log(
+                'attribute.fetch_one',
+                'Failed to fetch attribute',
+                500,
+                [
+                    'id' => $id,
+                    'user_id' => $user_id,
+                    'error' => $e->getMessage(),
+                ]
+            );
+
+            return JsonResponse::error(
+                $e->getMessage(),
+                'Failed to fetch attribute',
+                500
+            );
+        }
+    }
+
     public function createAttribute(array $data)
     {
         DB::beginTransaction();
 
         try {
+            $user_id = null;
+            if(isset($data['user_id'])){
+                $user_id = $data['user_id'];
+            }
+
             $attribute = Attribute::create([
+                'user_id' => $user_id,
                 'name' => $data['name'],
                 'status_ownership' => $data['status_ownership'],
                 'unit' => $data['unit'],

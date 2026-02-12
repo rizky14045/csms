@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 
 @stop
@@ -12,7 +12,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Atribut</li>
         </ol>
     </div>
@@ -21,7 +21,9 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="d-flex justify-content-end pe-3 pt-3">
-                <a href="{{route('user.attribute.create')}}" class="btn btn-success">Tambah Data</a>
+                @can('create.attribute.unit')
+                <a href="{{route('user.attribute.create')}}" class="btn btn-primary">Tambah Data</a>
+                @endcan
             </div>
             <div class="card-body">  
                 <div class="table-responsive">
@@ -34,7 +36,9 @@
                                 <th scope="col">Satuan</th>
                                 <th scope="col">Jumlah Standar Kontrak</th>
                                 <th scope="col">Tipe</th>
+                                @canany(['edit.attribute.unit', 'delete.attribute.unit'])
                                 <th scope="col">Action</th>
+                                @endcanany
                             </tr>
                         </thead>
                         <tbody>
@@ -46,14 +50,34 @@
                                     <td>{{$attribute->unit}}</td>
                                     <td>{{$attribute->standard_contract}}</td>
                                     <td>{{$attribute->type_attribute}}</td>
+                                    @canany(['edit.attribute.unit', 'delete.attribute.unit'])
                                     <td class="text-center">
-                                        <a href="{{route('user.attribute.edit',['id'=>$attribute->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                        <form action="{{route('user.attribute.destroy',['id'=>$attribute->id])}}" method="post" class="d-inline">
+                                        @can('edit.attribute.unit')
+                                        <a href="{{route('user.attribute.edit',['attribute'=>$attribute->id])}}" class="btn btn-warning btn-sm">Edit</a>
+                                        @endcan
+                                        @can('delete.attribute.unit')
+                                        <form
+                                            id="delete-attribute-{{ $attribute->id }}"
+                                            action="{{ route('user.attribute.destroy',['attribute'=>$attribute->id]) }}"
+                                            method="POST"
+                                            class="d-inline"
+                                        >
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="confirmDelete(
+                                                    'delete-attribute-{{ $attribute->id }}',
+                                                    'Atribut akan dihapus.'
+                                                )"
+                                            >
+                                                Hapus
+                                            </button>
                                         </form>
+                                        @endcan
                                     </td>
+                                    @endcanany
                                 </tr>
                             @endforeach
                         </tbody>

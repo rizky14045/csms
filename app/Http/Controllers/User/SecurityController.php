@@ -2,20 +2,40 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\User;
 use App\Models\Security;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Services\Security\SecurityService;
+use App\Http\Validation\SecurityValidation;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class SecurityController extends Controller
 {
-    public function index(){
+    protected $securityService;
 
-        $userId = Auth::user()->id;
-        $data['securities'] = Security::where('user_id',$userId)->paginate(25);
+    public function __construct(SecurityService $securityService)
+    {
+        $this->securityService = $securityService;
+
+        $this->middleware('can:view.security.unit')->only(['index']);
+        $this->middleware('can:create.security.unit')->only(['create', 'store']);
+        $this->middleware('can:edit.security.unit')->only(['edit', 'update']);
+        $this->middleware('can:delete.security.unit')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
+    public function index(){
+        $result = $this->securityService->getAllSecurity(25, true, auth()->user()->id);
+        $data['securities'] = getPaginate($result);
+        $data['request'] = request();
+        
         return view('user.security.index',$data);
 
     }
@@ -27,163 +47,78 @@ class SecurityController extends Controller
     public function store(Request $request){
 
         try {
-            DB::beginTransaction();
+            // Validation rules
+            $validator = $this->validator($request->all(), SecurityValidation::rulesForCreate(), SecurityValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
 
-            $userId = Auth::user()->id;
-            $request->validate([
-                'name' => 'required',
-                'gender' => 'required',
-                'unit_work' => 'required',
-                'nid' => 'required',
-                'registration_number' => 'required',
-                'expired_card_date' => 'required',
-                'position' => 'required',
-                'birth_place' => 'required',
-                'birth_date' => 'required',
-                'qualification' => 'required',
-                'last_education' => 'required',
-         
-            ],[
-                'name.required' => 'Nama harus diisi!',
-                'unit_work.required' => 'Unit kerja harus diisi!',
-                'nid.required' => 'NID harus diisi!',
-                'registration_number.required' => 'Nomor REG KTA harus diisi!',
-                'expired_card_date.required' => 'Expired KTA harus diisi!',
-                'position.required' => 'Jabatan harus diisi!',
-                'birth_place.required' => 'Tempat lahir harus diisi!',
-                'birth_date.required' => 'Tanggal lahir harus diisi!',
-                'qualification.required' => 'Kualifikasi harus diisi!',
-                'last_education.required' => 'Pendidikan terakhir harus diisi!',
-                'gender.required' => 'Jenis kelamin harus diisi!',
-       
-            ]);
-
-            Security::create([
-                'user_id' => $userId,
-                'name' => $request->name,
-                'unit_work' => $request->unit_work,
-                'nid' => $request->nid,
-                'registration_number' => $request->registration_number,
-                'expired_card_date' => $request->expired_card_date,
-                'position' => $request->position,
-                'birth_place' => $request->birth_place,
-                'birth_date' => $request->birth_date,
-                'qualification' => $request->qualification,
-                'last_education' => $request->last_education,
-                'gender' => $request->gender,
-                'note' => $request->note,
-            ]);
+            $user_id = auth()->user()->id;
+            $request->merge(['user_id' => $user_id]);
+            $this->securityService->createSecurity($request->all());
             
-            DB::commit();
             Alert::success('Tambah Berhasil', 'Satuan Pengamanan berhasil dibuat!');
             return redirect()->route('user.security.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Tambah Gagal', 'Satuan Pengamanan gagal dibuat!');
             return redirect()->route('user.security.index');
         }
     }
 
-    public function edit($id){
-
-        $userId = Auth::user()->id;
-        $security = Security::where('id', $id)->where('user_id',$userId)->first();
-        if(!$security){
-            abort(404);
+    public function edit(Security $security){
+        $result = $this->securityService->getSecurityById($security->id, auth()->user()->id);
+        $status = getStatus($result);
+        if(!$status){
+            return abort(404);
         }
+        
         $data['security'] = $security;
+
         return view('user.security.edit',$data);
     }
 
-    public function update(Request $request,$id){
+    public function update(Request $request, Security $security){
 
         try {
-
-            DB::beginTransaction();
-
-            $userId = Auth::user()->id;
-            $request->validate([
-                'name' => 'required',
-                'unit_work' => 'required',
-                'nid' => 'required',
-                'registration_number' => 'required',
-                'expired_card_date' => 'required',
-                'position' => 'required',
-                'birth_place' => 'required',
-                'birth_date' => 'required',
-                'qualification' => 'required',
-                'last_education' => 'required',
-                'gender' => 'required',
-                'note' => 'required',
-         
-            ],[
-                'name.required' => 'Nama harus diisi!',
-                'unit_work.required' => 'Unit kerja harus diisi!',
-                'nid.required' => 'NID harus diisi!',
-                'registration_number.required' => 'Nomor REG KTA harus diisi!',
-                'expired_card_date.required' => 'Expired KTA harus diisi!',
-                'position.required' => 'Jabatan harus diisi!',
-                'birth_place.required' => 'Tempat lahir harus diisi!',
-                'birth_date.required' => 'Tanggal lahir harus diisi!',
-                'qualification.required' => 'Kualifikasi harus diisi!',
-                'last_education.required' => 'Pendidikan terakhir harus diisi!',
-                'gender.required' => 'Jenis kelamin harus diisi!',
-                'note.required' => 'note harus diisi!',
-       
-            ]);
-
-            $security = Security::where('id',$id)->where('user_id',$userId)->first();
-            if(!$security){
-                abort(404);
+             // Validation rules
+            $validator = $this->validator($request->all(), SecurityValidation::rulesForUpdate(), SecurityValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
             }
-            $security->name = $request->name;
-            $security->unit_work = $request->unit_work;
-            $security->nid = $request->nid;
-            $security->registration_number = $request->registration_number;
-            $security->expired_card_date = $request->expired_card_date;
-            $security->position = $request->position;
-            $security->birth_place = $request->birth_place;
-            $security->birth_date = $request->birth_date;
-            $security->qualification = $request->qualification;
-            $security->last_education = $request->last_education;
-            $security->gender = $request->gender;
-            $security->note = $request->note;
-            $security->save();
+
+            $result = $this->securityService->getSecurityById($security->id, auth()->user()->id);
+            $status = getStatus($result);
+            if(!$status){
+                return abort(404);
+            }
             
-            DB::commit();
+            $this->securityService->updateSecurity($security, $request->all());
+
             Alert::success('Update Berhasil', 'Satuan Pengamanan berhasil diubah!');
             return redirect()->route('user.security.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
-
             Alert::error('Ubah Gagal', 'Satuan Pengamanan gagal diubah!');
             return redirect()->route('user.security.index');
         }
     }
 
-    public function destroy($id){
+    public function destroy(Security $security){
         
         try {
-            DB::beginTransaction();
-
-            $userId = Auth::user()->id;
-            $security = Security::where('id',$id)->where('user_id',$id)->first();
-            if(!$security){
-                abort(404);
+            $result = $this->securityService->getSecurityById($security->id, auth()->user()->id);
+            $status = getStatus($result);
+            if(!$status){
+                return abort(404);
             }
-            $security->delete();
-            
-            DB::commit();
+
+             $this->securityService->deleteSecurity($security);
+
             Alert::success('Delete Berhasil', 'Satuan Pengamanan berhasil dihapus!');
             return redirect()->route('user.security.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Hapus Gagal', 'Satuan Pengamanan gagal dihapus!');
             return redirect()->route('user.security.index');
         }

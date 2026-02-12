@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 
 @stop
@@ -12,7 +12,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Satuan Pengamanan</li>
         </ol>
     </div>
@@ -21,7 +21,9 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="d-flex justify-content-end pe-3 pt-3">
-                <a href="{{route('user.security.create')}}" class="btn btn-success">Tambah Data</a>
+                @can('create.security.unit')
+                <a href="{{route('user.security.create')}}" class="btn btn-primary">Tambah Data</a>
+                @endcan
             </div>
             <div class="card-body">  
                 <div class="table-responsive">
@@ -41,7 +43,9 @@
                                 <th scope="col">Kualifikasi</th>
                                 <th scope="col">Pendidikan Terakhir</th>
                                 <th scope="col">Note</th>
+                                @canany(['edit.security.unit', 'delete.security.unit'])
                                 <th scope="col">Action</th>
+                                @endcanany
                             </tr>
                         </thead>
                         <tbody>
@@ -60,14 +64,34 @@
                                     <td>{{$security->qualification}}</td>
                                     <td>{{$security->last_education}}</td>
                                     <td>{{$security->note}}</td>
+                                    @canany(['edit.security.unit', 'delete.security.unit'])
                                     <td class="text-center text-nowrap">
-                                        <a href="{{route('user.security.edit',['id'=>$security->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                        <form action="{{route('user.security.destroy',['id'=>$security->id])}}" method="post" class="d-inline">
+                                        @can('edit.security.unit')
+                                        <a href="{{route('user.security.edit',['security'=>$security->id])}}" class="btn btn-warning btn-sm">Edit</a>
+                                        @endcan
+                                        @can('delete.security.unit')
+                                        <form
+                                            id="delete-security-{{ $security->id }}"
+                                            action="{{ route('user.security.destroy',['security'=>$security->id]) }}"
+                                            method="POST"
+                                            class="d-inline"
+                                        >
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="confirmDelete(
+                                                    'delete-security-{{ $security->id }}',
+                                                    'Satuan pengaman akan dihapus.'
+                                                )"
+                                            >
+                                                Hapus
+                                            </button>
                                         </form>
+                                        @endcan
                                     </td>
+                                    @endcanany
                                 </tr>
                             @endforeach
                         </tbody>

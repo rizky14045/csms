@@ -47,10 +47,10 @@ Route::prefix('user')->group(function () {
 
     Route::middleware(['auth'])->group(function () {
         
-        Route::get('/home', [DashboardController::class, 'index'])->name('user.home.index');
+        // Route::get('/home', [DashboardController::class, 'index'])->name('user.home.index');
 
-        Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('user.changePassword');
-        Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('user.updatePassword');
+        // Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('user.changePassword');
+        // Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('user.updatePassword');
 
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('user.assesment.index');
@@ -178,23 +178,9 @@ Route::prefix('user')->group(function () {
             Route::patch('/edit/{id}', [VendorController::class, 'update'])->name('user.vendor.update');
             Route::delete('/delete/{id}', [VendorController::class, 'destroy'])->name('user.vendor.destroy');
         });
-        Route::prefix('attribute')->group(function () {
-            Route::get('/', [AttributeController::class, 'index'])->name('user.attribute.index');
-            Route::get('/create', [AttributeController::class, 'create'])->name('user.attribute.create');
-            Route::post('/store', [AttributeController::class, 'store'])->name('user.attribute.store');
-            Route::get('/edit/{id}', [AttributeController::class, 'edit'])->name('user.attribute.edit');
-            Route::patch('/edit/{id}', [AttributeController::class, 'update'])->name('user.attribute.update');
-            Route::delete('/delete/{id}', [AttributeController::class, 'destroy'])->name('user.attribute.destroy');
-        });
+        
 
-        Route::prefix('security')->group(function () {
-            Route::get('/', [SecurityController::class, 'index'])->name('user.security.index');
-            Route::get('/create', [SecurityController::class, 'create'])->name('user.security.create');
-            Route::post('/store', [SecurityController::class, 'store'])->name('user.security.store');
-            Route::get('/edit/{id}', [SecurityController::class, 'edit'])->name('user.security.edit');
-            Route::patch('/edit/{id}', [SecurityController::class, 'update'])->name('user.security.update');
-            Route::delete('/delete/{id}', [SecurityController::class, 'destroy'])->name('user.security.destroy');
-        });
+        
         Route::prefix('security-program')->group(function () {
             Route::get('/', [SecurityProgramController::class, 'index'])->name('user.security-program.index');
             Route::get('/create', [SecurityProgramController::class, 'create'])->name('user.security-program.create');
@@ -211,6 +197,30 @@ Route::prefix('user')->group(function () {
             Route::get('/{programId}/edit/{id}', [MainSecurityProgramController::class, 'edit'])->name('user.main-security-program.edit');
             Route::patch('/{programId}/edit/{id}', [MainSecurityProgramController::class, 'update'])->name('user.main-security-program.update');
             Route::delete('/{programId}/delete/{id}', [MainSecurityProgramController::class, 'destroy'])->name('user.main-security-program.destroy');
+        });
+
+
+
+
+
+
+
+        Route::prefix('attribute')->group(function () {
+            Route::get('/', [AttributeController::class, 'index'])->name('user.attribute.index');
+            Route::get('/create', [AttributeController::class, 'create'])->name('user.attribute.create');
+            Route::post('/store', [AttributeController::class, 'store'])->name('user.attribute.store');
+            Route::get('/{attribute}/edit', [AttributeController::class, 'edit'])->name('user.attribute.edit');
+            Route::patch('/{attribute}/edit', [AttributeController::class, 'update'])->name('user.attribute.update');
+            Route::delete('/{attribute}/delete', [AttributeController::class, 'destroy'])->name('user.attribute.destroy');
+        });
+
+        Route::prefix('security')->group(function () {
+            Route::get('/', [SecurityController::class, 'index'])->name('user.security.index');
+            Route::get('/create', [SecurityController::class, 'create'])->name('user.security.create');
+            Route::post('/store', [SecurityController::class, 'store'])->name('user.security.store');
+            Route::get('/{security}/edit', [SecurityController::class, 'edit'])->name('user.security.edit');
+            Route::patch('/{security}/edit', [SecurityController::class, 'update'])->name('user.security.update');
+            Route::delete('/{security}/delete', [SecurityController::class, 'destroy'])->name('user.security.destroy');
         });
     });
 

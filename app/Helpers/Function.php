@@ -123,24 +123,24 @@ if (!function_exists('groupPermissionsByModule')) {
         $grouped = [];
 
         foreach ($permissions as $permission) {
+
             if (!isset($permission['name'])) {
                 continue;
             }
 
             $parts = explode('.', $permission['name']);
 
-            // Ambil module (bagian setelah titik)
-            $module = $parts[1] ?? 'other';
+            array_shift($parts);
 
-            // Format title (Role, Permission, dll)
-            $moduleTitle = ucfirst($module);
+            if (empty($parts)) {
+                $moduleTitle = 'Other';
+            } else {
+                $moduleTitle = ucwords(str_replace('_', ' ', implode(' ', $parts)));
+            }
 
             $grouped[$moduleTitle][] = $permission;
         }
 
-        /**
-         * 🔹 Sort permissions inside each module (A–Z)
-         */
         foreach ($grouped as $module => &$items) {
             usort($items, function ($a, $b) {
                 return strcmp($a['name'], $b['name']);
@@ -148,9 +148,6 @@ if (!function_exists('groupPermissionsByModule')) {
         }
         unset($items);
 
-        /**
-         * 🔹 Sort modules (A–Z)
-         */
         ksort($grouped, SORT_STRING | SORT_FLAG_CASE);
 
         return $grouped;
