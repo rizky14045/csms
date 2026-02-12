@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -25,30 +25,35 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.kpi-level.update',['levelId' =>$level->id,'subAreaId'=>$subAreaId])}}" class="my-4" method="POST">
+                <form action="{{route('admin.kpi-level.update',['level' =>$level->id,'sub_area'=>$subArea->id])}}" class="my-4" method="POST" id="form-kpi-level" onsubmit="confirmSave('form-kpi-level', 'Data level akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
-                            <label for="username" class="form-label">Level</label>
-                            <input class="form-control" name="level" type="text" id="username" required="" placeholder="Masukan Level" value="{{$level->level}}">
-                            @if($errors->has('level'))
-                                <div class="error text-danger">{{ $errors->first('level') }}</div>
-                            @endif
+                            <label for="level" class="form-label">Level</label>
+                            <input class="form-control @error('level') is-invalid @enderror" name="level" type="text" id="level" required="" placeholder="Masukan Level" value="{{ old('level',$level->level) }}">
+                            @error('level')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="exampleFormControlTextarea1" class="form-label">Uraian</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description">{{$level->description}}</textarea>
-                            @if($errors->has('description'))
-                                <div class="error text-danger">{{ $errors->first('description') }}</div>
-                            @endif
+                            <label for="description" class="form-label">Uraian</label>
+                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" rows="3" name="description">{{ old('description',$level->description) }}</textarea>
+                            @error('description')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
-                                    <a href="{{route('admin.kpi-area.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit">Ubah</button>
+                                    <a href="{{route('admin.kpi-area.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

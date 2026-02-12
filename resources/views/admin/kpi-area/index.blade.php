@@ -17,7 +17,7 @@
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Tambah Data KPI</li>
+            <li class="breadcrumb-item active">Data KPI</li>
         </ol>
     </div>
 </div>
@@ -25,7 +25,11 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <a href="{{route('admin.kpi-area.create')}}" class="btn btn-sm btn-success mb-3">Tambah Area</a>
+                <div class="d-flex justify-content-end pe-3">
+                    @can('view.kpi.area')
+                        <a href="{{route('admin.kpi-area.create')}}" class="btn btn-sm btn-primary mb-3">Tambah Area</a>
+                    @endcan
+                </div>
                 <!-- Komitmen Management -->
                 <div class="accordion" id="formAccordion">
 
@@ -48,22 +52,43 @@
                                     aria-controls="collapseA"
                                     style="flex: 1; border: none; background-color: transparent;"
                                 >
-                                    <span class="fw-bold">{{$area->name}}</span>
+                                    <span class="fw-bold" style="white-space: normal; word-break: break-word;">{{$area->name}}</span>
                                 </div>
-                        
-                                <!-- Tombol yang bisa diklik -->
-                                    
-                                    <a href="{{route('admin.kpi-area.edit',['areaId' => $area->id])}}" class="btn btn-warning btn-sm mt-1">Edit Kategori</a>
-                                    <form action="{{route('admin.kpi-area.destroy',['areaId'=>$area->id])}}" method="post" class="d-block ms-3">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                    </form>
+                                    <div style="display: flex;align-items:center;gap:10px">
+                                        @can('edit.kpi.area')
+                                        <a href="{{route('admin.kpi-area.edit',['area' => $area->id])}}" class="btn btn-warning btn-sm mt-1">Edit Kategori</a>
+                                        @endcan
+                                        @can('delete.kpi.area')
+                                        <form
+                                            id="delete-kpi-area-{{ $area->id }}"
+                                            action="{{route('admin.kpi-area.destroy',['area'=>$area->id])}}"
+                                            method="POST"
+                                            class="d-inline"
+                                        >
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="confirmDelete(
+                                                    'delete-kpi-area-{{ $area->id }}',
+                                                    'Area akan dihapus.'
+                                                )"
+                                            >
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                    @endcan
                             </div>
                         </h2>
+                        @can('view.kpi.subarea')
                         <div id="area_{{$area->id}}" class="accordion-collapse collapse" aria-labelledby="category{{$area->id}}" data-bs-parent="#formAccordion">
                             <div class="accordion-body">
-                                <a href="{{route('admin.kpi-sub-area.create',['areaId'=>$area->id])}}" class="btn btn-success btn-sm mb-3">Tambah Sub Area</a>
+                                @can('create.kpi.subarea')
+                                <a href="{{route('admin.kpi-sub-area.create',['area'=>$area->id])}}" class="btn btn-primary btn-sm mb-3">Tambah Sub Area</a>
+                                @endcan
                                 <table class="table table-bordered text-center">
                                     <thead class="table-light">
                                     <tr>
@@ -75,7 +100,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($area->subAreas as $subArea)
+                                        @foreach ($area->sub_areas as $subArea)
                                             
                                             <tr>
                                                 <td class="text-center">{{$loop->iteration}}</td>
@@ -84,21 +109,44 @@
                                                 <td class="text-start">{{$subArea->reference}}</td>
                                                 <td class="">
                                                     <div class="d-flex flex-wrap gap-2">
-                                                        <a href="{{route('admin.kpi-level.create',['subAreaId'=> $subArea->id])}}" class="btn btn-success btn-sm">Tambah Level</a>
-                                                       
-                                                        <a href="{{route('admin.kpi-sub-area.edit',['subAreaId'=>$subArea->id,'areaId'=> $area->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                                        <form action="{{route('admin.kpi-sub-area.destroy',['subAreaId'=>$subArea->id,'areaId'=> $area->id])}}" method="post" class="d-block">
+                                                        @can('create.kpi.level')
+                                                        <a href="{{route('admin.kpi-level.create',['sub_area'=> $subArea->id])}}" class="btn btn-success btn-sm">Tambah Level</a>
+                                                        @endcan
+                                                        @can('edit.kpi.subarea')
+                                                        <a href="{{route('admin.kpi-sub-area.edit',['sub_area'=>$subArea->id,'area'=> $area->id])}}" class="btn btn-warning btn-sm">Edit</a>
+                                                        @endcan
+                                                        @can('delete.kpi.subarea')
+                                                        <form
+                                                            id="delete-kpi-subarea-{{ $subArea->id }}"
+                                                            action="{{ route('admin.kpi-sub-area.destroy',['sub_area'=>$subArea->id,'area'=> $area->id]) }}"
+                                                            method="POST"
+                                                            class="d-inline"
+                                                        >
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-danger btn-sm"
+                                                                onclick="confirmDelete(
+                                                                    'delete-kpi-subarea-{{ $subArea->id }}',
+                                                                    'Sub Area akan dihapus.'
+                                                                )"
+                                                            >
+                                                                Hapus
+                                                            </button>
                                                         </form>
+                                                        @endcan
+                                                        @can('view.kpi.level')
                                                         <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#accordionRow{{$subArea->id}}" aria-expanded="false" aria-controls="accordionRow{{$subArea->id}}">
                                                             Lihat Detail Level
                                                         </button>
+                                                        @endcan
                                                     </div>
                                                 </td>
                                                 
                                             </tr>
+                                            @can('view.kpi.level')
                                             <tr id="accordionRow{{$subArea->id}}" class="collapse accordion-content">
                                                 <td colspan="6">
                                                     <table class="table table-bordered text-center">
@@ -111,7 +159,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @if ($subArea->levels->isNotEmpty())
+                                                            @if (isset($subArea->levels))
                                                                 
                                                                 @foreach ($subArea->levels as $level)   
                                                                     <tr>
@@ -120,20 +168,43 @@
                                                                         <td class="text-start">{{$level->description}}</td>
                                                                         <td class="">
                                                                             <div class="d-flex flex-wrap gap-2">
-                                                                                <a href="{{route('admin.kpi-note.create',['levelId'=> $level->id])}}" class="btn btn-success btn-sm">Tambah Note</a>
-                                                        
-                                                                                <a href="{{route('admin.kpi-level.edit',['levelId'=> $level->id,'subAreaId' => $subArea->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                                                                <form action="{{route('admin.kpi-level.destroy',['levelId'=> $level->id,'subAreaId' => $subArea->id])}}" method="post" class="d-block">
+                                                                                @can('create.kpi.note')
+                                                                                <a href="{{route('admin.kpi-note.create',['level'=> $level->id])}}" class="btn btn-success btn-sm">Tambah Note</a>
+                                                                                @endcan
+                                                                                @can('edit.kpi.level')
+                                                                                <a href="{{route('admin.kpi-level.edit',['level'=> $level->id,'sub_area' => $subArea->id])}}" class="btn btn-warning btn-sm">Edit</a>
+                                                                                @endcan
+                                                                                @can('delete.kpi.level')
+                                                                                <form
+                                                                                    id="delete-kpi-level-{{ $level->id }}"
+                                                                                    action="{{ route('admin.kpi-level.destroy',['level'=> $level->id,'sub_area' => $subArea->id]) }}"
+                                                                                    method="POST"
+                                                                                    class="d-inline"
+                                                                                >
                                                                                     @csrf
                                                                                     @method('DELETE')
-                                                                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        class="btn btn-danger btn-sm"
+                                                                                        onclick="confirmDelete(
+                                                                                            'delete-kpi-level-{{ $level->id }}',
+                                                                                            'Level akan dihapus.'
+                                                                                        )"
+                                                                                    >
+                                                                                        Hapus
+                                                                                    </button>
                                                                                 </form>
+                                                                                @endcan
+                                                                                @can('view.kpi.note')
                                                                                 <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#noteRow{{$level->id}}" aria-expanded="false" aria-controls="noteRow{{$level->id}}">
                                                                                     Lihat Detail Note
                                                                                 </button>
+                                                                                @endcan
                                                                             </div>
                                                                         </td>
                                                                     </tr>
+                                                                    @can('view.kpi.note')
                                                                     <tr id="noteRow{{$level->id ?? ''}}" class="collapse accordion-content">
                                                                         <td colspan="6">
                                                                             <table class="table table-bordered text-center">
@@ -151,13 +222,31 @@
                                                                                             <td>{{$note->note}}</td>
                                                                                             <td class="">
                                                                                                 <div class="d-flex justify-content-end gap-2">
-
-                                                                                                    <a href="{{route('admin.kpi-note.edit',['noteId' => $note->id,'levelId'=> $level->id,])}}" class="btn btn-warning btn-sm">Edit</a>
-                                                                                                    <form action="{{route('admin.kpi-note.destroy',['noteId' => $note->id,'levelId'=> $level->id])}}" method="post" class="d-block">
+                                                                                                    @can('edit.kpi.note')
+                                                                                                    <a href="{{route('admin.kpi-note.edit',['note' => $note->id,'level'=> $level->id])}}" class="btn btn-warning btn-sm">Edit</a>
+                                                                                                    @endcan
+                                                                                                    @can('delete.kpi.note')
+                                                                                                    <form
+                                                                                                        id="delete-kpi-note-{{ $note->id }}"
+                                                                                                        action="{{ route('admin.kpi-note.destroy',['note' => $note->id,'level'=> $level->id]) }}"
+                                                                                                        method="POST"
+                                                                                                        class="d-inline"
+                                                                                                    >
                                                                                                         @csrf
                                                                                                         @method('DELETE')
-                                                                                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+
+                                                                                                        <button
+                                                                                                            type="button"
+                                                                                                            class="btn btn-danger btn-sm"
+                                                                                                            onclick="confirmDelete(
+                                                                                                                'delete-kpi-note-{{ $note->id }}',
+                                                                                                                'Catatan akan dihapus.'
+                                                                                                            )"
+                                                                                                        >
+                                                                                                            Hapus
+                                                                                                        </button>
                                                                                                     </form>
+                                                                                                    @endcan
                                                                                                 </div>
                                                                                             </td>
                                                                                         </tr>
@@ -166,14 +255,14 @@
                                                                             </table>  
                                                                         </td>
                                                                     </tr>
+                                                                    @endcan
                                                                 @endforeach
                                                             @endif
-
                                                         </tbody>
                                                     </table>  
                                                 </td>
                                             </tr>
-                                            
+                                            @endcan
                                         @endforeach
 
                                         
@@ -181,6 +270,7 @@
                                 </table>
                             </div>
                         </div>
+                        @endcan
                         @endforeach
                     </div>
                 </div>

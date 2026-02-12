@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -25,23 +25,28 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.kpi-area.update',['areaId' => $area->id])}}" class="my-4" method="POST">
+                <form action="{{route('admin.kpi-area.update',['area' => $area->id])}}" class="my-4" method="POST" id="form-kpi-area" onsubmit="confirmSave('form-kpi-area', 'Data KPI akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
                             <label for="username" class="form-label">Nama</label>
-                            <input class="form-control" name="name" type="text" id="username" required="" placeholder="Masukan nama" value="{{$area->name}}">
-                            @if($errors->has('name'))
-                                <div class="error text-danger">{{ $errors->first('name') }}</div>
-                            @endif
+                            <input class="form-control @error('name') is-invalid @enderror" name="name" type="text" id="username" required="" placeholder="Masukan nama" value="{{old('name', $area->name)}}">
+                            @error('name')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
-                                    <a href="{{route('admin.kpi-area.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit">Ubah</button>
+                                    <a href="{{route('admin.kpi-area.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

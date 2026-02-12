@@ -2,114 +2,96 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\SubArea;
 use App\Models\Note;
-use App\Models\LevelAssesment;
-use App\Models\Level;
-use App\Models\QuestionAssesment;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Validation\NoteValidation;
+use App\Models\Level;
+use App\Services\Note\NoteService;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class KPINoteController extends Controller
 {
+    protected $noteService;
 
-    public function create($levelId){
+    public function __construct(NoteService $noteService)
+    {
+        $this->noteService = $noteService;
 
-        $data['levelId'] = $levelId;
+        $this->middleware('can:create.kpi.note')->only(['create', 'store']);
+        $this->middleware('can:edit.kpi.note')->only(['edit', 'update']);
+        $this->middleware('can:delete.kpi.note')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+    
+    public function create(Level $level){
+        $data['level'] = $level;
         return view('admin.kpi-note.create',$data);
     }
 
-    public function store(Request $request,$levelId){
+    public function store(Request $request, Level $level){
 
         try {
-            DB::beginTransaction();
+            // Validation rules
+            $validator = $this->validator($request->all(), NoteValidation::rulesForCreate(), NoteValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
 
-            $request->validate([
-                'note' => 'required',
-            ],[
-                'note.required' => 'Note harus diisi!',
-            ]);
+            $type = 'kpi';
+            $request->merge(['type' => $type]);
+            $this->noteService->createNote($request->all(), $level);
 
-            $lastNote = Note::where('type','kpi')->latest()->first();
-            $order = $lastNote ? $lastNote->order + 1 : 1; 
-            Note::create([
-                'level_id' => $levelId,
-                'note' => $request->note,
-                'order' => $order,
-                'type' => 'kpi',
-            ]);
-            
-            DB::commit();
             Alert::success('Tambah Berhasil', 'Note berhasil dibuat!');
             return redirect()->route('admin.kpi-area.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
-            throw $th;
             Alert::error('Tambah Gagal', 'Note gagal dibuat!');
             return redirect()->route('admin.kpi-area.index');
         }
     }
 
-    public function edit($noteId,$levelId){
-
-        $note = Note::where('level_id',$levelId)->where('id', $noteId)->first();
-        if(!$note){
-            abort(404);
-        }
+    public function edit(Note $note, Level $level){
         $data['note'] = $note;
-        $data['levelId'] = $levelId;
+        $data['level'] = $level;
         return view('admin.kpi-note.edit',$data);
     }
 
-    public function update(Request $request,$noteId,$levelId){
+    public function update(Request $request,Note $note, Level $level){
 
         try {
-            DB::beginTransaction();
-
-            $note = Note::where('level_id',$levelId)->where('id',$noteId)->first();
-
-            $request->validate([
-                'note' => 'required',
-            ],[
-                'note.required' => 'Note harus diisi!',
-            ]);
-
-            $note->note = $request->note;
-            $note->save();
+            // Validation rules
+            $validator = $this->validator($request->all(), NoteValidation::rulesForUpdate(), NoteValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
             
-            DB::commit();
+            $this->noteService->updateNote($note, $request->all());
+
             Alert::success('Update Berhasil', 'Note berhasil diubah!');
             return redirect()->route('admin.kpi-area.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
-            throw $th;
             Alert::error('Update Gagal', 'Note gagal diubah!');
             return redirect()->route('admin.kpi-area.index');
         }
     }
 
-    public function destroy($levelId,$noteId){
+    public function destroy(Note $note, Level $level){
 
         try {
-            DB::beginTransaction();
+            $this->noteService->deleteNote($note);
 
-            $note = Note::where('level_id',$levelId)->where('id',$noteId)->first();
-            $note->delete();
-            
-            DB::commit();
             Alert::success('Delete Berhasil', 'Note berhasil dihapus!');
             return redirect()->route('admin.kpi-area.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Delete Gagal', 'Note gagal dihapus!');
             return redirect()->route('admin.kpi-area.index');
         }

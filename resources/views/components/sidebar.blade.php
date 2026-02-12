@@ -94,9 +94,11 @@
                                 <a href="{{route('admin.marturity-area.index')}}" class="tp-link">Marturity</a>
                             </li>
                             @endcan
+                            @can('view.kpi.area')
                             <li>
                                 <a href="{{route('admin.kpi-area.index')}}" class="tp-link">KPI</a>
                             </li>
+                            @endcan
                         </ul>
                     </div>
                 </li>

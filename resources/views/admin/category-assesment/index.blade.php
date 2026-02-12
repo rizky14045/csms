@@ -107,7 +107,7 @@
                                             
                                             <tr>
                                                 <td class="text-center">{{$loop->iteration}}</td>
-                                                <td class="text-start"  style="white-space: normal; word-break: break-word;">{{$question->indicator}}</td>
+                                                <td class="text-start" style="white-space: normal; word-break: break-word;">{{$question->indicator}}</td>
                                                 @canany(['view.level.assesment', 'create.level.assesment', 'edit.question.assesment', 'delete.question.assesment'])                                                    
                                                 <td class="">
                                                     <div class="d-flex justify-content-end gap-2">
@@ -167,7 +167,7 @@
                                                                 <tr>
                                                                     <td>{{$loop->iteration}}</td>
                                                                     <td>Level {{$level->level}}</td>
-                                                                    <td class="text-start">{{$level->level_description}}</td>
+                                                                    <td class="text-start" style="white-space: normal; word-break: break-word;">{{$level->level_description}}</td>
                                                                     @canany(['edit.level.assesment', 'delete.level.assesment'])
                                                                     <td class="">
                                                                         <div class="d-flex justify-content-end gap-2">

@@ -52,7 +52,7 @@
                                     aria-controls="collapseA"
                                     style="flex: 1; border: none; background-color: transparent;"
                                 >
-                                    <span class="fw-bold">{{$area->name}}</span>
+                                    <span class="fw-bold" style="white-space: normal; word-break: break-word;">{{$area->name}}</span>
                                 </div>
                         
                                 <!-- Tombol yang bisa diklik -->

@@ -2,13 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\SubArea;
-use App\Models\Note;
-use App\Models\Level;
-use App\Models\QuestionAssesment;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Validation\SubAreaValidation;
 use App\Models\Area;

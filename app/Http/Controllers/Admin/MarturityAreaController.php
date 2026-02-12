@@ -4,11 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Models\Area;
-use App\Models\Note;
-use App\Models\Level;
-use App\Models\SubArea;
 use App\Http\Validation\AreaValidation;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\Area\AreaService;
 use RealRashid\SweetAlert\Facades\Alert;

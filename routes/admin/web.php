@@ -79,31 +79,6 @@ Route::prefix('admin')->group(function () {
         //     Route::patch('/edit/{id}', [AdminController::class, 'update'])->name('admin.admin.update');
         //     Route::delete('/delete/{id}', [AdminController::class, 'destroy'])->name('admin.admin.destroy');
         // });
-        
-        Route::prefix('kpi-sub-area')->group(function () {
-            Route::get('/create/{areaId}', [KPISubAreaController::class, 'create'])->name('admin.kpi-sub-area.create');
-            Route::post('/store/{areaId}', [KPISubAreaController::class, 'store'])->name('admin.kpi-sub-area.store');
-            Route::get('/{subAreaId}/edit/{areaId}', [KPISubAreaController::class, 'edit'])->name('admin.kpi-sub-area.edit');
-            Route::patch('/{subAreaId}/edit/{areaId}', [KPISubAreaController::class, 'update'])->name('admin.kpi-sub-area.update');
-            Route::delete('/{subAreaId}/delete/{areaId}', [KPISubAreaController::class, 'destroy'])->name('admin.kpi-sub-area.destroy');
-        });
-        Route::prefix('kpi-level')->group(function () {
-            Route::get('/create/{subAreaId}', [KPILevelController::class, 'create'])->name('admin.kpi-level.create');
-            Route::post('/store/{subAreaId}', [KPILevelController::class, 'store'])->name('admin.kpi-level.store');
-            Route::get('/{levelId}/edit/{subAreaId}', [KPILevelController::class, 'edit'])->name('admin.kpi-level.edit');
-            Route::patch('/{levelId}/edit/{subAreaId}', [KPILevelController::class, 'update'])->name('admin.kpi-level.update');
-            Route::delete('/{levelId}/delete/{subAreaId}', [KPILevelController::class, 'destroy'])->name('admin.kpi-level.destroy');
-        });
-
-        Route::prefix('kpi-note')->group(function () {
-            Route::get('/create/{levelId}', [KPINoteController::class, 'create'])->name('admin.kpi-note.create');
-            Route::post('/store/{levelId}', [KPINoteController::class, 'store'])->name('admin.kpi-note.store');
-            Route::get('/{noteId}/edit/{levelId}', [KPINoteController::class, 'edit'])->name('admin.kpi-note.edit');
-            Route::patch('/{noteId}/edit/{levelId}', [KPINoteController::class, 'update'])->name('admin.kpi-note.update');
-            Route::delete('/{noteId}/delete/{levelId}', [KPINoteController::class, 'destroy'])->name('admin.kpi-note.destroy');
-        });
-
-
 
         Route::prefix('vulnerability')->group(function () {
             Route::get('/', [VulnerabilityController::class, 'index'])->name('admin.vulnerability.index');
@@ -185,9 +160,33 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [KPIAreaController::class, 'index'])->name('admin.kpi-area.index');
             Route::get('/create', [KPIAreaController::class, 'create'])->name('admin.kpi-area.create');
             Route::post('/store', [KPIAreaController::class, 'store'])->name('admin.kpi-area.store');
-            Route::get('/edit/{areaId}', [KPIAreaController::class, 'edit'])->name('admin.kpi-area.edit');
-            Route::patch('/edit/{areaId}', [KPIAreaController::class, 'update'])->name('admin.kpi-area.update');
-            Route::delete('/delete/{areaId}', [KPIAreaController::class, 'destroy'])->name('admin.kpi-area.destroy');
+            Route::get('/{area}/edit', [KPIAreaController::class, 'edit'])->name('admin.kpi-area.edit');
+            Route::patch('/{area}/edit', [KPIAreaController::class, 'update'])->name('admin.kpi-area.update');
+            Route::delete('/{area}/delete', [KPIAreaController::class, 'destroy'])->name('admin.kpi-area.destroy');
+        });
+
+        Route::prefix('kpi-sub-area')->group(function () {
+            Route::get('/create/{area}', [KPISubAreaController::class, 'create'])->name('admin.kpi-sub-area.create');
+            Route::post('/store/{area}', [KPISubAreaController::class, 'store'])->name('admin.kpi-sub-area.store');
+            Route::get('/{sub_area}/edit/{area}', [KPISubAreaController::class, 'edit'])->name('admin.kpi-sub-area.edit');
+            Route::patch('/{sub_area}/edit/{area}', [KPISubAreaController::class, 'update'])->name('admin.kpi-sub-area.update');
+            Route::delete('/{sub_area}/delete/{area}', [KPISubAreaController::class, 'destroy'])->name('admin.kpi-sub-area.destroy');
+        });
+
+        Route::prefix('kpi-level')->group(function () {
+            Route::get('/create/{sub_area}', [KPILevelController::class, 'create'])->name('admin.kpi-level.create');
+            Route::post('/store/{sub_area}', [KPILevelController::class, 'store'])->name('admin.kpi-level.store');
+            Route::get('/{level}/edit/{sub_area}', [KPILevelController::class, 'edit'])->name('admin.kpi-level.edit');
+            Route::patch('/{level}/edit/{sub_area}', [KPILevelController::class, 'update'])->name('admin.kpi-level.update');
+            Route::delete('/{level}/delete/{sub_area}', [KPILevelController::class, 'destroy'])->name('admin.kpi-level.destroy');
+        });
+
+        Route::prefix('kpi-note')->group(function () {
+            Route::get('/create/{level}', [KPINoteController::class, 'create'])->name('admin.kpi-note.create');
+            Route::post('/store/{level}', [KPINoteController::class, 'store'])->name('admin.kpi-note.store');
+            Route::get('/{note}/edit/{level}', [KPINoteController::class, 'edit'])->name('admin.kpi-note.edit');
+            Route::patch('/{note}/edit/{level}', [KPINoteController::class, 'update'])->name('admin.kpi-note.update');
+            Route::delete('/{note}/delete/{level}', [KPINoteController::class, 'destroy'])->name('admin.kpi-note.destroy');
         });
     });
 
