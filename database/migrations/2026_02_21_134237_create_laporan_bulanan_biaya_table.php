@@ -20,9 +20,8 @@ class CreateLaporanBulananBiayaTable extends Migration
             $table->string('kode_aktifitas')->nullable();
             $table->string('kode_prk')->nullable();
             $table->string('deskripsi_kegiatan')->nullable();
-            $table->string('jumlah_anggaran')->nullable();
-            $table->string('penyerapan_anggaran')->nullable();
-            $table->string('prosentase_anggaran')->nullable();
+            $table->decimal('jumlah_anggaran', 20, 2)->nullable();
+            $table->decimal('penyerapan_anggaran', 20, 2)->nullable();
             $table->string('keterangan')->nullable();
             $table->string('type')->nullable();
             $table->timestamps();
