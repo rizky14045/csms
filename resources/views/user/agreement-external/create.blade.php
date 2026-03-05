@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -19,7 +19,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Tambah Data Kerja Sama Eksternal</li>
         </ol>
     </div>
@@ -28,67 +28,72 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('user.agreement-external.store')}}" class="my-4" method="POST" enctype="multipart/form-data">
+                <form action="{{route('user.agreement-external.store')}}" class="my-4" method="POST" enctype="multipart/form-data" id="form-agreement" onsubmit="confirmSave('form-agreement', 'Data perjanjian kerjasama eksternal akan disimpan')">
                     @csrf
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-9">
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Nama Satuan Wilayah</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan nama satuan wilayah" name="regional_unit" value="{{old('regional_unit')}}">
-                            @if($errors->has('regional_unit'))
-                                <div class="error text-danger">{{ $errors->first('regional_unit') }}</div>
-                            @endif
+                            <label for="regional_unit" class="form-label">Nama Satuan Wilayah</label>
+                            <input class="form-control" type="text" id="regional_unit" required="" placeholder="Masukan nama satuan wilayah" name="regional_unit" value="{{old('regional_unit')}}">
+                            @error('regional_unit')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Instansi</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan instansi" name="instansi" value="{{old('instansi')}}">
-                            @if($errors->has('instansi'))
-                                <div class="error text-danger">{{ $errors->first('instansi') }}</div>
-                            @endif
+                            <label for="instansi" class="form-label">Instansi</label>
+                            <input class="form-control" type="text" id="instansi" required="" placeholder="Masukan instansi" name="instansi" value="{{old('instansi')}}">
+                            @error('instansi')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Nama</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan nama" name="name" value="{{old('name')}}">
-                            @if($errors->has('name'))
-                                <div class="error text-danger">{{ $errors->first('name') }}</div>
-                            @endif
+                            <label for="name" class="form-label">Nama</label>
+                            <input class="form-control" type="text" id="name" required="" placeholder="Masukan nama" name="name" value="{{old('name')}}">
+                            @error('name')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Nomor PKT</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan nomor pkt" name="pkt_number" value="{{old('pkt_number')}}">
-                            @if($errors->has('pkt_number'))
-                                <div class="error text-danger">{{ $errors->first('pkt_number') }}</div>
-                            @endif
+                            <label for="pkt_number" class="form-label">Nomor PKT</label>
+                            <input class="form-control" type="text" id="pkt_number" required="" placeholder="Masukan nomor pkt" name="pkt_number" value="{{old('pkt_number')}}">
+                            @error('pkt_number')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Judul PKT</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan judul pkt" name="pkt_title" value="{{old('pkt_title')}}">
-                            @if($errors->has('pkt_title'))
-                                <div class="error text-danger">{{ $errors->first('pkt_title') }}</div>
-                            @endif
+                            <label for="pkt_title" class="form-label">Judul PKT</label>
+                            <input class="form-control" type="text" id="pkt_title" required="" placeholder="Masukan judul pkt" name="pkt_title" value="{{old('pkt_title')}}">
+                            @error('pkt_title')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Tanggal Masa Berlaku</label>
-                            <input class="form-control" type="date" id="emailaddress" required="" name="expired_date" value="{{old('expired_date')}}">
-                            @if($errors->has('expired_date'))
-                            <div class="error text-danger">{{ $errors->first('expired_date') }}</div>
-                            @endif
+                            <label for="expired_date" class="form-label">Tanggal Masa Berlaku</label>
+                            <input class="form-control" type="date" id="expired_date" required="" name="expired_date" value="{{old('expired_date')}}">
+                            @error('expired_date')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Note</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan note" name="note" value="{{old('note')}}">
-                            @if($errors->has('note'))
-                                <div class="error text-danger">{{ $errors->first('note') }}</div>
-                            @endif
+                            <label for="note" class="form-label">Note</label>
+                            <input class="form-control" type="text" id="note" required="" placeholder="Masukan note" name="note" value="{{old('note')}}">
+                            @error('note')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                       
                        
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
-                                    <a href="{{route('user.worker-sum.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit"> Tambah</button>
+                                    <a href="{{route('user.worker-sum.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

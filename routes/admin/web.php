@@ -36,10 +36,6 @@ use App\Http\Controllers\Admin\QuestionAssesmentController;
 Route::prefix('admin')->group(function () {
     Route::middleware(['auth','auth.admin'])->group(function () {
         
-        Route::get('/home', [DashboardController::class, 'index'])->name('admin.home.index');
-        
-        // Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('admin.changePassword');
-        // Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('admin.updatePassword');
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('admin.assesment.index');
             Route::get('/create', [AssesmentController::class, 'create'])->name('admin.assesment.create');
@@ -53,32 +49,15 @@ Route::prefix('admin')->group(function () {
             Route::get('/edit', [MonthlyAuditController::class, 'edit'])->name('admin.monthly-audit.edit');
             Route::get('/show/{monthlyId}', [MonthlyAuditController::class, 'show'])->name('admin.monthly-audit.show');
         });
-        Route::prefix('maturity')->group(function () {
+        Route::prefix('marturity')->group(function () {
             Route::get('/', [MarturityController::class, 'index'])->name('admin.marturity.index');
-            Route::get('/show/{marturityId}', [MarturityController::class, 'show'])->name('admin.marturity.show');
+            Route::get('/{marturity}/show', [MarturityController::class, 'show'])->name('admin.marturity.show');
         });
 
         Route::prefix('keamanan')->group(function () {
             Route::get('/', [KeamananController::class, 'index'])->name('admin.keamanan.index');
             Route::get('/show/{keamananId}', [KeamananController::class, 'show'])->name('admin.keamanan.show');
         });
-        
-        // Route::prefix('unit')->group(function () {
-        //     Route::get('/', [UnitController::class, 'index'])->name('admin.unit.index');
-        //     Route::get('/create', [UnitController::class, 'create'])->name('admin.unit.create');
-        //     Route::post('/store', [UnitController::class, 'store'])->name('admin.unit.store');
-        //     Route::get('/edit/{id}', [UnitController::class, 'edit'])->name('admin.unit.edit');
-        //     Route::patch('/edit/{id}', [UnitController::class, 'update'])->name('admin.unit.update');
-        //     Route::delete('/delete/{id}', [UnitController::class, 'destroy'])->name('admin.unit.destroy');
-        // });
-        // Route::prefix('admin')->group(function () {
-        //     Route::get('/', [AdminController::class, 'index'])->name('admin.admin.index');
-        //     Route::get('/create', [AdminController::class, 'create'])->name('admin.admin.create');
-        //     Route::post('/store', [AdminController::class, 'store'])->name('admin.admin.store');
-        //     Route::get('/edit/{id}', [AdminController::class, 'edit'])->name('admin.admin.edit');
-        //     Route::patch('/edit/{id}', [AdminController::class, 'update'])->name('admin.admin.update');
-        //     Route::delete('/delete/{id}', [AdminController::class, 'destroy'])->name('admin.admin.destroy');
-        // });
 
         Route::prefix('vulnerability')->group(function () {
             Route::get('/', [VulnerabilityController::class, 'index'])->name('admin.vulnerability.index');

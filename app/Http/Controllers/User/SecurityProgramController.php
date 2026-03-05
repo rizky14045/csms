@@ -2,21 +2,38 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\User;
-use App\Models\Security;
 use Illuminate\Http\Request;
 use App\Models\SecurityProgram;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Validation\SecurityProgramValidation;
+use App\Services\SecurityProgram\SecurityProgramService;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class SecurityProgramController extends Controller
 {
-    public function index(){
+    protected $securityProgramService;
 
+    public function __construct(SecurityProgramService $securityProgramService)
+    {
+        $this->securityProgramService = $securityProgramService;
+
+        $this->middleware('can:view.security.program.unit')->only(['index']);
+        $this->middleware('can:create.security.program.unit')->only(['create', 'store']);
+        $this->middleware('can:edit.security.program.unit')->only(['edit', 'update']);
+        $this->middleware('can:delete.security.program.unit')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
+    public function index(){
         $userId = Auth::user()->id;
-        $data['programs'] = SecurityProgram::with('programs')->where('user_id',$userId)->paginate(25);
+        $result = $this->securityProgramService->getAllSecurityProgram(25, true, ['programs'], $userId);
+        $data['programs'] = getPaginate($result);
         return view('user.security-program.index',$data);
 
     }
@@ -26,106 +43,54 @@ class SecurityProgramController extends Controller
     }
 
     public function store(Request $request){
-
-        try {
-            DB::beginTransaction();
-
-            $userId = Auth::user()->id;
-            $request->validate([
-                'program_name' => 'required',
-                'description' => 'required',
-                'year' => 'required',
-         
-            ],[
-                'program_name.required' => 'Nama program harus diisi!',
-                'description.required' => 'Description kerja harus diisi!',
-                'year.required' => 'Tahun harus diisi!',
-            ]);
-
-            SecurityProgram::create([
-                'user_id' => $userId,
-                'program_name' => $request->program_name,
-                'description' => $request->description,
-                'year' => $request->year,
-            ]);
-            
-            DB::commit();
-            Alert::success('Tambah Berhasil', 'Program Keamanan berhasil dibuat!');
-            return redirect()->route('user.security-program.index');
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            Alert::error('Tambah Gagal', 'Program Keamanan gagal dibuat!');
-            return redirect()->route('user.security-program.index');
+        // Validation rules
+        $validator = $this->validator($request->all(), SecurityProgramValidation::rulesForCreate(), SecurityProgramValidation::messages());
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
+
+        $this->securityProgramService->createSecurityProgram($request->all());
+            
+        Alert::success('Tambah Berhasil', 'Program Keamanan berhasil dibuat!');
+        dd("test");
+        return redirect()->route('user.security-program.index');
     }
 
-    public function edit($id){
-
+    public function edit(SecurityProgram $program){
         $userId = Auth::user()->id;
-        $program = SecurityProgram::where('id', $id)->where('user_id',$userId)->first();
-        if(!$program){
-            abort(404);
+        if ($program->user_id !== $userId) {
+            abort(403);
         }
         $data['program'] = $program;
         return view('user.security-program.edit',$data);
     }
 
-    public function update(Request $request,$id){
-
-        try {
-
-            DB::beginTransaction();
-
-            $userId = Auth::user()->id;
-            $request->validate([
-                'program_name' => 'required',
-                'description' => 'required',
-                'year' => 'required',
-         
-            ],[
-                'program_name.required' => 'Nama program harus diisi!',
-                'description.required' => 'Description kerja harus diisi!',
-                'year.required' => 'Tahun harus diisi!',
-            ]);
-
-            $program = SecurityProgram::where('id',$id)->where('user_id',$userId)->first();
-            $program->program_name = $request->program_name;
-            $program->description = $request->description;
-            $program->year = $request->year;
-            $program->save();
-            
-            DB::commit();
-            Alert::success('Update Berhasil', 'Program Keamanan berhasil diubah!');
-            return redirect()->route('user.security-program.index');
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            Alert::error('Update Gagal', 'Program Keamanan gagal diubah!');
-            return redirect()->route('user.security-program.index');
+    public function update(Request $request, SecurityProgram $program){
+        $userId = Auth::user()->id;
+        if ($program->user_id !== $userId) {
+            abort(403);
         }
+        // Validation rules
+        $validator = $this->validator($request->all(), SecurityProgramValidation::rulesForUpdate(), SecurityProgramValidation::messages());
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $this->securityProgramService->updateSecurityProgram($program, $request->all());
+        
+        Alert::success('Update Berhasil', 'Program Keamanan berhasil diubah!');
+        return redirect()->route('user.security-program.index');
     }
 
-    public function destroy($id){
-        
-        try {
-            DB::beginTransaction();
-
-            $userId = Auth::user()->id;
-            $program = SecurityProgram::where('id',$id)->where('user_id',$id)->first();
-            $program->delete();
-            
-            DB::commit();
-            Alert::success('Delete Berhasil', 'Program Keamanan berhasil dihapus!');
-            return redirect()->route('user.security-program.index');
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            Alert::error('Delete Gagal', 'Program Keamanan gagal dihapus!');
-            return redirect()->route('user.security-program.index');
+    public function destroy(SecurityProgram $program){
+        $userId = Auth::user()->id;
+        if ($program->user_id !== $userId) {
+            abort(403);
         }
+
+        $this->securityProgramService->deleteSecurityProgram($program);
+
+        Alert::success('Delete Berhasil', 'Program Keamanan berhasil dihapus!');
+        return redirect()->route('user.security-program.index');
     }
 }

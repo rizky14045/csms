@@ -69,11 +69,11 @@ class AuthController extends Controller
             
             Alert::success('Login Berhasil', 'User berhasil login!');
             if($user->type == 'admin'){
-                return redirect()->route('admin.home.index');
+                return redirect()->route('dashboard');
             }elseif($user->type == 'user'){
-                return redirect()->route('user.home.index');
+                return redirect()->route('dashboard');
             }elseif($user->type == 'bujp'){
-                return redirect()->route('bujp.home.index');
+                return redirect()->route('dashboard');
             }   
 
         }else{

@@ -2,160 +2,126 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\User;
-use App\Models\Security;
 use Illuminate\Http\Request;
 use App\Models\SecurityProgram;
-use Illuminate\Support\Facades\DB;
 use App\Models\MainSecurityProgram;
 use App\Http\Controllers\Controller;
+use App\Http\Validation\MainSecurityProgramValidation;
+use App\Services\MainSecurityProgram\MainSecurityProgramService;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class MainSecurityProgramController extends Controller
 {
-    public function index($programId){
+    protected $mainSecurityProgramService;
+
+    public function __construct(MainSecurityProgramService $mainSecurityProgramService)
+    {
+        $this->mainSecurityProgramService = $mainSecurityProgramService;
+
+        $this->middleware('can:view.main.security.program.unit')->only(['index']);
+        $this->middleware('can:create.main.security.program.unit')->only(['create', 'store']);
+        $this->middleware('can:edit.main.security.program.unit')->only(['edit', 'update']);
+        $this->middleware('can:delete.main.security.program.unit')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
+    public function index(SecurityProgram $program){
+        if($program->user_id != auth()->id()){
+            abort(404);
+        }
 
         $userId = Auth::user()->id;
-        $data['programId'] = $programId;
-        $data['mains'] = MainSecurityProgram::where('program_id',$programId)->where('user_id',$userId)->paginate(25);
+        $data['programId'] = $program->id;
+        $result = $this->mainSecurityProgramService->getAllMainSecurityProgram(25, true, [], $userId, $program->id);
+        $data['mains'] = getPaginate($result);
 
         return view('user.main-security-program.index',$data);
 
     }
 
-    public function create($programId){
-
-        $data['programId'] = $programId;
+    public function create(SecurityProgram $program){
+        $data['programId'] = $program->id;
         return view('user.main-security-program.create',$data);
 
     }
 
-    public function store(Request $request,$programId){
-
-        try {
-            DB::beginTransaction();
-
-            $userId = Auth::user()->id;
-            $request->validate([
-                'program_name' => 'required',
-                'start_month' => 'required',
-                'start_week' => 'required',
-                'end_month' => 'required',
-                'end_week' => 'required',
-         
-            ],[
-                'program_name.required' => 'Nama program harus diisi!',
-                'start_month.required' => 'Bulan Planning kerja harus diisi!',
-                'start_week.required' => 'Minggu Planning harus diisi!',
-                'end_month.required' => 'Bulan Planning kerja harus diisi!',
-                'end_week.required' => 'Minggu Planning harus diisi!',
-            ]);
-
-            MainSecurityProgram::create([
-                'program_id' => $programId,
-                'user_id' => $userId,
-                'program_name' => $request->program_name,
-                'start_month' => $request->start_month,
-                'start_week' => $request->start_week,
-                'end_month' => $request->end_month,
-                'end_week' => $request->end_week,
-            ]);
-            
-            DB::commit();
-            Alert::success('Tambah Berhasil', 'Program Keamanan berhasil dibuat!');
-            return redirect()->route('user.main-security-program.index',['programId' => $programId]);
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            Alert::error('Tambah Gagal', 'Program Keamanan gagal dibuat!');
-            return redirect()->route('user.main-security-program.index',['programId' => $programId]);
+    public function store(Request $request, SecurityProgram $program){
+        // Validation rules
+        $validator = $this->validator($request->all(), MainSecurityProgramValidation::rulesForCreate(), MainSecurityProgramValidation::messages());
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
+
+        $this->mainSecurityProgramService->createMainSecurityProgram($request->all(), $program->id);
+            
+        Alert::success('Tambah Berhasil', 'Program Keamanan berhasil dibuat!');
+        return redirect()->route('user.main-security-program.index',['program' => $program->id]);
     }
 
-    public function edit($programId,$id){
+    public function edit(SecurityProgram $program, MainSecurityProgram $main){
 
         $userId = Auth::user()->id;
-        $main = MainSecurityProgram::where('id', $id)->where('user_id',$userId)->first();
-        if(!$main){
+
+        if($program->user_id != $userId){
             abort(404);
         }
+
+        if($main->user_id != $userId || $main->program_id != $program->id){
+            abort(404);
+        }
+        
         $data['main'] = $main;
-        $data['programId'] = $programId;
+        $data['programId'] = $program->id;
         return view('user.main-security-program.edit',$data);
     }
 
-    public function update(Request $request,$programId,$id){
-
-        try {
-
-            DB::beginTransaction();
-
-            $userId = Auth::user()->id;
-            $request->validate([
-                'program_name' => 'required',
-                'start_month' => 'required',
-                'start_week' => 'required',
-                'end_month' => 'required',
-                'end_week' => 'required',
-         
-            ],[
-                'program_name.required' => 'Nama program harus diisi!',
-                'start_month.required' => 'Bulan Planning kerja harus diisi!',
-                'start_week.required' => 'Minggu Planning harus diisi!',
-                'end_month.required' => 'Bulan Planning kerja harus diisi!',
-                'end_week.required' => 'Minggu Planning harus diisi!',
-            ]);
-
-
-            $program = MainSecurityProgram::where('id',$id)->where('user_id',$userId)->first();
-            $program->program_name = $request->program_name;
-            $program->start_month = $request->start_month;
-            $program->start_week = $request->start_week;
-            $program->end_month = $request->end_month;
-            $program->end_week = $request->end_week;
-            $program->save();
-            
-            DB::commit();
-            Alert::success('Update Berhasil', 'Program Keamanan berhasil diubah!');
-            return redirect()->route('user.main-security-program.index',['programId'=>$programId]);
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            Alert::error('Update Gagal', 'Program Keamanan gagal diubah!');
-            return redirect()->route('user.main-security-program.index',['programId' => $programId]);
+    public function update(Request $request, SecurityProgram $program, MainSecurityProgram $main){
+        // Validation rules
+        $validator = $this->validator($request->all(), MainSecurityProgramValidation::rulesForUpdate(), MainSecurityProgramValidation::messages());
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
-    }
 
-    public function destroy($programId,$id){
+        $this->mainSecurityProgramService->updateMainSecurityProgram($main, $request->all());
         
-        try {
-            DB::beginTransaction();
-
-            $userId = Auth::user()->id;
-            $program = MainSecurityProgram::where('id',$id)->where('program_id',$programId)->first();
-            $program->delete();
             
-            DB::commit();
-            Alert::success('Delete Berhasil', 'Program Keamanan berhasil dihapus!');
-            return redirect()->route('user.main-security-program.index',['programId'=>$programId]);
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            Alert::error('Delete Gagal', 'Program Keamanan gagal dihapus!');
-            return redirect()->route('user.main-security-program.index',['programId' => $programId]);
-        }
+        Alert::success('Update Berhasil', 'Program Keamanan berhasil diubah!');
+        return redirect()->route('user.main-security-program.index',['program'=>$program->id]);
     }
 
-    public function visual($programId){
+    public function destroy(SecurityProgram $program, MainSecurityProgram $main){
+        $userId = Auth::user()->id;
+
+        if($program->user_id != $userId){
+            abort(404);
+        }
+
+        if($main->user_id != $userId || $main->program_id != $program->id){
+            abort(404);
+        }
+
+        $this->mainSecurityProgramService->deleteMainSecurityProgram($main);
+
+        Alert::success('Delete Berhasil', 'Program Keamanan berhasil dihapus!');
+        return redirect()->route('user.main-security-program.index',['program'=>$program->id]);
+    }
+
+    public function visual(SecurityProgram $program){
+        if($program->user_id != auth()->id()){
+            abort(404);
+        }
 
         $userId = Auth::user()->id;
-        $data['programId'] = $programId;
-        $data['securityProgram'] = SecurityProgram::where('id',$programId)->where('user_id',$userId)->first();
-        $data['programs'] = MainSecurityProgram::where('program_id',$programId)->where('user_id',$userId)->get();
+        $data['programId'] = $program->id;
+        $data['securityProgram'] = $program;
+        $result = $this->mainSecurityProgramService->getAllMainSecurityProgram(0, false, [], $userId, $program->id);
+        $data['programs'] = getData($result);
 
         return view('user.main-security-program.visual',$data);
     }

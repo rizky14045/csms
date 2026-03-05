@@ -3,8 +3,10 @@
 namespace App\Services\User;
 
 use App\Helpers\JsonResponse;
+use App\Models\BujpProfile;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Vendor;
 use App\Services\ActivityLog\ActivityLogService;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -18,9 +20,15 @@ class UserService
         $this->logService = $logService;
     }
     
-   public function getAllUser($limit = 10, $paginate = true)
+   public function getAllUser(
+        $limit = 10,
+        $paginate = true,
+        $user_type = null,
+        $only_my_vendor = false
+    )
     {
         try {
+
             $order  = request('order', 'DESC');
             $search = request('q', '');
             $ref    = request('ref', 'id');
@@ -28,15 +36,43 @@ class UserService
             $end    = request('end', null);
 
             /**
-             * ✅ Eloquent + eager load roles
-             * ✅ Exclude current logged-in user
+             * ⭐ Tentukan relasi yang akan di-load
              */
-            $query = User::with('roles')
+            $with = ['roles'];
+
+            if ($only_my_vendor) {
+                $with[] = 'bujpProfile';
+                $with[] = 'vendor';
+            }
+
+            /**
+             * ✅ Query awal
+             */
+            $query = User::with($with)
                 ->where('id', '!=', auth()->id());
+
+            /**
+             * 🔥 Filter ONLY MY VENDOR
+             */
+            if ($only_my_vendor) {
+
+                $vendorUserIds = \App\Models\Vendor::where(
+                        'parent_user_id',
+                        auth()->id()
+                    )
+                    ->pluck('user_id');
+
+                $query->whereIn('id', $vendorUserIds);
+            }
 
             // 🔍 Search
             if (!empty($search)) {
                 $query->where('name', 'like', "%{$search}%");
+            }
+
+            // 🧑‍💼 Filter tipe user
+            if ($user_type != null) {
+                $query->where('type', '=', $user_type);
             }
 
             // 📅 Date filter
@@ -64,14 +100,12 @@ class UserService
             return JsonResponse::success($users, 'User found', 200);
 
         } catch (\Exception $e) {
+
             $this->logService->log(
                 'user.fetch_all',
                 'Failed to fetch users',
                 500,
-                [
-                    'error' => $e->getMessage(),
-                    'params' => request()->all(),
-                ]
+                ['error' => $e->getMessage()]
             );
 
             return JsonResponse::error(
@@ -82,8 +116,7 @@ class UserService
         }
     }
 
-
-    public function createUser(array $data)
+    public function createUser(array $data, $withVendor = false)
     {
         DB::beginTransaction();
 
@@ -103,7 +136,7 @@ class UserService
             }
 
             // Determine user type based on role
-            if ($roleName === 'Super-Admin') {
+            if ($roleName === 'Admin') {
                 $type = 'admin';
             } elseif ($roleName === 'BUJP') {
                 $type = 'bujp';
@@ -125,6 +158,44 @@ class UserService
                     'type'       => $type,
                     'updated_by' => auth()->id(),
                 ]);
+
+                if($withVendor){
+                    $profile = BujpProfile::where('user_id', $user->id)->first();
+                    if(!$profile){
+                        BujpProfile::create([
+                            'user_id' => $user->id,
+                            'npwp' => $data['npwp'] ?? "",
+                            'address' => $data['address'] ?? "",
+                            'created_by' => auth()->id(),
+                        ]);
+                    }
+
+                    $user = User::find($user->id);
+                    if($user){
+                        Vendor::create([
+                            'parent_user_id' => auth()->user()->id,
+                            'name' => $user->name,
+                            'email'      => $user->email,
+                            'start_date' => $data['start_date'],
+                            'end_date' => $data['end_date'],
+                            'contract_number'=> $data['contract_number'],
+                            'user_id' => $user->id,
+                            'created_by' => auth()->id(),
+                        ]);
+                    }
+
+                    Vendor::create([
+                        'parent_user_id' => auth()->user()->id,
+                        'name' => $data['name'],
+                        'email'      => $data['email'],
+                        'password'   => bcrypt($data['password']),
+                        'start_date' => $data['start_date'],
+                        'end_date' => $data['end_date'],
+                        'contract_number'=> $data['contract_number'],
+                        'user_id' => $user->id,
+                        'created_by' => auth()->id(),
+                    ]);
+                }
 
                 if ($roleName) {
                     $user->syncRoles([$roleName]);
@@ -164,6 +235,27 @@ class UserService
                     'type'       => $type,
                     'created_by' => auth()->id(),
                 ]);
+
+                if($withVendor){
+                    BujpProfile::create([
+                        'user_id' => $user->id,
+                        'npwp' => $data['npwp'] ?? "",
+                        'address' => $data['address'] ?? "",
+                        'created_by' => auth()->id(),
+                    ]);
+
+                    Vendor::create([
+                        'parent_user_id' => auth()->user()->id,
+                        'name' => $data['name'],
+                        'email'      => $data['email'],
+                        'password'   => bcrypt($data['password']),
+                        'start_date' => $data['start_date'],
+                        'end_date' => $data['end_date'],
+                        'contract_number'=> $data['contract_number'],
+                        'user_id' => $user->id,
+                        'created_by' => auth()->id(),
+                    ]);
+                }
 
                 if ($roleName) {
                     $user->assignRole($roleName);
@@ -365,6 +457,64 @@ class UserService
                 'Failed to delete user',
                 500
             );
+        }
+    }
+
+    public function updateBujpProfile(array $data, $user_id){
+        DB::beginTransaction();
+        try {
+            $profile = BujpProfile::where('user_id', $user_id)->first();
+            if(!$profile){
+                BujpProfile::create([
+                    'user_id' => $user_id,
+                    'npwp' => $data['npwp'] ?? "",
+                    'address' => $data['address'] ?? "",
+                    'created_by' => auth()->id(),
+                ]);
+            }
+
+            $user = User::find($user_id);
+            if($user){
+                Vendor::create([
+                    'parent_user_id' => auth()->user()->id,
+                    'name' => $user->name,
+                    'email'      => $user->email,
+                    'password'   => bcrypt($data['password']),
+                    'start_date' => $data['start_date'],
+                    'end_date' => $data['end_date'],
+                    'contract_number'=> $data['contract_number'],
+                    'user_id' => $user_id,
+                    'created_by' => auth()->id(),
+                ]);
+            }
+
+            DB::commit();
+
+            $this->logService->log(
+                'user.update_bujp',
+                'Update bujp',
+                200,
+                [
+                    'data' => $data
+                ]
+            );
+
+            return null;
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
+            $this->logService->log(
+                'user.update_bujp',
+                'Failed to update bujp',
+                500,
+                [
+                    'error' => $e->getMessage(),
+                    'payload' => $data,
+                ]
+            );
+
+            throw $e;
         }
     }
 }

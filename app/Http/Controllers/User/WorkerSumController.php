@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
-use Illuminate\Http\Request;
 use App\Models\SecurityExternal;
-use App\Http\Helper\BlockMonthly;
 use App\Models\AgreementExternal;
 use App\Models\ResponsiblePerson;
 use App\Http\Controllers\Controller;

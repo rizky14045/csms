@@ -112,7 +112,7 @@
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('user.main-security-program.index',['programId'=>$programId])}}" class="btn btn-danger"> Back</a>
+                                    <a href="{{route('user.main-security-program.index',['program'=>$programId])}}" class="btn btn-danger"> Back</a>
                                     <button class="btn btn-primary" type="submit"> Tambah</button>
                                 </div>
                             </div>

@@ -58,4 +58,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(BujpProfile::class, 'user_id', 'id');
     }
+    public function vendor()
+    {
+        return $this->hasOne(Vendor::class, 'user_id', 'id');
+    }
 }
