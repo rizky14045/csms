@@ -186,7 +186,15 @@ Route::prefix('admin')->group(function () {
             Route::post('/store/element/{auditId}', [AuditSMPController::class, 'storeElement'])->name('admin.audit-smp.storeElement');
             Route::get('/create/evident/{auditId}', [AuditSMPController::class, 'createEvident'])->name('admin.audit-smp.createEvident');
             Route::post('/store/evident/{auditId}', [AuditSMPController::class, 'storeEvident'])->name('admin.audit-smp.storeEvident');
-        });
+            Route::get('/edit/{auditId}/evident/{evidentId}', [AuditSMPController::class, 'editEvident'])->name('admin.audit-smp.editEvident');
+            Route::patch('/edit/{auditId}/evident/{evidentId}', [AuditSMPController::class, 'updateEvident'])->name('admin.audit-smp.updateEvident');
+            Route::delete('/edit/{auditId}/evident/{evidentId}', [AuditSMPController::class, 'deleteEvident'])->name('admin.audit-smp.deleteEvident');
+            Route::get('/create/kriteria/{auditId}', [AuditSMPController::class, 'createKriteria'])->name('admin.audit-smp.createKriteria');
+            Route::post('/store/kriteria/{auditId}', [AuditSMPController::class, 'storeKriteria'])->name('admin.audit-smp.storeKriteria');
+            Route::get('/edit/{auditId}/kriteria/{kriteriaId}', [AuditSMPController::class, 'editKriteria'])->name('admin.audit-smp.editKriteria');
+            Route::patch('/edit/{auditId}/kriteria/{kriteriaId}', [AuditSMPController::class, 'updateKriteria'])->name('admin.audit-smp.updateKriteria');
+            Route::delete('/edit/{auditId}/kriteria/{kriteriaId}', [AuditSMPController::class, 'deleteKriteria'])->name('admin.audit-smp.deleteKriteria');
+            });
     });
 
 });

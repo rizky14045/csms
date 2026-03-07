@@ -17,7 +17,7 @@
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Ubah Data Audit SMP Element</li>
+            <li class="breadcrumb-item active">Ubah Data Audit SMP Evident</li>
         </ol>
     </div>
 </div>
@@ -25,14 +25,14 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.audit-smp.updateElement',['auditId'=>$audit->id,'elementId'=>$element->id])}}" class="my-4" method="POST" id="form-audit-smp-element-edit" onsubmit="confirmSave('form-audit-smp-element-edit', 'Data element'. {{$audit->name}}. 'akan disimpan')">
+                <form action="{{route('admin.audit-smp.editEvident',['auditId'=>$audit->id,'evidentId' => $evident->id])}}" class="my-4" method="POST" id="form-audit-smp" onsubmit="confirmSave('form-audit-smp', 'Data element'. {{$audit->name}}. 'akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
                             <label for="name" class="form-label">Nama</label>
-                            <input class="form-control @error('name') is-invalid @enderror" name="name" type="text" id="name" required="" placeholder="Masukan nama" value="{{$element->name}}">
+                            <input class="form-control @error('name') is-invalid @enderror" name="name" type="text" id="name" required="" placeholder="Masukan nama" value="{{$evident->name}}">
                             @error('name')
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror
@@ -40,9 +40,7 @@
                         <div class="form-group mb-3">
                             <label for="type" class="form-label">Tipe</label>
                             <select name="type" id="type" class="form-select @error('type') is-invalid @enderror">
-                                <option value="">Pilih tipe</option>
-                                <option value="pernyataan" {{$element->type == 'pernyataan' ? 'selected' : ''}}>pernyataan</option>
-                                <option value="kriteria" {{$element->type == 'kriteria' ? 'selected' : ''}}>kriteria</option>
+                                <option value="evident">evident</option>
                             </select>
                             @error('type')
                                 <div class="error text-danger">{{ $message }}</div>
@@ -57,7 +55,7 @@
                                         type="submit"
                                         class="btn btn-success"
                                     >
-                                        Simpan
+                                        Ubah
                                     </button>
                                 </div>
                             </div>

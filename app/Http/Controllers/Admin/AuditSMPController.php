@@ -157,10 +157,70 @@ class AuditSMPController extends Controller
             return redirect()->route('admin.audit-smp.index');
         }
     }
+    public function createKriteria($id){
+        
+        $data['audit'] = $this->auditSMPService->getAuditById($id);
+        return view('admin.audit-smp.create-kriteria',$data);
+    }
+    public function storeKriteria(Request $request,$auditId){
+        try {
+            // Validation rules
+            $validator = $this->validator($request->all(), AuditSMPValidation::rulesForCreateKriteria(), AuditSMPValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+
+            $this->auditSMPService->createAuditElement($request->all(),$auditId);
+
+            Alert::success('Tambah Berhasil', 'Audit SMP berhasil dibuat!');
+            return redirect()->route('admin.audit-smp.index');
+            
+        } catch (\Throwable $th) {
+            Alert::error('Tambah Gagal', 'Audit SMP gagal dibuat!');
+            return redirect()->route('admin.audit-smp.index');
+        }
+    }
+    public function editKriteria($auditId,$kriteriaId){
+        $data['audit'] = $this->auditSMPService->getAuditById($auditId);
+        $data['kriteria'] = $this->auditSMPService->getElementById($auditId,$kriteriaId);
+        return view('admin.audit-smp.edit-kriteria',$data);
+    }
+    public function updateKriteria(Request $request, $auditId,$kriteriaId){
+
+        try {
+            // Validation rules
+            $validator = $this->validator($request->all(), AuditSMPValidation::rulesForCreateElement(), AuditSMPValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+            $kriteria = $this->auditSMPService->getElementById($auditId,$kriteriaId);
+            $this->auditSMPService->updateAuditELement($kriteria, $request->all());
+
+            Alert::success('Update Berhasil', 'Element Audit SMP berhasil diubah!');
+            return redirect()->route('admin.audit-smp.index');
+            
+        } catch (\Throwable $th) {
+            Alert::error('Update Gagal', 'Element Audit SMP gagal diubah!');
+            return redirect()->route('admin.audit-smp.index');
+        }
+    }
+    public function deleteKriteria($auditId,$kriteriaId){
+        try {
+            $kriteria = $this->auditSMPService->getElementById($auditId,$kriteriaId);
+            $this->auditSMPService->deleteElement($kriteria);
+
+            Alert::success('Delete Berhasil', 'Audit SMP berhasil dihapus!');
+            return redirect()->route('admin.audit-smp.index');
+            
+        } catch (\Throwable $th) {
+            Alert::error('Delete Gagal', 'Audit SMP gagal dihapus!');
+            return redirect()->route('admin.audit-smp.index');
+        }
+    }
     public function createEvident($id){
         
         $data['audit'] = $this->auditSMPService->getAuditById($id);
-        return view('admin.audit-smp.create-eviden',$data);
+        return view('admin.audit-smp.create-evident',$data);
     }
     public function storeEvident(Request $request,$auditId){
         try {
@@ -177,6 +237,44 @@ class AuditSMPController extends Controller
             
         } catch (\Throwable $th) {
             Alert::error('Tambah Gagal', 'Audit SMP gagal dibuat!');
+            return redirect()->route('admin.audit-smp.index');
+        }
+    }
+    public function editEvident($auditId,$evidentId){
+        $data['audit'] = $this->auditSMPService->getAuditById($auditId);
+        $data['evident'] = $this->auditSMPService->getElementById($auditId,$evidentId);
+        return view('admin.audit-smp.edit-evident',$data);
+    }
+    public function updateEvident(Request $request, $auditId,$evidentId){
+
+        try {
+            // Validation rules
+            $validator = $this->validator($request->all(), AuditSMPValidation::rulesForCreateElement(), AuditSMPValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+            $evident = $this->auditSMPService->getElementById($auditId,$evidentId);
+            $this->auditSMPService->updateAuditELement($evident, $request->all());
+
+            Alert::success('Update Berhasil', 'Element Audit SMP berhasil diubah!');
+            return redirect()->route('admin.audit-smp.index');
+            
+        } catch (\Throwable $th) {
+            Alert::error('Update Gagal', 'Element Audit SMP gagal diubah!');
+            return redirect()->route('admin.audit-smp.index');
+        }
+    }
+    public function deleteEvident($auditId,$evidentId){
+        try {
+            $evident = $this->auditSMPService->getElementById($auditId,$evidentId);
+            $this->auditSMPService->deleteElement($evident);
+
+            Alert::success('Delete Berhasil', 'Audit SMP berhasil dihapus!');
+            return redirect()->route('admin.audit-smp.index');
+            
+        } catch (\Throwable $th) {
+            dd($th);
+            Alert::error('Delete Gagal', 'Audit SMP gagal dihapus!');
             return redirect()->route('admin.audit-smp.index');
         }
     }

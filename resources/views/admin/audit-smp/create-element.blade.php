@@ -40,8 +40,8 @@
                             <label for="type" class="form-label">Tipe</label>
                             <select name="type" id="type" class="form-select @error('type') is-invalid @enderror">
                                 <option value="">Pilih tipe</option>
+                                <option value="pernyataan">pernyataan</option>
                                 <option value="kriteria">kriteria</option>
-                                <option value="evident">evident</option>
                             </select>
                             @error('type')
                                 <div class="error text-danger">{{ $message }}</div>

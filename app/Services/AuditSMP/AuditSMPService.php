@@ -25,6 +25,7 @@ class AuditSMPService
     public function getElementById($auditId,$elementId){
         return AuditSMP::where('id',$elementId)->where('parent_id',$auditId)->first();
     }
+
     public function getAllAudit($limit = 10, $paginate = true, $type = null, $with = [])
     {
         try {
@@ -34,43 +35,16 @@ class AuditSMPService
             $start  = request('start', null);
             $end    = request('end', null);
 
-            $query = AuditSMP::query()->with('kriteria','evident')->where('type','header');
-
-            //
-
-            // if ($type) {
-            //     $query->where('type', $type);
-            // }
-
-            // if (!empty($search)) {
-            //     $query->where(function ($q) use ($search) {
-            //         $q->where('name', 'like', "%{$search}%");
-            //     });
-            // }
-
-            // if ($start && $end) {
-            //     $end = date('Y-m-d', strtotime($end . ' +1 day'));
-            //     $query->whereBetween('created_at', [$start, $end]);
-            // } elseif ($start) {
-            //     $query->whereDate('created_at', '>=', $start);
-            // } elseif ($end) {
-            //     $query->whereDate('created_at', '<=', $end);
-            // }
-
-            // $allowedSort = ['id', 'name', 'created_at'];
-            // if (!in_array($ref, $allowedSort)) {
-            //     $ref = 'id';
-            // }
-
-            // $query->orderBy($ref, $order);
-
-            // if ($paginate) {
-            //     $data = $query->paginate($limit)->withQueryString();
-            // } else {
-                $data = $limit > 0
-                    ? $query->limit($limit)->get()
-                    : $query->get();
-            // }
+            $query = AuditSMP::with([
+                'pernyataan.kriteria.evident',
+                'pernyataan',
+                'kriteria',
+                'evident',
+                'kriteria.evident'
+            ])->where('type','header');
+            $data = $limit > 0
+                ? $query->limit($limit)->get()
+                : $query->get();
 
             return JsonResponse::success($data, 'Audit SMP found', 200);
 

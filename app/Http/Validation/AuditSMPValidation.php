@@ -15,14 +15,21 @@ class AuditSMPValidation
     {
         return [
             'name' => 'required',
-            'type' => 'required|in:kriteria,eviden',
+            'type' => 'required|in:kriteria,pernyataan',
         ];
     }
     public static function rulesForCreateEvident()
     {
         return [
             'name' => 'required',
-            'type' => 'required|in:eviden',
+            'type' => 'required|in:evident',
+        ];
+    }
+    public static function rulesForCreateKriteria()
+    {
+        return [
+            'name' => 'required',
+            'type' => 'required|in:kriteria',
         ];
     }
 
