@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Tambah Data KPI</li>
         </ol>
     </div>
@@ -25,105 +25,158 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <a href="{{route('user.keamanan.index')}}" class="btn btn-danger mb-3"> Back</a>
+                <a href="{{route('user.keamanan.index')}}" class="btn btn-danger mb-3"> Kembali</a>
                  <!-- Komitmen Management -->
                  <div class="accordion" id="formAccordion">
-
                     @foreach ($areas as $area)
 
-                    <!-- Section for Each area -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header bg-light" id="heading{{$area->id}}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$area->id}}" aria-expanded="false" aria-controls="collapse{{$area->id}}">
-                                {{$area->name}}
-                            </button>
-                        </h2>
-                        <div id="collapse{{$area->id}}" class="accordion-collapse collapse {{request('areaId') == $area->id ? 'show' :''}}" aria-labelledby="heading{{$area->id}}" data-bs-parent="#formAccordion">
-                            <div class="accordion-body">
-                                <table class="table table-bordered">
-                                    <thead class="table-light">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header bg-light" id="heading{{$area['id']}}">
+                                <button class="accordion-button collapsed"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{$area['id']}}">
+
+                                    {{$area['name']}}
+                                </button>
+                            </h2>
+
+                            <div id="collapse{{$area['id']}}"
+                                class="accordion-collapse collapse {{request('areaId') == $area['id'] ? 'show' :''}}">
+
+                                <div class="accordion-body">
+
+                                    <table class="table table-bordered">
+                                        <tbody>
+
+                                        @foreach ($area['sub_areas'] as $subArea)
+
+                                        @php
+                                            $totalRowspan = 0;
+
+                                            foreach ($subArea['levels'] as $level) {
+                                                $totalRowspan += 1 + count($level['notes']);
+                                            }
+
+                                            $totalSub = count($subArea['levels']);
+                                            $bobot = number_format(1 / $totalSub,2);
+
+                                            $firstLevel = true;
+                                        @endphp
+
                                         <tr>
-                                            <th scope="col" class="align-middle text-center">No</th>
-                                            <th scope="col" class="align-middle text-center">Sub Area</th>
-                                            <th scope="col" class="align-middle text-center">Bobot</th>
-                                            <th scope="col" class="align-middle text-center">Hasil Assesment</th>
-                                            <th scope="col" class="align-middle text-center">Skor ML</th>
-                                            <th scope="col" class="align-middle text-center">Level</th>
-                                            <th scope="col" class="align-middle text-center">Uraian</th>
-                                            <th scope="col" class="align-middle text-center">Catatan Assesment ( Eviden )</th>
-                                            <th scope="col" class="align-middle text-center">File</th>
-                                            <th scope="col" class="align-middle text-center">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($area->subAreas as $subArea)
-                                            @php
-                                                $totalRowspan = $subArea->levels->reduce(function ($carry, $level) {
-                                                    return $carry + 1 + $level->notes()->count();
-                                                }, 0); // Total rowspan pertama
+                                            <td rowspan="{{$totalRowspan}}">
+                                                {{$loop->iteration}}
+                                            </td>
 
-                                                $totalSub = $subArea->levels->count();
-                                                $bobot = number_format(1 / $totalSub ,2);
-                                            @endphp
-                                            <tr>
-                                                <td class="text-left" rowspan="{{ $totalRowspan }}">{{ $loop->iteration }}</td>
-                                                <td class="text-left w-25" rowspan="{{ $totalRowspan }}">
-                                                    <h6 class="fw-bold">{{ $subArea->name }}</h6>
-                                                    <p class="text-justify">Deskripsi : {{ $subArea->description }}</p>
-                                                    <span>Referensi : {{ $subArea->reference }}</span>
+                                            <td rowspan="{{$totalRowspan}}" class="w-25">
+                                                <h6 class="fw-bold">{{$subArea['name']}}</h6>
+
+                                                <p>Deskripsi : {{$subArea['description']}}</p>
+
+                                                <span>Referensi : {{$subArea['reference']}}</span>
+                                            </td>
+
+                                            <td rowspan="{{$totalRowspan}}" class="text-center">
+                                                {{$bobot}}
+                                            </td>
+
+                                            <td rowspan="{{$totalRowspan}}" class="text-center">
+                                                {{$totalSub}}
+                                            </td>
+
+                                            <td rowspan="{{$totalRowspan}}" class="text-center">
+                                                {{$loop->iteration}}
+                                            </td>
+
+                                            @foreach ($subArea['levels'] as $level)
+
+                                                @if(!$firstLevel)
+                                                <tr>
+                                                @endif
+
+                                                <td rowspan="{{count($level['notes']) + 1}}">
+                                                    {{$level['level']}}
                                                 </td>
-                                                <td class="text-center align-middle" rowspan="{{ $totalRowspan }}">{{ $bobot }}</td>
-                                                <td class="text-center align-middle" rowspan="{{ $totalRowspan }}">{{ $totalSub }}</td>
-                                                <td class="text-center align-middle" rowspan="{{ $totalRowspan }}">{{ $loop->iteration }}</td>
-                                        
-                                                @php $firstLevel = true; @endphp
-                                                @foreach ($subArea->levels as $level)
-                                                    @if (!$firstLevel)
-                                                        <tr>
-                                                    @endif
-                                                    <td rowspan="{{ $level->notes()->count() + 1 }}" class="">{{ $level->level }}</td>
-                                                    <td rowspan="{{ $level->notes()->count() + 1 }}" class=" text-justify">
-                                                        <p class="text-justify">
-                                                            {{ $level->description }}
-                                                        </p></td>
-                                                </tr>
-                                        
-                                                @foreach ($level->notes as $note)
-                                                    <tr>
-                                                        <td>{{ $note->note }}</td>
-                                                        <form action="{{route('user.keamanan.uploadNote',['keamananId'=>$note->kpi_id,'areaId'=>$subArea->area_id,'noteId'=>$note->id])}}" method="POST" enctype="multipart/form-data">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <td style="width: 20%;">
-                                                                <input type="file" class="form-control" name="attachment_file_{{$note->id}}" accept=".pdf" required>
-                                                                @if($errors->has('attachment_file_'.$note->id))
-                                                                <div class="error text-danger">{{ $errors->first('attachment_file_'.$note->id) }}</div>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                <div class="d-flex gap-2 align-items-center">
 
-                                                                    @if ($note->attachment_file)
-                                                                    <a href="{{ asset('uploads/attachment_file_kpi_file/'.$note->attachment_file) }}" class="btn btn-info btn-sm" download>Download</a>
-                                                                    @endif
-                                                                    <button type="submit" class="btn btn-sm btn-success">Upload</button>
-                                                                </div>
-                                                            </td>
-                                                        </form>
-                                                    </tr>
-                                                @endforeach
-                                        
-                                                @php $firstLevel = false; @endphp
-                                                @endforeach
-                                            </tr>
+                                                <td rowspan="{{count($level['notes']) + 1}}">
+                                                    {{$level['description']}}
+                                                </td>
+
+                                        </tr>
+
+                                        @foreach ($level['notes'] as $note)
+
+                                        <tr>
+
+                                            <td>{{$note['note']}}</td>
+
+                                            <form action="{{route('user.keamanan.uploadNote',[
+                                                'kpi'=>$note['kpi_id'],
+                                                'areaId'=>$subArea['area_id'],
+                                                'note'=>$note['id']
+                                            ])}}" method="POST" enctype="multipart/form-data" id="form-note-{{ $note['kpi_id'] }}-{{ $subArea['area_id'] }}-{{ $note['id'] }}" onsubmit="confirmSave('form-note-{{ $note['kpi_id'] }}-{{ $subArea['area_id'] }}-{{ $note['id'] }}', 'Data keamanan KPI akan disimpan')">
+
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <td style="width:20%">
+
+                                                    <input type="file"
+                                                        class="form-control"
+                                                        name="attachment_file_{{$note['id']}}"
+                                                        accept=".pdf"
+                                                        required>
+
+                                                </td>
+
+                                                <td>
+
+                                                    <div class="d-flex gap-2">
+
+                                                        @if ($note['attachment_file'])
+                                                        <a href="{{ asset('uploads/attachment_file_kpi_file/'.$note['attachment_file']) }}"
+                                                            class="btn btn-info btn-sm"
+                                                            download>
+
+                                                            Download
+                                                        </a>
+                                                        @endif
+
+                                                        <button type="submit"
+                                                            class="btn btn-success btn-sm">
+
+                                                            Upload
+                                                        </button>
+
+                                                    </div>
+
+                                                </td>
+
+                                            </form>
+
+                                        </tr>
+
                                         @endforeach
-                                    
+
+                                        @php
+                                            $firstLevel = false;
+                                        @endphp
+
+                                        @endforeach
+
+                                        </tr>
+
+                                        @endforeach
+
                                         </tbody>
-                                </table>
+                                    </table>
+
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    @endforeach
+
+                        @endforeach
                 </div>
             </div> <!-- end card body -->
         </div><!-- end card -->

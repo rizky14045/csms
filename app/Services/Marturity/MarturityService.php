@@ -264,9 +264,13 @@ class MarturityService
         DB::beginTransaction();
 
         try {
+            MarturityArea::where('marturity_id',$marturity->id)->update(['deleted_by' => auth()->id()]);
             MarturityArea::where('marturity_id',$marturity->id)->delete();
+            MarturitySubArea::where('marturity_id',$marturity->id)->update(['deleted_by' => auth()->id()]);
             MarturitySubArea::where('marturity_id',$marturity->id)->delete();
+            MarturityLevel::where('marturity_id',$marturity->id)->update(['deleted_by' => auth()->id()]);
             MarturityLevel::where('marturity_id',$marturity->id)->delete();
+            MarturityNote::where('marturity_id',$marturity->id)->update(['deleted_by' => auth()->id()]);
             MarturityNote::where('marturity_id',$marturity->id)->delete();
 
             $marturity->deleted_by = auth()->id();
@@ -453,7 +457,8 @@ class MarturityService
             
             $marturity->update([
                 'send_status' => true,
-                'send_date' => date('Y-m-d')
+                'send_date' => date('Y-m-d'),
+                'updated_by' => auth()->id(),
             ]);
 
             DB::commit();

@@ -145,18 +145,7 @@ Route::prefix('user')->group(function () {
             Route::delete('/destroy/{marturity}', [MarturityController::class, 'destroy'])->name('user.marturity.destroy');
         });
 
-        Route::prefix('keamanan')->group(function () {
-            Route::get('/', [KeamananController::class, 'index'])->name('user.keamanan.index');
-            Route::get('/create', [KeamananController::class, 'create'])->name('user.keamanan.create');
-            Route::post('/store', [KeamananController::class, 'store'])->name('user.keamanan.store');
-            Route::get('/edit/{keamananId}', [KeamananController::class, 'edit'])->name('user.keamanan.edit');
-            Route::patch('/edit/{keamananId}', [KeamananController::class, 'update'])->name('user.keamanan.update');
-            Route::get('/show/{keamananId}', [KeamananController::class, 'show'])->name('user.keamanan.show');
-            Route::get('/preview/{keamananId}', [KeamananController::class, 'preview'])->name('user.keamanan.preview');
-            Route::patch('/send/{keamananId}', [KeamananController::class, 'send'])->name('user.keamanan.send');
-            Route::patch('{keamananId}/upload-note/{areaId}/{noteId}', [KeamananController::class, 'uploadNote'])->name('user.keamanan.uploadNote');
-            Route::delete('/destroy/{keamananId}', [KeamananController::class, 'destroy'])->name('user.keamanan.destroy');
-        });
+        
         
         Route::prefix('vendor')->group(function () {
             Route::get('/', [VendorController::class, 'index'])->name('user.vendor.index');
@@ -233,6 +222,19 @@ Route::prefix('user')->group(function () {
             Route::get('/{program}/{main}/edit', [MainSecurityProgramController::class, 'edit'])->name('user.main-security-program.edit');
             Route::patch('/{program}/{main}/update', [MainSecurityProgramController::class, 'update'])->name('user.main-security-program.update');
             Route::delete('/{program}/{main}/destroy', [MainSecurityProgramController::class, 'destroy'])->name('user.main-security-program.destroy');
+        });
+
+        Route::prefix('keamanan')->group(function () {
+            Route::get('/', [KeamananController::class, 'index'])->name('user.keamanan.index');
+            Route::get('/create', [KeamananController::class, 'create'])->name('user.keamanan.create');
+            Route::post('/store', [KeamananController::class, 'store'])->name('user.keamanan.store');
+            Route::get('/{kpi}/edit', [KeamananController::class, 'edit'])->name('user.keamanan.edit');
+            Route::patch('/{kpi}/update', [KeamananController::class, 'update'])->name('user.keamanan.update');
+            Route::get('/{kpi}/show', [KeamananController::class, 'show'])->name('user.keamanan.show');
+            Route::get('/{kpi}/preview', [KeamananController::class, 'preview'])->name('user.keamanan.preview');
+            Route::patch('/{kpi}/send', [KeamananController::class, 'send'])->name('user.keamanan.send');
+            Route::patch('{kpi}/upload-note/{areaId}/{note}', [KeamananController::class, 'uploadNote'])->name('user.keamanan.uploadNote');
+            Route::delete('/{kpi}/destroy', [KeamananController::class, 'destroy'])->name('user.keamanan.destroy');
         });
     });
 
