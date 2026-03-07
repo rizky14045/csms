@@ -109,6 +109,9 @@
                                 <a href="{{route('user.security.index')}}" class="tp-link">Satuan Pengaman</a>
                             </li>
                             @endcan
+                            <li>
+                                <a href="{{route('admin.audit-smp.index')}}" class="tp-link">Audit SMP</a>
+                            </li>
                         </ul>
                     </div>
                 </li>

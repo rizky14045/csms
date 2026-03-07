@@ -1,27 +1,28 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\KPIAreaController;
-use App\Http\Controllers\Admin\KPINoteController;
-use App\Http\Controllers\Admin\KeamananController;
-use App\Http\Controllers\Admin\KPILevelController;
 use App\Http\Controllers\Admin\AssesmentController;
 use App\Http\Controllers\Admin\AttributeController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\MarturityController;
-use App\Http\Controllers\Admin\KPISubAreaController;
-use App\Http\Controllers\Admin\MonthlyAuditController;
-use App\Http\Controllers\Admin\MarturityAreaController;
-use App\Http\Controllers\Admin\MarturityNoteController;
-use App\Http\Controllers\Admin\VulnerabilityController;
-use App\Http\Controllers\Admin\ChangePasswordController;
-use App\Http\Controllers\Admin\LevelAssesmentController;
-use App\Http\Controllers\Admin\MarturityLevelController;
-use App\Http\Controllers\Admin\MarturitySubAreaController;
+use App\Http\Controllers\Admin\AuditSMPController;
 use App\Http\Controllers\Admin\CategoryAssesmentController;
+use App\Http\Controllers\Admin\ChangePasswordController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\KeamananController;
+use App\Http\Controllers\Admin\KPIAreaController;
+use App\Http\Controllers\Admin\KPILevelController;
+use App\Http\Controllers\Admin\KPINoteController;
+use App\Http\Controllers\Admin\KPISubAreaController;
+use App\Http\Controllers\Admin\LevelAssesmentController;
+use App\Http\Controllers\Admin\MarturityAreaController;
+use App\Http\Controllers\Admin\MarturityController;
+use App\Http\Controllers\Admin\MarturityLevelController;
+use App\Http\Controllers\Admin\MarturityNoteController;
+use App\Http\Controllers\Admin\MarturitySubAreaController;
+use App\Http\Controllers\Admin\MonthlyAuditController;
 use App\Http\Controllers\Admin\QuestionAssesmentController;
+use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\VulnerabilityController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +39,7 @@ Route::prefix('admin')->group(function () {
         
         Route::get('/home', [DashboardController::class, 'index'])->name('admin.home.index');
         
-        // Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('admin.changePassword');
+        Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('admin.changePassword');
         // Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('admin.updatePassword');
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('admin.assesment.index');
@@ -187,6 +188,21 @@ Route::prefix('admin')->group(function () {
             Route::get('/{note}/edit/{level}', [KPINoteController::class, 'edit'])->name('admin.kpi-note.edit');
             Route::patch('/{note}/edit/{level}', [KPINoteController::class, 'update'])->name('admin.kpi-note.update');
             Route::delete('/{note}/delete/{level}', [KPINoteController::class, 'destroy'])->name('admin.kpi-note.destroy');
+        });
+        Route::prefix('audit-smp')->group(function () {
+            Route::get('/', [AuditSMPController::class, 'index'])->name('admin.audit-smp.index');
+            Route::get('/create', [AuditSMPController::class, 'create'])->name('admin.audit-smp.create');
+            Route::post('/store', [AuditSMPController::class, 'store'])->name('admin.audit-smp.store');
+            Route::get('/{audit}/edit', [AuditSMPController::class, 'edit'])->name('admin.audit-smp.edit');
+            Route::patch('/{audit}/edit', [AuditSMPController::class, 'update'])->name('admin.audit-smp.update');
+            Route::delete('/{audit}/delete', [AuditSMPController::class, 'destroy'])->name('admin.audit-smp.destroy');
+            Route::get('/create/element/{auditId}', [AuditSMPController::class, 'createElement'])->name('admin.audit-smp.createElement');
+            Route::get('/edit/element/{auditId}/{elementId}', [AuditSMPController::class, 'editElement'])->name('admin.audit-smp.editElement');
+            Route::patch('/{auditId}/edit-element/{elementId}', [AuditSMPController::class, 'updateElement'])->name('admin.audit-smp.updateElement');
+            Route::delete('/{auditId}/delete-element/{elementId}', [AuditSMPController::class, 'deleteElement'])->name('admin.audit-smp.deleteElement');
+            Route::post('/store/element/{auditId}', [AuditSMPController::class, 'storeElement'])->name('admin.audit-smp.storeElement');
+            Route::get('/create/evident/{auditId}', [AuditSMPController::class, 'createEvident'])->name('admin.audit-smp.createEvident');
+            Route::post('/store/evident/{auditId}', [AuditSMPController::class, 'storeEvident'])->name('admin.audit-smp.storeEvident');
         });
     });
 

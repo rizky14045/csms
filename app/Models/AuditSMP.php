@@ -18,8 +18,8 @@ class AuditSMP extends Model
         return $this->hasMany(AuditSMP::class, 'parent_id')->where('type', 'kriteria');
     }
 
-    public function element()
+    public function evident()
     {
-        return $this->hasMany(AuditSMP::class, 'parent_id')->where('type', 'element');
+        return $this->hasMany(AuditSMP::class, 'parent_id')->where('type', 'evident');
     }
 }
