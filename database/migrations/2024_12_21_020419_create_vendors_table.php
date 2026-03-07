@@ -17,7 +17,7 @@ class CreateVendorsTable extends Migration
             $table->id();
             $table->integer('parent_user_id')->refences('id')->on('users')->nullable();
             $table->string('name')->nullable();
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
             $table->string('password');
             $table->string('npwp')->nullable();
             $table->string('address')->nullable();

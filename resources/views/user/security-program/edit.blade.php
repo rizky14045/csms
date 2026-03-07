@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -19,7 +19,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Tambah Data Program Keamanan</li>
         </ol>
     </div>
@@ -28,38 +28,43 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('user.security-program.update',['id'=>$program->id])}}" class="my-4" method="POST">
+                <form action="{{route('user.security-program.update',['program'=>$program->id])}}" class="my-4" method="POST" id="form-security-program" onsubmit="confirmSave('form-security-program', 'Data program keamanan akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-9">
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Nama Program</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan nama program" name="program_name" value="{{$program->program_name}}">
-                            @if($errors->has('program_name'))
-                                <div class="error text-danger">{{ $errors->first('program_name') }}</div>
-                            @endif
+                            <label for="program_name" class="form-label">Nama Program</label>
+                            <input class="form-control" type="text" id="program_name" required="" placeholder="Masukan nama program" name="program_name" value="{{ old('program_name', $program->program_name) }}">
+                            @error('program_name')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Deskripsi</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan deskripsi" name="description" value="{{$program->description}}">
-                            @if($errors->has('description'))
-                                <div class="error text-danger">{{ $errors->first('description') }}</div>
-                            @endif
+                            <label for="description" class="form-label">Deskripsi</label>
+                            <input class="form-control" type="text" id="description" required="" placeholder="Masukan deskripsi" name="description" value="{{ old('description', $program->description) }}">
+                            @error('description')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Tahun</label>
-                            <input class="form-control" type="number" id="emailaddress" required="" name="year" value="{{$program->year}}">
-                            @if($errors->has('year'))
-                                <div class="error text-danger">{{ $errors->first('year') }}</div>
-                            @endif
+                            <label for="year" class="form-label">Tahun</label>
+                            <input class="form-control" type="number" id="year" required="" name="year" value="{{ old('year', $program->year) }}">
+                            @error('year')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('user.security-program.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit"> Tambah</button>
+                                    <a href="{{route('user.security-program.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

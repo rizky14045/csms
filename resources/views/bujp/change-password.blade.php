@@ -72,7 +72,7 @@
                             </div>
                         </div>
                         <div class="text-center pb-3">
-                            <a href="{{ route('admin.home.index') }}" class="btn btn-danger">Back</a>
+                            <a href="{{ route('dashboard') }}" class="btn btn-danger">Back</a>
 
                             <button type="submit" class="btn btn-success">Submit</button>
                         </div>

@@ -2,26 +2,40 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\Area;
-use App\Models\Note;
-use App\Models\Level;
-use App\Models\SubArea;
 use App\Models\Marturity;
 use Illuminate\Http\Request;
-use App\Models\MarturityArea;
 use App\Models\MarturityNote;
-use App\Models\MarturityLevel;
-use App\Models\MarturitySubArea;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Validation\MarturityValidation;
+use App\Services\Marturity\MarturityService;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class MarturityController extends Controller
 {
-    public function index(){
+    protected $marturityService;
+
+    public function __construct(MarturityService $marturityService)
+    {
+        $this->marturityService = $marturityService;
+
+        $this->middleware('can:view.marturity.unit')->only(['index']);
+        $this->middleware('can:create.marturity.unit')->only(['create', 'store']);
+        $this->middleware('can:edit.marturity.unit')->only(['edit', 'update']);
+        $this->middleware('can:delete.marturity.unit')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
+    public function index(Request $request){
         $user = Auth::guard('web')->user();
-        $data['marturities'] = Marturity::where('unit_id', $user->id)->latest()->paginate(10);
+        $result = $this->marturityService->getAlMarturity(10, true, ['unit'], $user->id);
+        $data['marturities'] = getPaginate($result);
+        $data['request'] = $request->all();
         return view('user.marturity.index',$data);
     }
 
@@ -30,220 +44,119 @@ class MarturityController extends Controller
     }
 
     public function store(Request $request){
-
-        try {
-            DB::beginTransaction();
-            $user = Auth::guard('web')->user();
-            
-            $marturity = Marturity::create([
-                'unit_id' => $user->id,
-                'date' => $request->date,
-                'triwulan' => $request->triwulan,
-            ]);
-            
-            $areas = Area::where('type','marturity')->get();
-
-            foreach ($areas as $area) {
-
-                $marturityArea = MarturityArea::create([
-                    'unit_id' => $user->id,
-                    'marturity_id' => $marturity->id,
-                    'name' => $area->name,
-                    
-                ]);
-                $subAreas = SubArea::where('area_id', $area->id)->get();
-                foreach ($subAreas as $subArea) {
-
-                    $marturitySubArea = MarturitySubArea::create([
-                        'unit_id' => $user->id,
-                        'marturity_id' => $marturity->id,
-                        'area_id' => $marturityArea->id,
-                        'name' => $subArea->name,
-                        'description' => $subArea->description,
-                        'reference' => $subArea->reference,    
-                    ]);
-
-                    $levels = Level::where('sub_area_id', $subArea->id)->get();
-                    foreach ($levels as $level){
-
-                        $marturityLevel = MarturityLevel::create([
-                            'unit_id' => $user->id,
-                            'marturity_id' => $marturity->id,
-                            'sub_area_id' => $marturitySubArea->id,
-                            'level' => $level->level,
-                            'description' => $level->description,       
-                        ]);
-
-                        $notes = Note::where('level_id', $level->id)->get();
-
-                        foreach ($notes as $note){
-                            $marturityNote = MarturityNote::create([
-                                'unit_id' => $user->id,
-                                'marturity_id' => $marturity->id,
-                                'level_id' => $marturityLevel->id,
-                                'note' => $note->note,
-                            ]);
-                        }
-                    }
-                }
-            }
-            DB::commit();
-            Alert::success('Tambah Berhasil', 'Marturity berhasil ditambah!');
-            return redirect()->route('user.marturity.index');
-            
-        } catch (\Throwable $th) {
-            DB::rollback();
-            throw $th;
+        // Validation rules
+        $validator = $this->validator($request->all(), MarturityValidation::rulesForCreate(), MarturityValidation::messages());
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        $this->marturityService->createMarturity($request->all());
+        
+        Alert::success('Tambah Berhasil', 'Marturity berhasil ditambah!');
+        return redirect()->route('user.marturity.index');
     }
 
-    public function edit($marturityId){
+    public function edit(Marturity $marturity){
         $user = Auth::guard('web')->user();
-        $marturity = Marturity::where('unit_id',$user->id)->where('id',$marturityId)->first();
-        if(!$marturity){
-            abort(404);
-        }
-        $data['marturity'] = $marturity;
-        return view('user.marturity.edit',$data);
-    }
-    public function update(Request $request ,$marturityId){
-
-        try {
-            DB::beginTransaction();
-            Marturity::where('id',$marturityId)->update([
-                'date' => $request->date,
-                'triwulan' => $request->triwulan,
-            ]);
-
-            DB::commit();
-            Alert::success('Update Berhasil', 'Marturity berhasil diubah!');
-            return redirect()->route('user.marturity.index');
-        } catch (\Throwable $th) {
-            DB::rollback();
-            throw $th;
-        }
-
-    }
-
-    public function show($marturityId){
-
-        $user = Auth::guard('web')->user();
-        $marturity = Marturity::where('unit_id',$user->id)->where('id', $marturityId)->first();
-        if (!$marturity) {
+        if($marturity->unit_id !== $user->id){
             abort(404);
         }
         if($marturity->send_status == true){
             Alert::warning('Warning', 'Marturity sudah dikirm!');
             return redirect()->route('user.marturity.index');
         }
-        $data['areas'] = MarturityArea::with('subAreas','subAreas.levels','subAreas.levels.notes')->where('marturity_id', $marturity->id)->get();
-        return view('user.marturity.show',$data);
+        $data['marturity'] = $marturity;
+        return view('user.marturity.edit',$data);
     }
-
-    public function preview($marturityId){
-
-        $marturity = Marturity::where('id', $marturityId)->first();
-        if (!$marturity) {
-            abort(404);
+    public function update(Request $request ,Marturity $marturity){
+        // Validation rules
+        $validator = $this->validator($request->all(), MarturityValidation::rulesForUpdate(), MarturityValidation::messages());
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
-        if($marturity->send_status != 1){
+
+        if($marturity->send_status == true){
             Alert::warning('Warning', 'Marturity sudah dikirm!');
             return redirect()->route('user.marturity.index');
         }
-        $data['areas'] = MarturityArea::with('subAreas','subAreas.levels','subAreas.levels.notes')->where('marturity_id', $marturity->id)->get();
+
+        $this->marturityService->updateMarturity($marturity, $request->all());
+        
+        Alert::success('Update Berhasil', 'Marturity berhasil diubah!');
+        return redirect()->route('user.marturity.index');
+    }
+
+    public function show(Marturity $marturity){
+        $user = Auth::guard('web')->user();
+        if($marturity->send_status == true){
+            Alert::warning('Warning', 'Marturity sudah dikirm!');
+            return redirect()->route('user.marturity.index');
+        }
+
+        if($marturity->unit_id !== $user->id){
+            abort(404);
+        }
+
+        $result = $this->marturityService->getAlMarturityArea(['subAreas','subAreas.levels','subAreas.levels.notes'], $marturity->id);
+        $data['areas'] = getData($result);
+        return view('user.marturity.show',$data);
+    }
+
+    public function preview(Marturity $marturity){
+         $user = Auth::guard('web')->user();
+        if($marturity->unit_id !== $user->id){
+            abort(404);
+        }
+        if($marturity->send_status != true){
+            Alert::warning('Warning', 'Marturity belum dikirm!');
+            return redirect()->route('user.marturity.index');
+        }
+        $result = $this->marturityService->getAlMarturityArea(['subAreas','subAreas.levels','subAreas.levels.notes'], $marturity->id);
+        $data['areas'] = getData($result);
+
         return view('user.marturity.preview',$data);
     }
 
-    public function send($marturityId){
-
-        try {
-
-            DB::beginTransaction();
-            Marturity::where('id',$marturityId)->update([
-                'send_status' => true,
-                'send_date' => date('Y-m-d')
-            ]);
-
-            DB::commit();
-            Alert::success('Berhasil Dikirim', 'Marturity berhasil dikirim!');
+    public function send(Marturity $marturity){
+        if($marturity->send_status == true){
+            Alert::warning('Warning', 'Marturity sudah dikirm!');
             return redirect()->route('user.marturity.index');
-        } catch (\Throwable $th) {
-            DB::rollback();
-            throw $th;
         }
+
+        $this->marturityService->sendMarturity($marturity);
+        
+        Alert::success('Berhasil Dikirim', 'Marturity berhasil dikirim!');
+        return redirect()->route('user.marturity.index');
     }
 
-    public function destroy($marturityId){
-
-        try {
-            DB::beginTransaction();
-            $user = Auth::guard('web')->user();
-            
-            $marturity = Marturity::where('unit_id',$user->id)->where('id',$marturityId)->first();
-
-            if(!$marturity){
-                abort(404);
-            }
-
-            MarturityArea::where('marturity_id',$marturity->id)->delete();
-            MarturitySubArea::where('marturity_id',$marturity->id)->delete();
-            MarturityLevel::where('marturity_id',$marturity->id)->delete();
-            MarturityNote::where('marturity_id',$marturity->id)->delete();
-
-            $marturity->delete();
-            
-            DB::commit();
-            Alert::success('Delete Berhasil', 'Marturity berhasil dihapus!');
+    public function destroy(Marturity $marturity){
+        if($marturity->send_status == true){
+            Alert::warning('Warning', 'Marturity sudah dikirm!');
             return redirect()->route('user.marturity.index');
-            
-        } catch (\Throwable $th) {
-            DB::rollback();
-            throw $th;
         }
+        $user = Auth::guard('web')->user();
+        
+        $marturity = Marturity::where('unit_id',$user->id)->where('id',$marturity->id)->first();
+
+        if(!$marturity){
+            abort(404);
+        }
+
+        $this->marturityService->deleteMarturity($marturity);
+
+        Alert::success('Delete Berhasil', 'Marturity berhasil dihapus!');
+        return redirect()->route('user.marturity.index');
     }
-    public function uploadNote(Request $request,$marturityId,$areaId,$noteId){
-
-        try {
-
-            DB::beginTransaction();
-
-            $request->validate([
-                'attachment_file_'.$noteId => 'mimes:pdf'
-            ],[
-                'attachment_file_'.$noteId.'.mimes' => 'File harus beresktensi .pdf!',
-            ]);
-
-            $user = Auth::guard('web')->user();
-
-            $note = MarturityNote::where('unit_id',$user->id)->where('marturity_id',$marturityId)->where('id',$noteId)->first();
-            if(!$note){
-                Alert::error('Update Gagal', 'Marturity gagal diupdate!');
-                return redirect()->back();
-            }
-
-            $attachmentFile = null;
-            
-            if($request->hasFile('attachment_file_'.$noteId))
-            {      
-                $file= $request->file('attachment_file_'.$noteId);
-                $file_name = 'marturity-file-' . time() .'.'. $file->getClientOriginalExtension();
-                if ($note->attachment_file) {
-                    unlink(public_path('uploads/attachment_file_marturity_file/'.$note->attachment_file));
-                }
-                $file->move(public_path('uploads/attachment_file_marturity_file/'),$file_name);   
-                $attachmentFile = $file_name;
-            }
-            
-            $note->attachment_file = $attachmentFile ?? $note->attachment_file;
-            $note->save();
-            DB::commit();
-            
-            Alert::success('Update Berhasil', 'Marturity berhasil diupdate!');
-            return redirect()->route('user.marturity.show',['marturityId'=>$note->marturity_id,'areaId'=>$areaId]);
-        } catch (\Throwable $th) {
-            DB::rollback();
-            throw $th;
+    public function uploadNote(Request $request, Marturity $marturity, $areaId, MarturityNote $note){
+        // Validation rules
+        $validator = $this->validator($request->all(), MarturityValidation::rulesForUploadNote($note->id), MarturityValidation::messages($note->id));
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
+
+        $this->marturityService->uploadNote($request, $marturity, $areaId, $note);
+
+        Alert::success('Update Berhasil', 'Marturity berhasil diupdate!');
+        return redirect()->route('user.marturity.show',['marturity'=>$note->marturity_id,'area'=>$areaId]);
     }
 }

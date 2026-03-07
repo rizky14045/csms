@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,8 +16,8 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Tambah Data Maturity</li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Data Maturity</li>
         </ol>
     </div>
 </div>
@@ -25,7 +25,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <a href="{{route('user.marturity.index')}}" class="btn btn-danger mb-3"> Back</a>
+                <a href="{{route('user.marturity.index')}}" class="btn btn-danger mb-3"> Kembali</a>
                  <!-- Komitmen Management -->
                  <div class="accordion" id="formAccordion">
 
@@ -33,12 +33,12 @@
 
                     <!-- Section for Each area -->
                     <div class="accordion-item">
-                        <h2 class="accordion-header bg-light" id="heading{{$area->id}}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$area->id}}" aria-expanded="false" aria-controls="collapse{{$area->id}}">
-                                {{$area->name}}
+                        <h2 class="accordion-header bg-light" id="heading{{$area['id']}}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$area['id']}}" aria-expanded="false" aria-controls="collapse{{$area['id']}}">
+                                {{$area['name']}}
                             </button>
                         </h2>
-                        <div id="collapse{{$area->id}}" class="accordion-collapse collapse {{request('areaId') == $area->id ? 'show' :''}}" aria-labelledby="heading{{$area->id}}" data-bs-parent="#formAccordion">
+                        <div id="collapse{{$area['id']}}" class="accordion-collapse collapse {{request('areaId') == $area['id'] ? 'show' :''}}" aria-labelledby="heading{{$area['id']}}" data-bs-parent="#formAccordion">
                             <div class="accordion-body">
                                 <table class="table table-bordered">
                                     <thead class="table-light">
@@ -60,96 +60,151 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                      
-                                        @foreach ($area->subAreas as $subArea)
-                                        
+                                        @foreach ($area['sub_areas'] as $subArea)
+
                                             @php
-                                                $totalRowspan = $subArea->levels->reduce(function ($carry, $level) {
-                                                    return $carry + 1 + $level->notes()->count();
-                                                }, 0); // Total rowspan pertama
-                                                $previousResult = false; // Reset setiap subArea
+                                                $totalRowspan = collect($subArea['levels'])->reduce(function ($carry, $level) {
+                                                    return $carry + 1 + count($level['notes']);
+                                                }, 0);
+
+                                                $previousResult = false;
                                                 $firstLevel = true;
                                                 $totalResult = 0;
-                                               
                                             @endphp
+
                                             <tr>
-                                                <td class="text-left" rowspan="{{ $totalRowspan }}">{{ $loop->iteration }}</td>
+                                                <td class="text-left" rowspan="{{ $totalRowspan }}">
+                                                    {{ $loop->iteration }}
+                                                </td>
+
                                                 <td class="text-left w-25" rowspan="{{ $totalRowspan }}">
-                                                    <h6 class="fw-bold">{{ $subArea->name }}</h6>
-                                                    <p class="text-justify">Deskripsi : {{ $subArea->description }}</p>
-                                                    <span>Referensi : {{ $subArea->reference }}</span>
-                                                </td>   
-                                                @foreach ($subArea->levels as $level)
-                                                
+                                                    <h6 class="fw-bold">{{ $subArea['name'] }}</h6>
+                                                    <p>Deskripsi : {{ $subArea['description'] }}</p>
+                                                    <span>Referensi : {{ $subArea['reference'] }}</span>
+                                                </td>
+
+                                                @foreach ($subArea['levels'] as $level)
+
                                                     @if (!$firstLevel)
                                                         <tr>
                                                     @endif
-                                                    @php 
-                                                        $totalNotes = $level->notes->count();
-                                                        $sumEviden = $level->notes->whereNotNull('attachment_file')->count();
+
+                                                    @php
+                                                        $totalNotes = count($level['notes']);
+                                                        $sumEviden = collect($level['notes'])
+                                                            ->whereNotNull('attachment_file')
+                                                            ->count();
+
                                                         $result = $totalNotes > 0 ? ($sumEviden / $totalNotes) : 0;
 
-                                                    // Jika sebelumnya sudah ada result yang bukan 1 dalam subArea, set result jadi 0
-                                                    if ($previousResult) {
-                                                        $result = 0;
-                                                    }
+                                                        if ($previousResult) {
+                                                            $result = 0;
+                                                        }
 
-                                                    // Jika result saat ini bukan 1, tandai bahwa semua result berikutnya harus 0
-                                                    if ($result !== 1) {
-                                                        $previousResult = true;
-                                                    }
-                                                    $totalResult = $totalResult + $result;
+                                                        if ($result !== 1) {
+                                                            $previousResult = true;
+                                                        }
+
+                                                        $totalResult += $result;
                                                     @endphp
-                                                    <td rowspan="{{ $level->notes()->count() + 1 }}">{{ $level->level }}</td>
-                                                    <td rowspan="{{ $level->notes()->count() + 1 }}" class="w-25 text-justify">
-                                                        <p class="text-justify">
-                                                            {{ $level->description }}
-                                                        </p>
-                                                    </td>
-                                                    <td rowspan="{{ $level->notes()->count() + 1 }}" class="text-center align-middle">{{$totalNotes}}</td>
-                                                    <td rowspan="{{ $level->notes()->count() + 1 }}" class="text-center align-middle">{{$sumEviden}}</td>
-                                                    <td rowspan="{{ $level->notes()->count() + 1 }}" class="text-center align-middle">{{$result}}</td>
-                                                </tr>
-                                        
-                                                @foreach ($level->notes as $note)
-                                                    <tr>
-                                                        <td>{{ $note->note }}</td>
-                                                        <form action="{{route('user.marturity.uploadNote',['marturityId'=>$note->marturity_id,'areaId'=>$subArea->area_id,'noteId'=>$note->id])}}" method="POST" enctype="multipart/form-data">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <td style="width:20%;">
-                                                                <input type="file" class="form-control" name="attachment_file_{{$note->id}}" accept=".pdf" required>
-                                                                @if($errors->has('attachment_file_'.$note->id))
-                                                                <div class="error text-danger">{{ $errors->first('attachment_file_'.$note->id) }}</div>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                <div class="d-flex gap-2 align-items-center">
 
-                                                                    @if ($note->attachment_file)
-                                                                    <a href="{{ asset('uploads/attachment_file_marturity_file/'.$note->attachment_file) }}" class="btn btn-info btn-sm" download>Download</a>
-                                                                    @endif
-                                                                    <button type="submit" class="btn btn-sm btn-success">Upload</button>
-                                                                </div>
-                                                            </td>
-                                                        </form>
+                                                    <td rowspan="{{ $totalNotes + 1 }}">
+                                                        {{ $level['level'] }}
+                                                    </td>
+
+                                                    <td rowspan="{{ $totalNotes + 1 }}" class="w-25">
+                                                        {{ $level['description'] }}
+                                                    </td>
+
+                                                    <td rowspan="{{ $totalNotes + 1 }}" class="text-center">
+                                                        {{ $totalNotes }}
+                                                    </td>
+
+                                                    <td rowspan="{{ $totalNotes + 1 }}" class="text-center">
+                                                        {{ $sumEviden }}
+                                                    </td>
+
+                                                    <td rowspan="{{ $totalNotes + 1 }}" class="text-center">
+                                                        {{ $result }}
+                                                    </td>
+
                                                     </tr>
-                                                @endforeach
-                                                    
+
+                                                    @foreach ($level['notes'] as $note)
+                                                        <tr>
+                                                            <td>{{ $note['note'] }}</td>
+
+                                                            <td style="width:50%;">
+                                                                <form action="{{ route('user.marturity.uploadNote', [
+                                                                    'marturity' => $note['marturity_id'],
+                                                                    'areaId' => $subArea['area_id'],
+                                                                    'note' => $note['id']
+                                                                ]) }}"
+                                                                method="POST"
+                                                                enctype="multipart/form-data">
+
+                                                                    @csrf
+                                                                    @method('PATCH')
+
+                                                                    <input type="file"
+                                                                        class="form-control"
+                                                                        name="attachment_file_{{ $note['id'] }}"
+                                                                        accept=".pdf"
+                                                                        required>
+
+                                                                    @error('attachment_file_'.$note['id'])
+                                                                        <div class="text-danger">{{ $message }}</div>
+                                                                    @enderror
+                                                            </td>
+
+                                                            <td>
+                                                                    <div class="d-flex gap-2">
+
+                                                                        @if (!empty($note['attachment_file']))
+                                                                            <a href="{{ asset('uploads/attachment_file_marturity_file/'.$note['attachment_file']) }}"
+                                                                            class="btn btn-info btn-sm"
+                                                                            download>
+                                                                            Download
+                                                                            </a>
+                                                                        @endif
+
+                                                                        <button type="submit"
+                                                                                class="btn btn-success btn-sm">
+                                                                                Upload
+                                                                        </button>
+
+                                                                    </div>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+
                                                     @php
                                                         $firstLevel = false;
-                                                        $totalSub = $subArea->levels->count();
-                                                        $bobot = number_format(1 / $totalSub ,2);
-
-                                                        $totalML = $totalResult * $bobot; 
                                                     @endphp
-                                                @endforeach
-                                                
 
-                                                <td rowspan="{{ $totalRowspan }}" class="text-center align-middle">{{$bobot}}</td>
-                                                <td rowspan="{{ $totalRowspan }}" class="text-center align-middle">{{$totalResult}}</td>
-                                                <td rowspan="{{ $totalRowspan }}" class="text-center align-middle">{{$totalML}}</td>
+                                                @endforeach
+
+                                                @php
+                                                    $totalLevel = count($subArea['levels']);
+                                                    $bobot = $totalLevel > 0 ? round(1 / $totalLevel, 2) : 0;
+                                                    $totalML = $totalResult * $bobot;
+                                                @endphp
+
+                                                <td rowspan="{{ $totalRowspan }}" class="text-center">
+                                                    {{ $bobot }}
+                                                </td>
+
+                                                <td rowspan="{{ $totalRowspan }}" class="text-center">
+                                                    {{ $totalResult }}
+                                                </td>
+
+                                                <td rowspan="{{ $totalRowspan }}" class="text-center">
+                                                    {{ $totalML }}
+                                                </td>
+
                                             </tr>
+
                                         @endforeach
                                     </tbody>
                                 </table>

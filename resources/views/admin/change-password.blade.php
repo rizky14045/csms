@@ -14,7 +14,7 @@
 
         <div class="text-end">
             <ol class="breadcrumb m-0 py-0">
-                <li class="breadcrumb-item"><a href="{{ route('admin.home.index') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item active">Ubah Password</li>
             </ol>
         </div>
@@ -76,7 +76,7 @@
                             </div>
                         </div>
                         <div class="text-center pb-3">
-                            <a href="{{ route('admin.home.index') }}" class="btn btn-danger">Back</a>
+                            <a href="{{ route('dashboard') }}" class="btn btn-danger">Back</a>
 
                             <button type="submit" class="btn btn-success">Submit</button>
                         </div>

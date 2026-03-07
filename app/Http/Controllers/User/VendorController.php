@@ -2,161 +2,71 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\User;
-use App\Models\Vendor;
-use App\Models\Attribute;
-use App\Models\BujpProfile;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Validation\VendorValidation;
+use App\Services\User\UserService;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class VendorController extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+
+        $this->middleware('can:view.user.vendor')->only(['index']);
+        $this->middleware('can:create.user.vendor')->only(['create', 'store']);
+        // $this->middleware('can:edit.category.assesment')->only(['edit', 'update']);
+        // $this->middleware('can:delete.category.assesment')->only(['destroy']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
     public function index(){
 
-        $userId = Auth::user()->id;
-        $data['vendors'] = User::with('bujpProfile')->where('type','bujp')->paginate(25);
+        $result = $this->userService->getAllUser(10, true, 'bujp', true);
+        $data['vendors'] = getPaginate($result);
         return view('user.vendor.index',$data);
 
     }
 
     public function create(){
-        return view('user.vendor.create');
+        $result = $this->userService->getAllUser(0, false, 'bujp');
+        $data['vendors'] = getData($result);
+        return view('user.vendor.create', $data);
     }
 
     public function store(Request $request){
 
         try {
-            DB::beginTransaction();
+            // Validation rules
+            $validator = $this->validator($request->all(), VendorValidation::rulesForCreate(), VendorValidation::messages());
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
 
-            $userId = Auth::user()->id;
-            $request->validate([
+            $request->merge([
+                    'role' => 4,
+                    'password' => "D3faultP@ssword"
+                ]);
 
-                'name' => 'required',
-                'npwp' => 'required',
-                'email' => 'required|unique:vendors,email|email:rfc,dns',
-                'address' => 'required',
-            ],[
-                'name.required' => 'Nama harus diisi!',
-                'npwp.required' => 'Npwp harus diisi!',
-                'email.required' => 'Email harus diisi!',
-                'email.unique' => 'Email sudah digunakan!',
-                'email.email' => 'Format email tidak sesuai!',
-                'adress.required' => 'Alamat harus diisi!',
-            ]);
+            if($request->vendor_exists == 1){
+                $this->userService->updateBujpProfile($request->all(), $request->vendor_id);
+            }else{
+            $result = $this->userService->createUser($request->all(), true);
+            }
 
-            $vendor = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->npwp),
-                'type' => 'bujp',
-                'created_by' => Auth::user()->id
-               
-            ]);
-
-            BujpProfile::create([
-                'user_id' => $vendor->id,
-                'npwp' => $request->npwp,
-                'address' => $request->address,
-            ]);
-            
-            DB::commit();
             Alert::success('Tambah Berhasil', 'BUJP / Vendor berhasil dibuat!');
             return redirect()->route('user.vendor.index');
             
         } catch (\Throwable $th) {
-
-            DB::rollback();
             Alert::error('Tambah Gagal', 'BUJP / Vendor gagal dibuat!');
-            return redirect()->route('user.vendor.index');
-        }
-    }
-
-    public function edit($id){
-
-        $userId = Auth::user()->id;
-        $vendor = User::with('bujpProfile')->where('id', $id)->first();
-        if(!$vendor){
-            abort(404);
-        }
-        $data['vendor'] = $vendor;
-        return view('user.vendor.edit',$data);
-    }
-
-    public function update(Request $request,$id){
-
-        try {
-
-            DB::beginTransaction();
-
-            $userId = Auth::user()->id;
-
-            $vendor = User::where('id',$id)->first();
-
-            if(!$vendor){
-                abort(404);
-            }
-            $request->validate([
-
-                'name' => 'required',
-                'npwp' => 'required',
-                'email' => 'required|email:rfc,dns|unique:vendors,email,'.$vendor->id,
-                'address' => 'required',
-            ],[
-                'name.required' => 'Nama harus diisi!',
-                'npwp.required' => 'Npwp harus diisi!',
-                'email.required' => 'Email harus diisi!',
-                'email.unique' => 'Email sudah digunakan!',
-                'email.email' => 'Format email tidak sesuai!',
-                'adress.required' => 'Alamat harus diisi!',
-            ]);
-
-
-
-            $vendor->name = $request->name;
-            $vendor->email = $request->email;
-            $vendor->updated_by = Auth::user()->id;
-            $vendor->save();
-
-            $profile = BujpProfile::where('user_id',$id)->first();
-            $profile->npwp = $request->npwp;
-            $profile->address = $request->address;
-            $profile->save();
-
-            
-            DB::commit();
-            Alert::success('Update Berhasil', 'BUJP / Vendor berhasil diubah!');
-            return redirect()->route('user.vendor.index');
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            Alert::error('Update Gagal', 'BUJP / Vendor gagal diubah!');
-            return redirect()->route('user.vendor.index');
-        }
-    }
-
-    public function destroy($id){
-        
-        try {
-            DB::beginTransaction();
-            
-            $userId = Auth::user()->id;
-            $vendor = User::where('id',$id)->first();
-            $vendor->deleted_by = Auth::user()->id;
-            $vendor->save();
-            $vendor->delete();
-            
-            DB::commit();
-            Alert::success('Delete Berhasil', 'BUJP / Vendor berhasil dihapus!');
-            return redirect()->route('user.vendor.index');
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            Alert::error('Delete Gagal', 'BUJP / Vendor gagal dihapus!');
             return redirect()->route('user.vendor.index');
         }
     }

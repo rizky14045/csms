@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -19,7 +19,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Ubah Data Program Keamanan</li>
         </ol>
     </div>
@@ -28,20 +28,20 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('user.main-security-program.update',['programId'=>$programId,'id'=> $main->id])}}" class="my-4" method="POST">
+                <form action="{{route('user.main-security-program.update',['program'=>$programId,'main'=> $main->id])}}" class="my-4" method="POST" id="form-program" onsubmit="confirmSave('form-program', 'Data program keamanan akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-9">
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Nama Program</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan nama program" name="program_name" value="{{$main->program_name}}">
-                            @if($errors->has('program_name'))
-                                <div class="error text-danger">{{ $errors->first('program_name') }}</div>
-                            @endif
+                            <label for="program_name" class="form-label">Nama Program</label>
+                            <input class="form-control" type="text" id="program_name" required="" placeholder="Masukan nama program" name="program_name" value="{{ old('program_name', $main->program_name) }}">
+                            @error('program_name')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Pilih Planning Mulai Bulan</label>
+                            <label for="start_month" class="form-label">Pilih Planning Mulai Bulan</label>
                             <select class="form-select" aria-label="Default select example" name="start_month" required>
                                 <option value="">Pilih Bulan</option>
                                 <option value="Januari" {{$main->start_month == 'Januari' ? 'selected' : ''}}>Januari</option>
@@ -57,12 +57,12 @@
                                 <option value="November" {{$main->start_month == 'November' ? 'selected' : ''}}>November</option>
                                 <option value="Desember" {{$main->start_month == 'Desember' ? 'selected' : ''}}>Desember</option>
                             </select> 
-                            @if($errors->has('start_month'))
-                                <div class="error text-danger">{{ $errors->first('start_month') }}</div>
-                            @endif
+                            @error('start_month')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Pilih Planning Mulai Minggu</label>
+                            <label for="start_week" class="form-label">Pilih Planning Mulai Minggu</label>
                             <select class="form-select" aria-label="Default select example" name="start_week" required>
                                 <option value="">Pilih Minggu</option>
                                 <option value="1" {{$main->start_week == '1' ? 'selected' : ''}}>Minggu 1</option>
@@ -70,12 +70,12 @@
                                 <option value="3" {{$main->start_week == '3' ? 'selected' : ''}}>Minggu 3</option>
                                 <option value="4" {{$main->start_week == '4' ? 'selected' : ''}}>Minggu 4</option>
                             </select> 
-                            @if($errors->has('start_month'))
-                                <div class="error text-danger">{{ $errors->first('start_month') }}</div>
-                            @endif
+                            @error('start_week')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Pilih Planning Selesai Bulan</label>
+                            <label for="end_month" class="form-label">Pilih Planning Selesai Bulan</label>
                             <select class="form-select" aria-label="Default select example" name="end_month" required>
                                 <option value="">Pilih Bulan</option>
                                 <option value="Januari" {{$main->end_month == 'Januari' ? 'selected' : ''}}>Januari</option>
@@ -91,12 +91,12 @@
                                 <option value="November" {{$main->end_month == 'November' ? 'selected' : ''}}>November</option>
                                 <option value="Desember" {{$main->end_month == 'Desember' ? 'selected' : ''}}>Desember</option>
                             </select> 
-                            @if($errors->has('end_month'))
-                                <div class="error text-danger">{{ $errors->first('end_month') }}</div>
-                            @endif
+                            @error('end_month')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Pilih Planning Selesai Minggu</label>
+                            <label for="end_week" class="form-label">Pilih Planning Selesai Minggu</label>
                             <select class="form-select" aria-label="Default select example" name="end_week" required>
                                 <option value="">Pilih Minggu</option>
                                 <option value="1" {{$main->end_week == '1' ? 'selected' : ''}}>Minggu 1</option>
@@ -104,16 +104,21 @@
                                 <option value="3" {{$main->end_week == '3' ? 'selected' : ''}}>Minggu 3</option>
                                 <option value="4" {{$main->end_week == '4' ? 'selected' : ''}}>Minggu 4</option>
                             </select> 
-                            @if($errors->has('end_month'))
-                                <div class="error text-danger">{{ $errors->first('end_month') }}</div>
-                            @endif
+                            @error('end_week')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('user.main-security-program.index',['programId'=>$programId])}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit"> Ubah</button>
+                                    <a href="{{route('user.main-security-program.index',['program'=>$programId])}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

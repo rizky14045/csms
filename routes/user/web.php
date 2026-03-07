@@ -67,25 +67,13 @@ Route::prefix('user')->group(function () {
             Route::get('/', [ProfileController::class, 'index'])->name('user.profile.index');
         });
 
-        Route::get('/worker-sum', [WorkerSumController::class, 'index'])->name('user.worker-sum.index');
         
-        Route::get('/responsible-person/create', [ResponsiblePersonController::class, 'create'])->name('user.responsible-person.create');
-        Route::post('/responsible-person/create', [ResponsiblePersonController::class, 'store'])->name('user.responsible-person.store');
-        Route::get('/responsible-person/edit/{personId}', [ResponsiblePersonController::class, 'edit'])->name('user.responsible-person.edit');
-        Route::patch('/responsible-person/update/{personId}', [ResponsiblePersonController::class, 'update'])->name('user.responsible-person.update');
-        Route::delete('/responsible-person/destroy/{personId}', [ResponsiblePersonController::class, 'destroy'])->name('user.responsible-person.destroy');
         
-        Route::get('/security-external/create', [SecurityExternalController::class, 'create'])->name('user.security-external.create');
-        Route::post('/security-external/create', [SecurityExternalController::class, 'store'])->name('user.security-external.store');
-        Route::get('/security-external/edit/{securityId}', [SecurityExternalController::class, 'edit'])->name('user.security-external.edit');
-        Route::patch('/security-external/update/{securityId}', [SecurityExternalController::class, 'update'])->name('user.security-external.update');
-        Route::delete('/security-external/destroy/{securityId}', [SecurityExternalController::class, 'destroy'])->name('user.security-external.destroy');
+        
+        
+        
 
-        Route::get('/agreement-external/create', [AgreementExternalController::class, 'create'])->name('user.agreement-external.create');
-        Route::post('/agreement-external/create', [AgreementExternalController::class, 'store'])->name('user.agreement-external.store');
-        Route::get('/agreement-external/edit/{agreementId}', [AgreementExternalController::class, 'edit'])->name('user.agreement-external.edit');
-        Route::patch('/agreement-external/update/{agreementId}', [AgreementExternalController::class, 'update'])->name('user.agreement-external.update');
-        Route::delete('/agreement-external/destroy/{agreementId}', [AgreementExternalController::class, 'destroy'])->name('user.agreement-external.destroy');
+        
 
         Route::prefix('monthly-audit')->group(function () {
             Route::get('/', [MonthlyAuditController::class, 'index'])->name('user.monthly-audit.index');
@@ -148,27 +136,16 @@ Route::prefix('user')->group(function () {
             Route::get('/', [MarturityController::class, 'index'])->name('user.marturity.index');
             Route::get('/create', [MarturityController::class, 'create'])->name('user.marturity.create');
             Route::post('/store', [MarturityController::class, 'store'])->name('user.marturity.store');
-            Route::get('/edit/{marturityId}', [MarturityController::class, 'edit'])->name('user.marturity.edit');
-            Route::patch('/edit/{marturityId}', [MarturityController::class, 'update'])->name('user.marturity.update');
-            Route::get('/show/{marturityId}', [MarturityController::class, 'show'])->name('user.marturity.show');
-            Route::get('/preview/{marturityId}', [MarturityController::class, 'preview'])->name('user.marturity.preview');
-            Route::patch('/send/{marturityId}', [MarturityController::class, 'send'])->name('user.marturity.send');
-            Route::patch('{marturityId}/upload-note/{areaId}/{noteId}', [MarturityController::class, 'uploadNote'])->name('user.marturity.uploadNote');
-            Route::delete('/destroy/{marturityId}', [MarturityController::class, 'destroy'])->name('user.marturity.destroy');
+            Route::get('/edit/{marturity}', [MarturityController::class, 'edit'])->name('user.marturity.edit');
+            Route::patch('/edit/{marturity}', [MarturityController::class, 'update'])->name('user.marturity.update');
+            Route::get('/show/{marturity}', [MarturityController::class, 'show'])->name('user.marturity.show');
+            Route::get('/preview/{marturity}', [MarturityController::class, 'preview'])->name('user.marturity.preview');
+            Route::patch('/send/{marturity}', [MarturityController::class, 'send'])->name('user.marturity.send');
+            Route::patch('{marturity}/upload-note/{areaId}/{note}', [MarturityController::class, 'uploadNote'])->name('user.marturity.uploadNote');
+            Route::delete('/destroy/{marturity}', [MarturityController::class, 'destroy'])->name('user.marturity.destroy');
         });
 
-        Route::prefix('keamanan')->group(function () {
-            Route::get('/', [KeamananController::class, 'index'])->name('user.keamanan.index');
-            Route::get('/create', [KeamananController::class, 'create'])->name('user.keamanan.create');
-            Route::post('/store', [KeamananController::class, 'store'])->name('user.keamanan.store');
-            Route::get('/edit/{keamananId}', [KeamananController::class, 'edit'])->name('user.keamanan.edit');
-            Route::patch('/edit/{keamananId}', [KeamananController::class, 'update'])->name('user.keamanan.update');
-            Route::get('/show/{keamananId}', [KeamananController::class, 'show'])->name('user.keamanan.show');
-            Route::get('/preview/{keamananId}', [KeamananController::class, 'preview'])->name('user.keamanan.preview');
-            Route::patch('/send/{keamananId}', [KeamananController::class, 'send'])->name('user.keamanan.send');
-            Route::patch('{keamananId}/upload-note/{areaId}/{noteId}', [KeamananController::class, 'uploadNote'])->name('user.keamanan.uploadNote');
-            Route::delete('/destroy/{keamananId}', [KeamananController::class, 'destroy'])->name('user.keamanan.destroy');
-        });
+        
         
         Route::prefix('vendor')->group(function () {
             Route::get('/', [VendorController::class, 'index'])->name('user.vendor.index');
@@ -181,23 +158,8 @@ Route::prefix('user')->group(function () {
         
 
         
-        Route::prefix('security-program')->group(function () {
-            Route::get('/', [SecurityProgramController::class, 'index'])->name('user.security-program.index');
-            Route::get('/create', [SecurityProgramController::class, 'create'])->name('user.security-program.create');
-            Route::post('/store', [SecurityProgramController::class, 'store'])->name('user.security-program.store');
-            Route::get('/edit/{id}', [SecurityProgramController::class, 'edit'])->name('user.security-program.edit');
-            Route::patch('/edit/{id}', [SecurityProgramController::class, 'update'])->name('user.security-program.update');
-            Route::delete('/delete/{id}', [SecurityProgramController::class, 'destroy'])->name('user.security-program.destroy');
-        });
-        Route::prefix('main-security-program')->group(function () {
-            Route::get('/{programId}', [MainSecurityProgramController::class, 'index'])->name('user.main-security-program.index');
-            Route::get('/visual/{programId}', [MainSecurityProgramController::class, 'visual'])->name('user.main-security-program.visual');
-            Route::get('/create/{programId}', [MainSecurityProgramController::class, 'create'])->name('user.main-security-program.create');
-            Route::post('/store/{programId}', [MainSecurityProgramController::class, 'store'])->name('user.main-security-program.store');
-            Route::get('/{programId}/edit/{id}', [MainSecurityProgramController::class, 'edit'])->name('user.main-security-program.edit');
-            Route::patch('/{programId}/edit/{id}', [MainSecurityProgramController::class, 'update'])->name('user.main-security-program.update');
-            Route::delete('/{programId}/delete/{id}', [MainSecurityProgramController::class, 'destroy'])->name('user.main-security-program.destroy');
-        });
+        
+        
 
 
 
@@ -221,6 +183,58 @@ Route::prefix('user')->group(function () {
             Route::get('/{security}/edit', [SecurityController::class, 'edit'])->name('user.security.edit');
             Route::patch('/{security}/edit', [SecurityController::class, 'update'])->name('user.security.update');
             Route::delete('/{security}/delete', [SecurityController::class, 'destroy'])->name('user.security.destroy');
+        });
+
+        Route::get('/worker-sum', [WorkerSumController::class, 'index'])->name('user.worker-sum.index');
+
+        Route::get('/responsible-person/create', [ResponsiblePersonController::class, 'create'])->name('user.responsible-person.create');
+        Route::post('/responsible-person/create', [ResponsiblePersonController::class, 'store'])->name('user.responsible-person.store');
+        Route::get('/responsible-person/{person}/edit', [ResponsiblePersonController::class, 'edit'])->name('user.responsible-person.edit');
+        Route::patch('/responsible-person/{person}/update', [ResponsiblePersonController::class, 'update'])->name('user.responsible-person.update');
+        Route::delete('/responsible-person/{person}/destroy', [ResponsiblePersonController::class, 'destroy'])->name('user.responsible-person.destroy');
+
+        Route::get('/security-external/create', [SecurityExternalController::class, 'create'])->name('user.security-external.create');
+        Route::post('/security-external/create', [SecurityExternalController::class, 'store'])->name('user.security-external.store');
+        Route::get('/security-external/{security}/edit', [SecurityExternalController::class, 'edit'])->name('user.security-external.edit');
+        Route::patch('/security-external/{security}/update', [SecurityExternalController::class, 'update'])->name('user.security-external.update');
+        Route::delete('/security-external/{security}/destroy', [SecurityExternalController::class, 'destroy'])->name('user.security-external.destroy');
+
+        Route::get('/agreement-external/create', [AgreementExternalController::class, 'create'])->name('user.agreement-external.create');
+        Route::post('/agreement-external/create', [AgreementExternalController::class, 'store'])->name('user.agreement-external.store');
+        Route::get('/agreement-external/{agreement}/edit', [AgreementExternalController::class, 'edit'])->name('user.agreement-external.edit');
+        Route::patch('/agreement-external/{agreement}/update', [AgreementExternalController::class, 'update'])->name('user.agreement-external.update');
+        Route::delete('/agreement-external/{agreement}/destroy', [AgreementExternalController::class, 'destroy'])->name('user.agreement-external.destroy');
+
+        Route::prefix('security-program')->group(function () {
+            Route::get('/', [SecurityProgramController::class, 'index'])->name('user.security-program.index');
+            Route::get('/create', [SecurityProgramController::class, 'create'])->name('user.security-program.create');
+            Route::post('/store', [SecurityProgramController::class, 'store'])->name('user.security-program.store');
+            Route::get('/{program}/edit', [SecurityProgramController::class, 'edit'])->name('user.security-program.edit');
+            Route::patch('/{program}/update', [SecurityProgramController::class, 'update'])->name('user.security-program.update');
+            Route::delete('/{program}/destroy', [SecurityProgramController::class, 'destroy'])->name('user.security-program.destroy');
+        });
+
+        Route::prefix('main-security-program')->group(function () {
+            Route::get('/{program}', [MainSecurityProgramController::class, 'index'])->name('user.main-security-program.index');
+            Route::get('/visual/{program}', [MainSecurityProgramController::class, 'visual'])->name('user.main-security-program.visual');
+            Route::get('/create/{program}', [MainSecurityProgramController::class, 'create'])->name('user.main-security-program.create');
+            Route::post('/store/{program}', [MainSecurityProgramController::class, 'store'])->name('user.main-security-program.store');
+            Route::get('/{program}/{main}/edit', [MainSecurityProgramController::class, 'edit'])->name('user.main-security-program.edit');
+            Route::patch('/{program}/{main}/update', [MainSecurityProgramController::class, 'update'])->name('user.main-security-program.update');
+            Route::delete('/{program}/{main}/destroy', [MainSecurityProgramController::class, 'destroy'])->name('user.main-security-program.destroy');
+        });
+
+        Route::prefix('keamanan')->group(function () {
+            Route::get('/', [KeamananController::class, 'index'])->name('user.keamanan.index');
+            Route::get('/create', [KeamananController::class, 'create'])->name('user.keamanan.create');
+            Route::post('/store', [KeamananController::class, 'store'])->name('user.keamanan.store');
+            Route::get('/{kpi}/edit', [KeamananController::class, 'edit'])->name('user.keamanan.edit');
+            Route::patch('/{kpi}/update', [KeamananController::class, 'update'])->name('user.keamanan.update');
+            Route::get('/{kpi}/show', [KeamananController::class, 'show'])->name('user.keamanan.show');
+            Route::get('/{kpi}/preview', [KeamananController::class, 'preview'])->name('user.keamanan.preview');
+            Route::patch('/{kpi}/send', [KeamananController::class, 'send'])->name('user.keamanan.send');
+            Route::patch('{kpi}/upload-note/{areaId}/{note}', [KeamananController::class, 'uploadNote'])->name('user.keamanan.uploadNote');
+            Route::delete('/{kpi}/destroy', [KeamananController::class, 'destroy'])->name('user.keamanan.destroy');
         });
     });
 

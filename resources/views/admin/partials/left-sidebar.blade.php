@@ -5,7 +5,7 @@
         <div id="sidebar-menu">
 
             <div class="logo-box">
-                <a href="{{route('admin.home.index')}}" class="logo logo-light">
+                <a href="{{route('dashboard')}}" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="{{asset('logo.png')}}" alt="" height="22">
                     </span>
@@ -13,7 +13,7 @@
                         <img src="{{asset('logo.png')}}" alt="" height="45">
                     </span>
                 </a>
-                <a href="{{route('admin.home.index')}}" class="logo logo-dark">
+                <a href="{{route('dashboard')}}" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="{{asset('logo.png')}}" alt="" height="22">
                     </span>
@@ -25,7 +25,7 @@
 
             <ul id="side-menu">
                 <li>
-                    <a href="{{route('admin.home.index')}}" class="tp-link">
+                    <a href="{{route('dashboard')}}" class="tp-link">
                         <i data-feather="home"></i>
                         <span> Home </span>
                     </a>

@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Jumlah Pekerja</li>
         </ol>
     </div>
@@ -28,9 +28,11 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between mb-3">
                     <span class="title fw-bold">Data Penanggung Jawab Keamanan</span>
-                    <a href="{{route('user.responsible-person.create')}}" class="btn btn-success btn-sm float-right">Tambah Data</a>
+                    @can('create.responsible.person.unit')
+                    <a href="{{route('user.responsible-person.create')}}" class="btn btn-primary btn-sm float-right">Tambah Data</a>
+                    @endcan
                 </div>
-                <div class="table-responsive">
+                <div class="table-responsive mb-4">
                     <table class="table table-bordered text-center align-middle">
                         <thead class="table-light">
                             <tr>
@@ -71,22 +73,28 @@
                                     <td>{{$person->last_education}}</td>
                                     <td>{{$person->note}}</td>
                                     <td>
-                                        <a href="{{route('user.responsible-person.edit',['personId' =>$person->id])}}" class="btn btn-sm btn-info">edit</a>
-                                        <form action="{{route('user.responsible-person.destroy',['personId' =>$person->id])}}" method="post" class="d-inline">
+                                        @can('edit.responsible.person.unit')
+                                        <a href="{{route('user.responsible-person.edit',['person' =>$person->id])}}" class="btn btn-sm btn-warning mb-2">edit</a>
+                                        @endcan
+                                        @can('delete.responsible.person.unit')
+                                        <form action="{{route('user.responsible-person.destroy',['person' =>$person->id])}}" method="post" class="d-inline mb-2" id="delete-person-{{ $person->id }}" onsubmit="confirmSave('delete-person-{{ $person->id }}', 'Data akan dihapus')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                         </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-                <div class="security-personil mb-3">
+                <div class="security-personil mb-4">
                     <div class="d-flex justify-content-between mb-3">
                         <span class="fw-bold">Data Personil Keamanan Eksternal</span>
-                        <a href="{{route('user.security-external.create')}}" class="btn btn-success btn-sm float-right">Tambah Data</a>
+                        @can('create.security.external.unit')
+                        <a href="{{route('user.security-external.create')}}" class="btn btn-primary btn-sm float-right">Tambah Data</a>
+                        @endcan
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bordered text-center align-middle">
@@ -111,12 +119,16 @@
                                         <td>{{$security->warrant_number}}</td>
                                         <td>{{$security->note}}</td>
                                         <td>
-                                            <a href="{{route('user.security-external.edit',['securityId' =>$security->id])}}" class="btn btn-sm btn-info">edit</a>
-                                            <form action="{{route('user.security-external.destroy',['securityId' =>$security->id])}}" method="post" class="d-inline">
+                                            @can('edit.security.external.unit')
+                                            <a href="{{route('user.security-external.edit',['security' =>$security->id])}}" class="btn btn-sm btn-warning">edit</a>
+                                            @endcan
+                                            @can('delete.security.external.unit')
+                                            <form action="{{route('user.security-external.destroy',['security' =>$security->id])}}" method="post" class="d-inline" id="delete-security-external-{{ $security->id }}" onsubmit="confirmSave('delete-security-external-{{ $security->id }}', 'Data akan dihapus')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                             </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -124,10 +136,12 @@
                         </table>
                     </div>
                 </div>
-                <div class="cooperation mb-3">
+                <div class="cooperation mb-4">
                     <div class="d-flex justify-content-between mb-3">
                         <span class="title fw-bold">Data Perjanjian Kerjasama Eksternal</span>
-                        <a href="{{route('user.agreement-external.create')}}" class="btn btn-success btn-sm float-right">Tambah Data</a>
+                        @can('create.agreement.external.unit')
+                        <a href="{{route('user.agreement-external.create')}}" class="btn btn-primary btn-sm float-right">Tambah Data</a>
+                        @endcan
                     </div>
                     <div class="table-responsive">
                         <table class="table table-bordered text-center align-middle">
@@ -153,15 +167,19 @@
                                         <td>{{$agreement->regional_unit}}</td>
                                         <td>{{$agreement->pkt_number}}</td>
                                         <td>{{$agreement->pkt_title}}</td>
-                                        <td>{{$agreement->expired_date}}</td>
+                                        <td>{{\Carbon\Carbon::parse($agreement->expired_date)->format('d/m/Y')}}</td>
                                         <td>{{$agreement->note}}</td>
                                         <td>
-                                            <a href="{{route('user.agreement-external.edit',['agreementId' =>$agreement->id])}}" class="btn btn-sm btn-info">edit</a>
-                                            <form action="{{route('user.agreement-external.destroy',['agreementId' =>$agreement->id])}}" method="post" class="d-inline">
+                                            @can('edit.agreement.external.unit')
+                                            <a href="{{route('user.agreement-external.edit',['agreement' =>$agreement->id])}}" class="btn btn-sm btn-warning">edit</a>
+                                            @endcan
+                                            @can('delete.agreement.external.unit')
+                                            <form action="{{route('user.agreement-external.destroy',['agreement' =>$agreement->id])}}" method="post" class="d-inline" id="delete-agreement-external-{{ $agreement->id }}" onsubmit="confirmSave('delete-agreement-external-{{ $agreement->id }}', 'Data akan dihapus')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                             </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach

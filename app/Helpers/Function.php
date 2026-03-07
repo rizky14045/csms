@@ -65,8 +65,6 @@ if (!function_exists('getStatus')) {
             $items = collect($arrayContent)['success'];
             return $items;
         } catch (\Throwable $th) {
-            dd($jsonResponse);
-            dd($th->getMessage());
         }
     }
 }

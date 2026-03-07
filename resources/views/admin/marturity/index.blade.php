@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Marturity</li>
         </ol>
     </div>
@@ -31,7 +31,7 @@
                         <label for="" class="form-label">Cari Data</label>
                         <div class="d-flex gap-3">
                             <div class="mb-3 col-md-3">
-                                <input type="date" class="form-control d-inline" id="exampleFormControlInput1">
+                                <input type="date" class="form-control d-inline" name="date" value="{{ request('date') }}">
                             </div>
                             <div class="button-search">
                                 <button type="button" class="btn btn-primary d-inline">Cari</button>
@@ -56,10 +56,10 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$marturity->unit->name}}</td>
-                                    <td>{{$marturity->send_date}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') ?? "-" }}</td>
                                     <td>{{$marturity->triwulan}}</td>
                                     <td>
-                                        <a href="{{route('admin.marturity.show',['marturityId'=>$marturity->id])}}" class="btn btn-success btn-sm">show</a>
+                                        <a href="{{route('admin.marturity.show',['marturity'=>$marturity->id])}}" class="btn btn-success btn-sm">show</a>
                                     </td>
                                 </tr>
                             @endforeach

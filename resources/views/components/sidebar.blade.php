@@ -5,7 +5,7 @@
         <div id="sidebar-menu">
 
             <div class="logo-box">
-                <a href="{{route('admin.home.index')}}" class="logo logo-light">
+                <a href="{{route('dashboard')}}" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="{{asset('logo.png')}}" alt="" height="22">
                     </span>
@@ -13,7 +13,7 @@
                         <img src="{{asset('logo.png')}}" alt="" height="45">
                     </span>
                 </a>
-                <a href="{{route('admin.home.index')}}" class="logo logo-dark">
+                <a href="{{route('dashboard')}}" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="{{asset('logo.png')}}" alt="" height="22">
                     </span>
@@ -25,7 +25,7 @@
 
             <ul id="side-menu">
                 <li>
-                    <a href="{{route('admin.home.index')}}" class="tp-link">
+                    <a href="{{route('dashboard')}}" class="tp-link">
                         <i data-feather="home"></i>
                         <span> Home </span>
                     </a>
@@ -42,6 +42,7 @@
                         <span> Assesment BUJP </span>
                     </a>
                 </li>
+                @canany(['view.marturity.admin'])
                 <li>
                     <a href="#sidebarBulanan" data-bs-toggle="collapse">
                         <i data-feather="briefcase"></i>
@@ -60,6 +61,29 @@
                         </ul>
                     </div>
                 </li>
+                @endcanany
+                @canany(['view.marturity.unit'])
+                <li>
+                    <a href="#sidebarBulanan" data-bs-toggle="collapse">
+                        <i data-feather="briefcase"></i>
+                        <span> Sistem Keamanan </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarBulanan">
+
+                        <ul class="nav-second-level">
+                            @can('view.marturity.unit')
+                            <li>
+                                <a href="{{route('user.marturity.index')}}" class="tp-link">Maturity Level</a>
+                            </li>
+                            @endcan
+                            <li>
+                                <a href="{{route('user.keamanan.index')}}" class="tp-link">Keamanan KPI</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                @endcanany
                 <li>
                     <a href="#sidebarMasterData" data-bs-toggle="collapse">
                         <i data-feather="database"></i>
@@ -68,12 +92,6 @@
                     </a>
                     <div class="collapse" id="sidebarMasterData">
                         <ul class="nav-second-level">
-                            {{-- <li>
-                                <a href="{{route('admin.admin.index')}}" class="tp-link">Admin</a>
-                            </li> --}}
-                            {{-- <li>
-                                <a href="{{route('admin.unit.index')}}" class="tp-link">Unit</a>
-                            </li> --}}
                             @can('view.vulnerability')
                             <li>
                                 <a href="{{route('admin.vulnerability.index')}}" class="tp-link">Kerawanan</a>
@@ -109,12 +127,30 @@
                                 <a href="{{route('user.security.index')}}" class="tp-link">Satuan Pengaman</a>
                             </li>
                             @endcan
+                            @can('view.workersum.unit')
+                            <li>
+                                <a href="{{route('user.worker-sum.index')}}" class="tp-link">Jumlah Pekerja</a>
+                            </li>
+                            @endcan
+                            @can('view.security.program.unit')
+                            <li>
+                                <a href="{{route('user.security-program.index')}}" class="tp-link">Program Keamanan</a>
+                            </li>
+                            @endcan
                             <li>
                                 <a href="{{route('admin.audit-smp.index')}}" class="tp-link">Audit SMP</a>
                             </li>
                         </ul>
                     </div>
                 </li>
+                @can('view.user.vendor')
+                <li>
+                    <a href="{{route('user.vendor.index')}}" class="tp-link">
+                        <i data-feather="user"></i>
+                        <span> Vendor / BUJP </span>
+                    </a>
+                </li>
+                @endcan
                 @canany(['view.user', 'view.role', 'view.permission'])
                 <li>
                     <a href="#sidebarSetting" data-bs-toggle="collapse">

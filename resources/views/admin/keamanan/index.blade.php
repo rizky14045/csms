@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">KPI</li>
         </ol>
     </div>
@@ -28,15 +28,17 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between w-100">
                     <div class="find-data col-md-6">
-                        <label for="" class="form-label">Cari Data</label>
-                        <div class="d-flex gap-3">
-                            <div class="mb-3 col-md-3">
-                                <input type="date" class="form-control d-inline" id="exampleFormControlInput1">
+                        <form action="">
+                            <label for="" class="form-label">Cari Data</label>
+                            <div class="d-flex gap-3">
+                                <div class="mb-3 col-md-3">
+                                    <input type="date" class="form-control d-inline" id="date" name="date" value="{{request('date', '')}}">
+                                </div>
+                                <div class="button-search">
+                                    <button type="submit" class="btn btn-primary d-inline">Cari</button>
+                                </div>
                             </div>
-                            <div class="button-search">
-                                <button type="button" class="btn btn-primary d-inline">Cari</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -56,10 +58,10 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$kpi->unit->name}}</td>
-                                    <td>{{$kpi->send_date}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') }}</td>
                                     <td>{{$kpi->triwulan}}</td>
                                     <td>
-                                        <a href="{{route('admin.keamanan.show',['keamananId'=>$kpi->id])}}" class="btn btn-success btn-sm">show</a>
+                                        <a href="{{route('admin.keamanan.show',['kpi'=>$kpi->id])}}" class="btn btn-success btn-sm">show</a>
                                     </td>
                                 </tr>
                             @endforeach

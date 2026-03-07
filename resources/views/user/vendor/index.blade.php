@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 
 @stop
@@ -12,7 +12,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">BUJP / Vendor</li>
         </ol>
     </div>
@@ -20,9 +20,11 @@
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
+            @can('create.user.vendor')
             <div class="d-flex justify-content-end pe-3 pt-3">
                 <a href="{{route('user.vendor.create')}}" class="btn btn-success">Tambah Data</a>
             </div>
+            @endcan
             <div class="card-body">  
                 <div class="table-responsive">
                     <table class="table table-bordered text-center align-middle">
@@ -32,8 +34,7 @@
                                 <th scope="col">Nama</th>
                                 <th scope="col">NPWP</th>
                                 <th scope="col">Email</th>
-                                <th scope="col">Alamat</th>
-                                <th scope="col">Action</th>
+                                <th scope="col">No Kontrak</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,17 +42,9 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$vendor->name}}</td>
-                                    <td>{{$vendor->bujpProfile->npwp ?? ''}}</td>
+                                    <td>{{$vendor->bujp_profile->npwp ?? ''}}</td>
                                     <td>{{$vendor->email}}</td>
-                                    <td>{{$vendor->bujpProfile->address ?? ''}}</td>
-                                    <td class="text-center">
-                                        <a href="{{route('user.vendor.edit',['id'=>$vendor->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                        <form action="{{route('user.vendor.destroy',['id'=>$vendor->id])}}" method="post" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                        </form>
-                                    </td>
+                                    <td>{{$vendor->vendor->contract_number ?? ''}}</td>
                                 </tr>
                             @endforeach
                         </tbody>

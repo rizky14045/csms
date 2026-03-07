@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Edit Data KPI</li>
         </ol>
     </div>
@@ -25,35 +25,43 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('user.keamanan.update',['keamananId' =>$kpi->id])}}" class="my-4" method="POST">
+                <form action="{{route('user.keamanan.update',['kpi' =>$kpi->id])}}" class="my-4" method="POST" id="form-kpi" onsubmit="confirmSave('form-kpi', 'Data keamanan KPI akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
                             <label for="date" class="form-label">Tanggal</label>
-                            <input class="form-control" type="date" id="date" required="" name="date" value="{{$kpi->date}}">
+                            <input class="form-control" type="date" id="date" required="" name="date" value="{{ old('date', $kpi->date) }}">
+                            @error('date')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group mb-3">
                             <label for="emailaddress" class="form-label">Triwulan</label>
                             <select class="form-select" aria-label="Default select example" name="triwulan" required>
                                 <option value="">Pilih Triwulan</option>
-                                <option value="1" {{$kpi->triwulan == '1' ? 'selected' : ''}}>1</option>
-                                <option value="2" {{$kpi->triwulan == '2' ? 'selected' : ''}}>2</option>
-                                <option value="3" {{$kpi->triwulan == '3' ? 'selected' : ''}}>3</option>
-                                <option value="4" {{$kpi->triwulan == '4' ? 'selected' : ''}}>4</option>
+                                <option value="1" {{old('triwulan', $kpi->triwulan) == '1' ? 'selected' : ''}}>1</option>
+                                <option value="2" {{old('triwulan', $kpi->triwulan) == '2' ? 'selected' : ''}}>2</option>
+                                <option value="3" {{old('triwulan', $kpi->triwulan) == '3' ? 'selected' : ''}}>3</option>
+                                <option value="4" {{old('triwulan', $kpi->triwulan) == '4' ? 'selected' : ''}}>4</option>
                               </select> 
-                            @if($errors->has('triwulan'))
-                                <div class="error text-danger">{{ $errors->first('triwulan') }}</div>
-                            @endif
+                            @error('triwulan')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                   
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('user.keamanan.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit"> Ubah</button>
+                                    <a href="{{route('user.keamanan.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>
