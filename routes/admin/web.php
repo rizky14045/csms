@@ -6,7 +6,10 @@ use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\AuditSMPController;
 use App\Http\Controllers\Admin\CategoryAssesmentController;
 use App\Http\Controllers\Admin\ChangePasswordController;
+use App\Http\Controllers\Admin\CriteriaAuditSMPController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ElementAuditSMPController;
+use App\Http\Controllers\Admin\EvidenceAuditSMPController;
 use App\Http\Controllers\Admin\KeamananController;
 use App\Http\Controllers\Admin\KPIAreaController;
 use App\Http\Controllers\Admin\KPILevelController;
@@ -172,6 +175,7 @@ Route::prefix('admin')->group(function () {
             Route::patch('/{note}/edit/{level}', [KPINoteController::class, 'update'])->name('admin.kpi-note.update');
             Route::delete('/{note}/delete/{level}', [KPINoteController::class, 'destroy'])->name('admin.kpi-note.destroy');
         });
+
         Route::prefix('audit-smp')->group(function () {
             Route::get('/', [AuditSMPController::class, 'index'])->name('admin.audit-smp.index');
             Route::get('/create', [AuditSMPController::class, 'create'])->name('admin.audit-smp.create');
@@ -179,22 +183,32 @@ Route::prefix('admin')->group(function () {
             Route::get('/{audit}/edit', [AuditSMPController::class, 'edit'])->name('admin.audit-smp.edit');
             Route::patch('/{audit}/edit', [AuditSMPController::class, 'update'])->name('admin.audit-smp.update');
             Route::delete('/{audit}/delete', [AuditSMPController::class, 'destroy'])->name('admin.audit-smp.destroy');
-            Route::get('/create/element/{auditId}', [AuditSMPController::class, 'createElement'])->name('admin.audit-smp.createElement');
-            Route::get('/edit/element/{auditId}/{elementId}', [AuditSMPController::class, 'editElement'])->name('admin.audit-smp.editElement');
-            Route::patch('/{auditId}/edit-element/{elementId}', [AuditSMPController::class, 'updateElement'])->name('admin.audit-smp.updateElement');
-            Route::delete('/{auditId}/delete-element/{elementId}', [AuditSMPController::class, 'deleteElement'])->name('admin.audit-smp.deleteElement');
-            Route::post('/store/element/{auditId}', [AuditSMPController::class, 'storeElement'])->name('admin.audit-smp.storeElement');
-            Route::get('/create/evident/{auditId}', [AuditSMPController::class, 'createEvident'])->name('admin.audit-smp.createEvident');
-            Route::post('/store/evident/{auditId}', [AuditSMPController::class, 'storeEvident'])->name('admin.audit-smp.storeEvident');
-            Route::get('/edit/{auditId}/evident/{evidentId}', [AuditSMPController::class, 'editEvident'])->name('admin.audit-smp.editEvident');
-            Route::patch('/edit/{auditId}/evident/{evidentId}', [AuditSMPController::class, 'updateEvident'])->name('admin.audit-smp.updateEvident');
-            Route::delete('/edit/{auditId}/evident/{evidentId}', [AuditSMPController::class, 'deleteEvident'])->name('admin.audit-smp.deleteEvident');
-            Route::get('/create/kriteria/{auditId}', [AuditSMPController::class, 'createKriteria'])->name('admin.audit-smp.createKriteria');
-            Route::post('/store/kriteria/{auditId}', [AuditSMPController::class, 'storeKriteria'])->name('admin.audit-smp.storeKriteria');
-            Route::get('/edit/{auditId}/kriteria/{kriteriaId}', [AuditSMPController::class, 'editKriteria'])->name('admin.audit-smp.editKriteria');
-            Route::patch('/edit/{auditId}/kriteria/{kriteriaId}', [AuditSMPController::class, 'updateKriteria'])->name('admin.audit-smp.updateKriteria');
-            Route::delete('/edit/{auditId}/kriteria/{kriteriaId}', [AuditSMPController::class, 'deleteKriteria'])->name('admin.audit-smp.deleteKriteria');
-            });
+        });
+
+        Route::prefix('element-audit-smp')->group(function () {
+            Route::get('/create/{audit}', [ElementAuditSMPController::class, 'create'])->name('admin.element.audit-smp.create');
+            Route::post('/store/element/{audit}', [ElementAuditSMPController::class, 'store'])->name('admin.element.audit-smp.store');
+            Route::get('/{element}/edit/{audit}', [ElementAuditSMPController::class, 'edit'])->name('admin.element.audit-smp.edit');
+            Route::patch('/{element}/edit/{audit}', [ElementAuditSMPController::class, 'update'])->name('admin.element.audit-smp.update');
+            Route::delete('/{element}/delete/{audit}', [ElementAuditSMPController::class, 'delete'])->name('admin.element.audit-smp.delete');
+
+        });
+
+        Route::prefix('criteria-audit-smp')->group(function () {
+            Route::get('/create/{audit}', [CriteriaAuditSMPController::class, 'create'])->name('admin.criteria.audit-smp.create');
+            Route::post('/store/{audit}', [CriteriaAuditSMPController::class, 'store'])->name('admin.criteria.audit-smp.store');
+            Route::get('/{kriteria}/edit/{audit}', [CriteriaAuditSMPController::class, 'edit'])->name('admin.criteria.audit-smp.edit');
+            Route::patch('/{kriteria}/edit/{audit}', [CriteriaAuditSMPController::class, 'update'])->name('admin.criteria.audit-smp.update');
+            Route::delete('/{kriteria}/edit /{audit}', [CriteriaAuditSMPController::class, 'delete'])->name('admin.criteria.audit-smp.delete');
+        });
+
+        Route::prefix('evidence-audit-smp')->group(function () {
+            Route::get('/create/{audit}', [EvidenceAuditSMPController::class, 'create'])->name('admin.evidence.audit-smp.create');
+            Route::post('/store/{audit}', [EvidenceAuditSMPController::class, 'store'])->name('admin.evidence.audit-smp.store');
+            Route::get('/{evidence}/edit/{audit}', [EvidenceAuditSMPController::class, 'edit'])->name('admin.evidence.audit-smp.edit');
+            Route::patch('/{evidence}/edit/{audit}', [EvidenceAuditSMPController::class, 'update'])->name('admin.evidence.audit-smp.update');
+            Route::delete('/{evidence}/delete/{audit}', [EvidenceAuditSMPController::class, 'delete'])->name('admin.evidence.audit-smp.delete');
+        });
     });
 
 });

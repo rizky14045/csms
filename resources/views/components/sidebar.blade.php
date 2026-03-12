@@ -117,6 +117,11 @@
                                 <a href="{{route('admin.kpi-area.index')}}" class="tp-link">KPI</a>
                             </li>
                             @endcan
+                            @can('view.audit.smp.admin')
+                            <li>
+                                <a href="{{route('admin.audit-smp.index')}}" class="tp-link">Audit SMP</a>
+                            </li>
+                            @endcan
                             @can('view.attribute.unit')
                             <li>
                                 <a href="{{route('user.attribute.index')}}" class="tp-link">Attribute</a>
@@ -137,9 +142,6 @@
                                 <a href="{{route('user.security-program.index')}}" class="tp-link">Program Keamanan</a>
                             </li>
                             @endcan
-                            <li>
-                                <a href="{{route('admin.audit-smp.index')}}" class="tp-link">Audit SMP</a>
-                            </li>
                         </ul>
                     </div>
                 </li>

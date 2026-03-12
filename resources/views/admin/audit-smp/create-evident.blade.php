@@ -11,13 +11,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Audit SMP</h4>
+        <h4 class="fs-18 fw-semibold m-0">Evidence Audit SMP</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Tambah Data Audit SMP Evident</li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Tambah Data Audit SMP Evidence</li>
         </ol>
     </div>
 </div>
@@ -25,7 +25,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.audit-smp.storeEvident',['auditId'=>$audit->id])}}" class="my-4" method="POST" id="form-audit-smp" onsubmit="confirmSave('form-audit-smp', 'Data element'. {{$audit->name}}. 'akan disimpan')">
+                <form action="{{route('admin.evidence.audit-smp.store',['audit'=>$audit->id])}}" class="my-4" method="POST" id="form-evidence-audit-smp" onsubmit="confirmSave('form-evidence-audit-smp', 'Data evidence akan disimpan')">
                     @csrf
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
@@ -36,16 +36,7 @@
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-group mb-3">
-                            <label for="type" class="form-label">Tipe</label>
-                            <select name="type" id="type" class="form-select @error('type') is-invalid @enderror">
-                                <option value="evident">evident</option>
-                            </select>
-                            @error('type')
-                                <div class="error text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
+
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
