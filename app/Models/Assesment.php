@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Models\Vendor;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Assesment extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $guarded = ['id'];
 
     public function vendor()
@@ -19,7 +20,10 @@ class Assesment extends Model
     {
         return $this->hasOne(User::class, 'id', 'unit_id');
     }
-
+    public function bujpProfile()
+    {
+        return $this->hasOne(BujpProfile::class, 'user_id', 'created_by');
+    }
 
 
 }

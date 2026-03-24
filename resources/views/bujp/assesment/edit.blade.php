@@ -1,4 +1,4 @@
-@extends('bujp.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('bujp.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Tambah Data Assesment</li>
         </ol>
     </div>
@@ -29,43 +29,40 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{route('bujp.assesment.update',['assesmentId' => $assesment->id])}}" class="my-4" method="POST">
+                                <form action="{{route('bujp.assesment.update',['assesment' => $assesment->id, 'unit' => request()->query('unit')])}}" class="my-4" method="POST" id="form-assesment" onsubmit="confirmSave('form-assesment', 'Data akan disimpan')">
                                     @csrf
                                     @method('PATCH')
                                     <div class="col-xl-12">
                                         <div class="form-group mb-3">
                                             <label for="date" class="form-label">Tanggal</label>
-                                            <input class="form-control" type="date" id="date" required="" name="date" value="{{$assesment->date}}">
-                                            @if($errors->has('date'))
-                                                <div class="error text-danger">{{ $errors->first('date') }}</div>
-                                            @endif
+                                            <input class="form-control" type="date" id="date" required="" name="date" value="{{ old('date', $assesment->date) }}">
+                                            @error('date')
+                                                <div class="error text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                         <div class="form-group mb-3">
                                             <label for="emailaddress" class="form-label">Triwulan</label>
                                             <select class="form-select" aria-label="Default select example" name="triwulan" required>
                                                 <option value="">Pilih Triwulan</option>
-                                                <option value="1" {{$assesment->triwulan == '1' ? 'selected' : ''}}>1</option>
-                                                <option value="2" {{$assesment->triwulan == '2' ? 'selected' : ''}}>2</option>
-                                                <option value="3" {{$assesment->triwulan == '3' ? 'selected' : ''}}>3</option>
-                                                <option value="4" {{$assesment->triwulan == '4' ? 'selected' : ''}}>4</option>
+                                                <option value="1" {{old('triwulan', $assesment->triwulan) == '1' ? 'selected' : ''}}>1</option>
+                                                <option value="2" {{old('triwulan', $assesment->triwulan) == '2' ? 'selected' : ''}}>2</option>
+                                                <option value="3" {{old('triwulan', $assesment->triwulan) == '3' ? 'selected' : ''}}>3</option>
+                                                <option value="4" {{old('triwulan', $assesment->triwulan) == '4' ? 'selected' : ''}}>4</option>
                                               </select> 
-                                            @if($errors->has('triwulan'))
-                                                <div class="error text-danger">{{ $errors->first('triwulan') }}</div>
-                                            @endif
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label for="contract" class="form-label">Kontrak</label>
-                                            <input class="form-control" type="text" id="contract" required="" name="contract" value="{{$assesment->contract}}">
-                                            @if($errors->has('contract'))
-                                                <div class="error text-danger">{{ $errors->first('contract') }}</div>
-                                            @endif
-                                        </div>
-                                  
+                                            @error('triwulan')
+                                                <div class="error text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>                                  
                                         <div class="form-group row">
                                             <div class="col-12">
                                                 <div class="d-flex gap-3 justify-content-end">
-                                                    <a href="{{route('bujp.assesment.index')}}" class="btn btn-danger"> Back</a>
-                                                    <button class="btn btn-primary" type="submit"> Ubah</button>
+                                                    <a href="{{route('bujp.assesment.index', ['unit' => request()->query('unit')])}}" class="btn btn-danger"> Kembali</a>
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-success"
+                                                    >
+                                                        Simpan
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

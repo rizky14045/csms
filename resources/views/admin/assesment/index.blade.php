@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -26,15 +26,22 @@
         <div class="card">
          
             <div class="card-body">
-                <label for="" class="form-label">Cari Data</label>
-                <div class="d-flex gap-3">
-                    <div class="mb-3 col-md-3">
-                        <input type="date" class="form-control d-inline" id="exampleFormControlInput1">
+                <form action="{{ route('admin.assesment.index') }}">
+                    <label class="form-label">Cari Data</label>
+                    <div class="d-flex gap-3">
+                        <div class="mb-3 col-md-3">
+                            <input type="date" 
+                                class="form-control" 
+                                name="date" 
+                                value="{{ request('date', '') }}">
+                        </div>
+                        <div class="button-search">
+                            <button type="submit" class="btn btn-primary">
+                                Cari
+                            </button>
+                        </div>
                     </div>
-                    <div class="button-search">
-                        <button type="button" class="btn btn-primary d-inline">Cari</button>
-                    </div>
-                </div>
+                </form>
                 <div class="table-responsive">
                     <table class="table table-bordered text-center align-middle">
                         <thead class="table-light">
@@ -56,15 +63,15 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$assesment->unit->name}}</td>
-                                    <td>{{$assesment->vendor->npwp}}</td>
+                                    <td>{{$assesment->bujp_profile->npwp}}</td>
                                     <td>{{$assesment->vendor->name}}</td>
                                     <td>{{$assesment->contract}}</td>
-                                    <td>{{$assesment->date}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($assesment->date)->format('d-m-Y') }}</td>
                                     <td>{{$assesment->triwulan}}</td>
-                                    <td>{{$assesment->send_date}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') }}</td>
                                     <td>
-                                        <a href="{{route('admin.assesment.show',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
-                                        <a href="{{route('admin.assesment.report',['assesmentId'=>$assesment->id])}}" class="btn btn-success btn-sm">Report</a>
+                                        <a href="{{route('admin.assesment.show',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
+                                        <a href="{{route('admin.assesment.report',['assesment'=>$assesment->id])}}" class="btn btn-success btn-sm">Report</a>
                                     </td>
                                 </tr>
                             @endforeach

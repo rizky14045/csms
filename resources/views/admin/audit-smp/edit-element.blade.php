@@ -11,12 +11,12 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Audit SMP</h4>
+        <h4 class="fs-18 fw-semibold m-0">Element Audit SMP</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Ubah Data Audit SMP Element</li>
         </ol>
     </div>
@@ -25,26 +25,15 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.audit-smp.updateElement',['auditId'=>$audit->id,'elementId'=>$element->id])}}" class="my-4" method="POST" id="form-audit-smp-element-edit" onsubmit="confirmSave('form-audit-smp-element-edit', 'Data element'. {{$audit->name}}. 'akan disimpan')">
+                <form action="{{route('admin.element.audit-smp.update',['audit'=>$audit->id,'element'=>$element->id])}}" class="my-4" method="POST" id="form-audit-smp-element-edit" onsubmit="confirmSave('form-audit-smp-element-edit', 'Data element akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
                             <label for="name" class="form-label">Nama</label>
-                            <input class="form-control @error('name') is-invalid @enderror" name="name" type="text" id="name" required="" placeholder="Masukan nama" value="{{$element->name}}">
+                            <input class="form-control @error('name') is-invalid @enderror" name="name" type="text" id="name" required="" placeholder="Masukan nama" value="{{ old('name', $element->name) }}">
                             @error('name')
-                                <div class="error text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="type" class="form-label">Tipe</label>
-                            <select name="type" id="type" class="form-select @error('type') is-invalid @enderror">
-                                <option value="">Pilih tipe</option>
-                                <option value="pernyataan" {{$element->type == 'pernyataan' ? 'selected' : ''}}>pernyataan</option>
-                                <option value="kriteria" {{$element->type == 'kriteria' ? 'selected' : ''}}>kriteria</option>
-                            </select>
-                            @error('type')
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror
                         </div>

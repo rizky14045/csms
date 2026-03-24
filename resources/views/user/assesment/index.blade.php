@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Assesment</li>
         </ol>
     </div>
@@ -28,15 +28,22 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between w-100">
                     <div class="find-data col-md-6">
-                        <label for="" class="form-label">Cari Data</label>
-                        <div class="d-flex gap-3">
-                            <div class="mb-3 col-md-3">
-                                <input type="date" class="form-control d-inline" id="exampleFormControlInput1">
+                        <form action="{{ route('user.assesment.index') }}">
+                            <label class="form-label">Cari Data</label>
+                            <div class="d-flex gap-3">
+                                <div class="mb-3 col-md-3">
+                                    <input type="date" 
+                                        class="form-control" 
+                                        name="date" 
+                                        value="{{ request('date', '') }}">
+                                </div>
+                                <div class="button-search">
+                                    <button type="submit" class="btn btn-primary">
+                                        Cari
+                                    </button>
+                                </div>
                             </div>
-                            <div class="button-search">
-                                <button type="button" class="btn btn-primary d-inline">Cari</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -58,23 +65,25 @@
                                 
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
-                                    <td>{{$assesment->vendor->npwp}}</td>
+                                    <td>{{$assesment->bujp_profile->npwp}}</td>
                                     <td>{{$assesment->vendor->name}}</td>
                                     <td>{{$assesment->contract}}</td>
-                                    <td>{{$assesment->date}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($assesment->date)->format('d-m-Y') }}</td>
                                     <td>{{$assesment->triwulan}}</td>
-                                    <td>{{$assesment->send_date}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') }}</td>
                                     <td>
-                                        @if ($assesment->send_status == 2)
-                                            <form action="{{route('user.assesment.send',['assesmentId'=>$assesment->id])}}" method="post" class="d-inline">
+                                        @if ($assesment->send_status == 1)
+                                            @can('send.assesment.bujp.unit')
+                                            <form action="{{route('user.assesment.send',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="button" class="btn btn-success btn-sm" onclick="sendItem(this)">Kirim</button>
+                                                <button type="submit" class="btn btn-success btn-sm">Kirim</button>
                                             </form>
-                                            <a href="{{route('user.assesment.show',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
-                                        @else
-                                            <a href="{{route('user.assesment.preview',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
-                                            <a href="{{route('user.assesment.report',['assesmentId'=>$assesment->id])}}" class="btn btn-success btn-sm">Report</a>
+                                            @endcan
+                                            <a href="{{route('user.assesment.show',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
+                                        @elseif($assesment->send_status >= 2)
+                                            <a href="{{route('user.assesment.preview',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
+                                            <a href="{{route('user.assesment.report',['assesment'=>$assesment->id])}}" class="btn btn-success btn-sm">Report</a>
                                         
                                         @endif
                                         

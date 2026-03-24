@@ -11,12 +11,12 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Audit SMP</h4>
+        <h4 class="fs-18 fw-semibold m-0">Element Audit SMP</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Tambah Data Audit SMP Kriteria</li>
         </ol>
     </div>
@@ -25,7 +25,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.audit-smp.storeElement',['auditId'=>$audit->id])}}" class="my-4" method="POST" id="form-audit-smp" onsubmit="confirmSave('form-audit-smp', 'Data element'. {{$audit->name}}. 'akan disimpan')">
+                <form action="{{route('admin.element.audit-smp.store',['audit'=>$audit->id])}}" class="my-4" method="POST" id="form-element-audit-smp" onsubmit="confirmSave('form-element-audit-smp', 'Data element akan disimpan')">
                     @csrf
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">

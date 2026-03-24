@@ -6,16 +6,37 @@ use App\Models\Assesment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Validation\AssesmentValidation;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SignCategoryAssesment;
 use App\Models\SignQuestionAssesment;
+use App\Services\Assesment\AssesmentService;
+use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class AssesmentController extends Controller
 {
+    protected $assesmentService;
+
+    public function __construct(AssesmentService $assesmentService)
+    {
+        $this->assesmentService = $assesmentService;
+
+        $this->middleware('can:view.assesment.bujp.unit')->only(['index']);
+        $this->middleware('can:create.assesment.bujp.unit')->only(['create', 'store']);
+        $this->middleware('can:edit.assesment.bujp.unit')->only(['edit', 'update']);
+        $this->middleware('can:delete.assesment.bujp.unit')->only(['destroy']);
+        $this->middleware('can:send.assesment.bujp.unit')->only(['send']);
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
     public function index(){
-        $userId = Auth::guard('web')->user()->id;
-        $data['assesments'] = Assesment::where('send_status','!=',1)->where('unit_id', $userId)->latest()->paginate(25);
+        $result = $this->assesmentService->getAllAssesment(25, true, request(), ['vendor', 'bujpProfile'], ">=", 1, auth()->user()->id);
+        $data['assesments'] = getPaginate($result);
         return view('user.assesment.index',$data);
     }
 
@@ -27,82 +48,78 @@ class AssesmentController extends Controller
         return view('user.assesment.edit');
     }
     
-    public function show($assesmentId){
+    public function show(Assesment $assesment){
+        if($assesment->unit_id != auth()->user()->id){
+            return abort(404);
+        }
 
-        $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesmentId)->get();
+        if($assesment->send_status != 1){
+            Alert::error('Gagal Dikirim', 'Assesment tidak bisa dikirim!');
+            return redirect()->route('user.assesment.index');
+        }
+
+        $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesment->id)->get();
         return view('user.assesment.show',$data);
     }
 
-    public function preview($assesmentId){
+    public function preview(Assesment $assesment){
+        if($assesment->unit_id != auth()->user()->id){
+            return abort(404);
+        }
 
-        $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesmentId)->get();
+        if($assesment->send_status < 2){
+            Alert::error('Gagal Dikirim', 'Assesment belum dikirim!');
+            return redirect()->route('user.assesment.index');
+        }
+
+        $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesment->id)->get();
         return view('user.assesment.preview',$data);
     }
 
-    public function report($assesmentId){
+    public function report(Assesment $assesment)
+    {
+        $response = $this->assesmentService->getReportAssesment($assesment);
 
-        $assesment = Assesment::find($assesmentId);
-        $categories = SignCategoryAssesment::with('questions', 'questions.levels')
-        ->where('assesment_id', $assesmentId)
-        ->get()
-        ->map(function ($category) {
-            // Hitung rata-rata untuk setiap kategori berdasarkan level dalam pertanyaan
-            $category->average = number_format($category->questions->avg('evaluation_unit'),2);
-    
-            return $category;
-        });
+         $status = getStatus($response);
 
-        $chartData = [
-            'labels' => $categories->pluck('category_name'), // Ambil category_name sebagai label
-            'data' => $categories->pluck('average'), // Ambil nilai rata-rata untuk data
-        ];
-        $chartJson = json_encode($chartData);
-        $data['assesment'] = $assesment;
-        $data['categories'] = $categories;
-        $data['chartJson'] = $chartJson;
-        return view('user.assesment.report',$data);
+        if ($status == false) {
+            return abort(500);
+        }
+
+        $result = $response->getData(true);
+
+        return view('user.assesment.report', [
+            'assesment' => $result['data']['assesment'],
+            'categories' => $result['data']['categories'],
+            'chartJson' => json_encode($result['data']['chart']),
+        ]);
     }
 
-    public function send($assesmentId){
+    public function send(Assesment $assesment){
+        if($assesment->unit_id != auth()->user()->id){
+            return abort(404);
+        }
 
-        try {
-
-            DB::beginTransaction();
-            Assesment::where('id',$assesmentId)->update([
-                'send_status' => 3,
-            ]);
-
-            DB::commit();
-            Alert::success('Berhasil Dikirim', 'Assesment berhasil dikirim!');
+        if($assesment->send_status != 1){
+            Alert::error('Gagal Dikirim', 'Assesment tidak bisa dikirim!');
             return redirect()->route('user.assesment.index');
-        } catch (\Throwable $th) {
-            DB::rollback();
-            throw $th;
         }
+
+        $this->assesmentService->sendAssesmentByUnit($assesment);
+
+        Alert::success('Berhasil Dikirim', 'Assesment berhasil dikirim!');
+        return redirect()->route('user.assesment.index');
     }
 
-    public function updateQuestion(Request $request,$questionId){
-
-        try {
-
-            DB::beginTransaction();
-
-            $request->validate([
-                'evaluation_unit_'.$questionId => 'required',
-            ],[
-                'evaluation_unit_'.$questionId.'.required' => 'Level harus diisi!',
-            ]);
-
-            $signQuestion = SignQuestionAssesment::where('id',$questionId)->first();          
-            $signQuestion->evaluation_unit = $request->input('evaluation_unit_'.$questionId);
-            $signQuestion->save();
-            DB::commit();
-            
-            Alert::success('Update Berhasil', 'Assesment berhasil diupdate!');
-            return redirect()->route('user.assesment.show',['assesmentId'=>$signQuestion->assesment_id,'signCategoryId'=>$signQuestion->sign_category_id]);
-        } catch (\Throwable $th) {
-            DB::rollback();
-            throw $th;
+    public function updateQuestion(Request $request, SignQuestionAssesment $question){
+        $validator = $this->validator($request->all(), AssesmentValidation::rulesForUpdateQuestionUnit($question->id), AssesmentValidation::messages($question->id));
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
+
+        $this->assesmentService->updateQuestionByUnit($request, $question);
+
+        Alert::success('Update Berhasil', 'Assesment berhasil diupdate!');
+        return redirect()->route('user.assesment.show',['assesment'=>$question->assesment_id,'signCategoryId'=>$question->sign_category_id]);
     }
 }

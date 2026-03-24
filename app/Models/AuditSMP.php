@@ -8,11 +8,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AuditSMP extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'audit_smp';
+
     protected $guarded = ['id'];
 
+    /*
+    |--------------------------------------------------------------------------
+    | RELATION
+    |--------------------------------------------------------------------------
+    */
+
+    public function parent()
+    {
+        return $this->belongsTo(AuditSMP::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(AuditSMP::class, 'parent_id')
+            ->orderBy('created_at', 'asc');
+    }
 
     public function pernyataan()
     {
@@ -20,6 +37,7 @@ class AuditSMP extends Model
             ->where('type', 'pernyataan')
             ->orderBy('created_at', 'asc');
     }
+
     public function kriteria()
     {
         return $this->hasMany(AuditSMP::class, 'parent_id')
@@ -27,10 +45,32 @@ class AuditSMP extends Model
             ->orderBy('created_at', 'asc');
     }
 
-    public function evident()
+    public function evidence()
     {
         return $this->hasMany(AuditSMP::class, 'parent_id')
-            ->where('type', 'evident')
+            ->where('type', 'evidence')
             ->orderBy('created_at', 'asc');
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SCOPE
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopeHeader($query)
+    {
+        return $query->where('type', 'header');
+    }
+
+    public function scopePernyataan($query)
+    {
+        return $query->where('type', 'pernyataan');
+    }
+
+    public function scopeKriteria($query)
+    {
+        return $query->where('type', 'kriteria');
+    }
+
 }

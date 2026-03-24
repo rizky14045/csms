@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -99,7 +99,7 @@
                         <div class="form-group row mt-5">
                             <div class="col-12">
                                 <div class="d-flex gap-1 justify-content-end">
-                                    <a href="{{route('admin.assesment.index')}}" class="btn btn-danger"> Back</a>
+                                    <a href="{{route('admin.assesment.index')}}" class="btn btn-danger"> Kembali</a>
                                 </div>
                             </div>
                         </div>

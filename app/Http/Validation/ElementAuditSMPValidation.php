@@ -2,13 +2,13 @@
 
 namespace App\Http\Validation;
 
-class AuditSMPValidation
+class ElementAuditSMPValidation
 {
     public static function rulesForCreate()
     {
         return [
             'name' => 'required',
-            'bobot' => 'required',
+            'type' => 'required|in:kriteria,pernyataan',
         ];
     }
 
@@ -16,7 +16,6 @@ class AuditSMPValidation
     {
         return [
             'name' => 'required',
-            'bobot' => 'required',
         ];
     }
 
@@ -24,7 +23,6 @@ class AuditSMPValidation
     {
         return [
             'name.required' => 'Nama harus diisi!',
-            'bobot.required' => 'Bobot harus diisi!',
             'type.required' => 'Tipe harus diisi!',
             'type.in' => 'Tipe tidak sesuai!'
         ];
