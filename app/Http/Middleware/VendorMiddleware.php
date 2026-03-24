@@ -3,9 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\Vendor;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class VendorMiddleware
 {
@@ -18,11 +18,25 @@ class VendorMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $vendor = Vendor::find(Auth::guard('vendor')->id());
-        if(!empty($vendor)){
-            return $next($request);
-        } else {
-            return redirect()->route('bujp.login');
+        $encryptedUnit = $request->query('unit');
+        if (!$encryptedUnit) {
+            Alert::error('Error', 'Unit wajib dipilih');
+            return redirect()->back();
         }
+
+
+        try {
+            $unitId = Crypt::decryptString($encryptedUnit);
+
+            $request->merge([
+                'unit_id' => $unitId
+            ]);
+
+        } catch (\Exception $e) {
+            Alert::error('Error', 'Unit tidak valid');
+            return redirect()->back();
+        }
+
+        return $next($request);
     }
 }

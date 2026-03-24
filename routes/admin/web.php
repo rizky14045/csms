@@ -46,10 +46,10 @@ Route::prefix('admin')->group(function () {
         // Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('admin.updatePassword');
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('admin.assesment.index');
-            Route::get('/create', [AssesmentController::class, 'create'])->name('admin.assesment.create');
-            Route::get('/edit', [AssesmentController::class, 'edit'])->name('admin.assesment.edit');
-            Route::get('/show/{assesmentId}', [AssesmentController::class, 'show'])->name('admin.assesment.show');
-            Route::get('/report/{assesmentId}', [AssesmentController::class, 'report'])->name('admin.assesment.report');
+            // Route::get('/create', [AssesmentController::class, 'create'])->name('admin.assesment.create');
+            // Route::get('/edit', [AssesmentController::class, 'edit'])->name('admin.assesment.edit');
+            Route::get('/{assesment}/show', [AssesmentController::class, 'show'])->name('admin.assesment.show');
+            Route::get('/{assesment}/report', [AssesmentController::class, 'report'])->name('admin.assesment.report');
         });
         Route::prefix('monthly-audit')->group(function () {
             Route::get('/', [MonthlyAuditController::class, 'index'])->name('admin.monthly-audit.index');

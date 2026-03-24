@@ -1,4 +1,61 @@
 <div class="app-sidebar-menu">
+
+    <style>
+        .vendor-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 260px;
+            background: #1e293b;
+            z-index: 999;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .vendor-header {
+            padding: 10px 15px;
+            font-size: 12px;
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .vendor-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .vendor-item {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            transition: 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .vendor-item:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .vendor-item.active {
+            background: #3b82f6;
+        }
+
+        .vendor-name {
+            font-size: 13px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .vendor-contract {
+            font-size: 11px;
+            color: #cbd5f5;
+        }
+
+        /* supaya sidebar utama tidak ketutup */
+        [data-simplebar] {
+            padding-bottom: 220px;
+        }
+    </style>
+
     <div class="h-100" data-simplebar>
 
         <!--- Sidemenu -->
@@ -36,12 +93,30 @@
                         <span> Laporan Bulanan </span>
                     </a>
                 </li>
+                @can('view.assesment.bujp.admin')
                 <li>
                     <a href="{{route('admin.assesment.index')}}" class="tp-link">
                         <i data-feather="user"></i>
                         <span> Assesment BUJP </span>
                     </a>
                 </li>
+                @endcan
+                @can('view.assesment.bujp')
+                <li>
+                    <a href="{{ route('bujp.assesment.index') }}@if(request('unit'))?unit={{ request('unit') }}@endif" class="tp-link">
+                        <i data-feather="user"></i>
+                        <span> Assesment BUJP </span>
+                    </a>
+                </li>
+                @endcan
+                @can('view.assesment.bujp.unit')
+                    <li>
+                        <a href="{{route('user.assesment.index')}}" class="tp-link">
+                            <i data-feather="user"></i>
+                            <span> Assesment BUJP </span>
+                        </a>
+                    </li>
+                @endcan
                 @canany(['view.marturity.admin'])
                 <li>
                     <a href="#sidebarBulanan" data-bs-toggle="collapse">
@@ -84,6 +159,7 @@
                     </div>
                 </li>
                 @endcanany
+                @canany(['view.vulnerability', 'view.attribute', 'view.category.assesment', 'view.marturity.area', 'view.kpi.area', 'view.audit.smp.admin', 'view.attribute.unit', 'view.security.unit', 'view.workersum.unit', 'view.security.program.unit'])
                 <li>
                     <a href="#sidebarMasterData" data-bs-toggle="collapse">
                         <i data-feather="database"></i>
@@ -145,6 +221,7 @@
                         </ul>
                     </div>
                 </li>
+                @endcanany
                 @can('view.user.vendor')
                 <li>
                     <a href="{{route('user.vendor.index')}}" class="tp-link">
@@ -187,5 +264,50 @@
 
         <div class="clearfix"></div>
 
+
+        @if(isset($units) && count($units) > 0)
+
+            @php
+            $selectedUnit = null;
+
+            if (request('unit')) {
+                try {
+                    $selectedUnit = \Illuminate\Support\Facades\Crypt::decryptString(request('unit'));
+                } catch (\Exception $e) {
+                    $selectedUnit = null;
+                }
+            }
+            @endphp
+
+            <div class="vendor-fixed">
+
+                <div class="vendor-header">
+                    <span style="font-size: 14px">Pilih Unit</span>
+                </div>
+
+                <div class="vendor-list">
+
+                    @foreach ($units as $unit)
+
+                        <a href="{{ route('bujp.assesment.index', ['unit' => $unit['vendor_id_encrypted']]) }}"
+                        class="vendor-item {{ $selectedUnit == $unit['vendor_id'] ? 'active' : '' }}">
+
+                            <div class="vendor-name">
+                                {{ $unit['name'] }}
+                            </div>
+
+                            <div class="vendor-contract">
+                                {{ $unit['contract_number'] }}
+                            </div>
+
+                        </a>
+
+                    @endforeach
+
+                </div>
+
+            </div>
+
+        @endif
     </div>
 </div>

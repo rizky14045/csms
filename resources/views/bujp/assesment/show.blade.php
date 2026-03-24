@@ -1,4 +1,4 @@
-@extends('bujp.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,8 +16,8 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('bujp.home.index')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Tambah Data Assesment</li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Data Assesment</li>
         </ol>
     </div>
 </div>
@@ -55,7 +55,7 @@
                                     <tbody>
                                         @foreach ($category->questions as $question)
                                             <tr>
-                                                <form action="{{ route('bujp.assesment.updateQuestion', ['questionId' => $question->id]) }}" method="POST" enctype="multipart/form-data">
+                                                <form action="{{ route('bujp.assesment.updateQuestion', ['question' => $question->id, 'unit' => request()->query('unit')]) }}" method="POST" enctype="multipart/form-data" id="update-question-{{ $question->id }}" onsubmit="confirmSave('update-question-{{ $question->id }}', 'Data akan disimpan?')">
                                                     @csrf
                                                     @method('PATCH')
                 
@@ -122,7 +122,7 @@
                         <div class="form-group row mt-5">
                             <div class="col-12">
                                 <div class="d-flex gap-1 justify-content-end">
-                                    <a href="{{route('bujp.assesment.index')}}" class="btn btn-danger"> Back</a>
+                                    <a href="{{route('bujp.assesment.index', ['unit' => request()->query('unit')])}}" class="btn btn-danger"> Kembali</a>
                                 </div>
                             </div>
                         </div>

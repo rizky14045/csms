@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -29,8 +29,8 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-body">
-                                <a href="{{route('admin.assesment.index')}}" class="btn btn-danger">Back</a>
-                                <h4 class="text-center pb-4 fw-bold">Hasil Assesment {{$assesment->vendor->name}} pada Triwulan Ke {{$assesment->triwulan}} Tahun {{date('Y', strtotime($assesment->date))}}</h4>
+                                <a href="{{route('admin.assesment.index')}}" class="btn btn-danger">Kembali</a>
+                                <h4 class="text-center pb-4 fw-bold">Hasil Assesment {{$assesment['vendor']['name']}} pada Triwulan Ke {{$assesment['triwulan']}} Tahun {{date('Y', strtotime($assesment['date']))}}</h4>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <table class="table table-bordered text-center align-middle">
@@ -46,14 +46,14 @@
                                                     
                                                     <tr>
                                                         <td>{{$loop->iteration}}</td>
-                                                        <td>{{$category->category_name}}</td>
-                                                        <td>{{$category->average}}</td>
+                                                        <td>{{$category['category_name']}}</td>
+                                                        <td>{{$category['average']}}</td>
                                                        
                                                     </tr>
                                                 @endforeach
                                                 <tr class="table-info">
                                                     <td>Skor Marturity</td>
-                                                    <td colspan="2">{{number_format($categories->avg('average'),2)}}</td>
+                                                    <td colspan="2">{{number_format(collect($categories)->avg('average'),2)}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -63,7 +63,7 @@
                                         <div class="mx-auto col-md-9">
                                             <canvas id="myChart"></canvas>
                                         </div>
-                                        <span class="fw-bold me-5">TW - {{$assesment->triwulan}}</span>
+                                        <span class="fw-bold me-5">TW - {{$assesment['triwulan']}}</span>
 
                                     </div>
                                 </div>
