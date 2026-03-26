@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\User\MonthlyAudit;
 
-use Illuminate\Http\Request;
-use App\Models\MonthlyReport;
-use App\Models\ReportEmployee;
-use App\Http\Helper\BlockMonthly;
-use App\Models\OutsourceEmployee;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Helper\BlockMonthly;
+use App\Models\MonthlyReport;
+use App\Models\OutsourceEmployee;
+use App\Models\ReportEmployee;
+use App\Models\SecurityForm;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class FormFormulirController extends Controller
@@ -19,6 +20,8 @@ class FormFormulirController extends Controller
         $data['monthlyId'] = $monthlyId;
         $data['monthlyReport'] = MonthlyReport::where('id', $monthlyId)->select('report_date')->first();
         $data['employee'] = ReportEmployee::where('monthly_report_id', $monthlyId)->first(); 
+        $data['outsources'] = OutsourceEmployee::where('monthly_report_id', $monthlyId)->latest()->get();
+        $data['securities'] = SecurityForm::join('securities','securities.id','security_forms.security_id')->where('monthly_report_id', $monthlyId)->get();
         $data['outsources'] = OutsourceEmployee::where('monthly_report_id', $monthlyId)->latest()->get();
         return view('user.monthly-audit.form-formulir',$data);
     }

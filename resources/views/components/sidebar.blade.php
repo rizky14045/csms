@@ -87,12 +87,22 @@
                         <span> Home </span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{route('admin.monthly-audit.index')}}" class="tp-link">
-                        <i data-feather="user"></i>
-                        <span> Laporan Bulanan </span>
-                    </a>
-                </li>
+                @if (Auth::user()->type == 'user')
+                    <li>
+                        <a href="{{route('user.monthly-audit.index')}}" class="tp-link">
+                            <i data-feather="user"></i>
+                            <span> Laporan Bulanan </span>
+                        </a>
+                    </li>
+                @endif
+                @if (Auth::user()->type == 'admin')
+                    <li>
+                        <a href="{{route('admin.monthly-audit.index')}}" class="tp-link">
+                            <i data-feather="user"></i>
+                            <span> Laporan Bulanan </span>
+                        </a>
+                    </li>
+                @endif
                 @can('view.assesment.bujp.admin')
                 <li>
                     <a href="{{route('admin.assesment.index')}}" class="tp-link">

@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\AghtData;
-use App\Models\SecurityForm;
-use Illuminate\Http\Request;
+use App\Models\AgreementExternal;
+use App\Models\ExternalVulnerability;
 use App\Models\ForeignWorker;
 use App\Models\FormAttribute;
-use App\Models\MonthlyReport;
-use App\Models\ReportEmployee;
-use App\Models\SecurityExternal;
-use App\Models\AgreementExternal;
-use App\Models\OutsourceEmployee;
-use App\Models\ResponsiblePerson;
-use App\Http\Controllers\Controller;
-use App\Models\ExternalVulnerability;
 use App\Models\InternalVulnerability;
-use App\Models\MonthlySecurityProgram;
-use App\Models\MonthlySecurityExternal;
+use App\Models\LaporanBulananBiaya;
 use App\Models\MonthlyAgreementExternal;
+use App\Models\MonthlyReport;
 use App\Models\MonthlyResponsiblePerson;
+use App\Models\MonthlySecurityExternal;
+use App\Models\MonthlySecurityProgram;
+use App\Models\OutsourceEmployee;
+use App\Models\ReportEmployee;
+use App\Models\ResponsiblePerson;
+use App\Models\SecurityExternal;
+use App\Models\SecurityForm;
+use Illuminate\Http\Request;
 
 class MonthlyAuditController extends Controller
 {
@@ -68,6 +69,19 @@ class MonthlyAuditController extends Controller
 
         $data['internals'] = InternalVulnerability::with('vulnerability')->where('monthly_report_id', $monthlyId)->get();
         $data['externals'] = ExternalVulnerability::with('vulnerability')->where('monthly_report_id', $monthlyId)->get();
+        $dataBiaya = LaporanBulananBiaya::where('monthly_report_id', $monthlyId)
+            ->whereIn('type', ['administrasi', 'pemeliharaan'])
+            ->get()
+            ->map(function ($item) {
+                $item->prosentase_penyerapan = $item->jumlah_anggaran != 0
+                    ? $item->penyerapan_anggaran / $item->jumlah_anggaran
+                    : 0;
+                return $item;
+            })
+            ->groupBy('type');
+
+        $data['administrasi'] = $dataBiaya->get('administrasi', collect());
+        $data['pemeliharaan'] = $dataBiaya->get('pemeliharaan', collect());
         return view('admin.monthly-audit.show',$data);
     }
 

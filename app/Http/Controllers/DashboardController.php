@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Services\User\UserService;
 use Illuminate\Http\Request;
 
@@ -21,5 +22,11 @@ class DashboardController extends Controller
             $data['units'] = getData($results);
         }
         return view('dashboard.dashboard', $data);
+    }
+
+
+    public function getMonthlyReport(){
+
+        $users = User::where('type','unit')->get();
     }
 }

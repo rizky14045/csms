@@ -78,6 +78,7 @@
                                 <option value="">Pilih Status Kepemilikan</option>
                                 <option value="Attribute" {{old('type_attribute') == 'Attribute' ? 'selected' : ''}}>Attribute</option>
                                 <option value="Sarana" {{old('type_attribute') == 'Sarana' ? 'selected' : ''}}>Sarana</option>
+                                <option value="Administrasi" {{old('type_attribute') == 'Administrasi' ? 'selected' : ''}}>Administrasi</option>
                             </select> 
                             @error('type_attribute')
                                 <div class="error text-danger">{{ $message }}</div>
