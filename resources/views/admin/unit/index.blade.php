@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 
 @stop
@@ -20,9 +20,11 @@
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
+            @can('create.unit.admin')
             <div class="d-flex justify-content-end pe-3 pt-3">
                 <a href="{{route('admin.unit.create')}}" class="btn btn-success">Tambah Data</a>
             </div>
+            @endcan
             <div class="card-body">  
                 <div class="table-responsive">
                     <table class="table table-bordered text-center align-middle">
@@ -35,24 +37,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($units as $unit)    
+                            @foreach ($units_list as $unit)    
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$unit->name}}</td>
-                                    <td>{{$unit->userProfile->address}}</td>
+                                    <td>{{$unit->address}}</td>
                                     <td class="text-center">
-                                        <a href="{{route('admin.unit.edit',['id'=>$unit->id])}}" class="btn btn-success btn-sm">Edit</a>
-                                        <form action="{{route('admin.unit.destroy',['id'=>$unit->id])}}" method="post" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                        </form>
+                                        @can('edit.unit.admin')
+                                        <a href="{{route('admin.unit.edit',['unit'=>$unit->id])}}" class="btn btn-warning btn-sm">Edit</a>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    {{$units->links()}}
+                    {{$units_list->links()}}
                 </div>
          
             </div> <!-- end card body -->

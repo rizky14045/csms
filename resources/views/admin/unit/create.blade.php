@@ -1,4 +1,4 @@
-@extends('admin.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -28,50 +28,22 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.unit.store')}}" class="my-4" method="POST">
+                <form action="{{route('admin.unit.store')}}" class="my-4" method="POST" id="form-unit" onsubmit="confirmSave('form-unit', 'Data unit akan disimpan')">
                     @csrf
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-9">
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Kode Unit</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan kode unit" name="unit_code" value="{{old('unit_code')}}">
-                            @if($errors->has('unit_code'))
-                                <div class="error text-danger">{{ $errors->first('unit_code') }}</div>
-                            @endif
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Nama Unit</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan nama unit" name="name" value="{{old('name')}}">
+                            <label for="name" class="form-label">Nama Unit</label>
+                            <input class="form-control" type="text" id="name" required="" placeholder="Masukan nama unit" name="name" value="{{old('name')}}">
                             @if($errors->has('name'))
                                 <div class="error text-danger">{{ $errors->first('name') }}</div>
                             @endif
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Email</label>
-                            <input class="form-control" type="email" id="emailaddress" required="" placeholder="Masukan Email unit" name="email" value="{{old('email')}}">
-                            @if($errors->has('email'))
-                                <div class="error text-danger">{{ $errors->first('email') }}</div>
-                            @endif
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Alamat</label>
-                            <textarea class="form-control" id="example-textarea" rows="5" spellcheck="false" name="address">{{old('address')}}</textarea>
+                            <label for="address" class="form-label">Alamat</label>
+                            <textarea class="form-control" id="address" rows="5" spellcheck="false" name="address">{{old('address')}}</textarea>
                             @if($errors->has('address'))
                                 <div class="error text-danger">{{ $errors->first('address') }}</div>
-                            @endif
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Latitude</label>
-                            <input class="form-control" type="text" id="latitude" required="" placeholder="Masukan latitude" name="latitude" value="{{old('latitude')}}">
-                            @if($errors->has('latitude'))
-                                <div class="error text-danger">{{ $errors->first('latitude') }}</div>
-                            @endif
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Longitude</label>
-                            <input class="form-control" type="text" id="longitude" required="" placeholder="Masukan longitude" name="longitude" value="{{old('longitude')}}">
-                            @if($errors->has('longitude'))
-                                <div class="error text-danger">{{ $errors->first('longitude') }}</div>
                             @endif
                         </div>
                         
@@ -79,8 +51,13 @@
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">
 
-                                    <a href="{{route('admin.unit.index')}}" class="btn btn-danger"> Back</a>
-                                    <button class="btn btn-primary" type="submit"> Tambah</button>
+                                    <a href="{{route('admin.unit.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+                                        Simpan
+                                    </button>
                                 </div>
                             </div>
                         </div>

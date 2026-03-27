@@ -209,6 +209,14 @@ Route::prefix('admin')->group(function () {
             Route::patch('/{evidence}/edit/{audit}', [EvidenceAuditSMPController::class, 'update'])->name('admin.evidence.audit-smp.update');
             Route::delete('/{evidence}/delete/{audit}', [EvidenceAuditSMPController::class, 'delete'])->name('admin.evidence.audit-smp.delete');
         });
+
+        Route::prefix('unit')->group(function () {
+            Route::get('/', [UnitController::class, 'index'])->name('admin.unit.index');
+            Route::get('/create', [UnitController::class, 'create'])->name('admin.unit.create');
+            Route::post('/store', [UnitController::class, 'store'])->name('admin.unit.store');
+            Route::get('/{unit}/edit', [UnitController::class, 'edit'])->name('admin.unit.edit');
+            Route::patch('/{unit}/edit', [UnitController::class, 'update'])->name('admin.unit.update');
+        });
     });
 
 });

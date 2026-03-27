@@ -208,6 +208,11 @@
                                 <a href="{{route('admin.audit-smp.index')}}" class="tp-link">Audit SMP</a>
                             </li>
                             @endcan
+                            @can('view.unit.admin')
+                            <li>
+                                <a href="{{route('admin.unit.index')}}" class="tp-link">Unit</a>
+                            </li>
+                            @endcan
                             @can('view.attribute.unit')
                             <li>
                                 <a href="{{route('user.attribute.index')}}" class="tp-link">Attribute</a>

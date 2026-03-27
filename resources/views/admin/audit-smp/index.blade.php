@@ -366,6 +366,7 @@
                                 @can('create.element.audit.smp.admin')
                                 <a href="{{route('admin.element.audit-smp.create',['audit'=>$audit['id']])}}" class="btn btn-primary btn-sm mb-3">Tambah Element</a>
                                 @endcan
+                                @if(isset($audit['pernyataan']) && !empty($audit['pernyataan']))
                                 <h4 class="">Pernyataan</h4>
                                 <table class="table table-bordered text-center">
                                     <thead class="table-light">
@@ -376,6 +377,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                        @isset($audit['pernyataan'])
                                         @foreach ($audit['pernyataan'] as $pernyataan)
                                             
                                             <tr>
@@ -423,8 +425,12 @@
                                             @can('view.criteria.audit.smp.admin')
                                             <tr id="accordionRow{{$pernyataan['id']}}" class="collapse accordion-content">
                                                 <td colspan="6">
+                                                    @if(isset($pernyataan['kriteria']) && !empty($pernyataan['kriteria']))
                                                     <table class="table table-bordered text-center">
                                                         <thead class="table-light">
+                                                            <tr>
+                                                                <td colspan="3" class="text-start fw-bold text-center">Daftar Kriteria</td>
+                                                            </tr>
                                                             <tr>
                                                                 <th class="text-center align-middle">No</th>
                                                                 <th class="text-center align-middle">Nama</th>
@@ -432,13 +438,11 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @if (isset($pernyataan['kriteria']))
-                                                                
+                                                            @if (isset($pernyataan['kriteria']))                                                                
                                                                 @foreach ($pernyataan['kriteria'] as $kriteria)
                                                                     <tr>
-                                                                        <h4 style="text-align: left">Kriteria</h2>
                                                                         <td>{{$loop->iteration}}</td>
-                                                                        <td>{{$kriteria['name']}}</td>
+                                                                        <td class="text-left">{{$kriteria['name']}}</td>
                                                                         <td class="">
                                                                             <div class="d-flex flex-wrap gap-2">
                                                                                 @can('create.evidence.audit.smp.admin')
@@ -480,15 +484,17 @@
                                                                     @can('view.evidence.audit.smp.admin')
                                                                     <tr id="evidenceRow{{$kriteria['id']}}" class="collapse accordion-content">
                                                                         <td colspan="6">
+                                                                            @if(isset($kriteria['evidence']) && !empty($kriteria['evidence']))
                                                                             <table class="table table-bordered text-center">
                                                                                 <thead class="table-light">
                                                                                     <tr>
                                                                                         <th class="text-center align-middle">No</th>
-                                                                                        <th class="text-center align-middle">Name</th>
+                                                                                        <th class="text-center align-middle">Nama</th>
                                                                                         <th class="text-center align-middle">Action</th>
                                                                                     </tr>
                                                                                 </thead>
                                                                                 <tbody>
+                                                                                    @isset($kriteria['evidence'])
                                                                                     @foreach ($kriteria['evidence'] as $evidence)   
                                                                                         <tr>
                                                                                             <td>{{$loop->iteration}}</td>
@@ -524,8 +530,12 @@
                                                                                             </td>
                                                                                         </tr>
                                                                                     @endforeach
+                                                                                    @endisset
                                                                                 </tbody>
                                                                             </table>  
+                                                                            @else
+                                                                            <p class="text-center">Tidak ada data.</p>
+                                                                            @endif
                                                                         </td>
                                                                     </tr>
                                                                     @endcan
@@ -533,12 +543,18 @@
                                                             @endif
                                                         </tbody>
                                                     </table>  
+                                                    @else
+                                                    <p class="text-center">Tidak ada data.</p>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @endcan
-                                        @endforeach                                        
+                                        @endforeach 
+                                        @endisset                                       
                                     </tbody>
                                 </table>
+                                @endif
+                                @if(isset($audit['kriteria']) && !empty($audit['kriteria']))
                                 <h4 class="">Kriteria</h4>
                                 <table class="table table-bordered text-center">
                                     <thead class="table-light">
@@ -549,6 +565,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                        @isset($audit['kriteria'])
                                         @foreach ($audit['kriteria'] as $kriteria)
                                             
                                             <tr>
@@ -556,16 +573,16 @@
                                                 <td class="text-start">{{$kriteria['name']}}</td>
                                                 <td class="">
                                                     <div class="d-flex flex-wrap gap-2">
-                                                        @can('create.criteria.audit.smp.admin')
-                                                        <a href="{{route('admin.kpi-level.create',['sub_area'=> $kriteria['id']])}}" class="btn btn-success btn-sm">Tambah Kriteria</a>
+                                                        @can('create.evidence.audit.smp.admin')
+                                                        <a href="{{route('admin.evidence.audit-smp.create',['audit'=> $kriteria['id']])}}" class="btn btn-success btn-sm">Tambah Evidence</a>
                                                         @endcan
-                                                        @can('edit.element.audit.smp.admin')
-                                                        <a href="{{route('admin.element.audit-smp.edit',['audit'=>$audit['id'],'element'=>$pernyataan['id']])}}" class="btn btn-warning btn-sm">Edit</a>
+                                                        @can('edit.criteria.audit.smp.admin')
+                                                        <a href="{{route('admin.criteria.audit-smp.edit',['kriteria' => $kriteria['id'], 'audit' => $audit['id']])}}" class="btn btn-warning btn-sm">Edit</a>
                                                         @endcan
-                                                        @can('delete.element.audit.smp.admin')
+                                                        @can('delete.criteria.audit.smp.admin')
                                                         <form
-                                                            id="delete-kpi-subarea-{{ $pernyataan['id'] }}"
-                                                            action="{{ route('admin.element.audit-smp.delete',['audit'=>$audit['id'],'element'=>$pernyataan['id']]) }}"
+                                                            id="delete-criteria-{{ $kriteria['id'] }}"
+                                                            action="{{ route('admin.criteria.audit-smp.delete',['kriteria' => $kriteria['id'], 'audit' => $audit['id']]) }}"
                                                             method="POST"
                                                             class="d-inline"
                                                         >
@@ -576,50 +593,50 @@
                                                                 type="button"
                                                                 class="btn btn-danger btn-sm"
                                                                 onclick="confirmDelete(
-                                                                    'delete-element-{{ $pernyataan['id'] }}',
-                                                                    'Pernyataan akan dihapus.'
+                                                                    'delete-criteria-{{ $kriteria['id'] }}',
+                                                                    'Kriteria akan dihapus.'
                                                                 )"
                                                             >
                                                                 Hapus
                                                             </button>
                                                         </form>
                                                         @endcan
+                                                        @can('view.evidence.audit.smp.admin')
+                                                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#evidenceRow{{$kriteria['id']}}" aria-expanded="false" aria-controls="evidenceRow{{$kriteria['id']}}">
+                                                            Lihat Detail Evidence
+                                                        </button>
+                                                        @endcan
                                                     </div>
                                                 </td>
                                                 
                                             </tr>
-                                            {{-- @can('view.kpi.level')
-                                            <tr id="accordionRow{{$subArea->id}}" class="collapse accordion-content">
-                                                <td colspan="6">
-                                                    <table class="table table-bordered text-center">
-                                                        <thead class="table-light">
-                                                            <tr>
-                                                                <th class="text-center align-middle">No</th>
-                                                                <th class="text-center align-middle">Level</th>
-                                                                <th class="text-center align-middle">Deskripsi</th>
-                                                                <th class="text-center align-middle">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @if (isset($subArea->levels))
-                                                                
-                                                                @foreach ($subArea->levels as $level)   
+                                            @can('view.evidence.audit.smp.admin')
+                                                <tr id="evidenceRow{{$kriteria['id']}}" class="collapse accordion-content">
+                                                    <td colspan="6">
+                                                        @if(isset($kriteria['evidence']) && !empty($kriteria['evidence']))
+                                                        <table class="table table-bordered text-center">
+                                                            <thead class="table-light">
+                                                                <tr>
+                                                                    <th class="text-center align-middle">No</th>
+                                                                    <th class="text-center align-middle">Name</th>
+                                                                    <th class="text-center align-middle">Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @isset($kriteria['evidence'])
+                                                                @foreach ($kriteria['evidence'] as $evidence)   
                                                                     <tr>
                                                                         <td>{{$loop->iteration}}</td>
-                                                                        <td>Level {{$level->level}}</td>
-                                                                        <td class="text-start">{{$level->description}}</td>
+                                                                        <td>{{$evidence['name']}}</td>
                                                                         <td class="">
-                                                                            <div class="d-flex flex-wrap gap-2">
-                                                                                @can('create.kpi.note')
-                                                                                <a href="{{route('admin.kpi-note.create',['level'=> $level->id])}}" class="btn btn-success btn-sm">Tambah Note</a>
+                                                                            <div class="d-flex justify-content-end gap-2">
+                                                                                @can('edit.evidence.audit.smp.admin')
+                                                                                <a href="{{route('admin.evidence.audit-smp.edit',['audit' => $kriteria['id'],'evidence' => $evidence['id']])}}" class="btn btn-warning btn-sm">Edit</a>
                                                                                 @endcan
-                                                                                @can('edit.kpi.level')
-                                                                                <a href="{{route('admin.kpi-level.edit',['level'=> $level->id,'sub_area' => $subArea->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                                                                @endcan
-                                                                                @can('delete.kpi.level')
+                                                                                @can('delete.evidence.audit.smp.admin')
                                                                                 <form
-                                                                                    id="delete-kpi-level-{{ $level->id }}"
-                                                                                    action="{{ route('admin.kpi-level.destroy',['level'=> $level->id,'sub_area' => $subArea->id]) }}"
+                                                                                    id="delete-evidence-{{ $evidence['id'] }}"
+                                                                                    action="{{ route('admin.evidence.audit-smp.delete',['audit' => $kriteria['id'],'evidence' => $evidence['id']]) }}"
                                                                                     method="POST"
                                                                                     class="d-inline"
                                                                                 >
@@ -630,84 +647,32 @@
                                                                                         type="button"
                                                                                         class="btn btn-danger btn-sm"
                                                                                         onclick="confirmDelete(
-                                                                                            'delete-kpi-level-{{ $level->id }}',
-                                                                                            'Level akan dihapus.'
+                                                                                            'delete-evidence-{{ $evidence['id'] }}',
+                                                                                            'Evidence akan dihapus.'
                                                                                         )"
                                                                                     >
                                                                                         Hapus
                                                                                     </button>
                                                                                 </form>
                                                                                 @endcan
-                                                                                @can('view.kpi.note')
-                                                                                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#noteRow{{$level->id}}" aria-expanded="false" aria-controls="noteRow{{$level->id}}">
-                                                                                    Lihat Detail Note
-                                                                                </button>
-                                                                                @endcan
                                                                             </div>
                                                                         </td>
                                                                     </tr>
-                                                                    @can('view.kpi.note')
-                                                                    <tr id="noteRow{{$level->id ?? ''}}" class="collapse accordion-content">
-                                                                        <td colspan="6">
-                                                                            <table class="table table-bordered text-center">
-                                                                                <thead class="table-light">
-                                                                                    <tr>
-                                                                                        <th class="text-center align-middle">No</th>
-                                                                                        <th class="text-center align-middle">Note</th>
-                                                                                        <th class="text-center align-middle">Action</th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                    @foreach ($level->notes as $note)   
-                                                                                        <tr>
-                                                                                            <td>{{$loop->iteration}}</td>
-                                                                                            <td>{{$note->note}}</td>
-                                                                                            <td class="">
-                                                                                                <div class="d-flex justify-content-end gap-2">
-                                                                                                    @can('edit.kpi.note')
-                                                                                                    <a href="{{route('admin.kpi-note.edit',['note' => $note->id,'level'=> $level->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                                                                                    @endcan
-                                                                                                    @can('delete.kpi.note')
-                                                                                                    <form
-                                                                                                        id="delete-kpi-note-{{ $note->id }}"
-                                                                                                        action="{{ route('admin.kpi-note.destroy',['note' => $note->id,'level'=> $level->id]) }}"
-                                                                                                        method="POST"
-                                                                                                        class="d-inline"
-                                                                                                    >
-                                                                                                        @csrf
-                                                                                                        @method('DELETE')
-
-                                                                                                        <button
-                                                                                                            type="button"
-                                                                                                            class="btn btn-danger btn-sm"
-                                                                                                            onclick="confirmDelete(
-                                                                                                                'delete-kpi-note-{{ $note->id }}',
-                                                                                                                'Catatan akan dihapus.'
-                                                                                                            )"
-                                                                                                        >
-                                                                                                            Hapus
-                                                                                                        </button>
-                                                                                                    </form>
-                                                                                                    @endcan
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    @endforeach
-                                                                                </tbody>
-                                                                            </table>  
-                                                                        </td>
-                                                                    </tr>
-                                                                    @endcan
                                                                 @endforeach
-                                                            @endif
-                                                        </tbody>
-                                                    </table>  
-                                                </td>
-                                            </tr>
-                                            @endcan --}}
-                                        @endforeach                                        
+                                                                @endisset
+                                                            </tbody>
+                                                        </table>  
+                                                        @else
+                                                        <p class="text-center">Tidak ada data.</p>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                @endcan
+                                        @endforeach              
+                                        @endisset                          
                                     </tbody>
                                 </table>
+                                @endif
                             </div>
                         </div>
                         @endcan

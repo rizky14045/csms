@@ -7,13 +7,30 @@ use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Validation\UnitValidation;
+use App\Models\Unit;
+use App\Services\Unit\UnitService;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class UnitController extends Controller
 {
+    protected $unitService;
+
+    public function __construct(UnitService $unitService)
+    {
+        $this->unitService = $unitService;
+    }
+
+    protected function validator(array $data, $validation, array $messages = [])
+    {
+        return Validator::make($data, $validation, $messages);
+    }
+
     public function index(){
-        $data['units'] = User::with('userProfile')->where('type','user')->paginate(25);
+        $result = $this->unitService->getAllUnit(25, true);
+        $data['units_list'] = getPaginate($result);
         return view('admin.unit.index',$data);
     }
 
@@ -22,134 +39,32 @@ class UnitController extends Controller
     }
 
     public function store(Request $request){
-        try {
-            DB::beginTransaction();
-
-            $request->validate([
-                'unit_code' => 'required',
-                'name' => 'required',
-                'email' => 'required|unique:users,email|email:rfc,dns',
-                'address' => 'required',
-                'latitude' => 'required',
-                'longitude' => 'required',
-            ],[
-                'unit_code.required' => 'Kode Unit harus diisi!',
-                'name.required' => 'Nama harus diisi!',
-                'address.required' => 'Alamat harus diisi!',
-                'email.required' => 'Email harus diisi!',
-                'email.unique' => 'Email sudah dipakai sebelumnya!',
-                'email.email' => 'Format Email harus benar',
-                'latitude.required' => 'Latitude harus diisi!',
-                'longitude.required' => 'Longitude harus diisi!',
-       
-            ]);
-
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->email),
-                'type' => 'user',
-                'created_by' => Auth::user()->id
-            ]);
-
-            UserProfile::create([
-                'user_id' => $user->id,
-                'unit_code' => $request->unit_code,
-                'address' => $request->address,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-            ]);
-            
-            DB::commit();
-            Alert::success('Tambah Berhasil', 'Unit berhasil dibuat!');
-            return redirect()->route('admin.unit.index');
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            Alert::error('Tambah Gagal', 'Unit gagal dibuat!');
-            return redirect()->route('admin.unit.index');
+        // Validation rules
+        $validator = $this->validator($request->all(), UnitValidation::rulesForCreate(), UnitValidation::messages());
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
+
+        $this->unitService->createUnit($request->all());
+
+        Alert::success('Tambah Berhasil', 'Unit berhasil dibuat!');
+        return redirect()->route('admin.unit.index');
     }
 
-    public function edit($id){
-        $unit = User::with('userProfile')->where('type','user')->where('id', $id)->first();
-        if(!$unit){
-            abort(404);
-        }
+    public function edit(Unit $unit){
         $data['unit'] = $unit;
         return view('admin.unit.edit',$data);
     }
 
-    public function update(Request $request,$id){
-
-        try {
-            DB::beginTransaction();
-
-            $unit = User::where('id',$id)->first();
-
-            $request->validate([
-                'unit_code' => 'required',
-                'name' => 'required',
-                'email' => 'required|email:rfc,dns|unique:users,email,'.$unit->id,
-                'address' => 'required',
-                'latitude' => 'required',
-                'longitude' => 'required',
-            ],[
-                'unit_code.required' => 'Kode Unit harus diisi!',
-                'name.required' => 'Nama harus diisi!',
-                'address.required' => 'Alamat harus diisi!',
-                'email.required' => 'Email harus diisi!',
-                'email.unique' => 'Email sudah dipakai sebelumnya!',
-                'email.email' => 'Format Email harus benar',
-                'latitude.required' => 'Latitude harus diisi!',
-                'longitude.required' => 'Longitude harus diisi!',
-       
-            ]);
-
-            $unit->name = $request->name;
-            $unit->email = $request->email;
-            $unit->updated_by = Auth::user()->id;
-            $unit->save();
-
-            $profile = UserProfile::where('user_id',$id)->first();
-            $profile->address = $request->address;
-            $profile->latitude = $request->latitude;
-            $profile->longitude = $request->longitude;
-            $profile->unit_code = $request->unit_code;
-            $profile->save();
-            
-            DB::commit();
-            Alert::success('Update Berhasil', 'Unit berhasil diubah!');
-            return redirect()->route('admin.unit.index');
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            dd($th);
-            Alert::error('Update Gagal', 'Unit gagal diubah!');
-            return redirect()->route('admin.unit.index');
+    public function update(Request $request, Unit $unit){
+        // Validation rules
+        $validator = $this->validator($request->all(), UnitValidation::rulesForUpdate(), UnitValidation::messages());
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
-    }
+        $this->unitService->updateUnit($unit, $request->all());
 
-    public function destroy($id){
-        try {
-            DB::beginTransaction();
-
-            $unit = User::where('id',$id)->first();
-            $unit->deleted_by = Auth::user()->id;
-            $unit->save();
-            $unit->delete();
-            
-            DB::commit();
-            Alert::success('Delete Berhasil', 'Unit berhasil dihapus!');
-            return redirect()->route('admin.unit.index');
-            
-        } catch (\Throwable $th) {
-
-            DB::rollback();
-            Alert::error('Delete Gagal', 'Unit gagal dihapus!');
-            return redirect()->route('admin.unit.index');
-        }
+        Alert::success('Update Berhasil', 'Unit berhasil diubah!');
+        return redirect()->route('admin.unit.index');
     }
 }

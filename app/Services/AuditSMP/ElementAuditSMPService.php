@@ -64,7 +64,7 @@ class ElementAuditSMPService
                     'error' => $e->getMessage(),
                     'payload' => [
                         'name' => $data['name'],
-                        'bobot' => $data['bobot'],
+                        'bobot' => $data['bobot'] ?? null,
                     ],
                 ]
             );

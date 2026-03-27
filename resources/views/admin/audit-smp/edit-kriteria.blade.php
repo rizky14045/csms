@@ -32,7 +32,7 @@
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
                             <label for="name" class="form-label">Nama</label>
-                            <input class="form-control @error('name') is-invalid @enderror" name="name" type="text" id="name" required="" placeholder="Masukan nama" value="{{ old('name', $kriteria->name) }}">
+                            <textarea class="form-control @error('name') is-invalid @enderror" name="name" id="name" required="" placeholder="Masukan nama" rows="4">{{old('name', $kriteria->name)}}</textarea>
                             @error('name')
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror
