@@ -26,7 +26,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-end pe-3">
-                    @can('view.kpi.area')
+                    @can('create.kpi.area')
                         <a href="{{route('admin.kpi-area.create')}}" class="btn btn-sm btn-primary mb-3">Tambah Area</a>
                     @endcan
                 </div>

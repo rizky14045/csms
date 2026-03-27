@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Detail Audit Bulanan</li>
         </ol>
     </div>
@@ -84,6 +84,12 @@
                         <a class="nav-link" data-bs-toggle="tab" href="#navtabs2-kerawanan-external" role="tab">
                             <span class="d-block d-sm-none"><i class="mdi mdi-cog"></i></span>
                             <span class="d-none d-sm-block">Kerawanan Eksternal</span>    
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#navtabs2-penyerapan-anggaran" role="tab">
+                            <span class="d-block d-sm-none"><i class="mdi mdi-cog"></i></span>
+                            <span class="d-none d-sm-block">Penyerapan Anggaran</span>    
                         </a>
                     </li>
                 </ul>
@@ -1065,6 +1071,79 @@
                                       </tr>
                                     @endforeach
                                   </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div><!-- end tab pane -->
+                    <div class="tab-pane" id="navtabs2-penyerapan-anggaran" role="tabpanel">
+                        <div class="cooperation mb-3">
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="title">A. Biaya Pemeliharaan</span>
+
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Kode Aktifitas</th>
+                                            <th scope="col">Kode PRK</th>
+                                            <th scope="col">Deskripsi Kegiatan</th>
+                                            <th scope="col">Jumlah Anggaran</th>
+                                            <th scope="col">Penyerapan Anggaran</th>
+                                            <th scope="col">Prosentase Penyerapan</th>
+                                            <th scope="col">Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($administrasi as $item)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $item->kode_aktifitas }}</td>
+                                                <td>{{ $item->kode_prk }}</td>
+                                                <td>{{ $item->deskripsi_kegiatan }}</td>
+                                                <td>{{ $item->jumlah_anggaran }}</td>
+                                                <td>{{ $item->penyerapan_anggaran }}</td>
+                                                <td>{{ $item->prosentase_penyerapan }}</td>
+                                                <td>{{ $item->keterangan }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="cooperation mb-3">
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="title">B. Biaya Administrasi</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-center align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Kode Aktifitas</th>
+                                            <th scope="col">Kode PRK</th>
+                                            <th scope="col">Deskripsi Kegiatan</th>
+                                            <th scope="col">Jumlah Anggaran</th>
+                                            <th scope="col">Penyerapan Anggaran</th>
+                                            <th scope="col">Prosentase Penyerapan</th>
+                                            <th scope="col">Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($pemeliharaan as $item)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $item->kode_aktifitas }}</td>
+                                                <td>{{ $item->kode_prk }}</td>
+                                                <td>{{ $item->deskripsi_kegiatan }}</td>
+                                                <td>{{ $item->jumlah_anggaran }}</td>
+                                                <td>{{ $item->penyerapan_anggaran }}</td>
+                                                <td>{{ $item->prosentase_penyerapan }}</td>
+                                                <td>{{ $item->keterangan }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
                                 </table>
                             </div>
                         </div>

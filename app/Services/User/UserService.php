@@ -10,6 +10,7 @@ use App\Models\Vendor;
 use App\Services\ActivityLog\ActivityLogService;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 
 class UserService
 {
@@ -516,5 +517,138 @@ class UserService
 
             throw $e;
         }
+    }
+
+    public function getAllUnitByVendorID(
+        $limit = 10,
+        $paginate = true,
+        $user_id = null,
+    )
+    {
+        try {
+
+            $order  = request('order', 'DESC');
+            $search = request('q', '');
+            $ref    = request('ref', 'users.id');
+            $start  = request('start', null);
+            $end    = request('end', null);
+
+            $getVendor = Vendor::where('user_id', $user_id)->get();
+
+            $parent_user_ids = $getVendor
+                            ->pluck('parent_user_id')
+                            ->filter()
+                            ->toArray();
+
+            $query = User::query()
+                    ->join('vendors', 'vendors.parent_user_id', '=', 'users.id')
+                    ->whereIn('users.id', $parent_user_ids)
+                    ->select(
+                        'users.id',
+                        'users.name', 
+                        'users.email',
+                        'vendors.id as vendor_id',
+                        'vendors.contract_number',
+                        'vendors.created_at as vendor_created_at'
+                    );
+
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('users.name', 'like', "%{$search}%")
+                    ->orWhere('users.email', 'like', "%{$search}%");
+                });
+            }
+
+            if ($start && $end) {
+                $end = date('Y-m-d', strtotime($end . ' +1 day'));
+                $query->whereBetween('users.created_at', [$start, $end]);
+
+            } elseif ($start) {
+                $query->whereDate('users.created_at', '>=', $start);
+
+            } elseif ($end) {
+                $query->whereDate('users.created_at', '<=', $end);
+            }
+
+            $query->orderBy($ref, $order);
+
+            if ($paginate) {
+                $vendors = $query->paginate($limit)->withQueryString();
+
+                $vendors->getCollection()->transform(function ($item) {
+                    $item->vendor_id_encrypted = Crypt::encryptString($item->vendor_id);
+                    return $item;
+                });
+
+            } else {
+                $vendors = $limit > 0
+                    ? $query->limit($limit)->get()
+                    : $query->get();
+
+                $vendors->transform(function ($item) {
+                    $item->vendor_id_encrypted = Crypt::encryptString($item->vendor_id);
+                    return $item;
+                });
+            }
+
+            return JsonResponse::success($vendors, 'Users found', 200);
+
+        } catch (\Exception $e) {
+
+            $this->logService->log(
+                'user.fetch_units_by_vendor',
+                'Failed to fetch units by vendor',
+                500,
+                ['error' => $e->getMessage()]
+            );
+
+            return JsonResponse::error(
+                $e->getMessage(),
+                'Units not found',
+                500
+            );
+        }
+    }
+
+    public function validateVendorAccess($encryptedVendorId)
+    {
+        try {
+            $vendorId = Crypt::decryptString($encryptedVendorId);
+
+        } catch (\Exception $e) {
+            $this->logService->log(
+                'user.validate_vendor_access',
+                'Failed to validate vendor access due to decryption error',
+                500,
+                ['error' => $e->getMessage()]
+            );
+
+            return false;
+        }
+
+        $vendor = Vendor::find($vendorId);
+
+        if (!$vendor) {
+            return [
+                'status'  => false,
+                'message' => 'Vendor tidak ditemukan',
+                'data'    => null
+            ];
+        }
+
+        if ($vendor->user_id != auth()->user()->id) {
+            $this->logService->log(
+                'user.validate_vendor_access',
+                'Failed to validate vendor access due to ownership error',
+                500,
+                [
+                    'vendor_id' => $vendorId,
+                    'user_id'   => auth()->user()->id,
+                ]
+            );
+            return false;
+        }
+
+        return true;
     }
 }

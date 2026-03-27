@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('user.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Tambah Data Detail Audit Bulanan</li>
         </ol>
     </div>
@@ -84,6 +84,12 @@
                         <a class="nav-link" href="{{route('user.monthly-audit.form-vulnerability-external.index',['monthlyId' => $monthlyId])}}">
                             <span class="d-block d-sm-none"><i class="mdi mdi-cog"></i></span>
                             <span class="d-none d-sm-block">Kerawanan Eksternal</span>    
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('user.monthly-audit.penyerapan-anggaran.index',['monthlyId' => $monthlyId])}}">
+                            <span class="d-block d-sm-none"><i class="mdi mdi-email-outline"></i></span>
+                            <span class="d-none d-sm-block">Penyerapan Anggaran</span>    
                         </a>
                     </li>
                 </ul>

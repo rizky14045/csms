@@ -2,34 +2,35 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Models\AghtData;
-use App\Models\Security;
+use App\Models\AgreementExternal;
 use App\Models\Attribute;
-use App\Models\SecurityForm;
-use Illuminate\Http\Request;
+use App\Models\ExternalVulnerability;
 use App\Models\ForeignWorker;
 use App\Models\FormAttribute;
+use App\Models\InternalVulnerability;
+use App\Models\LaporanBulananBiaya;
+use App\Models\MainSecurityProgram;
+use App\Models\MonthlyAgreementExternal;
+use App\Models\MonthlyMainSecurityProgram;
 use App\Models\MonthlyReport;
-use App\Models\Vulnerability;
+use App\Models\MonthlyResponsiblePerson;
+use App\Models\MonthlySecurityExternal;
+use App\Models\MonthlySecurityProgram;
+use App\Models\OutsourceEmployee;
 use App\Models\ReportEmployee;
+use App\Models\ResponsiblePerson;
+use App\Models\Security;
+use App\Models\SecurityExternal;
+use App\Models\SecurityForm;
 use App\Models\SecurityPerson;
 use App\Models\SecurityProgram;
-use App\Models\SecurityExternal;
-use App\Models\AgreementExternal;
-use App\Models\OutsourceEmployee;
-use App\Models\ResponsiblePerson;
-use Illuminate\Support\Facades\DB;
-use App\Models\MainSecurityProgram;
-use App\Http\Controllers\Controller;
+use App\Models\Vulnerability;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\ExternalVulnerability;
-use App\Models\InternalVulnerability;
-use App\Models\MonthlySecurityProgram;
-use App\Models\MonthlySecurityExternal;
-use App\Models\MonthlyAgreementExternal;
-use App\Models\MonthlyResponsiblePerson;
+use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
-use App\Models\MonthlyMainSecurityProgram;
 
 class MonthlyAuditController extends Controller
 {
@@ -172,7 +173,6 @@ class MonthlyAuditController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
-            dd($th);
             Alert::error('Tambah Gagal', 'Laporan bulanan gagal dibuat!');
             return redirect()->route('user.monthly-audit.index');
         }
@@ -273,6 +273,19 @@ class MonthlyAuditController extends Controller
 
         $data['internals'] = InternalVulnerability::with('vulnerability')->where('monthly_report_id', $monthlyId)->get();
         $data['externals'] = ExternalVulnerability::with('vulnerability')->where('monthly_report_id', $monthlyId)->get();
+        $dataBiaya = LaporanBulananBiaya::where('monthly_report_id', $monthlyId)
+            ->whereIn('type', ['administrasi', 'pemeliharaan'])
+            ->get()
+            ->map(function ($item) {
+                $item->prosentase_penyerapan = $item->jumlah_anggaran != 0
+                    ? $item->penyerapan_anggaran / $item->jumlah_anggaran
+                    : 0;
+                return $item;
+            })
+            ->groupBy('type');
+
+        $data['administrasi'] = $dataBiaya->get('administrasi', collect());
+        $data['pemeliharaan'] = $dataBiaya->get('pemeliharaan', collect());
         return view('user.monthly-audit.show',$data);
     }
 

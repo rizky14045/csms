@@ -1,4 +1,4 @@
-@extends('bujp.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('bujp.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Assesment</li>
         </ol>
     </div>
@@ -28,20 +28,33 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between w-100">
                     <div class="find-data col-md-6">
-                        <label for="" class="form-label">Cari Data</label>
-                        <div class="d-flex gap-3">
-                            <div class="mb-3 col-md-3">
-                                <input type="date" class="form-control d-inline" id="exampleFormControlInput1">
+                        <form action="{{ route('bujp.assesment.index') }}">
+                            
+                            <input type="hidden" name="unit" value="{{ request('unit') }}">
+                            <label class="form-label">Cari Data</label>
+                            <div class="d-flex gap-3">
+                                <div class="mb-3 col-md-3">
+                                    <input type="date" 
+                                        class="form-control" 
+                                        name="date" 
+                                        value="{{ request('date', '') }}">
+                                </div>
+                                <div class="button-search">
+                                    <button type="submit" class="btn btn-primary">
+                                        Cari
+                                    </button>
+                                </div>
                             </div>
-                            <div class="button-search">
-                                <button type="button" class="btn btn-primary d-inline">Cari</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                     <div class="button-add col-md-12">
+                        @can('create.assesment.bujp')
                         <div class="d-flex justify-content-end pe-3 pt-3 col-md-6">
-                            <a href="{{route('bujp.assesment.create')}}" class="btn btn-success">Tambah Data</a>
+                            <a href="{{ route('bujp.assesment.create', ['unit' => request('unit')]) }}" class="btn btn-primary">
+                                Tambah Data
+                            </a>
                         </div>
+                        @endcan
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -55,7 +68,9 @@
                                 <th scope="col">Tanggal</th>
                                 <th scope="col">Triwulan</th>
                                <th scope="col">Tanggal Kirim</th>
+                                @canany(['edit.assesment.bujp', 'send.assesment.bujp', 'delete.assesment.bujp', 'view.assesment.bujp'])
                                 <th scope="col">Action</th>
+                                @endcanany
                             </tr>
                         </thead>
                         <tbody>
@@ -63,33 +78,43 @@
                                 
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
-                                    <td>{{$assesment->vendor->npwp}}</td>
+                                    <td>{{$assesment->bujp_profile->npwp}}</td>
                                     <td>{{$assesment->vendor->name}}</td>
                                     <td>{{$assesment->contract}}</td>
-                                    <td>{{$assesment->date}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($assesment->date)->format('d-m-Y') }}</td>
                                     <td>{{$assesment->triwulan}}</td>
-                                    <td>{{$assesment->send_date}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') }}</td>
+                                    @canany(['edit.assesment.bujp', 'send.assesment.bujp', 'delete.assesment.bujp', 'view.assesment.bujp'])
                                     <td>
-                                        @if ($assesment->send_status == 1)
-                                            <a href="{{route('bujp.assesment.show',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
-                                            <a href="{{route('bujp.assesment.edit',['assesmentId'=>$assesment->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                            <form action="{{route('bujp.assesment.send',['assesmentId'=>$assesment->id])}}" method="post" class="d-inline">
+                                        
+                                        @if ($assesment->send_status == 0)
+                                            @can('edit.assesment.bujp')
+                                            <a href="{{route('bujp.assesment.show',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-info btn-sm">Show</a>
+                                            <a href="{{route('bujp.assesment.edit',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-warning btn-sm">Edit</a>
+                                            @endcan
+                                            @can('send.assesment.bujp')
+                                            <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="button" class="btn btn-success btn-sm" onclick="sendItem(this)">Kirim</button>
+                                                <button type="submit" class="btn btn-success btn-sm">Kirim</button>
                                             </form>
-                                            <form action="{{route('bujp.assesment.destroy',['assesmentId'=>$assesment->id])}}" method="post" class="d-inline">
+                                            @endcan
+                                            @can('delete.assesment.bujp')
+                                            <form action="{{route('bujp.assesment.destroy',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" method="post" class="d-inline" id="delete-assesment-{{ $assesment->id }}" onsubmit="confirmSave('delete-assesment-{{ $assesment->id }}', 'Hapus assesment?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteItem(this)">Hapus</button>
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                             </form>
-                                            
+                                            @endcan                                            
                                         @else
-                                            <a href="{{route('bujp.assesment.preview',['assesmentId'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
-                                            <a href="{{route('bujp.assesment.report',['assesmentId'=>$assesment->id])}}" class="btn btn-success btn-sm">Report</a>
+                                            @can('view.assesment.bujp')
+                                            <a href="{{route('bujp.assesment.preview',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-info btn-sm">Show</a>
+                                            <a href="{{route('bujp.assesment.report',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-success btn-sm">Report</a>
+                                            @endcan
                                         @endif
                                         
                                     </td>
+                                    @endcanany
                                 </tr>
                             @endforeach
                         </tbody>
@@ -101,42 +126,3 @@
     </div><!-- end col -->
 </div> <!-- end row -->
 @endsection
-@section('scripts')
-<script>
-    function deleteItem(e){
-            // console.log(form);
-            Swal.fire({
-                title: 'Hapus Data',
-                text: "Apakah kamu ingin menghapus data ?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Iya !'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $(e).parent().submit();
-                }
-            })
-        }
-</script>
-<script>
-    function sendItem(e){
-            // console.log(form);
-            Swal.fire({
-                title: 'Kirim Data',
-                text: "Data yang sudah dikirim sudah tidak bisa diedit , apakah anda ingin mengirim data?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Iya !'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $(e).parent().submit();
-                }
-            })
-        }
-</script>
-@endsection
-

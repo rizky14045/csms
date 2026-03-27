@@ -19,7 +19,7 @@ class CreateAssesmentsTable extends Migration
             $table->integer('vendor_id')->refences('id')->on('vendors')->nullable();
             $table->date('date')->nullable();
             $table->integer('triwulan')->nullable();
-            $table->integer('send_status')->default(1);
+            $table->integer('send_status')->default(0);
             $table->date('send_date')->nullable();
             $table->timestamps();
         });

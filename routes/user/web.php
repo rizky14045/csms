@@ -1,35 +1,36 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\FaqController;
-use App\Http\Controllers\User\VendorController;
-use App\Http\Controllers\User\ProfileController;
-use App\Http\Controllers\User\KeamananController;
-use App\Http\Controllers\User\ListWorkController;
-use App\Http\Controllers\User\SecurityController;
+use App\Http\Controllers\User\AgreementExternalController;
 use App\Http\Controllers\User\AssesmentController;
 use App\Http\Controllers\User\AttributeController;
-use App\Http\Controllers\User\DashboardController;
-use App\Http\Controllers\User\MarturityController;
-use App\Http\Controllers\User\WorkerSumController;
-use App\Http\Controllers\User\MonthlyAuditController;
 use App\Http\Controllers\User\ChangePasswordController;
-use App\Http\Controllers\User\SecurityProgramController;
-use App\Http\Controllers\User\PraqualificationController;
-use App\Http\Controllers\User\SecurityExternalController;
-use App\Http\Controllers\User\AgreementExternalController;
-use App\Http\Controllers\User\MonthlyAudit\AGHTController;
-use App\Http\Controllers\User\ResponsiblePersonController;
+use App\Http\Controllers\User\DashboardController;
+use App\Http\Controllers\User\FaqController;
+use App\Http\Controllers\User\KeamananController;
+use App\Http\Controllers\User\ListWorkController;
 use App\Http\Controllers\User\MainSecurityProgramController;
-use App\Http\Controllers\User\MonthlyAudit\FormFormulirController;
-use App\Http\Controllers\User\MonthlyAudit\SecurityFormController;
+use App\Http\Controllers\User\MarturityController;
+use App\Http\Controllers\User\MonthlyAudit\AGHTController;
 use App\Http\Controllers\User\MonthlyAudit\FormAttributeController;
-use App\Http\Controllers\User\MonthlyAudit\MonthlyWorkerSumController;
 use App\Http\Controllers\User\MonthlyAudit\FormForeignWorkerController;
-use App\Http\Controllers\User\MonthlyAudit\RealizationProgramController;
+use App\Http\Controllers\User\MonthlyAudit\FormFormulirController;
 use App\Http\Controllers\User\MonthlyAudit\FormSecurityProgramController;
 use App\Http\Controllers\User\MonthlyAudit\FormVulnerabilityExternalController;
 use App\Http\Controllers\User\MonthlyAudit\FormVulnerabilityInternalController;
+use App\Http\Controllers\User\MonthlyAudit\MonthlyWorkerSumController;
+use App\Http\Controllers\User\MonthlyAudit\PenyerapanAnggaranController;
+use App\Http\Controllers\User\MonthlyAudit\RealizationProgramController;
+use App\Http\Controllers\User\MonthlyAudit\SecurityFormController;
+use App\Http\Controllers\User\MonthlyAuditController;
+use App\Http\Controllers\User\PraqualificationController;
+use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\ResponsiblePersonController;
+use App\Http\Controllers\User\SecurityController;
+use App\Http\Controllers\User\SecurityExternalController;
+use App\Http\Controllers\User\SecurityProgramController;
+use App\Http\Controllers\User\VendorController;
+use App\Http\Controllers\User\WorkerSumController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,13 +55,13 @@ Route::prefix('user')->group(function () {
 
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('user.assesment.index');
-            Route::get('/create', [AssesmentController::class, 'create'])->name('user.assesment.create');
-            Route::get('/edit', [AssesmentController::class, 'edit'])->name('user.assesment.edit');
-            Route::get('/show/{assesmentId}', [AssesmentController::class, 'show'])->name('user.assesment.show');
-            Route::get('/preview/{assesmentId}', [AssesmentController::class, 'preview'])->name('user.assesment.preview');
-            Route::get('/report/{assesmentId}', [AssesmentController::class, 'report'])->name('user.assesment.report');
-            Route::patch('/send/{assesmentId}', [AssesmentController::class, 'send'])->name('user.assesment.send');
-            Route::patch('/update-question/{questionId}', [AssesmentController::class, 'updateQuestion'])->name('user.assesment.updateQuestion');
+            // Route::get('/create', [AssesmentController::class, 'create'])->name('user.assesment.create');
+            // Route::get('/edit', [AssesmentController::class, 'edit'])->name('user.assesment.edit');
+            Route::get('/{assesment}/show', [AssesmentController::class, 'show'])->name('user.assesment.show');
+            Route::get('/{assesment}/preview', [AssesmentController::class, 'preview'])->name('user.assesment.preview');
+            Route::get('/{assesment}/report', [AssesmentController::class, 'report'])->name('user.assesment.report');
+            Route::patch('/{assesment}/send', [AssesmentController::class, 'send'])->name('user.assesment.send');
+            Route::patch('/update-question/{question}', [AssesmentController::class, 'updateQuestion'])->name('user.assesment.updateQuestion');
         });
 
         Route::prefix('profile')->group(function () {
@@ -100,6 +101,14 @@ Route::prefix('user')->group(function () {
                 Route::get('/aght/{monthlyId}/edit/{aghtId}', [AGHTController::class, 'edit'])->name('user.monthly-audit.aght.edit');
                 Route::patch('/aght/{monthlyId}/update/{aghtId}', [AGHTController::class, 'update'])->name('user.monthly-audit.aght.update');
                 Route::delete('/aght/{monthlyId}/destroy/{aghtId}', [AGHTController::class, 'destroy'])->name('user.monthly-audit.aght.destroy');
+
+
+                Route::get('/penyerapan-anggaran/{monthlyId}', [PenyerapanAnggaranController::class, 'index'])->name('user.monthly-audit.penyerapan-anggaran.index');
+                Route::get('/penyerapan-anggaran/{monthlyId}/create', [PenyerapanAnggaranController::class, 'create'])->name('user.monthly-audit.penyerapan-anggaran.create');
+                Route::post('/penyerapan-anggaran/{monthlyId}/create', [PenyerapanAnggaranController::class, 'store'])->name('user.monthly-audit.penyerapan-anggaran.store');
+                Route::get('/penyerapan-anggaran/{monthlyId}/edit/{anggaranId}', [PenyerapanAnggaranController::class, 'edit'])->name('user.monthly-audit.penyerapan-anggaran.edit');
+                Route::patch('/penyerapan-anggaran/{monthlyId}/update/{anggaranId}', [PenyerapanAnggaranController::class, 'update'])->name('user.monthly-audit.penyerapan-anggaran.update');
+                Route::delete('/penyerapan-anggaran/{monthlyId}/destroy/{anggaranId}', [PenyerapanAnggaranController::class, 'destroy'])->name('user.monthly-audit.penyerapan-anggaran.destroy');
 
                 //Form Security Program
                 Route::get('/security-program/{monthlyId}', [FormSecurityProgramController::class, 'index'])->name('user.monthly-audit.security-program.index');

@@ -418,6 +418,17 @@ class KpiService
 
             DB::commit();
 
+            $this->logService->log(
+                'kpi_note.upload_attachment',
+                'Upload attachment file for kpi note',
+                200,
+                [
+                    'kpi_id' => $kpi->id,
+                    'area_id' => $areaId,
+                    'note_id' => $note->id,
+                ]
+            );
+
             return JsonResponse::success(
                 $note,
                 'Attachment file uploaded successfully',
@@ -426,6 +437,18 @@ class KpiService
 
         } catch (\Exception $e) {
             DB::rollBack();
+
+            $this->logService->log(
+                'kpi_note.upload_attachment',
+                'Failed to upload attachment file for kpi note',
+                500,
+                [
+                    'kpi_id' => $kpi->id,
+                    'area_id' => $areaId,
+                    'note_id' => $note->id,
+                    'error' => $e->getMessage(),
+                ]
+            );
 
             return JsonResponse::error(
                 $e->getMessage(),

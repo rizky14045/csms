@@ -16,7 +16,7 @@
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('admin.home.index')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
             <li class="breadcrumb-item active">Ubah Data Audit SMP</li>
         </ol>
     </div>
@@ -25,21 +25,21 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('admin.audit-smp.update',['audit'=>$audit->id])}}" class="my-4" method="POST" id="form-audit-smp" onsubmit="confirmSave('form-audit-smp', 'Data Audit SMP akan diubah')">
+                <form action="{{route('admin.audit-smp.update',['audit'=>$audit->id])}}" class="my-4" method="POST" id="form-audit-smp" onsubmit="confirmSave('form-audit-smp', 'Data Audit SMP akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
                             <label for="name" class="form-label">Nama</label>
-                            <input class="form-control @error('name') is-invalid @enderror" name="name" type="text" id="name" required="" placeholder="Masukan nama" value="{{$audit->name}}">
+                            <input class="form-control @error('name') is-invalid @enderror" name="name" type="text" id="name" required="" placeholder="Masukan nama" value="{{ old('name', $audit->name) }}">
                             @error('name')
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="form-group mb-3">
                             <label for="bobot" class="form-label">Bobot</label>
-                            <input class="form-control @error('bobot') is-invalid @enderror" name="bobot" type="number" id="bobot" required="" placeholder="Masukan bobot" value="{{$audit->bobot}}">
+                            <input class="form-control @error('bobot') is-invalid @enderror" name="bobot" type="number" id="bobot" required="" placeholder="Masukan bobot" value="{{ old('bobot', $audit->bobot) }}">
                             @error('bobot')
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror
@@ -52,7 +52,7 @@
                                         type="submit"
                                         class="btn btn-success"
                                     >
-                                        Ubah
+                                        Simpan
                                     </button>
                                 </div>
                             </div>

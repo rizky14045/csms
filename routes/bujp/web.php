@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Bujp\AssesmentController;
 use App\Http\Controllers\Bujp\DashboardController;
-use App\Http\Controllers\Bujp\ChangePasswordController;
 
 
 /*
@@ -17,32 +16,23 @@ use App\Http\Controllers\Bujp\ChangePasswordController;
 |
 */
 Route::prefix('bujp')->group(function () {
-    Route::get('/faq', [FaqController::class, 'index'])->name('bujp.faq.index');
-
 
     Route::middleware(['auth.vendor'])->group(function () {
         
         Route::get('/home', [DashboardController::class, 'index'])->name('bujp.home.index');
 
-        Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('bujp.changePassword');
-        Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('bujp.updatePassword');
-
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('bujp.assesment.index');
             Route::get('/create', [AssesmentController::class, 'create'])->name('bujp.assesment.create');
             Route::post('/create', [AssesmentController::class, 'store'])->name('bujp.assesment.store');
-            Route::get('/edit/{assesmentId}', [AssesmentController::class, 'edit'])->name('bujp.assesment.edit');
-            Route::patch('/edit/{assesmentId}', [AssesmentController::class, 'update'])->name('bujp.assesment.update');
-            Route::delete('/destroy/{assesmentId}', [AssesmentController::class, 'destroy'])->name('bujp.assesment.destroy');
-            Route::patch('/send/{assesmentId}', [AssesmentController::class, 'send'])->name('bujp.assesment.send');
-            Route::get('/show/{assesmentId}', [AssesmentController::class, 'show'])->name('bujp.assesment.show');
-            Route::get('/preview/{assesmentId}', [AssesmentController::class, 'preview'])->name('bujp.assesment.preview');
-            Route::patch('/update-question/{questionId}', [AssesmentController::class, 'updateQuestion'])->name('bujp.assesment.updateQuestion');
-            Route::get('/report/{assesmentId}', [AssesmentController::class, 'report'])->name('bujp.assesment.report');
-        });
-
-        Route::prefix('profile')->group(function () {
-            Route::get('/', [ProfileController::class, 'index'])->name('bujp.profile.index');
+            Route::get('/{assesment}/edit', [AssesmentController::class, 'edit'])->name('bujp.assesment.edit');
+            Route::patch('/{assesment}/update', [AssesmentController::class, 'update'])->name('bujp.assesment.update');
+            Route::delete('/{assesment}/destroy', [AssesmentController::class, 'destroy'])->name('bujp.assesment.destroy');
+            Route::patch('/{assesment}/send', [AssesmentController::class, 'send'])->name('bujp.assesment.send');
+            Route::get('/{assesment}/show', [AssesmentController::class, 'show'])->name('bujp.assesment.show');
+            Route::get('/{assesment}/preview', [AssesmentController::class, 'preview'])->name('bujp.assesment.preview');
+            Route::patch('/update-question/{question}', [AssesmentController::class, 'updateQuestion'])->name('bujp.assesment.updateQuestion');
+            Route::get('/{assesment}/report', [AssesmentController::class, 'report'])->name('bujp.assesment.report');
         });
         
     });

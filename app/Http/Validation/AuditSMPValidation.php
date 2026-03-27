@@ -11,27 +11,6 @@ class AuditSMPValidation
             'bobot' => 'required',
         ];
     }
-    public static function rulesForCreateElement()
-    {
-        return [
-            'name' => 'required',
-            'type' => 'required|in:kriteria,pernyataan',
-        ];
-    }
-    public static function rulesForCreateEvident()
-    {
-        return [
-            'name' => 'required',
-            'type' => 'required|in:evident',
-        ];
-    }
-    public static function rulesForCreateKriteria()
-    {
-        return [
-            'name' => 'required',
-            'type' => 'required|in:kriteria',
-        ];
-    }
 
     public static function rulesForUpdate()
     {

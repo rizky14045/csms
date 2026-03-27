@@ -6,11 +6,25 @@ use App\Models\Assesment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SignCategoryAssesment;
+use App\Services\Assesment\AssesmentService;
 
 class AssesmentController extends Controller
 {
+    protected $assesmentService;
+
+    public function __construct(AssesmentService $assesmentService)
+    {
+        $this->assesmentService = $assesmentService;
+
+        $this->middleware('can:view.assesment.bujp.admin')->only(['index']);
+        $this->middleware('can:create.assesment.bujp.admin')->only(['create', 'store']);
+        $this->middleware('can:edit.assesment.bujp.admin')->only(['edit', 'update']);
+        $this->middleware('can:delete.assesment.bujp.admin')->only(['destroy']);
+    }
+
     public function index(){
-        $data['assesments'] = Assesment::where('send_status',3)->paginate(25);
+        $result = $this->assesmentService->getAllAssesment(25, true, request(), ['vendor', 'unit', 'bujpProfile'], "=", 2, null);
+        $data['assesments'] = getPaginate($result);
         return view('admin.assesment.index',$data);
     }
 
@@ -21,31 +35,30 @@ class AssesmentController extends Controller
     public function edit(){
         return view('admin.assesment.edit');
     }
-    public function show($assesmentId){
-        $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesmentId)->get();
+    public function show(Assesment $assesment){
+        if($assesment->send_status < 2){
+            abort(404);
+        }
+        $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesment->id)->get();
         return view('admin.assesment.show',$data);
     }
-    public function report($assesmentId){
-
-        $assesment = Assesment::find($assesmentId);
-        $categories = SignCategoryAssesment::with('questions', 'questions.levels')
-        ->where('assesment_id', $assesmentId)
-        ->get()
-        ->map(function ($category) {
-            // Hitung rata-rata untuk setiap kategori berdasarkan level dalam pertanyaan
-            $category->average = number_format($category->questions->avg('evaluation_unit'),2);
     
-            return $category;
-        });
+    public function report(Assesment $assesment)
+    {
+        $response = $this->assesmentService->getReportAssesment($assesment);
 
-        $chartData = [
-            'labels' => $categories->pluck('category_name'), // Ambil category_name sebagai label
-            'data' => $categories->pluck('average'), // Ambil nilai rata-rata untuk data
-        ];
-        $chartJson = json_encode($chartData);
-        $data['assesment'] = $assesment;
-        $data['categories'] = $categories;
-        $data['chartJson'] = $chartJson;
-        return view('admin.assesment.report',$data);
+         $status = getStatus($response);
+
+        if ($status == false) {
+            return abort(500);
+        }
+
+        $result = $response->getData(true);
+
+        return view('admin.assesment.report', [
+            'assesment' => $result['data']['assesment'],
+            'categories' => $result['data']['categories'],
+            'chartJson' => json_encode($result['data']['chart']),
+        ]);
     }
 }
