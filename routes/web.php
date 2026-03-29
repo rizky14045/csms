@@ -24,7 +24,6 @@ Route::get('/register', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-Route::get('/dashboard/data', [DashboardController::class, 'getMonthlyReport'])->middleware(['auth'])->name('dashboard.data');
 
 Route::prefix('geo')->group(function () {
 
