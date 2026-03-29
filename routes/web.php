@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GeoJsonController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,7 +24,20 @@ Route::get('/register', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard/data', [DashboardController::class, 'getMonthlyReport'])->middleware(['auth'])->name('dashboard.data');
 
+Route::prefix('geo')->group(function () {
+
+    Route::get('/province/{id}', [GeoJsonController::class, 'getProvince'])
+        ->name('geo.province');
+
+    Route::get('/cities/{province_id}', [GeoJsonController::class, 'getCities'])
+        ->name('geo.cities');
+
+    Route::get('/city/{id}', [GeoJsonController::class, 'getCity'])
+        ->name('geo.city');
+
+});
 require_once('lists/auth.php');
 require_once('lists/role.php');
 require_once('lists/permission.php');

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Validation\UserValidation;
+use App\Models\City;
+use App\Models\Province;
 use App\Models\User;
+use App\Models\UserProfile;
 use App\Services\Role\RoleService;
 use App\Services\User\UserService;
 use Illuminate\Http\Request;
@@ -48,7 +51,10 @@ class UserController extends Controller
     public function create()
     {
         $roles = $this->roleService->getAllRole(0, false);
+        $provinces = Province::select('id','name')->get();
+
         $data['roles'] = getData($roles);
+        $data['provinces']= $provinces;
 
         return view('users.create', $data);
     }
@@ -60,7 +66,6 @@ class UserController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
         $this->userService->createUser($request->all());
 
         Alert::success('User Berhasil Dibuat', 'User berhasil ditambahkan!');
@@ -72,6 +77,12 @@ class UserController extends Controller
         $roles = $this->roleService->getAllRole(0, false);
         $data['roles'] = getData($roles);
         $data['user'] = $user;
+        $data['provinces'] = Province::select('id','name')->get();
+        if($user->type == 'user'){
+            $userProfile = UserProfile::where('user_id', $user->id)->first();
+            $data['profile'] = $userProfile;
+            $data['cities'] = City::select('id','name')->where('province_id', $userProfile->province_id)->get();
+        }
 
         return view('users.edit', $data);
     }
