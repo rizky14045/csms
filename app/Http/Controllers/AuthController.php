@@ -74,7 +74,9 @@ class AuthController extends Controller
                 return redirect()->route('dashboard');
             }elseif($user->type == 'bujp'){
                 return redirect()->route('dashboard');
-            }   
+            }elseif($user->type == 'auditor'){
+                return redirect()->route('dashboard');
+            }
 
         }else{
             $user->access_failed_count++;

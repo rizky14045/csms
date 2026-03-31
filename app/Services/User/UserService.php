@@ -141,6 +141,8 @@ class UserService
                 $type = 'admin';
             } elseif ($roleName === 'BUJP') {
                 $type = 'bujp';
+            } elseif ($roleName === 'Auditor') {
+                $type = 'auditor';
             } else {
                 $type = 'user';
             }

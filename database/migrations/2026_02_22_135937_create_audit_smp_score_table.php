@@ -15,7 +15,8 @@ class CreateAuditSmpScoreTable extends Migration
     {
         Schema::create('audit_smp_score', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->unsignedBigInteger('audit_smp_data_id')->nullable();
+            $table->text('name')->nullable();
             $table->integer('bobot')->nullable();
             $table->string('type')->nullable();
             $table->integer('parent_id')->nullable();

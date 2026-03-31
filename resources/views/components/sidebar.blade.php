@@ -127,6 +127,22 @@
                         </a>
                     </li>
                 @endcan
+                @can('view.audit.smp.score.admin')
+                <li>
+                    <a href="{{route('admin.audit-smp-score.index')}}" class="tp-link">
+                        <i data-feather="user"></i>
+                        <span> Audit SMP </span>
+                    </a>
+                </li>
+                @endcan
+                @can('view.audit.smp.score.auditor')
+                <li>
+                    <a href="{{route('auditor.audit-smp-score.index')}}" class="tp-link">
+                        <i data-feather="user"></i>
+                        <span> Audit SMP </span>
+                    </a>
+                </li>
+                @endcan
                 @canany(['view.marturity.admin'])
                 <li>
                     <a href="#sidebarBulanan" data-bs-toggle="collapse">
