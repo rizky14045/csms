@@ -3,6 +3,7 @@
 use App\Http\Controllers\User\AgreementExternalController;
 use App\Http\Controllers\User\AssesmentController;
 use App\Http\Controllers\User\AttributeController;
+use App\Http\Controllers\User\AuditSMPScoreController;
 use App\Http\Controllers\User\ChangePasswordController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\FaqController;
@@ -69,7 +70,11 @@ Route::prefix('user')->group(function () {
         });
 
         
-        
+        Route::prefix('audit-smp-score')->group(function () {
+            Route::get('/', [AuditSMPScoreController::class, 'index'])->name('user.audit-smp-score.index');
+            Route::get('/{audit}', [AuditSMPScoreController::class, 'show'])->name('user.audit-smp-score.show');
+            Route::put('/{audit_score}/update', [AuditSMPScoreController::class, 'updateEvidence'])->name('user.audit-smp-score.update');
+        });
         
         
         

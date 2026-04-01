@@ -26,6 +26,7 @@ class CreateAuditSmpScoreTable extends Migration
             $table->string('rekomendasi')->nullable();
             $table->date('due_date')->nullable();
             $table->string('pic')->nullable();
+            $table->string('evidence_file')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->unsignedBigInteger('created_by')->nullable();

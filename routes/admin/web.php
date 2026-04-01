@@ -206,7 +206,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [AuditSMPScoreController::class, 'index'])->name('admin.audit-smp-score.index');
             Route::get('/create', [AuditSMPScoreController::class, 'create'])->name('admin.audit-smp-score.create');
             Route::post('/store', [AuditSMPScoreController::class, 'store'])->name('admin.audit-smp-score.store');
-            Route::get('/{audit}/show', [AuditSMPScoreController::class, 'show'])->name('admin.audit-smp-score.show');
+            Route::get('/{audit}', [AuditSMPScoreController::class, 'show'])->name('admin.audit-smp-score.show');
             Route::get('/{audit}/edit', [AuditSMPScoreController::class, 'edit'])->name('admin.audit-smp-score.edit');
             Route::patch('/{audit}/edit', [AuditSMPScoreController::class, 'update'])->name('admin.audit-smp-score.update');
             Route::delete('/{audit}/delete', [AuditSMPScoreController::class, 'destroy'])->name('admin.audit-smp-score.destroy');

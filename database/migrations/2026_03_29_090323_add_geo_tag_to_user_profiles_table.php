@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTypeToUsersTable extends Migration
+class AddGeoTagToUserProfilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddTypeToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('type', ['admin', 'user','bujp','auditor'])->nullable();
-            $table->unsignedBigInteger('unit_id')->nullable();
+        Schema::table('user_profiles', function (Blueprint $table) {
+            $table->integer('province_id')->nullable();
+            $table->integer('city_id')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddTypeToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('user_profiles', function (Blueprint $table) {
             //
         });
     }

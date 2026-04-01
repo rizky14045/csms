@@ -1,108 +1,180 @@
 @extends('layout.app')
+
 @section('styles')
-<style>
-    #map { height: 500px; width: 100%; }
-</style>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .legend {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            line-height: 18px;
+        }
+
+        .legend i {
+            width: 15px;
+            height: 15px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.9;
+        }
+    </style>
 @stop
+
 @section('content')
-    
-<div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-    <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Dashboard</h4>
+
+    <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+        <div class="flex-grow-1">
+            <h4 class="fs-18 fw-semibold m-0">Dashboard</h4>
+        </div>
     </div>
-</div>
 
-<!-- start row -->
-<div class="row">
-    <div class="col-md-12 col-xl-12">
-       <div class="card">
-            <div class="card-body">
-                <label for="" class="form-label">Cari Data</label>
-                <div class="d-flex gap-3">
+    <div class="row">
+        <div class="col-md-12">
 
-                    <div class="mb-3 col-md-3">
-                        <input type="date" class="form-control d-inline" id="exampleFormControlInput1">
-                    </div>
-                    <div class="button-search">
-                        <button type="button" class="btn btn-primary d-inline">Cari</button>
-                    </div>
+            {{-- FILTER --}}
+            <div class="card">
+                <div class="card-body">
+                    <form method="GET">
+                        <label class="form-label">Filter Data</label>
+
+                        <div class="d-flex gap-3">
+
+                            {{-- BULAN --}}
+                            <div class="col-md-3">
+                                <select name="month" class="form-select">
+                                    <option value="">Pilih Bulan</option>
+                                    @for ($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}" {{ $month == $i ? 'selected' : '' }}>
+                                            {{ $i }}
+                                        </option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            {{-- TAHUN --}}
+                            <div class="col-md-3">
+                                <select name="year" class="form-select">
+                                    <option value="">Pilih Tahun</option>
+                                    @for ($y = 2020; $y <= date('Y'); $y++)
+                                        <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>
+                                            {{ $y }}
+                                        </option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn btn-primary">Cari</button>
+                            </div>
+
+                        </div>
+                    </form>
                 </div>
             </div>
-       </div>
-        <div class="card">
-            <div class="card-body">
-                <div id="map"></div>
+
+            {{-- MAP --}}
+            <div class="card">
+                <div class="card-body">
+                    <div id="map"></div>
+                </div>
             </div>
+
         </div>
-    </div> <!-- end sales -->
-</div> <!-- end row -->
-@endsection
-@section('scripts')
-<script>
-    // Step 1: Initialize the map
-    const map = L.map('map').setView([-2.548926, 118.0148634], 5);
-  
-    // Step 2: Add a base layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-  
-    // Step 3: Define custom icon
-    const customIcon = L.icon({
-      iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg', // URL gambar icon
-      iconSize: [20, 20],
-      iconAnchor: [10, 10],
-      popupAnchor: [0, -10]
-    });
-  
-    // Step 4: Add detailed data points
-    const detailedDataPoints = [
-      {
-        lat: -6.2088, 
-        lng: 106.8456, 
-        name: "Jakarta", 
-        description: "Ibu kota Indonesia, pusat ekonomi dan pemerintahan."
-      },
-      {
-        lat: -7.7956, 
-        lng: 110.3695, 
-        name: "Yogyakarta", 
-        description: "Kota budaya dan sejarah, terkenal dengan Candi Borobudur dan Prambanan."
-      },
-      {
-        lat: -6.9147, 
-        lng: 107.6098, 
-        name: "Bandung", 
-        description: "Dikenal sebagai Kota Kembang, pusat pendidikan dan wisata."
-      },
-      {
-        lat: -5.1477, 
-        lng: 119.4327, 
-        name: "Makassar", 
-        description: "Kota terbesar di Sulawesi Selatan, terkenal dengan kuliner seafood-nya."
-      }
-    ];
-  
-    // Loop through each data point and add to the map with hover effect
-    detailedDataPoints.forEach(point => {
-      const marker = L.marker([point.lat, point.lng], { icon: customIcon }).addTo(map);
-  
-      // Create the popup content
-      const popupContent = `
-        <b>${point.name}</b><br>
-        ${point.description}
-      `;
-  
-      // Bind events for hover
-      marker.on('mouseover', function() {
-        this.bindPopup(popupContent).openPopup(); // Open popup on hover
-      });
-  
-      marker.on('mouseout', function() {
-        this.closePopup(); // Close popup when hover ends
-      });
-    });
-  </script>
+    </div>
+
 @endsection
 
+
+@section('scripts')
+
+    {{-- LEAFLET --}}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // ==============================
+        // INIT MAP (FULL INDONESIA)
+        // ==============================
+        var map = L.map('map', {
+            minZoom: 5
+        }).setView([-2.5, 118], 5);
+
+       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+        // ==============================
+        // DATA DARI LARAVEL
+        // ==============================
+        let users = @json($users);
+
+        // ==============================
+        // RENDER MARKER
+        // ==============================
+        users.forEach(user => {
+
+            let lat = parseFloat(user.latitude);
+            let lng = parseFloat(user.longitude);
+
+            // skip kalau invalid
+            if (isNaN(lat) || isNaN(lng)) return;
+
+            // warna
+            let color = user.status_report == 1 ? '#28a745' : '#dc3545';
+
+            let marker = L.circleMarker([lat, lng], {
+                radius: 8,
+                color: '#fff',
+                weight: 2,
+                fillColor: color,
+                fillOpacity: 1
+            }).addTo(map);
+
+            let content = user.status_report == 1 ?
+                `<b>${user.name}</b><br>Total Satpam: ${user.satpam}` :
+                `<b>${user.name}</b><br>Belum ada data`;
+
+            marker.bindPopup(content);
+
+            // hover effect
+            marker.on('mouseover', function() {
+                this.setStyle({
+                    radius: 12
+                });
+                this.openPopup();
+            });
+
+            marker.on('mouseout', function() {
+                this.setStyle({
+                    radius: 8
+                });
+                this.closePopup();
+            });
+
+        });
+
+        // ==============================
+        // LEGEND (KETERANGAN)
+        // ==============================
+        var legend = L.control({
+            position: 'bottomright'
+        });
+
+        legend.onAdd = function() {
+            var div = L.DomUtil.create('div', 'legend');
+
+            div.innerHTML += '<i style="background:#28a745"></i> Sudah Lapor<br>';
+            div.innerHTML += '<i style="background:#dc3545"></i> Belum Lapor<br>';
+
+            return div;
+        };
+
+        legend.addTo(map);
+    </script>
+
+@endsection

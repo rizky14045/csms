@@ -34,7 +34,9 @@
                                 <th scope="col">Nama Unit</th>
                                 <th scope="col">Tanggal Mulai</th>
                                 <th scope="col">Tanggal Selesai</th>
+                                @canany(['edit.audit.smp.score.unit'])
                                 <th scope="col">Action</th>
+                                @endcanany
                             </tr>
                         </thead>
                         <tbody>
@@ -44,29 +46,13 @@
                                     <td>{{$audit->unit->name ?? "-"}}</td>
                                     <td>{{ \Carbon\Carbon::parse($audit->start_audit)->format('d-m-Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($audit->end_audit)->format('d-m-Y') }}</td>
+                                    @canany(['view.audit.smp.score.unit', 'edit.audit.smp.score.unit'])                                        
                                     <td class="text-center">
-                                        @can('view.audit.smp.score.auditor')
-                                        <a href="{{route('auditor.audit-smp-score.show',['audit'=>$audit->id])}}" class="btn btn-primary btn-sm">View</a>
+                                        @can('view.audit.smp.score.unit')
+                                        <a href="{{route('user.audit-smp-score.show',['audit'=>$audit->id])}}" class="btn btn-primary btn-sm">View</a>
                                         @endcan
-                                        @if($audit->auditor_lead_id == auth()->user()->id && $audit->status == 0)
-                                        <form
-                                            id="send-audit-{{ $audit->id }}"
-                                            action="{{route('auditor.audit-smp-score.send',['audit'=>$audit->id])}}"
-                                            method="POST"
-                                            class="d-inline"
-                                            onsubmit="confirmSave('send-audit-{{ $audit->id }}', 'Audit akan dikirim.')"
-                                        >
-                                            @csrf
-
-                                            <button
-                                                type="submit"
-                                                class="btn btn-success btn-sm"
-                                            >
-                                                Kirim
-                                            </button>
-                                        </form>
-                                        @endif
                                     </td>
+                                    @endcanany
                                 </tr>
                             @endforeach
                         </tbody>

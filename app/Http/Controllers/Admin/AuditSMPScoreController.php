@@ -70,9 +70,8 @@ class AuditSMPScoreController extends Controller
     }
 
     public function show(AuditSmpData $audit){
-        $audit->load('unit', 'leadAuditor', 'auditors');
-        $audit->load('childrenHeader');
-        $data['audit'] = $audit;
+        $audit->load('childrenHeader.pernyataan.kriteria.evidence', 'childrenHeader.kriteria.evidence', 'unit');
+        $data['auditData'] = $audit;
         return view('admin.audit-smp-score.show',$data);
     }
 

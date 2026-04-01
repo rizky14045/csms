@@ -10,6 +10,7 @@ use App\Models\AuditSmpData;
 use App\Models\AuditSMPScore;
 use App\Services\ActivityLog\ActivityLogService;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AuditSMPDataService
@@ -21,7 +22,7 @@ class AuditSMPDataService
         $this->logService = $logService;
     }
     
-   public function getAllAuditData($limit = 10, $paginate = true, $with = [], $user_id = null)
+   public function getAllAuditData($limit = 10, $paginate = true, $with = [], $lead_id = null, $unit_id = null)
     {
         try {
             $order  = request('order', 'ASC');
@@ -36,13 +37,17 @@ class AuditSMPDataService
                 $query->with($with);
             }
 
-            if (!is_null($user_id)) {
-                $query->where(function ($q) use ($user_id) {
-                    $q->where('auditor_lead_id', $user_id)
-                    ->orWhereHas('auditors', function ($q2) use ($user_id) {
-                        $q2->where('users.id', $user_id);
+            if (!is_null($lead_id)) {
+                $query->where(function ($q) use ($lead_id) {
+                    $q->where('auditor_lead_id', $lead_id)
+                    ->orWhereHas('auditors', function ($q2) use ($lead_id) {
+                        $q2->where('users.id', $lead_id);
                     });
                 });
+            }
+
+            if (!is_null($unit_id)) {
+                $query->where('unit_id', $unit_id);
             }
 
             if ($start && $end) {
@@ -502,6 +507,70 @@ class AuditSMPDataService
             $this->logService->log(
                 'audit.achievement.update',
                 'Failed to update audit achievement',
+                500,
+                [
+                    'error' => $e->getMessage(),
+                    'payload' => $data,
+                ]
+            );
+
+            throw $e;
+        }
+    }
+
+    public function updateEvidenceAudit(Request $request, AuditSMPScore $audit_score, array $data)
+    {
+        DB::beginTransaction();
+
+        try {
+            $before = $audit_score->toArray();
+
+            $attachmentFile = null;
+            
+            if($request->hasFile('evidence_file_'.$audit_score->id))
+            {      
+                $file= $request->file('evidence_file_'.$audit_score->id);
+                $file_name = 'evidence-file-' . time() .'.'. $file->getClientOriginalExtension();
+                if ($audit_score->evidence_file) {
+                    unlink(public_path('uploads/evidence_file/'.$audit_score->evidence_file));
+                }
+                $file->move(public_path('uploads/evidence_file/'),$file_name);   
+                $attachmentFile = $file_name;
+            }
+            
+            $audit_score->evidence_file = $attachmentFile ?? $audit_score->evidence_file;
+
+            $updateData = [
+                'evidence_file' => $attachmentFile ?? $audit_score->evidence_file,
+                'updated_by' => auth()->id(),
+            ];
+
+            $audit_score->update($updateData);
+
+            DB::commit();
+
+            $this->logService->log(
+                'audit.evidence.update',
+                'Update audit evidence success',
+                200,
+                [
+                    'before' => $before,
+                    'after'  => $audit_score->toArray(),
+                ]
+            );
+
+            return JsonResponse::success(
+                $audit_score,
+                'Audit evidence updated',
+                200
+            );
+
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->logService->log(
+                'audit.evidence.update',
+                'Failed to update audit evidence',
                 500,
                 [
                     'error' => $e->getMessage(),

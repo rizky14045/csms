@@ -6,11 +6,12 @@ use App\Helpers\JsonResponse;
 use App\Models\BujpProfile;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserProfile;
 use App\Models\Vendor;
 use App\Services\ActivityLog\ActivityLogService;
 use Exception;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class UserService
 {
@@ -238,6 +239,15 @@ class UserService
                     'type'       => $type,
                     'created_by' => auth()->id(),
                 ]);
+                if($type == 'user'){
+                    UserProfile::create([
+                        'user_id' => $user->id,
+                        'latitude' => $data['latitude'] ?? null,
+                        'longitude' => $data['longitude'] ?? null,
+                        'province_id' => $data['province_id'] ?? null,
+                        'city_id' => $data['city_id'] ?? null,
+                    ]);
+                }
 
                 if($withVendor){
                     BujpProfile::create([
@@ -365,6 +375,25 @@ class UserService
             }
 
             $user->update($updateData);
+            if($type == 'user'){
+                $profile = UserProfile::where('user_id', $user->id)->first();
+                if(!$profile){
+                    UserProfile::create([
+                        'user_id' => $user->id,
+                        'latitude' => $data['latitude'] ?? null,
+                        'longitude' => $data['longitude'] ?? null,
+                        'province_id' => $data['province_id'] ?? null,
+                        'city_id' => $data['city_id'] ?? null,
+                    ]);
+                }else{
+                    $profile->update([
+                        'latitude' => $data['latitude'] ?? null,
+                        'longitude' => $data['longitude'] ?? null,
+                        'province_id' => $data['province_id'] ?? null,
+                        'city_id' => $data['city_id'] ?? null,
+                        ]);
+                }
+            }
 
             if ($roleName) {
                 $user->syncRoles([$roleName]);

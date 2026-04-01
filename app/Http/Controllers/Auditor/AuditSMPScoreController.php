@@ -40,8 +40,7 @@ class AuditSMPScoreController extends Controller
     }
 
     public function show(AuditSmpData $audit){
-        // $audit->load('unit', 'leadAuditor', 'auditors');
-        $audit->load('childrenHeader.pernyataan.kriteria.evidence', 'childrenHeader.kriteria.evidence');
+        $audit->load('childrenHeader.pernyataan.kriteria.evidence', 'childrenHeader.kriteria.evidence', 'unit');
         $data['auditData'] = $audit;
         return view('auditor.audit-smp-score.show',$data);
     }
@@ -139,14 +138,17 @@ class AuditSMPScoreController extends Controller
 
     public function send(AuditSmpData $audit){
         if($audit->auditor_lead_id != auth()->id()){
+            Alert::error('Akses Ditolak', 'Hanya ketua auditor yang dapat mengirim data audit!');
             return redirect()->back()->with('error', 'Hanya ketua auditor yang dapat mengirim data audit');
         }
 
         if($audit->status != 0){
+            Alert::error('Akses Ditolak', 'Data audit yang sudah selesai tidak dapat dikirim!');
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat dikirim');
         }
         $this->auditSMPDataService->sendAuditData($audit);
         
+        Alert::success('Data Terkirim', 'Data audit berhasil dikirim!');
         return redirect()->route('admin.audit-smp-score.index')->with('success', 'Data audit berhasil dikirim');
     }
 }

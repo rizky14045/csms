@@ -40,9 +40,6 @@
                                 <th rowspan="2" style="background-color:#5DADE2;min-width: 200px; max-width: 200px;">Rekomendasi</th>
                                 <th rowspan="2" style="background-color:#5DADE2;min-width: 150px; max-width: 150px;">Due Date</th>
                                 <th rowspan="2" style="background-color:#5DADE2;min-width: 150px; max-width: 150px;">PIC</th>
-                                @if($auditData->status == 0)
-                                <th rowspan="2" style="background-color:#5DADE2;min-width: 150px; max-width: 150px;">Action</th>
-                                @endif
                             </tr>
                             <tr>
                                 <th style="background-color:#5DADE2;">Pencapaian Kriteria (0,1,2)</th>
@@ -146,24 +143,11 @@
                                                             break;
                                                     }
                                                 @endphp
-                                                @if ($auditData->status != 0)
                                                 <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgColor }}; color: {{ $textColor }};">
                                                     <div class="d-flex" style="gap: 5px; align-items: center; justify-content: center;">
-                                                        {{ $kriteria->pencapaian_nilai_kriteria ?? '' }}
+                                                        {{ $kriteria->pencapaian_nilai_kriteria ?? '0' }}
                                                     </div>
                                                 </td>
-                                                @else
-                                                <form action="{{ route('auditor.audit-smp-score.update-achievement', $kriteria->id ?? 0) }}" method="POST" id="form-kriteria-{{ $kriteria->id ?? 'new' }}" onsubmit="confirmSave('form-kriteria-{{ $kriteria->id ?? 'new' }}', 'Data akan disimpan')">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgColor }}; color: {{ $textColor }};">
-                                                        <div class="d-flex" style="gap: 5px; align-items: center; justify-content: center;">
-                                                            <input type="text" name="pencapaian_nilai_kriteria_{{ $kriteria->id }}" value="{{ old('pencapaian_nilai_kriteria_' . $kriteria->id, $kriteria->pencapaian_nilai_kriteria ?? '') }}" class="form-control" style="background-color: {{ $bgColor }}; color: {{ $textColor }};min-width: 50px; max-width: 50px;">
-                                                            <button type="submit" class="btn btn-primary"><i data-feather="check"></i></button>
-                                                        </div>
-                                                    </td>
-                                                </form>    
-                                                @endif
 
                                                 <td rowspan="{{ $evidenceCount }}">
                                                     {{ number_format($nilaiElemen, 2) }}%
@@ -178,7 +162,7 @@
                                             <td>{{ $evidence->name ?? '-' }}</td>
                                             <td>
                                                 @if(isset($evidence->evidence_file) && $evidence->evidence_file != '')
-                                                    <a href="/uploads/evidence_file/{{ $evidence->evidence_file }}" target="_blank" class="btn btn-primary">Lihat File</a>
+                                                    <a href="{{ asset('storage/' . $evidence->evidence_file) }}" target="_blank" class="btn btn-primary">Lihat File</a>
                                                 @else
                                                     -
                                                 @endif
@@ -190,7 +174,6 @@
                                                     $evidenceId = 'new';
                                                 }
                                             @endphp
-                                            @if($auditData->status != 0)
                                             <td>
                                                 {{ $evidence->temuan ?? '-' }}
                                             </td>
@@ -203,27 +186,6 @@
                                             <td>
                                                 {{ $evidence->pic ?? '-' }}
                                             </td>
-                                            @else
-                                            <form action="{{ route('auditor.audit-smp-score.update', $evidence->id ?? 0) }}" method="POST" id="form-evidence-{{ $evidence->id ?? 'new' }}" onsubmit="confirmSave('form-evidence-{{ $evidence->id ?? 'new' }}', 'Data akan disimpan')">
-                                                @csrf
-                                                @method('PUT')
-                                                <td>
-                                                    <textarea name="temuan_{{ $evidenceId }}" id="" cols="30" rows="5">{{ old('temuan_' . $evidenceId, $evidence->temuan ?? '') }}</textarea>
-                                                </td>
-                                                <td>
-                                                    <textarea name="rekomendasi_{{ $evidenceId }}" id="" cols="30" rows="5">{{ old('rekomendasi_' . $evidenceId, $evidence->rekomendasi ?? '') }}</textarea>
-                                                </td>
-                                                <td>
-                                                    <input type="date" name="due_date_{{ $evidenceId }}" value="{{ old('due_date_' . $evidenceId, isset($evidence->due_date) ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y') : '') }}" class="form-control">
-                                                </td>
-                                                <td>
-                                                    <input type="text" name="pic_{{ $evidenceId }}" value="{{ old('pic_' . $evidenceId, $evidence->pic ?? '') }}" class="form-control">
-                                                </td>
-                                                <td>
-                                                    <button type="submit" class="btn btn-primary">Update</button>
-                                                </td>
-                                            </form>
-                                            @endif
                                         </tr>
                                     @endforeach
 
@@ -310,22 +272,11 @@
                                                         }
                                                     @endphp
 
-                                                    @if($auditData->status != 0)
                                                     <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgColor }}; color: {{ $textColor }};">
                                                         <div class="d-flex" style="gap: 5px; align-items: center; justify-content: center;">
                                                             {{ $kriteria->pencapaian_nilai_kriteria ?? '0' }}
                                                         </div>
                                                     </td>
-                                                    @else
-                                                    <form action="{{ route('auditor.audit-smp-score.update-achievement', $kriteria->id ?? 0) }}" method="POST" id="form-kriteria-{{ $kriteria->id ?? 'new' }}" onsubmit="confirmSave('form-kriteria-{{ $kriteria->id ?? 'new' }}', 'Data akan disimpan')">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgColor }}; color: {{ $textColor }};">
-                                                            <input type="text" name="pencapaian_nilai_kriteria_{{ $kriteria->id }}" value="{{ old('pencapaian_nilai_kriteria_' . $kriteria->id, $kriteria->pencapaian_nilai_kriteria ?? '') }}" class="form-control" style="background-color: {{ $bgColor }}; color: {{ $textColor }};">
-                                                            <button type="submit" class="btn btn-primary">Save</button>
-                                                        </td>
-                                                    </form>
-                                                    @endif
 
                                                     <td rowspan="{{ $evidenceCount }}">
                                                         {{ number_format($nilaiElemen, 2) }}%
@@ -341,7 +292,7 @@
                                                 <td>{{ $evidence->name ?? '-' }}</td>
                                                 <td>
                                                     @if(isset($evidence->evidence_file) && $evidence->evidence_file != '')
-                                                        <a href="/uploads/evidence_file/{{ $evidence->evidence_file }}" target="_blank" class="btn btn-primary">Lihat File</a>
+                                                        <a href="{{ asset('storage/' . $evidence->evidence_file) }}" target="_blank" class="btn btn-primary">Lihat File</a>
                                                     @else
                                                         -
                                                     @endif
@@ -353,7 +304,6 @@
                                                         $evidenceId = 'new';
                                                     }
                                                 @endphp
-                                                @if($auditData->status != 0)
                                                 <td>
                                                     {{ $evidence->temuan ?? '-' }}
                                                 </td>
@@ -366,27 +316,6 @@
                                                 <td>
                                                     {{ $evidence->pic ?? '-' }}
                                                 </td>
-                                                @else
-                                                <form action="{{ route('auditor.audit-smp-score.update', $evidence->id ?? 0) }}" method="POST" id="form-evidence-{{ $evidence->id ?? 'new' }}" onsubmit="confirmSave('form-evidence-{{ $evidence->id ?? 'new' }}', 'Data akan disimpan')">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <td>
-                                                        <textarea name="temuan_{{ $evidenceId }}" id="" cols="30" rows="5">{{ old('temuan_' . $evidenceId, $evidence->temuan ?? '') }}</textarea>
-                                                    </td>
-                                                    <td>
-                                                        <textarea name="rekomendasi_{{ $evidenceId }}" id="" cols="30" rows="5">{{ old('rekomendasi_' . $evidenceId, $evidence->rekomendasi ?? '') }}</textarea>
-                                                    </td>
-                                                    <td>
-                                                        <input type="date" name="due_date_{{ $evidenceId }}" value="{{ old('due_date_' . $evidenceId, isset($evidence->due_date) ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y') : '') }}" class="form-control">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="pic_{{ $evidenceId }}" value="{{ old('pic_' . $evidenceId, $evidence->pic ?? '') }}" class="form-control">
-                                                    </td>
-                                                    <td>
-                                                        <button type="submit" class="btn btn-primary">Update</button>
-                                                    </td>
-                                                </form>
-                                                @endif
                                             </tr>
                                         @endforeach
 

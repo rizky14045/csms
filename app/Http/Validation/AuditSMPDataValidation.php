@@ -71,6 +71,12 @@ class AuditSMPDataValidation
         ];
     }
 
+    public static function rulesForUpdateEvidence($id){
+        return [
+            "evidence_file_$id" => ['required', 'file', 'mimes:pdf', 'max:5120'],
+        ];
+    } 
+
     public static function messages($id = null)
     {
         $messages = [
@@ -101,6 +107,11 @@ class AuditSMPDataValidation
 
             $messages["rekomendasi_$id.string"] = 'Rekomendasi harus berupa teks.';
             $messages["temuan_$id.string"] = 'Temuan harus berupa teks.';
+
+            $messages["evidence_file_$id.required"] = 'File bukti harus diunggah.';
+            $messages["evidence_file_$id.file"] = 'File bukti harus berupa file yang valid.';
+            $messages["evidence_file_$id.mimes"] = 'File bukti harus berupa file dengan format PDF.';
+            $messages["evidence_file_$id.max"] = 'Ukuran file bukti tidak boleh lebih dari 5MB.';
 
         }
 
