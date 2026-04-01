@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::put('/evidence/{audit_score}', [\App\Http\Controllers\Auditor\AuditSMPScoreController::class, 'updateEvidence'])->name('api.updateEvidence');
+    Route::put('/achievement/{audit_score}', [\App\Http\Controllers\Auditor\AuditSMPScoreController::class, 'updateAchievement'])->name('api.updateAchievement');
+});

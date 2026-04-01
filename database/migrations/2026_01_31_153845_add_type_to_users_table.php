@@ -14,7 +14,8 @@ class AddTypeToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('type', ['admin', 'user','bujp','audit'])->nullable();
+            $table->enum('type', ['admin', 'user','bujp','auditor'])->nullable();
+            $table->unsignedBigInteger('unit_id')->nullable();
         });
     }
 

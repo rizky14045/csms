@@ -45,4 +45,5 @@ require_once('lists/user.php');
 require_once('user/web.php');
 require_once('admin/web.php');
 require_once('bujp/web.php');
+require_once('auditor/web.php');
 

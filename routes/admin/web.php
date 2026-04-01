@@ -1,13 +1,11 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AssesmentController;
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\AuditSMPController;
+use App\Http\Controllers\Admin\AuditSMPScoreController;
 use App\Http\Controllers\Admin\CategoryAssesmentController;
-use App\Http\Controllers\Admin\ChangePasswordController;
 use App\Http\Controllers\Admin\CriteriaAuditSMPController;
-use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ElementAuditSMPController;
 use App\Http\Controllers\Admin\EvidenceAuditSMPController;
 use App\Http\Controllers\Admin\KeamananController;
@@ -40,14 +38,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('admin')->group(function () {
     Route::middleware(['auth','auth.admin'])->group(function () {
         
-        Route::get('/home', [DashboardController::class, 'index'])->name('admin.home.index');
-        
-        Route::get('/change-password', [ChangePasswordController::class, 'changePassword'])->name('admin.changePassword');
-        // Route::patch('/update-password', [ChangePasswordController::class, 'updatePassword'])->name('admin.updatePassword');
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('admin.assesment.index');
-            // Route::get('/create', [AssesmentController::class, 'create'])->name('admin.assesment.create');
-            // Route::get('/edit', [AssesmentController::class, 'edit'])->name('admin.assesment.edit');
             Route::get('/{assesment}/show', [AssesmentController::class, 'show'])->name('admin.assesment.show');
             Route::get('/{assesment}/report', [AssesmentController::class, 'report'])->name('admin.assesment.report');
         });
@@ -208,6 +200,16 @@ Route::prefix('admin')->group(function () {
             Route::get('/{evidence}/edit/{audit}', [EvidenceAuditSMPController::class, 'edit'])->name('admin.evidence.audit-smp.edit');
             Route::patch('/{evidence}/edit/{audit}', [EvidenceAuditSMPController::class, 'update'])->name('admin.evidence.audit-smp.update');
             Route::delete('/{evidence}/delete/{audit}', [EvidenceAuditSMPController::class, 'delete'])->name('admin.evidence.audit-smp.delete');
+        });
+
+        Route::prefix('audit-smp-score')->group(function () {
+            Route::get('/', [AuditSMPScoreController::class, 'index'])->name('admin.audit-smp-score.index');
+            Route::get('/create', [AuditSMPScoreController::class, 'create'])->name('admin.audit-smp-score.create');
+            Route::post('/store', [AuditSMPScoreController::class, 'store'])->name('admin.audit-smp-score.store');
+            Route::get('/{audit}', [AuditSMPScoreController::class, 'show'])->name('admin.audit-smp-score.show');
+            Route::get('/{audit}/edit', [AuditSMPScoreController::class, 'edit'])->name('admin.audit-smp-score.edit');
+            Route::patch('/{audit}/edit', [AuditSMPScoreController::class, 'update'])->name('admin.audit-smp-score.update');
+            Route::delete('/{audit}/delete', [AuditSMPScoreController::class, 'destroy'])->name('admin.audit-smp-score.destroy');
         });
 
         Route::prefix('unit')->group(function () {
