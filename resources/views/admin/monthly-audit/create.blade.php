@@ -1,4 +1,4 @@
-@extends('user.layout.app')
+@extends('layout.app')
 @section('styles')
 <style>
     .accordion-button::after {
