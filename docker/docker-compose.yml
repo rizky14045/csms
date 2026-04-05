@@ -1,6 +1,6 @@
 services:
   app:
-    image: rizky14045/app-sidak:1.0
+    image: rizky14045/app-sidak:1.2
     container_name: sidak_app
     restart: unless-stopped
     volumes:
@@ -28,3 +28,4 @@ networks:
 
 volumes:
   laravel_data:
+

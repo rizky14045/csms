@@ -21,8 +21,8 @@ class PenyerapanAnggaranController extends Controller
             ->whereIn('type', ['administrasi', 'pemeliharaan'])
             ->get()
             ->map(function ($item) {
-                $item->prosentase_penyerapan = $item->jumlah_anggaran != 0
-                    ? $item->penyerapan_anggaran / $item->jumlah_anggaran
+               $item->prosentase_penyerapan = $item->jumlah_anggaran != 0
+                    ? ($item->penyerapan_anggaran / $item->jumlah_anggaran) * 100
                     : 0;
                 return $item;
             })
