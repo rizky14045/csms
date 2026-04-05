@@ -51,10 +51,18 @@ class DashboardController extends Controller
             )
             ->get();
 
+            
+        $units = [];
+         if(auth()->user()->hasRole('BUJP')) {
+            $results = $this->userService->getAllUnitByVendorID(0, false, auth()->user()->id);
+            $units = getData($results);
+        }
+
         return view('dashboard.dashboard', [
             'users' => $users,
             'month' => $month,
-            'year'  => $year
+            'year'  => $year,
+            'units' => $units
         ]);
     }
 }
