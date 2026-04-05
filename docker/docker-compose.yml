@@ -1,0 +1,30 @@
+services:
+  app:
+    image: rizky14045/app-sidak:1.0
+    container_name: sidak_app
+    restart: unless-stopped
+    volumes:
+      - laravel_data:/var/www
+    networks:
+      - sidak
+
+  nginx:
+    image: nginx:alpine
+    container_name: sidak_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - laravel_data:/var/www
+    depends_on:
+      - app
+    networks:
+      - sidak
+
+networks:
+  sidak:
+    driver: bridge
+
+volumes:
+  laravel_data:
