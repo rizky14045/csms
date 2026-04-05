@@ -52,7 +52,6 @@ class SecurityProgramController extends Controller
         $this->securityProgramService->createSecurityProgram($request->all());
             
         Alert::success('Tambah Berhasil', 'Program Keamanan berhasil dibuat!');
-        dd("test");
         return redirect()->route('user.security-program.index');
     }
 
