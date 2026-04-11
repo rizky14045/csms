@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FetchController;
 use App\Http\Controllers\GeoJsonController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,7 @@ Route::prefix('geo')->group(function () {
         ->name('geo.city');
 
 });
+Route::get('/units/by-type', [FetchController::class, 'fetchUnitByType'])->name('units.byType');
 require_once('lists/auth.php');
 require_once('lists/role.php');
 require_once('lists/permission.php');

@@ -1,111 +1,71 @@
 @extends('layout.app')
 
 @section('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css" />
-    <style>
-        #map {
-            height: 400px;
-            border-radius: 10px;
-        }
-    </style>
 @endsection
 
 @section('content')
+    <div class="py-3 d-flex justify-content-between">
+        <h4>User Management - Edit</h4>
+    </div>
+
     <div class="card">
         <div class="card-body">
-
-            <form action="{{ route('users.update', $user->id) }}" method="POST">
+                 <form action="{{ route('users.update', $user->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
                 {{-- Nama --}}
                 <div class="mb-3">
                     <label>Nama</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}">
+                    <input type="text" name="name" class="form-control" required value="{{ $user->name }}">
                 </div>
 
                 {{-- Email --}}
                 <div class="mb-3">
                     <label>Email</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}">
+                    <input type="email" name="email" class="form-control" required value="{{ $user->email }}">
                 </div>
 
                 {{-- Role --}}
                 <div class="mb-3">
                     <label>Role</label>
-                    <select name="role" id="roleSelect" class="form-select">
+                    <select id="roleSelect" name="role" class="form-select" required>
                         <option value="">Pilih Role</option>
                         @foreach ($roles as $role)
-                            <option value="{{ $role['id'] }}"
-                                {{ old('role', $user->roles->first()->id ?? null) == $role['id'] ? 'selected' : '' }}>
+                            <option value="{{ $role['id'] }}" {{ $user->roles->contains($role['id']) ? 'selected' : '' }}>
                                 {{ $role['name'] }}
                             </option>
                         @endforeach
                     </select>
                 </div>
 
-                
-                {{-- MAP WRAPPER --}}
-                <div id="mapWrapper" style="display:none;">
-                    <hr>
-
-                    {{-- Province & City --}}
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label>Provinsi</label>
-                            <select id="province" class="form-select" name="province_id">
-                                <option value="">Pilih Provinsi</option>
-                                @foreach ($provinces as $prov)
-                                    @isset($profile)
-                                        <option value="{{ $prov->id }}"
-                                            {{ $profile && $profile->province_id == $prov->id ? 'selected' : '' }}>
-                                            {{ $prov->name }}
-                                        </option>
-                                    @else
-                                        <option value="{{ $prov->id }}">{{ $prov->name }}</option>
-                                    @endisset
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label>Kota</label>
-                            <select id="city" class="form-select" name="city_id">
-                                <option value="">Pilih Kota</option>
-                                @isset($profile)
-                                    @foreach ($cities as $city)
-                                        <option value="{{ $city->id }}"
-                                            {{ $profile->city_id == $city->id ? 'selected' : '' }}>
-                                            {{ $city->name }}
-                                        </option>
-                                    @endforeach
-                                @endisset
-                            </select>
-                        </div>
-                    </div>
-
-                    {{-- MAP --}}
-                    <div class="mb-3">
-                        <label>Pilih Lokasi</label>
-                        <div id="map"></div>
-                    </div>
-
-                    {{-- LAT LNG --}}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <input type="text" id="latitude" name="latitude" value="{{ $profile->latitude ?? '' }}"
-                                class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" id="longitude" name="longitude" value="{{ $profile->longitude ?? '' }}"
-                                class="form-control">
-                        </div>
-                    </div>
-
+                {{-- Tipe Unit --}}
+                <div class="mb-3" id="typeUnitContainer" style="display: {{ $user->type == 'user' ? 'block' : 'none' }};">
+                    <label>Tipe Unit</label>
+                    <select id="typeUnitSelect" name="type_unit" class="form-select">
+                        <option value="">Pilih Tipe Unit</option>
+                        <option value="Pusat" {{ $type_unit == 'Pusat' ? 'selected' : '' }}>Pusat</option>
+                        <option value="Unit" {{ $type_unit == 'Unit' ? 'selected' : '' }}>Unit</option>
+                    </select>
                 </div>
 
-                <div class="mt-3 text-end">
+                {{-- Unit --}}
+                <div class="mb-3" id="unitContainer" style="display: {{ $user->type == 'user' ? 'block' : 'none' }};">
+                    <label>Unit</label>
+                    <select id="unitSelect" name="unit_id" class="form-select">
+                        @if ($units)
+                            @foreach ($units as $unit)
+                                <option value="{{ $unit->id }}" {{ $user->unit_id == $unit->id ? 'selected' : '' }}>
+                                    {{ $unit->name }}
+                                </option>
+                                
+                            @endforeach
+                        @endif
+                        
+                    </select>
+                </div>
+                <div class="text-end">
+                    <button class="btn btn-danger" type="button" onclick="window.history.back();">Batal</button>
                     <button class="btn btn-success">Simpan</button>
                 </div>
 
@@ -113,165 +73,99 @@
 
         </div>
     </div>
+    </div>
 @endsection
-
 
 @section('scripts')
     <script>
-        const currentRoleId = "{{ auth()->user()->role_id }}";
-        const defaultLat = "{{ $profile->latitude ?? '' }}";
-        const defaultLng = "{{ $profile->longitude ?? '' }}";
+        $(document).ready(function() {
 
-        const routeProvince = "{{ route('geo.province', ':id') }}";
-        const routeCities = "{{ route('geo.cities', ':id') }}";
-        const routeCity = "{{ route('geo.city', ':id') }}";
-    </script>
+            const $role = $('#roleSelect');
+            const $typeUnitContainer = $('#typeUnitContainer');
+            const $typeUnit = $('#typeUnitSelect');
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
+            const $unitContainer = $('#unitContainer');
+            const $unit = $('#unitSelect');
 
-    <script>
-        let map;
-        let marker = null;
-        let provinceLayer = null;
-        let cityLayer = null;
+            // ================= TOGGLE TYPE UNIT =================
+            function toggleTypeUnit() {
 
-        document.addEventListener("DOMContentLoaded", function() {
-
-            const roleSelect = document.getElementById('roleSelect');
-            const mapWrapper = document.getElementById('mapWrapper');
-            const provinceSelect = document.getElementById('province');
-            const citySelect = document.getElementById('city');
-
-            // INIT MAP
-            map = L.map('map', {
-                minZoom: 5,
-                maxZoom: 18,
-                fullscreenControl: true,
-            }).setView([-2.5, 118], 5);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
-
-            // MARKER EXISTING
-            if (defaultLat && defaultLng) {
-                let lat = parseFloat(defaultLat);
-                let lng = parseFloat(defaultLng);
-
-                marker = L.marker([lat, lng]).addTo(map);
-                map.setView([lat, lng], 13);
-            }
-
-            // CLICK MAP
-            map.on('click', function(e) {
-                let lat = e.latlng.lat;
-                let lng = e.latlng.lng;
-
-                document.getElementById('latitude').value = lat;
-                document.getElementById('longitude').value = lng;
-
-                if (marker) map.removeLayer(marker);
-                marker = L.marker([lat, lng]).addTo(map);
-            });
-
-            // TOGGLE MAP
-            function toggleMap() {
-                const selectedRole = roleSelect.value || currentRoleId;
-
-                if (selectedRole == 3) {
-                    mapWrapper.style.display = 'block';
-
-                    setTimeout(() => {
-                        map.invalidateSize();
-                    }, 300);
+                if (parseInt($role.val()) === 3) {
+                    $typeUnitContainer.show();
+                    $typeUnit.attr('required', true);
                 } else {
-                    mapWrapper.style.display = 'none';
+                    $typeUnitContainer.hide();
+                    $unitContainer.hide();
+
+                    $typeUnit.removeAttr('required').val('');
+                    $unit.html('<option value="">Pilih Unit</option>');
                 }
             }
 
-            toggleMap();
-            roleSelect.addEventListener('change', toggleMap);
+            // ================= FETCH UNIT =================
+            function fetchUnits(type) {
 
-            // ======================
-            // PROVINCE
-            // ======================
-            provinceSelect.addEventListener('change', function() {
+                if (!type) {
+                    $unitContainer.hide();
+                    $unit.html('<option value="">Pilih Unit</option>');
+                    return;
+                }
 
-                let id = this.value;
-                if (!id) return;
+                $unit.html('<option value="">Loading...</option>');
 
-                if (provinceLayer) map.removeLayer(provinceLayer);
-                if (cityLayer) map.removeLayer(cityLayer);
+                $.ajax({
+                    url: "{{ route('units.byType') }}",
+                    type: "GET",
+                    data: {
+                        type_unit: type
+                    },
 
-                fetch(routeProvince.replace(':id', id))
-                    .then(res => res.json())
-                    .then(res => {
+                    success: function(res) {
 
-                        let geo = typeof res.geometry === 'string' ?
-                            JSON.parse(res.geometry) :
-                            res.geometry;
+                        console.log('Units:', res);
 
-                        provinceLayer = L.geoJSON(geo).addTo(map);
+                        $unit.html('<option value="">Pilih Unit</option>');
 
-                        let bounds = provinceLayer.getBounds();
-                        map.fitBounds(bounds);
+                        if (Array.isArray(res) && res.length > 0) {
 
-                        setTimeout(() => {
-                            map.setZoom(map.getZoom() + 2);
-                        }, 300);
-                    });
+                            // 🔥 FIX UTAMA: paksa tampil
+                            $unitContainer.show();
 
-                fetch(routeCities.replace(':id', id))
-                    .then(res => res.json())
-                    .then(data => {
+                            res.forEach(unit => {
+                                $unit.append(
+                                `<option value="${unit.id}">${unit.name}</option>`);
+                            });
 
-                        citySelect.innerHTML = '<option value="">Pilih Kota</option>';
-
-                        data.forEach(item => {
-                            let opt = document.createElement('option');
-                            opt.value = item.id;
-                            opt.text = item.name;
-                            citySelect.appendChild(opt);
-                        });
-                    });
-            });
-
-            // ======================
-            // CITY
-            // ======================
-            citySelect.addEventListener('change', function() {
-
-                let id = this.value;
-                if (!id) return;
-
-                if (cityLayer) map.removeLayer(cityLayer);
-
-                fetch(routeCity.replace(':id', id))
-                    .then(res => res.json())
-                    .then(res => {
-
-                        let geo = typeof res.geometry === 'string' ?
-                            JSON.parse(res.geometry) :
-                            res.geometry;
-
-                        cityLayer = L.geoJSON(geo,{
-                            style: {
-                                color: 'red',
-                                weight: 2,
-                                fillOpacity: 0.2
+                            if (res.length === 1) {
+                                $unit.val(res[0].id);
                             }
-                        }).addTo(map);
 
-                        let bounds = cityLayer.getBounds();
-                        map.fitBounds(bounds);
+                        } else {
+                            $unitContainer.hide();
+                        }
+                    },
 
-                        setTimeout(() => {
-                            map.setZoom(map.getZoom() + 2);
-                        }, 300);
-                    });
+                    error: function(err) {
+                        console.log('Error:', err);
+                        $unit.html('<option value="">Gagal load data</option>');
+                    }
+                });
+            }
+
+            // ================= EVENT =================
+            $role.on('change', function() {
+                toggleTypeUnit();
             });
+
+            $typeUnit.on('change', function() {
+                fetchUnits($(this).val());
+            });
+
+            // ================= INIT =================
+            toggleTypeUnit();
 
         });
     </script>
 @endsection
+
+

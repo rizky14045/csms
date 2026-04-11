@@ -160,6 +160,7 @@ class UserService
                 $user->update([
                     'password'   => bcrypt($data['password']),
                     'type'       => $type,
+                    'unit_id'       => $data['unit_id'] ?? null,
                     'updated_by' => auth()->id(),
                 ]);
 
@@ -237,17 +238,9 @@ class UserService
                     'email'      => $data['email'],
                     'password'   => bcrypt($data['password']),
                     'type'       => $type,
+                    'unit_id'       => $data['unit_id'] ?? null,
                     'created_by' => auth()->id(),
                 ]);
-                if($type == 'user'){
-                    UserProfile::create([
-                        'user_id' => $user->id,
-                        'latitude' => $data['latitude'] ?? null,
-                        'longitude' => $data['longitude'] ?? null,
-                        'province_id' => $data['province_id'] ?? null,
-                        'city_id' => $data['city_id'] ?? null,
-                    ]);
-                }
 
                 if($withVendor){
                     BujpProfile::create([
@@ -367,6 +360,7 @@ class UserService
                 'name'       => $data['name'],
                 'email'      => $data['email'],
                 'type'       => $type,
+                'unit_id'       => $data['unit_id'] ?? null,
                 'updated_by' => auth()->id(),
             ];
 
@@ -375,25 +369,6 @@ class UserService
             }
 
             $user->update($updateData);
-            if($type == 'user'){
-                $profile = UserProfile::where('user_id', $user->id)->first();
-                if(!$profile){
-                    UserProfile::create([
-                        'user_id' => $user->id,
-                        'latitude' => $data['latitude'] ?? null,
-                        'longitude' => $data['longitude'] ?? null,
-                        'province_id' => $data['province_id'] ?? null,
-                        'city_id' => $data['city_id'] ?? null,
-                    ]);
-                }else{
-                    $profile->update([
-                        'latitude' => $data['latitude'] ?? null,
-                        'longitude' => $data['longitude'] ?? null,
-                        'province_id' => $data['province_id'] ?? null,
-                        'city_id' => $data['city_id'] ?? null,
-                        ]);
-                }
-            }
 
             if ($roleName) {
                 $user->syncRoles([$roleName]);
