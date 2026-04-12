@@ -35,7 +35,7 @@ class AssesmentController extends Controller
     }
 
     public function index(){
-        $result = $this->assesmentService->getAllAssesment(25, true, request(), ['vendor', 'bujpProfile'], ">=", 1, auth()->user()->id);
+        $result = $this->assesmentService->getAllAssesment(25, true, request(), ['vendor', 'bujpProfile', 'getInvalidItemsQuestionByUnit'], ">=", 1, auth()->user()->id);
         $data['assesments'] = getPaginate($result);
         return view('user.assesment.index',$data);
     }
@@ -59,6 +59,8 @@ class AssesmentController extends Controller
         }
 
         $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesment->id)->get();
+        $assesment->load('getInvalidItemsQuestionByUnit');
+        $data['assesment'] = $assesment;
         return view('user.assesment.show',$data);
     }
 
@@ -98,6 +100,13 @@ class AssesmentController extends Controller
     public function send(Assesment $assesment){
         if($assesment->unit_id != auth()->user()->id){
             return abort(404);
+        }
+
+        $assesment->load('getInvalidItemsQuestionByUnit');
+
+        if(count($assesment->getInvalidItemsQuestionByUnit) > 0){
+            Alert::error('Gagal Dikirim', 'Assesment tidak bisa dikirim karena terdapat pertanyaan yang belum diisi!');
+            return redirect()->route('user.assesment.index');
         }
 
         if($assesment->send_status != 1){

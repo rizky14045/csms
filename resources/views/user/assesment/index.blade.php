@@ -54,9 +54,10 @@
                                 <th scope="col">NPWP</th>
                                 <th scope="col">Nama Perusahaan</th>
                                 <th scope="col">Nomor Kontrak</th>
-                                <th scope="col">Tanggal</th>
                                 <th scope="col">Triwulan</th>
-                               <th scope="col">Tanggal Kirim</th>
+                                <th scope="col">Tanggal Buat</th>
+                               <th scope="col">Tanggal Kirim BUJP</th>
+                               <th scope="col">Tanggal Kirim Pusat</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -68,17 +69,23 @@
                                     <td>{{$assesment->bujp_profile->npwp}}</td>
                                     <td>{{$assesment->vendor->name}}</td>
                                     <td>{{$assesment->contract}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($assesment->date)->format('d-m-Y') }}</td>
+                                    <td>{{$assesment->year}}</td>
                                     <td>{{$assesment->triwulan}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($assesment->created_at)->format('d-m-Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') }}</td>
+                                    <td>{{ $assesment->send_date_pusat ? \Carbon\Carbon::parse($assesment->send_date_pusat)->format('d-m-Y') : '-' }}</td>
                                     <td>
                                         @if ($assesment->send_status == 1)
                                             @can('send.assesment.bujp.unit')
+                                            @if(count($assesment->get_invalid_items_question_by_unit) == 0)
                                             <form action="{{route('user.assesment.send',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-success btn-sm">Kirim</button>
                                             </form>
+                                            @else
+                                            <button type="button" style="background-color: gray" class="btn btn-secondary btn-sm" disabled>Kirim</button>
+                                            @endif
                                             @endcan
                                             <a href="{{route('user.assesment.show',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
                                         @elseif($assesment->send_status >= 2)

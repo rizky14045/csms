@@ -47,7 +47,7 @@ class AssesmentController extends Controller
 
         $results = $this->userService->getAllUnitByVendorID(0, false, auth()->user()->id);
         $data['units'] = getData($results);
-        $result = $this->assesmentService->getAllAssesment(10, true, $request, ['vendor', 'bujpProfile']);
+        $result = $this->assesmentService->getAllAssesment(10, true, $request, ['vendor', 'bujpProfile', 'getInvalidItemsQuestionByBujp']);
         $data['assesments'] = getPaginate($result);
         return view('bujp.assesment.index',$data);
 
@@ -76,6 +76,75 @@ class AssesmentController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        $year = (int)$request->year;
+        $triwulan = (int)$request->triwulan;
+        $userId = auth()->id();
+
+        // ===============================
+        // ✅ 1. CEK DUPLICATE
+        // ===============================
+        $exists = Assesment::where('year', $year)
+            ->where('triwulan', $triwulan)
+            ->where('created_by', $userId)
+            ->exists();
+
+        if ($exists) {
+            Alert::error('Gagal', 'Triwulan tersebut sudah diisi untuk tahun ini!');
+            return back()->withErrors([
+                'triwulan' => 'Triwulan sudah ada'
+            ])->withInput();
+        }
+
+        // ===============================
+        // ✅ 2. CEK BELUM WAKTUNYA
+        // ===============================
+        $currentMonth = now()->month;
+
+        if ($currentMonth <= 3) {
+            $currentTriwulan = 1;
+        } elseif ($currentMonth <= 6) {
+            $currentTriwulan = 2;
+        } elseif ($currentMonth <= 9) {
+            $currentTriwulan = 3;
+        } else {
+            $currentTriwulan = 4;
+        }
+
+        if ($year == now()->year && $triwulan > $currentTriwulan) {
+            Alert::error('Gagal', 'Belum waktunya mengisi triwulan tersebut!');
+            return back()->withErrors([
+                'triwulan' => 'Belum waktunya'
+            ])->withInput();
+        }
+
+        // ===============================
+        // ✅ 3. CEK LONCAT TRIWULAN
+        // ===============================
+
+        // Ambil triwulan terakhir di tahun tersebut
+        $lastTriwulan = Assesment::where('year', $year)
+            ->where('created_by', $userId)
+            ->orderBy('triwulan', 'desc')
+            ->value('triwulan');
+
+        if ($lastTriwulan) {
+            $expectedTriwulan = $lastTriwulan + 1;
+
+            if ($triwulan != $expectedTriwulan) {
+                Alert::error('Gagal', 'Harus mengisi triwulan sebelumnya terlebih dahulu!');
+                return back()->withErrors([
+                    'triwulan' => "Harus mengisi triwulan {$expectedTriwulan} terlebih dahulu"
+                ])->withInput();
+            }
+        } else {
+            if ($triwulan != 1) {
+                Alert::error('Gagal', 'Harus mulai dari triwulan 1!');
+                return back()->withErrors([
+                    'triwulan' => 'Harus mulai dari triwulan 1'
+                ])->withInput();
+            }
+        }
+
         $this->assesmentService->createAssesment($request->all(), $request->query('unit'));
 
         Alert::success('Tambah Berhasil', 'Assesment berhasil ditambah!');
@@ -84,6 +153,7 @@ class AssesmentController extends Controller
 
 
     public function edit(Request $request, Assesment $assesment){
+        return redirect()->back();
         $validateVendor = $this->userService->validateVendorAccess($request->query('unit'));
         if (!$validateVendor) {
             abort(404);
@@ -106,6 +176,7 @@ class AssesmentController extends Controller
     }
     
     public function update(Request $request, Assesment $assesment){
+        return redirect()->back();
          $validateVendor = $this->userService->validateVendorAccess($request->query('unit'));
         if (!$validateVendor) {
             abort(404);
@@ -170,6 +241,25 @@ class AssesmentController extends Controller
             abort(404);
         }
 
+        $invalidData = SignQuestionAssesment::where('assesment_id', $assesment->id)
+                        ->where(function ($q) {
+                            $q->whereNull('level')
+                            ->orWhere('level', 0)
+                            ->orWhereNull('attachment_file')
+                            ->orWhereNull('note')
+                            ->orWhere('note', '');
+                        })
+                        ->exists();
+
+                    if ($invalidData) {
+                        Alert::error(
+                            'Gagal Kirim',
+                            'Masih ada data yang belum lengkap! Pastikan level, attachment, dan catatan sudah terisi.'
+                        );
+
+                        return redirect()->back()->withInput();
+                    }
+
         $this->assesmentService->sendAssesment($assesment);
         Alert::success('Berhasil Dikirim', 'Assesment berhasil dikirim!');
         return redirect()->route('bujp.assesment.index', ['unit' => $request->query('unit')]);
@@ -191,6 +281,8 @@ class AssesmentController extends Controller
         }
 
         $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesment->id)->get();
+        $assesment->load('getInvalidItemsQuestionByBujp');
+        $data['assesment'] = $assesment;
         return view('bujp.assesment.show',$data);
     }
 

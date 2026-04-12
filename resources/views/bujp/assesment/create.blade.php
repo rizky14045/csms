@@ -33,9 +33,9 @@
                                     @csrf
                                     <div class="col-xl-12">
                                         <div class="form-group mb-3">
-                                            <label for="date" class="form-label">Tanggal</label>
-                                            <input class="form-control" type="date" id="date" required="" name="date" value="{{old('date')}}">
-                                            @error('date')
+                                            <label for="year" class="form-label">Tahun</label>
+                                            <input class="form-control" type="number" min="2000" id="year" required="" name="year" value="{{old('year')}}">
+                                            @error('year')
                                                 <div class="error text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>

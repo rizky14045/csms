@@ -36,7 +36,7 @@ class MonthlyAuditController extends Controller
 {
     public function index(){
         $userId = Auth::user()->id;
-        $data['forms'] = MonthlyReport::where('user_id',$userId)->latest()->paginate(25);
+        $data['forms'] = MonthlyReport::where('user_id',$userId)->with('detailUnit')->latest()->paginate(25);
         return view('user.monthly-audit.index',$data);
     }
 
@@ -48,9 +48,64 @@ class MonthlyAuditController extends Controller
 
         try {
             DB::beginTransaction();
-            
+
             $userId = Auth::user()->id;
-            $date = explode("-",$request->report_date);
+            $unitId = Auth::user()->unit_id;
+
+            $date = explode("-", $request->report_date);
+            $year = (int)$date[0];
+            $month = (int)$date[1];
+
+            $currentYear = now()->year;
+            $currentMonth = now()->month;
+
+            if ($year > $currentYear || ($year == $currentYear && $month > $currentMonth)) {
+                DB::rollback();
+                Alert::error('Tanggal Laporan Tidak Valid', 'Tanggal laporan tidak boleh di masa depan!');
+                return back()->withErrors(['report_date' => 'Tanggal laporan tidak boleh di masa depan.'])->withInput();
+            }
+
+            $reportDate = sprintf('%04d-%02d', $year, $month);
+
+            $exists = MonthlyReport::where('user_id', $userId)
+                ->where('report_date', $reportDate)
+                ->exists();
+
+            if ($exists) {
+                DB::rollback();
+                Alert::error('Laporan Sudah Ada', 'Laporan bulanan untuk bulan dan tahun tersebut sudah ada!');
+                return back()->withErrors(['report_date' => 'Laporan bulanan untuk bulan dan tahun tersebut sudah ada.'])->withInput();
+            }
+
+            // Ambil data terakhir
+            $lastReport = MonthlyReport::where('user_id', $userId)
+                ->orderBy('report_date', 'desc')
+                ->first();
+
+            if ($lastReport) {
+                $lastDate = explode('-', $lastReport->report_date);
+                $lastYear = (int)$lastDate[0];
+                $lastMonth = (int)$lastDate[1];
+
+                // hitung bulan berikutnya yang seharusnya
+                if ($lastMonth == 12) {
+                    $expectedYear = $lastYear + 1;
+                    $expectedMonth = 1;
+                } else {
+                    $expectedYear = $lastYear;
+                    $expectedMonth = $lastMonth + 1;
+                }
+
+                // kalau tidak sesuai urutan → tolak
+                if ($year != $expectedYear || $month != $expectedMonth) {
+                    DB::rollback();
+                    Alert::error('Urutan Laporan Salah', 'Anda harus mengisi laporan bulan sebelumnya terlebih dahulu!');
+                    return back()->withErrors([
+                        'report_date' => "Harus mengisi bulan {$expectedYear}-" . sprintf('%02d', $expectedMonth) . " terlebih dahulu."
+                    ])->withInput();
+                }
+            }
+                        
             $administrations = Attribute::select('id')->where('type_attribute','Administrasi')->get();
             $attributes = Attribute::select('id')->where('user_id',$userId)->get();
             $persons = ResponsiblePerson::select('id')->where('user_id',$userId)->get();
@@ -63,6 +118,7 @@ class MonthlyAuditController extends Controller
 
             $report = MonthlyReport::create([
                 'user_id' => $userId,
+                'unit_id' => $unitId,
                 'report_date' => $request->report_date,
                 'send_status' => false,
             ]);

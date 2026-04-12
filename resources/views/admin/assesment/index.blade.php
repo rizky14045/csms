@@ -51,9 +51,11 @@
                                 <th scope="col">NPWP</th>
                                 <th scope="col">Nama Perusahaan</th>
                                 <th scope="col">Nomor Kontrak</th>
-                                <th scope="col">Tanggal</th>
+                                <th scope="col">Tahun</th>
                                 <th scope="col">Triwulan</th>
-                               <th scope="col">Tanggal Kirim</th>
+                                <th scope="col">Tanggal Buat</th>
+                               <th scope="col">Tanggal Kirim BUJP</th>
+                               <th scope="col">Tanggal Kirim Pusat</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -66,9 +68,11 @@
                                     <td>{{$assesment->bujp_profile->npwp}}</td>
                                     <td>{{$assesment->vendor->name}}</td>
                                     <td>{{$assesment->contract}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($assesment->date)->format('d-m-Y') }}</td>
+                                    <td>{{$assesment->year}}</td>
                                     <td>{{$assesment->triwulan}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($assesment->created_at)->format('d-m-Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') }}</td>
+                                    <td>{{ $assesment->send_date_pusat ? \Carbon\Carbon::parse($assesment->send_date_pusat)->format('d-m-Y') : '-' }}</td>
                                     <td>
                                         <a href="{{route('admin.assesment.show',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
                                         <a href="{{route('admin.assesment.report',['assesment'=>$assesment->id])}}" class="btn btn-success btn-sm">Report</a>

@@ -130,7 +130,7 @@ class AssesmentService
             $assesment = Assesment::create([
                 'unit_id'   => $vendor->parent_user_id,
                 'vendor_id' => $vendor->id,
-                'date'      => $data['date'],
+                'year'      => $data['year'],
                 'contract'  => $vendor->contract_number,
                 'triwulan'  => $data['triwulan'],
                 'send_status' => 0,
@@ -386,6 +386,7 @@ class AssesmentService
         try {
             $assesment->update([
                 'send_status' => 2,
+                'send_date_pusat' => date('Y-m-d'),
                 'updated_by' => auth()->id(),
             ]);
 
@@ -397,6 +398,7 @@ class AssesmentService
                 200,
                 [
                     'assesment_id' => $assesment->id,
+                    'send_date_pusat' => $assesment->send_date_pusat,
                 ]
             );
 

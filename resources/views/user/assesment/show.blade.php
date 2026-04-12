@@ -118,6 +118,15 @@
                             <div class="col-12">
                                 <div class="d-flex gap-1 justify-content-end">
                                     <a href="{{route('user.assesment.index')}}" class="btn btn-danger"> Kembali</a>
+                                    @if(count($assesment->getInvalidItemsQuestionByUnit) == 0)
+                                        <form action="{{route('user.assesment.send',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-success">Kirim</button>
+                                        </form>
+                                        @else
+                                        <button type="button" style="background-color: gray" class="btn btn-secondary" disabled>Kirim</button>
+                                        @endif
                                 </div>
                             </div>
                         </div>

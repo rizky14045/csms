@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\MarturityNoteController;
 use App\Http\Controllers\Admin\MarturitySubAreaController;
 use App\Http\Controllers\Admin\MonthlyAuditController;
 use App\Http\Controllers\Admin\QuestionAssesmentController;
+use App\Http\Controllers\Admin\SecurepediaController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\VulnerabilityController;
 use Illuminate\Support\Facades\Route;
@@ -75,6 +76,15 @@ Route::prefix('admin')->group(function () {
             Route::get('/{attribute}/edit', [AttributeController::class, 'edit'])->name('admin.attribute.edit');
             Route::patch('/{attribute}/edit', [AttributeController::class, 'update'])->name('admin.attribute.update');
             Route::delete('/{attribute}/delete', [AttributeController::class, 'destroy'])->name('admin.attribute.destroy');
+        });
+
+        Route::prefix('securepedia')->group(function () {
+            Route::get('/', [SecurepediaController::class, 'index'])->name('admin.securepedia.index');
+            Route::get('/create', [SecurepediaController::class, 'create'])->name('admin.securepedia.create');
+            Route::post('/store', [SecurepediaController::class, 'store'])->name('admin.securepedia.store');
+            Route::get('/{securepedia}/edit', [SecurepediaController::class, 'edit'])->name('admin.securepedia.edit');
+            Route::patch('/{securepedia}/edit', [SecurepediaController::class, 'update'])->name('admin.securepedia.update');
+            Route::delete('/{securepedia}/delete', [SecurepediaController::class, 'destroy'])->name('admin.securepedia.destroy');
         });
 
         Route::prefix('category-assesment')->group(function () {

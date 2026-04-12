@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\Vendor;
 use App\Services\ActivityLog\ActivityLogService;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -546,17 +547,23 @@ class UserService
                             ->filter()
                             ->toArray();
 
+            $oneMonthAgo = Carbon::now()->subMonth()->format('Y-m-d');
+
             $query = User::query()
-                    ->join('vendors', 'vendors.parent_user_id', '=', 'users.id')
-                    ->whereIn('users.id', $parent_user_ids)
-                    ->select(
-                        'users.id',
-                        'users.name', 
-                        'users.email',
-                        'vendors.id as vendor_id',
-                        'vendors.contract_number',
-                        'vendors.created_at as vendor_created_at'
-                    );
+                ->join('vendors', 'vendors.parent_user_id', '=', 'users.id')
+                ->whereIn('users.id', $parent_user_ids)
+
+                // 🔥 FILTER UTAMA
+                ->whereDate('vendors.end_date', '>=', $oneMonthAgo)
+
+                ->select(
+                    'users.id',
+                    'users.name', 
+                    'users.email',
+                    'vendors.id as vendor_id',
+                    'vendors.contract_number',
+                    'vendors.created_at as vendor_created_at'
+                );
 
             if (!empty($search)) {
                 $query->where(function ($q) use ($search) {
