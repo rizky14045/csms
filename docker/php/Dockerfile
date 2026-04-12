@@ -18,7 +18,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 # Copy semua project Laravel
-COPY . /var/www
+COPY . .
 
 # Install dependency
 RUN composer install --no-dev --optimize-autoloader
@@ -26,9 +26,13 @@ RUN composer install --no-dev --optimize-autoloader
 # Migration Database
 RUN php artisan migrate
 
+# Generate optimized autoload files
+RUN php artisan optimize
+
 # clear cache and config
 RUN php artisan config:cache 
 
 # Permission
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 storage bootstrap/cache
+    

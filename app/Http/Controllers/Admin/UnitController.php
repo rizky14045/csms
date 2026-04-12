@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use App\Models\UserProfile;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Validation\UnitValidation;
+use App\Models\City;
+use App\Models\Province;
 use App\Models\Unit;
+use App\Models\User;
+use App\Models\UserProfile;
 use App\Services\Unit\UnitService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class UnitController extends Controller
 {
@@ -35,7 +37,11 @@ class UnitController extends Controller
     }
 
     public function create(){
-        return view('admin.unit.create');
+
+        $provinces = Province::select('id','name')->get();
+
+        $data['provinces']= $provinces;
+        return view('admin.unit.create',$data);
     }
 
     public function store(Request $request){
@@ -53,6 +59,8 @@ class UnitController extends Controller
 
     public function edit(Unit $unit){
         $data['unit'] = $unit;
+        $data['provinces'] = Province::select('id','name')->get();
+        $data['cities'] = City::select('id','name')->where('province_id', $unit->province_id)->get();
         return view('admin.unit.edit',$data);
     }
 

@@ -47,6 +47,16 @@
                                 <div class="accordion-body">
 
                                     <table class="table table-bordered">
+                                        {{-- <thead class="table-light">
+											<tr>
+												<th class="text-center">No</th>
+												<th class="text-center">Sub Area</th>
+												<th class="text-center">Level</th>
+												<th class="text-center">Uraian</th>
+												<th class="text-center">Catatan Assesment (Eviden)</th>
+												<th class="text-center">File</th>
+											</tr>
+										</thead> --}}
                                         <tbody>
 
                                         @foreach ($area['sub_areas'] as $subArea)

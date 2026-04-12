@@ -86,12 +86,18 @@ class UnitService
 
     public function createUnit(array $data)
     {
-        DB::beginTransaction();
-
+        
         try {
+            DB::beginTransaction();
             $unit = Unit::create([
                 'name' => $data['name'],
                 'address' => $data['address'],
+                'unit_code' => $data['unit_code'],
+                'type' => $data['type'],
+                'latitude' => $data['latitude'],
+                'longitude' => $data['longitude'],
+                'province_id' => $data['province_id'],
+                'city_id' => $data['city_id'],
                 'created_by' => auth()->id(),
             ]);
             
@@ -105,6 +111,12 @@ class UnitService
                     'unit_id' => $unit->id,
                     'name'   => $unit->name,
                     'address' => $unit->address,
+                    'unit_code' => $unit->unit_code,
+                    'type' => $unit->type,
+                    'latitude' => $unit->latitude,
+                    'longitude' => $unit->longitude,
+                    'province_id' => $unit->province_id,
+                    'city_id' => $unit->city_id,
                 ]
             );
 
@@ -114,6 +126,7 @@ class UnitService
                 201
             );
         } catch (Exception $e) {
+            dd($e);
             DB::rollBack();
 
             $this->logService->log(
@@ -139,14 +152,20 @@ class UnitService
 
     public function updateUnit(Unit $unit, array $data)
     {
-        DB::beginTransaction();
-
+        
         try {
+            DB::beginTransaction();
             $before = $unit->toArray();
 
             $updateData = [
                 'name'       => $data['name'],
                 'address'    => $data['address'],
+                'unit_code' => $data['unit_code'],
+                'type' => $data['type'],
+                'latitude' => $data['latitude'],
+                'longitude' => $data['longitude'],
+                'province_id' => $data['province_id'],
+                'city_id' => $data['city_id'],
                 'updated_by' => auth()->id(),
             ];
 

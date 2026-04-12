@@ -32,6 +32,8 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Nama Unit</th>
+                                <th scope="col">Tipe</th>
+                                <th scope="col">Unit Kode</th>
                                 <th scope="col">Alamat</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -41,6 +43,8 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$unit->name}}</td>
+                                    <td>{{$unit->type}}</td>
+                                    <td>{{$unit->unit_code}}</td>
                                     <td>{{$unit->address}}</td>
                                     <td class="text-center">
                                         @can('edit.unit.admin')

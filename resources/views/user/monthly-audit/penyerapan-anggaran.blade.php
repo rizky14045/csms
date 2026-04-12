@@ -141,9 +141,9 @@
                                                     <td>{{ $item->kode_aktifitas }}</td>
                                                     <td>{{ $item->kode_prk }}</td>
                                                     <td>{{ $item->deskripsi_kegiatan }}</td>
-                                                    <td>{{ $item->jumlah_anggaran }}</td>
-                                                    <td>{{ $item->penyerapan_anggaran }}</td>
-                                                    <td>{{ $item->prosentase_penyerapan }}</td>
+                                                    <td>{{ number_format($item->jumlah_anggaran, 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->penyerapan_anggaran, 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->prosentase_penyerapan, 2, ',', '.') }}%</td>
                                                     <td>{{ $item->keterangan }}</td>
                                                     <td>
                                                         <a href="{{ route('user.monthly-audit.penyerapan-anggaran.edit', ['monthlyId' => $monthlyId, 'anggaranId' => $item->id]) }}"
@@ -189,9 +189,9 @@
                                                     <td>{{ $item->kode_aktifitas }}</td>
                                                     <td>{{ $item->kode_prk }}</td>
                                                     <td>{{ $item->deskripsi_kegiatan }}</td>
-                                                    <td>{{ $item->jumlah_anggaran }}</td>
-                                                    <td>{{ $item->penyerapan_anggaran }}</td>
-                                                    <td>{{ $item->prosentase_penyerapan }}</td>
+                                                    <td>{{ number_format($item->jumlah_anggaran, 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->penyerapan_anggaran, 2, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->prosentase_penyerapan, 2, ',', '.') }}%</td>
                                                     <td>{{ $item->keterangan }}</td>
                                                     <td>
                                                         <a href="{{ route('user.monthly-audit.penyerapan-anggaran.edit', ['monthlyId' => $monthlyId, 'anggaranId' => $item->id]) }}"
