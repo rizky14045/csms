@@ -35,6 +35,8 @@
                                 <th scope="col">NPWP</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">No Kontrak</th>
+                                <th scope="col">Mulai Kontrak</th>
+                                <th scope="col">Akhir Kontrak</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,6 +47,8 @@
                                     <td>{{$vendor->bujp_profile->npwp ?? ''}}</td>
                                     <td>{{$vendor->email}}</td>
                                     <td>{{$vendor->vendor->contract_number ?? ''}}</td>
+                                    <td>{{$vendor->vendor->start_date ? \Carbon\Carbon::parse($vendor->vendor->start_date)->format('d-m-Y') : ''}}</td>
+                                    <td>{{$vendor->vendor->end_date ? \Carbon\Carbon::parse($vendor->vendor->end_date)->format('d-m-Y') : ''}}</td>
                                 </tr>
                             @endforeach
                         </tbody>

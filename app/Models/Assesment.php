@@ -25,5 +25,29 @@ class Assesment extends Model
         return $this->hasOne(BujpProfile::class, 'user_id', 'created_by');
     }
 
+    public function getInvalidItemsQuestionByBujp()
+    {
+        return $this->hasMany(
+            \App\Models\SignQuestionAssesment::class,
+            'assesment_id'
+        )->where(function ($q) {
+            $q->whereNull('level')
+            ->orWhere('level', 0)
+            ->orWhereNull('attachment_file')
+            ->orWhereNull('note')
+            ->orWhere('note', '')
+            ->orWhereRaw("TRIM(note) = ''");
+        });
+    }
 
+    public function getInvalidItemsQuestionByUnit()
+    {
+        return $this->hasMany(
+            \App\Models\SignQuestionAssesment::class,
+            'assesment_id'
+        )->where(function ($q) {
+            $q->whereNull('evaluation_unit')
+            ->orWhere('evaluation_unit', 0);
+        });
+    }
 }

@@ -47,18 +47,31 @@ class AuthController extends Controller
         }
 
         if( Hash::check($request->password,$user->password) ){
-            if (
-                $user->session_id &&
-                $user->session_expired_date &&
-                now()->lessThan($user->session_expired_date)
-            ) {
-                Alert::warning(
-                    'Login Ditolak',
-                    'Akun sedang aktif di perangkat lain.'
-                );
-                return redirect()->route('login');
-            }
+
             Auth::login($user,true);
+
+            if ($user->type == 'bujp') {
+
+                $oneMonthAgo = now()->subMonth();
+                $hasValidVendor = \App\Models\Vendor::where('user_id', $user->id)
+                    ->whereDate('end_date', '>=', $oneMonthAgo)
+                    ->exists();
+
+                if (!$hasValidVendor) {
+
+                    Auth::logout();
+
+                    request()->session()->invalidate();
+                    request()->session()->regenerateToken();
+
+                    Alert::error(
+                        'Login Ditolak',
+                        'Tidak dapat login karena kontrak sudah habis.'
+                    );
+
+                    return redirect()->route('login');
+                }
+            }
 
             $user->update([
                 'session_id' => session()->getId(),

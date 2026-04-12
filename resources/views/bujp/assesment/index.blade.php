@@ -65,7 +65,7 @@
                                 <th scope="col">NPWP</th>
                                 <th scope="col">Nama Perusahaan</th>
                                 <th scope="col">Nomor Kontrak</th>
-                                <th scope="col">Tanggal</th>
+                                <th scope="col">Tahun</th>
                                 <th scope="col">Triwulan</th>
                                <th scope="col">Tanggal Kirim</th>
                                 @canany(['edit.assesment.bujp', 'send.assesment.bujp', 'delete.assesment.bujp', 'view.assesment.bujp'])
@@ -81,7 +81,7 @@
                                     <td>{{$assesment->bujp_profile->npwp}}</td>
                                     <td>{{$assesment->vendor->name}}</td>
                                     <td>{{$assesment->contract}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($assesment->date)->format('d-m-Y') }}</td>
+                                    <td>{{$assesment->year}}</td>
                                     <td>{{$assesment->triwulan}}</td>
                                     <td>{{ \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') }}</td>
                                     @canany(['edit.assesment.bujp', 'send.assesment.bujp', 'delete.assesment.bujp', 'view.assesment.bujp'])
@@ -90,14 +90,17 @@
                                         @if ($assesment->send_status == 0)
                                             @can('edit.assesment.bujp')
                                             <a href="{{route('bujp.assesment.show',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-info btn-sm">Show</a>
-                                            <a href="{{route('bujp.assesment.edit',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-warning btn-sm">Edit</a>
                                             @endcan
                                             @can('send.assesment.bujp')
+                                            @if(count($assesment->get_invalid_items_question_by_bujp) == 0)
                                             <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-success btn-sm">Kirim</button>
                                             </form>
+                                            @else
+                                            <button type="button" style="background-color: gray" class="btn btn-secondary btn-sm" disabled>Kirim</button>
+                                            @endif
                                             @endcan
                                             @can('delete.assesment.bujp')
                                             <form action="{{route('bujp.assesment.destroy',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" method="post" class="d-inline" id="delete-assesment-{{ $assesment->id }}" onsubmit="confirmSave('delete-assesment-{{ $assesment->id }}', 'Hapus assesment?')">

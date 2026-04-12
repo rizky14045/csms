@@ -45,16 +45,22 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Nama Unit</th>
-                                <th scope="col">Bulan dan Tahun</th>
+                                <th scope="col">Kode Unit</th>
+                                <th scope="col">Bulan</th>
+                                <th scope="col">Tanggal Buat</th>
+                                <th scope="col">Tanggal Kirim</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($forms as $form)       
+                            @foreach ($forms as $form)
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
-                                    <td>{{$form->unit->name ?? ''}}</td>
-                                    <td>{{$form->report_date}}</td>
+                                    <td>{{$form->detailUnit->name ?? ''}}</td>
+                                    <td>{{$form->detailUnit->unit_code ?? ''}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($form->report_date)->format('m-Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($form->created_at)->format('d-m-Y') }}</td>
+                                    <td>{{ $form->send_status == true ? \Carbon\Carbon::parse($form->send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>
                                         @if ($form->send_status == false)
                                             <a href="{{route('user.monthly-audit.form-formulir.index',['monthlyId'=>$form->id])}}" class="btn btn-primary btn-sm">Show</a>

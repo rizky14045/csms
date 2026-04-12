@@ -18,9 +18,11 @@ class CreateAssesmentsTable extends Migration
             $table->integer('unit_id')->refences('id')->on('users')->nullable();
             $table->integer('vendor_id')->refences('id')->on('vendors')->nullable();
             $table->date('date')->nullable();
+            $table->integer('year')->nullable();
             $table->integer('triwulan')->nullable();
             $table->integer('send_status')->default(0);
             $table->date('send_date')->nullable();
+            $table->date('send_date_pusat')->nullable();
             $table->timestamps();
         });
     }

@@ -7,7 +7,7 @@ class AssesmentValidation
     public static function rulesForCreate()
     {
         return [
-            'date' => ['required', 'date'],
+            'year' => ['required', 'integer', 'digits:4'],
             'triwulan' => ['required', 'integer', 'between:1,4'],
         ];
     }
@@ -15,10 +15,11 @@ class AssesmentValidation
     public static function rulesForUpdate()
     {
         return [
-            'date' => ['required', 'date'],
+            'year' => ['required', 'integer', 'digits:4'],
             'triwulan' => ['required', 'integer', 'between:1,4'],
         ];
     }
+
     public static function rulesForUpdateQuestion($questionId)
     {
         return [
@@ -37,8 +38,9 @@ class AssesmentValidation
     public static function messages($questionId = null)
     {
         $messages = [
-            'date.required' => 'Tanggal wajib diisi!',
-            'date.date' => 'Format tanggal tidak valid!',
+            'year.required' => 'Tahun wajib diisi!',
+            'year.integer' => 'Tahun harus berupa angka!',
+            'year.digits:4' => 'Format tahun tidak valid!',
 
             'triwulan.required' => 'Triwulan wajib diisi!',
             'triwulan.integer' => 'Triwulan harus berupa angka!',
