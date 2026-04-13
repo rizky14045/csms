@@ -54,7 +54,7 @@ class AssesmentController extends Controller
         }
 
         if($assesment->send_status != 1){
-            Alert::error('Gagal Dikirim', 'Assesment tidak bisa dikirim!');
+            Alert::error('Gagal Dikirim', 'Assesment tidak bisa dibuka!');
             return redirect()->route('user.assesment.index');
         }
 
@@ -120,6 +120,22 @@ class AssesmentController extends Controller
         return redirect()->route('user.assesment.index');
     }
 
+    public function revision(Assesment $assesment){
+        if($assesment->unit_id != auth()->user()->id){
+            return abort(404);
+        }
+
+        if($assesment->send_status != 1){
+            Alert::error('Gagal Dikirim', 'Assesment tidak bisa dikirim!');
+            return redirect()->route('user.assesment.index');
+        }
+
+        $this->assesmentService->revisionAssesmentByUnit($assesment);
+
+        Alert::success('Berhasil Dikirim', 'Assesment berhasil dikirim!');
+        return redirect()->route('user.assesment.index');
+    }
+
     public function updateQuestion(Request $request, SignQuestionAssesment $question){
         $validator = $this->validator($request->all(), AssesmentValidation::rulesForUpdateQuestionUnit($question->id), AssesmentValidation::messages($question->id));
         if ($validator->fails()) {
@@ -127,6 +143,18 @@ class AssesmentController extends Controller
         }
 
         $this->assesmentService->updateQuestionByUnit($request, $question);
+
+        Alert::success('Update Berhasil', 'Assesment berhasil diupdate!');
+        return redirect()->route('user.assesment.show',['assesment'=>$question->assesment_id,'signCategoryId'=>$question->sign_category_id]);
+    }
+
+    public function revisionQuestion(Request $request, SignQuestionAssesment $question){
+        $validator = $this->validator($request->all(), AssesmentValidation::rulesForRevisionQuestionUnit($question->id), AssesmentValidation::messages($question->id));
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $this->assesmentService->revisionQuestionByUnit($request, $question);
 
         Alert::success('Update Berhasil', 'Assesment berhasil diupdate!');
         return redirect()->route('user.assesment.show',['assesment'=>$question->assesment_id,'signCategoryId'=>$question->sign_category_id]);

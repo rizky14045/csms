@@ -62,7 +62,9 @@ Route::prefix('user')->group(function () {
             Route::get('/{assesment}/preview', [AssesmentController::class, 'preview'])->name('user.assesment.preview');
             Route::get('/{assesment}/report', [AssesmentController::class, 'report'])->name('user.assesment.report');
             Route::patch('/{assesment}/send', [AssesmentController::class, 'send'])->name('user.assesment.send');
+            Route::patch('/{assesment}/revision', [AssesmentController::class, 'revision'])->name('user.assesment.revision');
             Route::patch('/update-question/{question}', [AssesmentController::class, 'updateQuestion'])->name('user.assesment.updateQuestion');
+            Route::patch('/revision-question/{question}', [AssesmentController::class, 'revisionQuestion'])->name('user.assesment.revisionQuestion');
         });
 
         Route::prefix('profile')->group(function () {

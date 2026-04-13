@@ -54,6 +54,7 @@
                                 <th scope="col">NPWP</th>
                                 <th scope="col">Nama Perusahaan</th>
                                 <th scope="col">Nomor Kontrak</th>
+                                <th scope="col">Tahun</th>
                                 <th scope="col">Triwulan</th>
                                 <th scope="col">Tanggal Buat</th>
                                <th scope="col">Tanggal Kirim BUJP</th>

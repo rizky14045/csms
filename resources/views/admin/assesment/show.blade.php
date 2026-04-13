@@ -50,6 +50,7 @@
                                             <th scope="col">Note</th>
                                             <th scope="col">File</th>
                                             <th scope="col">Penilaian Unit</th>
+                                            <th scope="col">Note Reivisi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -85,6 +86,9 @@
                                                 </td>
                                                 <td>
                                                     {{$question->evaluation_unit}}
+                                                </td>
+                                                <td>
+                                                    {{$question->note_revision}}
                                                 </td>
                                             </tr>
                                             @endforeach

@@ -429,6 +429,54 @@ class AssesmentService
         }
     }
 
+    public function revisionAssesmentByUnit(Assesment $assesment)
+    {
+        DB::beginTransaction();
+
+        try {
+            $assesment->update([
+                'send_status' => 3,
+                'updated_by' => auth()->id(),
+            ]);
+
+            DB::commit();
+
+            $this->logService->log(
+                'assesment.revision.by_unit',
+                'Revision assesment by unit success',
+                200,
+                [
+                    'assesment_id' => $assesment->id,
+                ]
+            );
+
+            return JsonResponse::success(
+                $assesment,
+                'Assesment revision sent successfully',
+                200
+            );
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            $this->logService->log(
+                'assesment.revision.by_unit',
+                'Failed to send revision assesment by unit',
+                500,
+                [
+                    'assesment_id' => $assesment->id,
+                    'error' => $e->getMessage(),
+                ]
+            );
+
+            return JsonResponse::error(
+                $e->getMessage(),
+                'Failed to send revision assesment by unit',
+                500
+            );
+        }
+    }
+
     public function updateQuestion(Request $request, SignQuestionAssesment $signQuestion)
     {
         try {
@@ -556,6 +604,67 @@ class AssesmentService
 
             $this->logService->log(
                 'assesment.update_question_by_unit',
+                'Failed to update question',
+                500,
+                [
+                    'question_id' => $signQuestion->id,
+                    'error' => $th->getMessage(),
+                ]
+            );
+
+            return JsonResponse::error(
+                $th->getMessage(),
+                'Gagal memperbarui data',
+                500
+            );
+        }
+    }
+
+    public function revisionQuestionByUnit(Request $request, SignQuestionAssesment $signQuestion)
+    {
+        try {
+            DB::beginTransaction();
+
+            $before = $signQuestion->only([
+                'note_revision',
+            ]);
+
+
+            $signQuestion->note_revision = $request->input('note_revision_' . $signQuestion->id);
+            $signQuestion->save();
+
+
+            $after = $signQuestion->only([
+                'note_revision',
+            ]);
+
+            DB::commit();
+
+            $this->logService->log(
+                'assesment.revision_question_by_unit',
+                'Revision question success',
+                200,
+                [
+                    'question_id' => $signQuestion->id,
+                    'assesment_id' => $signQuestion->assesment_id,
+                    'sign_category_id' => $signQuestion->sign_category_id,
+                    'before' => $before,
+                    'after' => $after,
+                ]
+            );
+
+            return JsonResponse::success(
+                $signQuestion,
+                'Data berhasil diperbarui',
+                200
+            );
+
+        } catch (\Throwable $th) {
+
+            DB::rollback();
+
+            $this->logService->log(
+                'assesment.revision_question_by_unit',
                 'Failed to update question',
                 500,
                 [

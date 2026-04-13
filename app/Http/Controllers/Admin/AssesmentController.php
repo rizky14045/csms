@@ -36,7 +36,7 @@ class AssesmentController extends Controller
         return view('admin.assesment.edit');
     }
     public function show(Assesment $assesment){
-        if($assesment->send_status < 2){
+        if($assesment->send_status != 2){
             abort(404);
         }
         $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesment->id)->get();
