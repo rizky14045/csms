@@ -23,6 +23,7 @@ class CreateSignQuestionAssesmentsTable extends Migration
             $table->integer('level')->default(0);
             $table->string('attachment_file')->nullable();
             $table->text('note')->nullable();
+            $table->text('note_revision')->nullable();
             $table->timestamps();
         });
     }

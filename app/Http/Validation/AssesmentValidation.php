@@ -34,6 +34,13 @@ class AssesmentValidation
             'evaluation_unit_'.$questionId => 'required',
         ];
     }
+
+    public static function rulesForRevisionQuestionUnit($questionId)
+    {
+        return [
+            'note_revision_'.$questionId => 'required',
+        ];
+    }
     
     public static function messages($questionId = null)
     {
@@ -52,6 +59,7 @@ class AssesmentValidation
             $messages['attachment_file_'.$questionId.'.mimes'] = 'File harus berupa PDF!';
             $messages['attachment_file_'.$questionId.'.max'] = 'Ukuran file maksimal 2MB!';
             $messages['evaluation_unit_'.$questionId.'.required'] = 'Level evaluasi unit wajib diisi!';
+            $messages['note_revision_'.$questionId.'.required'] = 'Catatan revisi wajib diisi!';
         }
 
         return $messages;
