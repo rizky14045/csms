@@ -111,6 +111,14 @@
                     </a>
                 </li>
                 @endcan
+                @can('view.fasum.dashboard')
+                <li>
+                    <a href="{{route('fasum.dashboard')}}" class="tp-link">
+                        <i data-feather="circle"></i>
+                        <span> Fasilitas Umum </span>
+                    </a>
+                </li>
+                @endcan
                 @can('view.assesment.bujp')
                 <li>
                     <a href="{{ route('bujp.assesment.index') }}@if(request('unit'))?unit={{ request('unit') }}@endif" class="tp-link">
