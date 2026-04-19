@@ -95,9 +95,10 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{route('user.monthly-audit.penyerapan-anggaran.index',['monthlyId' => $monthlyId])}}">
+                            <a class="nav-link"
+                                href="{{ route('user.monthly-audit.penyerapan-anggaran.index', ['monthlyId' => $monthlyId]) }}">
                                 <span class="d-block d-sm-none"><i class="mdi mdi-email-outline"></i></span>
-                                <span class="d-none d-sm-block">Penyerapan Anggaran</span>    
+                                <span class="d-none d-sm-block">Penyerapan Anggaran</span>
                             </a>
                         </li>
                     </ul>
@@ -274,7 +275,7 @@
                                                         </tr>
                                                     </thead>
                                                     @php
-                                      
+
                                                         $komandan = $securities->where('position', 'Komandan')->count();
                                                         $anggota = $securities->where('position', 'Anggota')->count();
                                                         $chief = $securities->where('position', 'Chief')->count();
@@ -288,21 +289,20 @@
                                                         </tr>
                                                         <tr>
                                                             <td>3.2 Anggota Satuan</td>
-                                                            <td>{{$anggota}} Orang</td>
+                                                            <td>{{ $anggota }} Orang</td>
                                                         </tr>
                                                         <tr>
                                                             <td>3.3 Chief Satpam</td>
-                                                            <td>{{$chief}} Orang</td>
+                                                            <td>{{ $chief }} Orang</td>
                                                         </tr>
                                                         <tr class="fw-bold">
                                                             <td>Jumlah</td>
-                                                            <td>{{$total}} Orang</td>
+                                                            <td>{{ $total }} Orang</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
 
-                                            <!-- Section 4 -->
                                             <div class="mb-3">
                                                 <h6 class="fw-bold">4. JASA PENGAMANAN</h6>
                                                 <table class="table table-bordered text-center align-middle">
@@ -314,16 +314,16 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td>4.1 POLRI</td>
-                                                            <td>0 Orang</td>
+                                                            <td>4.1 Polri</td>
+                                                            <td>{{ number_format($securityPolri) }} Orang</td>
                                                         </tr>
                                                         <tr>
                                                             <td>4.2 TNI</td>
-                                                            <td>0 Orang</td>
+                                                            <td>{{ number_format($securityTNI) }} Orang</td>
                                                         </tr>
                                                         <tr class="fw-bold">
                                                             <td>Jumlah</td>
-                                                            <td>0 Orang</td>
+                                                            <td>{{ number_format($securityExternal) }} Orang</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -342,15 +342,15 @@
                                                     <tbody>
                                                         <tr>
                                                             <td>5.1 Tenaga Ahli</td>
-                                                            <td>0 Orang</td>
+                                                            <td>{{ number_format($foreignAhli) }} Orang</td>
                                                         </tr>
                                                         <tr>
                                                             <td>5.2 Staff</td>
-                                                            <td>0 Orang</td>
+                                                            <td>{{ number_format($foreignStaff) }} Orang</td>
                                                         </tr>
                                                         <tr class="fw-bold">
                                                             <td>Jumlah</td>
-                                                            <td>0 Orang</td>
+                                                            <td>{{ number_format($foreign) }} Orang</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -393,8 +393,8 @@
 
                                             <!-- Final Total -->
                                             <div class="fw-bold">
-                                                <p>JUMLAH TOTAL (1+2+3+4): <span>0 Orang</span> (Pria: <span>0 Orang</span>)
-                                                    (Wanita: <span>0 Orang</span>)</p>
+                                                <p>JUMLAH TOTAL (1+2+3+4): <span>{{ $totalAll }} Orang</span> (Pria: <span>{{ $totalAllMan }} Orang</span>)
+                                                    (Wanita: <span>{{ $totalAllWoman }} Orang</span>)</p>
                                             </div>
                                 </div>
 
