@@ -34,7 +34,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header bg-light" id="heading{{$category->id}}">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$category->id}}" aria-expanded="false" aria-controls="collapse{{$category->id}}">
-                                {{$category->category_name}}
+                                {{$category->category_name}} @if($category->invalid_questions_count > 0) <span style="padding: 4px; background-color:red;color:white; border-radius: 4px;margin-left:8px">{{ $category->invalid_questions_count }} data belum diisi</span> @endif
                             </button>
                         </h2>
                         <div id="collapse{{$category->id}}" class="accordion-collapse collapse  {{request('signCategoryId') == $category->id ? 'show' :''}}" aria-labelledby="heading{{$category->id}}" data-bs-parent="#formAccordion">
@@ -50,8 +50,8 @@
                                             <th scope="col">Note</th>
                                             <th scope="col">File</th>
                                             <th scope="col">Penilaian Unit</th>
-                                            <th scope="col">Action</th>
                                             <th scope="col">Revisi</th>
+                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -102,18 +102,13 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <button type="submit" class="btn btn-success btn-sm">Update</button>
-                                                    </td>
-                                                </form>
-                                                <form action="{{ route('user.assesment.revisionQuestion', ['question' => $question->id]) }}" method="POST" id="revision-question-{{ $question->id }}" onsubmit="confirmSave('revision-question-{{ $question->id }}', 'Data akan disimpan?')">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <td>
                                                         <textarea name="note_revision_{{ $question->id }}" id="note_revision" cols="30" rows="10">{{ $question->note_revision }}</textarea>
                                                         @if ($errors->has('note_revision_'.$question->id))
                                                             <div class="text-danger">{{ $errors->first('evaluation_unit_'.$question->id) }}</div>
                                                         @endif
-                                                        <button type="submit" class="btn btn-danger btn-sm">Revisi</button>
+                                                    </td>
+                                                    <td>
+                                                        <button type="submit" class="btn btn-success btn-sm">Update</button>
                                                     </td>
                                                 </form>
                                             </tr>
@@ -133,7 +128,7 @@
                                     <form action="{{route('user.assesment.revision',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="revision-assesment-{{ $assesment->id }}" onsubmit="confirmSave('revision-assesment-{{ $assesment->id }}', 'Revisi assesment?')">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-danger">Revisi</button>
+                                        <button type="submit" class="btn btn-warning">Revisi</button>
                                     </form>
                                     @if(count($assesment->getInvalidItemsQuestionByUnit) == 0)
                                         <form action="{{route('user.assesment.send',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">

@@ -64,7 +64,7 @@ Route::prefix('user')->group(function () {
             Route::patch('/{assesment}/send', [AssesmentController::class, 'send'])->name('user.assesment.send');
             Route::patch('/{assesment}/revision', [AssesmentController::class, 'revision'])->name('user.assesment.revision');
             Route::patch('/update-question/{question}', [AssesmentController::class, 'updateQuestion'])->name('user.assesment.updateQuestion');
-            Route::patch('/revision-question/{question}', [AssesmentController::class, 'revisionQuestion'])->name('user.assesment.revisionQuestion');
+            // Route::patch('/revision-question/{question}', [AssesmentController::class, 'revisionQuestion'])->name('user.assesment.revisionQuestion');
         });
 
         Route::prefix('profile')->group(function () {
@@ -152,13 +152,13 @@ Route::prefix('user')->group(function () {
             Route::get('/', [MarturityController::class, 'index'])->name('user.marturity.index');
             Route::get('/create', [MarturityController::class, 'create'])->name('user.marturity.create');
             Route::post('/store', [MarturityController::class, 'store'])->name('user.marturity.store');
-            Route::get('/edit/{marturity}', [MarturityController::class, 'edit'])->name('user.marturity.edit');
-            Route::patch('/edit/{marturity}', [MarturityController::class, 'update'])->name('user.marturity.update');
+            // Route::get('/edit/{marturity}', [MarturityController::class, 'edit'])->name('user.marturity.edit');
+            // Route::patch('/edit/{marturity}', [MarturityController::class, 'update'])->name('user.marturity.update');
             Route::get('/show/{marturity}', [MarturityController::class, 'show'])->name('user.marturity.show');
             Route::get('/preview/{marturity}', [MarturityController::class, 'preview'])->name('user.marturity.preview');
             Route::patch('/send/{marturity}', [MarturityController::class, 'send'])->name('user.marturity.send');
             Route::patch('{marturity}/upload-note/{areaId}/{note}', [MarturityController::class, 'uploadNote'])->name('user.marturity.uploadNote');
-            Route::delete('/destroy/{marturity}', [MarturityController::class, 'destroy'])->name('user.marturity.destroy');
+            // Route::delete('/destroy/{marturity}', [MarturityController::class, 'destroy'])->name('user.marturity.destroy');
         });
 
         
@@ -244,13 +244,13 @@ Route::prefix('user')->group(function () {
             Route::get('/', [KeamananController::class, 'index'])->name('user.keamanan.index');
             Route::get('/create', [KeamananController::class, 'create'])->name('user.keamanan.create');
             Route::post('/store', [KeamananController::class, 'store'])->name('user.keamanan.store');
-            Route::get('/{kpi}/edit', [KeamananController::class, 'edit'])->name('user.keamanan.edit');
-            Route::patch('/{kpi}/update', [KeamananController::class, 'update'])->name('user.keamanan.update');
+            // Route::get('/{kpi}/edit', [KeamananController::class, 'edit'])->name('user.keamanan.edit');
+            // Route::patch('/{kpi}/update', [KeamananController::class, 'update'])->name('user.keamanan.update');
             Route::get('/{kpi}/show', [KeamananController::class, 'show'])->name('user.keamanan.show');
             Route::get('/{kpi}/preview', [KeamananController::class, 'preview'])->name('user.keamanan.preview');
             Route::patch('/{kpi}/send', [KeamananController::class, 'send'])->name('user.keamanan.send');
             Route::patch('{kpi}/upload-note/{areaId}/{note}', [KeamananController::class, 'uploadNote'])->name('user.keamanan.uploadNote');
-            Route::delete('/{kpi}/destroy', [KeamananController::class, 'destroy'])->name('user.keamanan.destroy');
+            // Route::delete('/{kpi}/destroy', [KeamananController::class, 'destroy'])->name('user.keamanan.destroy');
         });
     });
 

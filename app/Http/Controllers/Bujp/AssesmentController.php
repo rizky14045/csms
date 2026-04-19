@@ -13,6 +13,7 @@ use App\Services\User\UserService;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Validation\AssesmentValidation;
+use App\Models\Vendor;
 use Illuminate\Support\Facades\Crypt;
 
 class AssesmentController extends Controller
@@ -44,16 +45,43 @@ class AssesmentController extends Controller
         }
 
         $unitId = Crypt::decryptString($request->query('unit'));
+        $checkVendor = Vendor::where('id', $unitId)->first();
+
+        $canEdit = true;
+
+        if ($checkVendor && $checkVendor->end_date) {
+
+            $endDate = \Carbon\Carbon::parse($checkVendor->end_date);
+            $limitDate = $endDate->copy()->addMonth();
+
+            if (now()->gt($limitDate)) {
+                $canEdit = false;
+            }
+        }
 
         $results = $this->userService->getAllUnitByVendorID(0, false, auth()->user()->id);
         $data['units'] = getData($results);
         $result = $this->assesmentService->getAllAssesment(10, true, $request, ['vendor', 'bujpProfile', 'getInvalidItemsQuestionByBujp']);
         $data['assesments'] = getPaginate($result);
+        $data['canEdit'] = $canEdit;
         return view('bujp.assesment.index',$data);
 
     }
 
     public function create(Request $request){
+        $unitId = Crypt::decryptString($request->query('unit'));
+        $checkVendor = Vendor::where('id', $unitId)->first();
+
+        if ($checkVendor && $checkVendor->end_date) {
+
+            $endDate = \Carbon\Carbon::parse($checkVendor->end_date);
+            $limitDate = $endDate->copy()->addMonth();
+
+            if (now()->gt($limitDate)) {
+                abort(403);
+            }
+        }
+
         $validateVendor = $this->userService->validateVendorAccess($request->query('unit'));
         if (!$validateVendor) {
             abort(404);
@@ -65,6 +93,19 @@ class AssesmentController extends Controller
     }
 
     public function store(Request $request){
+        $unitId = Crypt::decryptString($request->query('unit'));
+        $checkVendor = Vendor::where('id', $unitId)->first();
+
+        if ($checkVendor && $checkVendor->end_date) {
+
+            $endDate = \Carbon\Carbon::parse($checkVendor->end_date);
+            $limitDate = $endDate->copy()->addMonth();
+
+            if (now()->gt($limitDate)) {
+                abort(403);
+            }
+        }
+
         $validateVendor = $this->userService->validateVendorAccess($request->query('unit'));
         if (!$validateVendor) {
             abort(404);
@@ -122,6 +163,7 @@ class AssesmentController extends Controller
         // ===============================
 
         // Ambil triwulan terakhir di tahun tersebut
+        $startTriwulan = $this->getTriwulanFromDate($checkVendor->start_date);
         $lastTriwulan = Assesment::where('year', $year)
             ->where('created_by', $userId)
             ->orderBy('triwulan', 'desc')
@@ -137,10 +179,11 @@ class AssesmentController extends Controller
                 ])->withInput();
             }
         } else {
-            if ($triwulan != 1) {
-                Alert::error('Gagal', 'Harus mulai dari triwulan 1!');
+            // 🔥 START DARI TRIWULAN BERDASARKAN KONTRAK
+            if ($triwulan != $startTriwulan) {
+                Alert::error('Gagal', 'Harus mulai dari triwulan sesuai kontrak!');
                 return back()->withErrors([
-                    'triwulan' => 'Harus mulai dari triwulan 1'
+                    'triwulan' => "Harus mulai dari triwulan {$startTriwulan}"
                 ])->withInput();
             }
         }
@@ -153,6 +196,19 @@ class AssesmentController extends Controller
 
 
     public function edit(Request $request, Assesment $assesment){
+        $unitId = Crypt::decryptString($request->query('unit'));
+        $checkVendor = Vendor::where('id', $unitId)->first();
+
+        if ($checkVendor && $checkVendor->end_date) {
+
+            $endDate = \Carbon\Carbon::parse($checkVendor->end_date);
+            $limitDate = $endDate->copy()->addMonth();
+
+            if (now()->gt($limitDate)) {
+                abort(403);
+            }
+        }
+
         return redirect()->back();
         $validateVendor = $this->userService->validateVendorAccess($request->query('unit'));
         if (!$validateVendor) {
@@ -176,6 +232,19 @@ class AssesmentController extends Controller
     }
     
     public function update(Request $request, Assesment $assesment){
+        $unitId = Crypt::decryptString($request->query('unit'));
+        $checkVendor = Vendor::where('id', $unitId)->first();
+
+        if ($checkVendor && $checkVendor->end_date) {
+
+            $endDate = \Carbon\Carbon::parse($checkVendor->end_date);
+            $limitDate = $endDate->copy()->addMonth();
+
+            if (now()->gt($limitDate)) {
+                abort(403);
+            }
+        }
+
         return redirect()->back();
          $validateVendor = $this->userService->validateVendorAccess($request->query('unit'));
         if (!$validateVendor) {
@@ -206,6 +275,19 @@ class AssesmentController extends Controller
     }
 
     public function destroy(Request $request, Assesment $assesment){
+        $unitId = Crypt::decryptString($request->query('unit'));
+        $checkVendor = Vendor::where('id', $unitId)->first();
+
+        if ($checkVendor && $checkVendor->end_date) {
+
+            $endDate = \Carbon\Carbon::parse($checkVendor->end_date);
+            $limitDate = $endDate->copy()->addMonth();
+
+            if (now()->gt($limitDate)) {
+                abort(403);
+            }
+        }
+
         $validateVendor = $this->userService->validateVendorAccess($request->query('unit'));
         if (!$validateVendor) {
             abort(404);
@@ -271,7 +353,7 @@ class AssesmentController extends Controller
             abort(404);
         }
 
-        if($assesment->send_status != 0){
+        if($assesment->send_status != 0 && $assesment->send_status != 3){
             Alert::warning('Warning', 'Assesment sudah dikirm!');
             return redirect()->route('bujp.assesment.index');
         }
@@ -280,7 +362,21 @@ class AssesmentController extends Controller
             abort(404);
         }
 
-        $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesment->id)->get();
+        $data['categories'] = SignCategoryAssesment::with([
+                'questions',
+                'questions.levels'
+            ])
+            ->where('assesment_id', $assesment->id)
+            ->withCount([
+                'questions as invalid_questions_count' => function ($q) {
+                    $q->where(function ($sub) {
+                        $sub->whereNull('level')
+                            ->orWhere('level', 0)
+                            ->orWhereNull('attachment_file');
+                    });
+                }
+            ])
+            ->get();
         $assesment->load('getInvalidItemsQuestionByBujp');
         $data['assesment'] = $assesment;
         return view('bujp.assesment.show',$data);
@@ -338,5 +434,15 @@ class AssesmentController extends Controller
             
         Alert::success('Update Berhasil', 'Assesment berhasil diupdate!');
         return redirect()->route('bujp.assesment.show',['assesment'=>$signQuestion->assesment_id,'signCategoryId'=>$signQuestion->sign_category_id,'unit' => $request->query('unit')]);
+    }
+    
+    public function getTriwulanFromDate($date)
+    {
+        $month = \Carbon\Carbon::parse($date)->month;
+
+        if ($month >= 1 && $month <= 3) return 1;
+        if ($month >= 4 && $month <= 6) return 2;
+        if ($month >= 7 && $month <= 9) return 3;
+        return 4;
     }
 }

@@ -109,8 +109,8 @@ class MarturityService
 
             $marturity = Marturity::create([
                 'unit_id'   => $userId,
-                'date'      => $data['date'],
-                'triwulan'  => $data['triwulan'],
+                'year'  => $data['year'],
+                'semester'  => $data['semester'],
                 'created_by'=> $userId,
             ]);
 
@@ -176,8 +176,8 @@ class MarturityService
                 200,
                 [
                     'marturity_id' => $marturity->id,
-                    'date' => $marturity->date,
-                    'triwulan' => $marturity->triwulan,
+                    'year' => $marturity->year,
+                    'semester' => $marturity->semester,
                 ]
             );
 
@@ -217,8 +217,8 @@ class MarturityService
             $before = $marturity->toArray();
 
             $updateData = [
-                'date'       => $data['date'],
-                'triwulan'   => $data['triwulan'],
+                'year'  => $data['year'],
+                'semester'  => $data['semester'],
                 'updated_by' => auth()->id(),
             ];
 

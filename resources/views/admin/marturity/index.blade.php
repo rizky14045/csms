@@ -46,7 +46,8 @@
                                 <th scope="col">No</th>
                                 <th scope="col">Nama Unit</th>
                                 <th scope="col">Tanggal Kirim</th>
-                                <th scope="col">Triwulan</th>
+                                <th scope="col">Tahun</th>
+                                <th scope="col">Semester</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -57,7 +58,8 @@
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$marturity->unit->name}}</td>
                                     <td>{{ \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') ?? "-" }}</td>
-                                    <td>{{$marturity->triwulan}}</td>
+                                    <td>{{$marturity->year}}</td>
+                                    <td>{{$marturity->semester}}</td>
                                     <td>
                                         <a href="{{route('admin.marturity.show',['marturity'=>$marturity->id])}}" class="btn btn-success btn-sm">show</a>
                                     </td>

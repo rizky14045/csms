@@ -25,105 +25,69 @@ class AuthController extends Controller
         return view('auth.login');
     }
     
-    public function login(Request $request){
+    public function login(Request $request)
+    {
+        $validator = $this->validator(
+            $request->all(),
+            AuthValidation::rulesForLogin(),
+            AuthValidation::messages()
+        );
 
-        // Validation rules
-        $validator = $this->validator($request->all(), AuthValidation::rulesForLogin(), AuthValidation::messages());
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $user = User::where('email', $request->email)->first();
 
-        if(!$user){
-            Alert::error('Login gagal','Email atau password salah!!');
+        if (!$user) {
+            Alert::error('Login gagal', 'Email atau password salah!!');
             return redirect()->route('login');
         }
-        if ($user->locked_until && now()->lessThan($user->locked_until)) {
 
-            $diff = number_format(now()->diffInMinutes($user->locked_until));
+        if ($user->locked_until && now()->lessThan($user->locked_until)) {
+            $diff = now()->diffInMinutes($user->locked_until);
             Alert::warning('Warning', "Akun dikunci. Coba lagi dalam {$diff} menit.");
             return redirect()->back();
         }
 
-        if( Hash::check($request->password,$user->password) ){
+        if (!Hash::check($request->password, $user->password)) {
 
-            Auth::login($user,true);
-
-            if ($user->type == 'bujp') {
-
-                $oneMonthAgo = now()->subMonth();
-                $hasValidVendor = \App\Models\Vendor::where('user_id', $user->id)
-                    ->whereDate('end_date', '>=', $oneMonthAgo)
-                    ->exists();
-
-                if (!$hasValidVendor) {
-
-                    Auth::logout();
-
-                    request()->session()->invalidate();
-                    request()->session()->regenerateToken();
-
-                    Alert::error(
-                        'Login Ditolak',
-                        'Tidak dapat login karena kontrak sudah habis.'
-                    );
-
-                    return redirect()->route('login');
-                }
-            }
-
-            $user->update([
-                'session_id' => session()->getId(),
-                'session_expired_date' => now()->addMinutes(config('session.lifetime')),
-                'access_failed_count' => 0,
-                'locked_until' => null,
-            ]);
-            
-            Alert::success('Login Berhasil', 'User berhasil login!');
-            if($user->type == 'admin'){
-                return redirect()->route('dashboard');
-            }elseif($user->type == 'user'){
-                return redirect()->route('dashboard');
-            }elseif($user->type == 'bujp'){
-                return redirect()->route('dashboard');
-            }elseif($user->type == 'auditor'){
-                return redirect()->route('dashboard');
-            }
-
-        }else{
-            $user->access_failed_count++;
-            $user->save();
+            $user->increment('access_failed_count');
 
             if ($user->access_failed_count >= 3) {
-                $user->locked_until = now()->addMinutes(5);
-                $user->access_failed_count = 0; // Reset counter after locking
-                $user->save();
+                $user->update([
+                    'locked_until' => now()->addMinutes(5),
+                    'access_failed_count' => 0,
+                ]);
 
-                Alert::warning('Akun Dikunci','Karena kesalahan input password beberapa kali, akun dikunci selama 5 menit!.');
+                Alert::warning('Akun Dikunci', 'Akun dikunci selama 5 menit.');
                 return redirect()->route('login');
             }
-            
-            Alert::error('Login gagal','Email atau password salah!!');
-            return redirect()->route('login')->withInput();
 
+            Alert::error('Login gagal', 'Email atau password salah!!');
+            return redirect()->route('login')->withInput();
         }
+
+        Auth::login($user, true);
+
+        $request->session()->regenerate();
+
+        $user->update([
+            'access_failed_count' => 0,
+            'locked_until' => null,
+        ]);
+
+        Alert::success('Login Berhasil', 'User berhasil login!');
+
+        return redirect()->route('dashboard');
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
+        Auth::logout();
 
-        if (Auth::check()) {
-            $user = Auth::user();
-
-            $user->update([
-                'session_id' => null,
-                'session_expired_date' => null,
-            ]);
-
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-        }
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         Alert::success('Logout Berhasil', 'User berhasil logout!');
         return redirect()->route('login');

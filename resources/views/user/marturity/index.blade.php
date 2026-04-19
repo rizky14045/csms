@@ -61,8 +61,8 @@
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">No</th>
-                                <th scope="col">Tanggal</th>
-                                <th scope="col">Triwulan</th>
+                                <th scope="col">Tahun</th>
+                                <th scope="col">Semester</th>
                                 <th scope="col">Tanggal Kirim</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -72,9 +72,9 @@
                                 
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($marturity->date)->format('d-m-Y') }}</td>
-                                    <td>{{$marturity->triwulan}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') }}</td>
+                                    <td>{{ $marturity->year }}</td>
+                                    <td>{{$marturity->semester}}</td>
+                                    <td>{{ $marturity->send_date ? \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') : "-" }}</td>
                                     <td>
                                         @if ($marturity->send_status == false)
                                             @can('view.marturity.unit')
@@ -85,16 +85,6 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-success btn-sm">Kirim</button>
-                                            </form>
-                                            @endcan
-                                            @can('edit.marturity.unit')
-                                            <a href="{{route('user.marturity.edit',['marturity'=>$marturity->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                            @endcan
-                                            @can('delete.marturity.unit')
-                                            <form action="{{route('user.marturity.destroy',['marturity'=>$marturity->id])}}" method="post" class="d-inline" id="delete-marturity-{{ $marturity->id }}" onsubmit="confirmSave('delete-marturity-{{ $marturity->id }}', 'Data marturity akan dihapus')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                             </form>
                                             @endcan
                                         @else

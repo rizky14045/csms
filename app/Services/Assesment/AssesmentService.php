@@ -50,8 +50,7 @@ class AssesmentService
 
             if(null !== $request->query('unit')){
                 $vendorId = Crypt::decryptString($request->query('unit'));
-                $vendor = Vendor::find($vendorId);
-                $query = Assesment::where('unit_id', $vendor->parent_user_id);
+                $query = Assesment::where('vendor_id', $vendorId);
             } else {
                 $query = Assesment::query();
             }
@@ -566,15 +565,23 @@ class AssesmentService
 
             $before = $signQuestion->only([
                 'evaluation_unit',
+                'note_revision',
             ]);
 
 
             $signQuestion->evaluation_unit = $request->input('evaluation_unit_' . $signQuestion->id);
+            $note = $request->input('note_revision_' . $signQuestion->id);
+
+            if(!is_null($note)){
+                $signQuestion->note_revision = $note;
+            }
+            
             $signQuestion->save();
 
 
             $after = $signQuestion->only([
                 'evaluation_unit',
+                'note_revision',
             ]);
 
             DB::commit();
