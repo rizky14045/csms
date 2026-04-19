@@ -262,6 +262,11 @@
                                 <a href="{{route('user.security-program.index')}}" class="tp-link">Program Keamanan</a>
                             </li>
                             @endcan
+                            {{-- @can('view.fasum.unit') --}}
+                            <li>
+                                <a href="{{route('user.fasum.index')}}" class="tp-link">Fasilitas Umum</a>
+                            </li>
+                            {{-- @endcan --}}
                         </ul>
                     </div>
                 </li>
