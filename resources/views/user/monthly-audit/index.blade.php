@@ -24,14 +24,19 @@
                 <div class="d-flex justify-content-between w-100">
                     <div class="find-data col-md-6">
                         <label for="" class="form-label">Cari Data</label>
-                        <div class="d-flex gap-3">
-                            <div class="mb-3 col-md-3">
-                                <input type="date" class="form-control d-inline" id="exampleFormControlInput1">
+                        <form action="" method="GET">
+                            <div class="d-flex gap-3">
+                                <div class="mb-3 col-md-3">
+                                    <input type="month" class="form-control d-inline" id="month" name="month" value="{{ $request['month'] ?? '' }}">
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <input type="text" class="form-control d-inline" id="unit_code" placeholder="Kode Unit" name="unit_code" value="{{ $request['unit_code'] ?? '' }}">
+                                </div>
+                                <div class="button-search">
+                                    <button type="submit" class="btn btn-primary d-inline">Cari</button>
+                                </div>
                             </div>
-                            <div class="button-search">
-                                <button type="button" class="btn btn-primary d-inline">Cari</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                     <div class="button-add col-md-12">
                         <div class="d-flex justify-content-end pe-3 pt-3 col-md-6">

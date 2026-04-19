@@ -34,9 +34,41 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class MonthlyAuditController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         $userId = Auth::user()->id;
-        $data['forms'] = MonthlyReport::where('user_id',$userId)->with('detailUnit')->latest()->paginate(25);
+
+        $query = MonthlyReport::query();
+
+        $query->where('user_id', $userId);
+
+        // ===============================
+        // FILTER DEFAULT
+        // ===============================
+        $query->where('send_status', true);
+
+        if ($request->month) {
+            $query->where('report_date', $request->month);
+        }
+
+        // ===============================
+        // 🔥 FILTER UNIT CODE (RELASI)
+        // ===============================
+        if ($request->unit_code) {
+            $query->whereHas('detailUnit', function ($q) use ($request) {
+                $q->where('unit_code', 'like', '%' . $request->unit_code . '%');
+            });
+        }
+
+        // ===============================
+        // RESULT
+        // ===============================
+        $data['forms'] = $query
+            ->with('detailUnit')
+            ->latest()
+            ->paginate(25);
+
+        $data['request'] = $request->all();
+
         return view('user.monthly-audit.index',$data);
     }
 

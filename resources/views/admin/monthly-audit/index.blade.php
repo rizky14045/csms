@@ -24,14 +24,19 @@
                 <div class="d-flex justify-content-between w-100">
                     <div class="find-data col-md-6">
                         <label for="" class="form-label">Cari Data</label>
-                        <div class="d-flex gap-3">
-                            <div class="mb-3 col-md-3">
-                                <input type="date" class="form-control d-inline" id="exampleFormControlInput1">
+                        <form action="" method="GET">
+                            <div class="d-flex gap-3">
+                                <div class="mb-3 col-md-3">
+                                    <input type="month" class="form-control d-inline" id="month" name="month" value="{{ $request['month'] ?? '' }}">
+                                </div>
+                                <div class="mb-3 col-md-3">
+                                    <input type="text" class="form-control d-inline" id="unit_code" placeholder="Kode Unit" name="unit_code" value="{{ $request['unit_code'] ?? '' }}">
+                                </div>
+                                <div class="button-search">
+                                    <button type="submit" class="btn btn-primary d-inline">Cari</button>
+                                </div>
                             </div>
-                            <div class="button-search">
-                                <button type="button" class="btn btn-primary d-inline">Cari</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -52,7 +57,7 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$form->unit->name ?? ''}}</td>
-                                    <td>{{$form->unit->unit_code ?? ''}}</td>
+                                    <td>{{$form->detailUnit->unit_code ?? ''}}</td>
                                     <td>{{ \Carbon\Carbon::parse($form->report_date)->format('m-Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($form->created_at)->format('d-m-Y') }}</td>
                                     <td>{{ $form->send_status == true ? \Carbon\Carbon::parse($form->send_date)->format('d-m-Y') : '-' }}</td>

@@ -34,7 +34,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header bg-light" id="heading{{$category->id}}">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$category->id}}" aria-expanded="false" aria-controls="collapse{{$category->id}}">
-                                {{$category->category_name}}
+                                {{$category->category_name}} @if($category->invalid_questions_count > 0) <span style="padding: 4px; background-color:red;color:white; border-radius: 4px;margin-left:8px">{{ $category->invalid_questions_count }} data belum diisi</span> @endif
                             </button>
                         </h2>
                         <div id="collapse{{$category->id}}" class="accordion-collapse collapse {{request('signCategoryId') == $category->id ? 'show' :''}}" aria-labelledby="heading{{$category->id}}" data-bs-parent="#formAccordion">
@@ -49,6 +49,9 @@
                                             <th scope="col">Nilai</th>
                                             <th scope="col">Note</th>
                                             <th scope="col">File Upload</th>
+                                            @if($assesment->send_status == 3)
+                                            <th scope="col">Note Revisi</th>
+                                            @endif
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -60,7 +63,7 @@
                                                     @method('PATCH')
                 
                                                     <td class="text-center">{{$loop->iteration}}</td>
-                                                    <td>{{$question->indicator}}</td>
+                                                    <td>{{$question->indicator}} @if($question->note_revision != null) <span style="padding: 4px; background-color:red;color:white; border-radius: 4px;margin-left:8px">Perlu Revisi</span> @endif</td>
                                                     <td class="text-nowrap">
                                                         <ol class="list-unstyled">
                                                             @foreach ($question->levels as $level)
@@ -100,6 +103,11 @@
                                                             <div class="text-danger">{{ $errors->first('attachment_file_'.$question->id) }}</div>
                                                         @endif
                                                     </td>
+                                                    @if ($assesment->send_status == 3)
+                                                    <td>
+                                                        {{ $question->note_revision ?? "-" }}
+                                                    </td>
+                                                    @endif
                                                     <td>
                                                         <div class="d-flex gap-1">
                                                             @if ($question->attachment_file)

@@ -24,9 +24,39 @@ use Illuminate\Http\Request;
 
 class MonthlyAuditController extends Controller
 {
-    public function index(){
-        $data['forms'] = MonthlyReport::where('send_status',true)->latest()->paginate(25);
-        return view('admin.monthly-audit.index',$data);
+    public function index(Request $request)
+    {
+        $query = MonthlyReport::query();
+
+        // ===============================
+        // FILTER DEFAULT
+        // ===============================
+        $query->where('send_status', true);
+
+        if ($request->month) {
+            $query->where('report_date', $request->month);
+        }
+
+        // ===============================
+        // 🔥 FILTER UNIT CODE (RELASI)
+        // ===============================
+        if ($request->unit_code) {
+            $query->whereHas('detailUnit', function ($q) use ($request) {
+                $q->where('unit_code', $request->unit_code);
+            });
+        }
+
+        // ===============================
+        // RESULT
+        // ===============================
+        $data['forms'] = $query
+            ->with('detailUnit')
+            ->latest()
+            ->paginate(25);
+
+        $data['request'] = $request->all();
+
+        return view('admin.monthly-audit.index', $data);
     }
     
     public function show($monthlyId){

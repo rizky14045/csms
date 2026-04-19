@@ -53,8 +53,8 @@
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">No</th>
-                                <th scope="col">Tanggal</th>
-                                <th scope="col">Triwulan</th>
+                                <th scope="col">Tahun</th>
+                                <th scope="col">Semester</th>
                                 <th scope="col">Tanggal Kirim</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -64,8 +64,8 @@
                                 
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($kpi->date)->format('d-m-Y') }}</td>
-                                    <td>{{$kpi->triwulan}}</td>
+                                    <td>{{ $kpi->year }}</td>
+                                    <td>{{$kpi->semester}}</td>
                                     <td>{{ $kpi->send_date ? \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') : "-" }}</td>
                                     <td>
                                         @if ($kpi->send_status == false)
@@ -75,17 +75,6 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-success btn-sm">Kirim</button>
-                                            </form>
-                                            @endcan
-                                            @can('edit.security.kpi.unit')
-                                            <a href="{{route('user.keamanan.edit',['kpi'=>$kpi->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                            @endcan
-                                            @can('delete.security.kpi.unit')
-                                            <form action="{{route('user.keamanan.destroy',['kpi'=>$kpi->id])}}" method="post" class="d-inline" id="delete-kpi-{{$kpi->id}}" onsubmit="confirmSave('delete-kpi-{{$kpi->id}}', 'Data keamanan KPI akan dihapus')">
-
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                             </form>
                                             @endcan
                                         @else
