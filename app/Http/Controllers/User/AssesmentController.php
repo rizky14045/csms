@@ -58,7 +58,20 @@ class AssesmentController extends Controller
             return redirect()->route('user.assesment.index');
         }
 
-        $data['categories'] = SignCategoryAssesment::with('questions','questions.levels')->where('assesment_id',$assesment->id)->get();
+        $data['categories'] = SignCategoryAssesment::with([
+                'questions',
+                'questions.levels'
+            ])
+            ->where('assesment_id', $assesment->id)
+            ->withCount([
+                'questions as invalid_questions_count' => function ($q) {
+                    $q->where(function ($sub) {
+                        $sub->whereNull('evaluation_unit')
+                            ->orWhere('evaluation_unit', 0);
+                    });
+                }
+            ])
+            ->get();
         $assesment->load('getInvalidItemsQuestionByUnit');
         $data['assesment'] = $assesment;
         return view('user.assesment.show',$data);

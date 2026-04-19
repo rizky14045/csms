@@ -79,7 +79,7 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$assesment->bujp_profile->npwp}}</td>
-                                    <td>{{$assesment->vendor->name}}</td>
+                                    <td>{{$assesment->vendor->name}}@if($assesment->send_status == 3) <br> <span style="padding: 2px; background-color:red;color:white; border-radius: 4px">Perlu Revisi</span> @endif</td>
                                     <td>{{$assesment->contract}}</td>
                                     <td>{{$assesment->year}}</td>
                                     <td>{{$assesment->triwulan}}</td>
@@ -87,7 +87,8 @@
                                     @canany(['edit.assesment.bujp', 'send.assesment.bujp', 'delete.assesment.bujp', 'view.assesment.bujp'])
                                     <td>
                                         
-                                        @if ($assesment->send_status == 0)
+                                        @if ($assesment->send_status == 0 || $assesment->send_status == 3)
+                                            @if($canEdit)
                                             @can('edit.assesment.bujp')
                                             <a href="{{route('bujp.assesment.show',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-info btn-sm">Show</a>
                                             @endcan
@@ -101,19 +102,25 @@
                                             @else
                                             <button type="button" style="background-color: gray" class="btn btn-secondary btn-sm" disabled>Kirim</button>
                                             @endif
+                                            @endcan               
+                                            @endif                                                                
+                                        @else
+                                            @can('view.assesment.bujp')
+                                            <a href="{{route('bujp.assesment.preview',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-info btn-sm">Show</a>
+                                            <a href="{{route('bujp.assesment.report',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-success btn-sm">Report</a>
                                             @endcan
+                                        @endif
+
+                                        @if ($assesment->send_status == 0)
+                                            @if($canEdit)
                                             @can('delete.assesment.bujp')
                                             <form action="{{route('bujp.assesment.destroy',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" method="post" class="d-inline" id="delete-assesment-{{ $assesment->id }}" onsubmit="confirmSave('delete-assesment-{{ $assesment->id }}', 'Hapus assesment?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                             </form>
-                                            @endcan                                            
-                                        @else
-                                            @can('view.assesment.bujp')
-                                            <a href="{{route('bujp.assesment.preview',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-info btn-sm">Show</a>
-                                            <a href="{{route('bujp.assesment.report',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-success btn-sm">Report</a>
-                                            @endcan
+                                            @endcan  
+                                            @endif
                                         @endif
                                         
                                     </td>

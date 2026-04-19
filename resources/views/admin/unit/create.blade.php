@@ -73,6 +73,20 @@
                                 @endif
                             </div>
                             <div class="map-location" id="mapSection">
+                                {{-- LAT LONG --}}
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label>Latitude</label>
+                                        <input type="text" id="latitude" name="latitude" class="form-control" readonly
+                                            required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Longitude</label>
+                                        <input type="text" id="longitude" name="longitude" class="form-control" readonly
+                                            required>
+                                    </div>
+                                </div>
+                                
                                 {{-- Province & City --}}
                                 <div class="row mb-3">
                                     <div class="col-md-6">

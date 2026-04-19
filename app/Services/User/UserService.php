@@ -547,15 +547,9 @@ class UserService
                             ->filter()
                             ->toArray();
 
-            $oneMonthAgo = Carbon::now()->subMonth()->format('Y-m-d');
-
             $query = User::query()
                 ->join('vendors', 'vendors.parent_user_id', '=', 'users.id')
                 ->whereIn('users.id', $parent_user_ids)
-
-                // 🔥 FILTER UTAMA
-                ->whereDate('vendors.end_date', '>=', $oneMonthAgo)
-
                 ->select(
                     'users.id',
                     'users.name', 

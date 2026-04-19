@@ -7,8 +7,8 @@ class KpiValidation
     public static function rulesForCreate()
     {
         return [
-            'date' => 'required|date',
-            'triwulan' => 'required|in:1,2,3,4',
+            'year' => 'required|integer',
+            'semester' => 'required|in:1,2',
         ];
     }
 
@@ -16,8 +16,8 @@ class KpiValidation
     public static function rulesForUpdate()
     {
         return [
-            'date' => 'required|date',
-            'triwulan' => 'required|in:1,2,3,4',
+            'year' => 'required|integer',
+            'semester' => 'required|in:1,2',
         ];
     }
 
@@ -31,10 +31,10 @@ class KpiValidation
     public static function messages($noteId = null)
     {
         $messages = [
-            'date.required' => 'Tanggal harus diisi!',
-            'date.date' => 'Format tanggal tidak valid!',
-            'triwulan.required' => 'Triwulan harus diisi!',
-            'triwulan.in' => 'Triwulan harus salah satu dari 1, 2, 3, atau 4!',
+            'year.required' => 'Tahun harus diisi!',
+            'year.integer' => 'Format tahun tidak valid!',
+            'semester.required' => 'Semester harus diisi!',
+            'semester.in' => 'Semester harus salah satu dari 1 atau 2!',
         ];
 
         if ($noteId) {

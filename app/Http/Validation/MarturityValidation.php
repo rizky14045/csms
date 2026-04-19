@@ -7,16 +7,16 @@ class MarturityValidation
     public static function rulesForCreate()
     {
         return [
-            'date' => ['required', 'date'],
-            'triwulan' => ['required', 'integer', 'between:1,4'],
+            'year' => ['required', 'integer'],
+            'semester' => ['required', 'integer', 'between:1,2'],
         ];
     }
 
     public static function rulesForUpdate()
     {
         return [
-            'date' => ['required', 'date'],
-            'triwulan' => ['required', 'integer', 'between:1,4'],
+            'year' => ['required', 'integer'],
+            'semester' => ['required', 'integer', 'between:1,2'],
         ];
     }
 
@@ -30,12 +30,12 @@ class MarturityValidation
     public static function messages($noteId = null)
     {
         $messages = [
-            'date.required' => 'Tanggal wajib diisi!',
-            'date.date' => 'Format tanggal tidak valid!',
+            'year.required' => 'Tahun wajib diisi!',
+            'year.integer' => 'Tahun harus berupa angka!',
 
-            'triwulan.required' => 'Triwulan wajib diisi!',
-            'triwulan.integer' => 'Triwulan harus berupa angka!',
-            'triwulan.between' => 'Triwulan hanya boleh antara 1 sampai 4!',
+            'semester.required' => 'semester wajib diisi!',
+            'semester.integer' => 'semester harus berupa angka!',
+            'semester.between' => 'semester hanya boleh antara 1 sampai 2!',
         ];
 
         if ($noteId) {

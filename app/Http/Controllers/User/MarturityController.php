@@ -50,6 +50,43 @@ class MarturityController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        $year = (int)$request->year;
+        $semester = (int)$request->semester;
+        $userId = auth()->id();
+
+        // ===============================
+        // ✅ 1. CEK DUPLICATE
+        // ===============================
+        $exists = Marturity::where('year', $year)
+            ->where('semester', $semester)
+            ->where('unit_id', $userId)
+            ->exists();
+
+        if ($exists) {
+            Alert::error('Gagal', 'Semester tersebut sudah diisi untuk tahun ini!');
+            return back()->withErrors([
+                'semester' => 'Semester sudah ada'
+            ])->withInput();
+        }
+
+        // ===============================
+        // ✅ 2. CEK BELUM WAKTUNYA
+        // ===============================
+        $currentMonth = now()->month;
+
+        if ($currentMonth <= 6) {
+            $currentSemester = 1;
+        } else {
+            $currentSemester = 2;
+        }
+
+        if ($year == now()->year && $semester > $currentSemester) {
+            Alert::error('Gagal', 'Belum waktunya mengisi semester tersebut!');
+            return back()->withErrors([
+                'semester' => 'Belum waktunya mengisi semester tersebut'
+            ])->withInput();
+        }
+
         $this->marturityService->createMarturity($request->all());
         
         Alert::success('Tambah Berhasil', 'Marturity berhasil ditambah!');

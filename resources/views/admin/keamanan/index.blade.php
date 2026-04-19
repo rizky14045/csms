@@ -48,7 +48,8 @@
                                 <th scope="col">No</th>
                                 <th scope="col">Nama Unit</th>
                                 <th scope="col">Tanggal Kirim</th>
-                                <th scope="col">Triwulan</th>
+                                <th scope="col">Tahun</th>
+                                <th scope="col">Semester</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -59,7 +60,8 @@
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$kpi->unit->name}}</td>
                                     <td>{{ \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') }}</td>
-                                    <td>{{$kpi->triwulan}}</td>
+                                    <td>{{$kpi->year}}</td>
+                                    <td>{{$kpi->semester}}</td>
                                     <td>
                                         <a href="{{route('admin.keamanan.show',['kpi'=>$kpi->id])}}" class="btn btn-success btn-sm">show</a>
                                     </td>

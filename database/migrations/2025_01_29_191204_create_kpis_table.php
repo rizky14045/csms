@@ -17,7 +17,8 @@ class CreateKpisTable extends Migration
             $table->id();
             $table->integer('unit_id')->refences('id')->on('users')->nullable();
             $table->date('date')->nullable();
-            $table->integer('triwulan')->nullable();
+            $table->integer('year')->nullable();
+            $table->integer('semester')->nullable();
             $table->boolean('send_status')->default(0);
             $table->date('send_date')->nullable();
             $table->timestamps();
