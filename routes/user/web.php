@@ -7,6 +7,7 @@ use App\Http\Controllers\User\AuditSMPScoreController;
 use App\Http\Controllers\User\ChangePasswordController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\FaqController;
+use App\Http\Controllers\User\FasumController;
 use App\Http\Controllers\User\KeamananController;
 use App\Http\Controllers\User\ListWorkController;
 use App\Http\Controllers\User\MainSecurityProgramController;
@@ -77,12 +78,7 @@ Route::prefix('user')->group(function () {
             Route::get('/{audit}', [AuditSMPScoreController::class, 'show'])->name('user.audit-smp-score.show');
             Route::put('/{audit_score}/update', [AuditSMPScoreController::class, 'updateEvidence'])->name('user.audit-smp-score.update');
         });
-        
-        
-        
-
-        
-
+    
         Route::prefix('monthly-audit')->group(function () {
             Route::get('/', [MonthlyAuditController::class, 'index'])->name('user.monthly-audit.index');
             Route::get('/create', [MonthlyAuditController::class, 'create'])->name('user.monthly-audit.create');
@@ -229,6 +225,7 @@ Route::prefix('user')->group(function () {
             Route::patch('/{program}/update', [SecurityProgramController::class, 'update'])->name('user.security-program.update');
             Route::delete('/{program}/destroy', [SecurityProgramController::class, 'destroy'])->name('user.security-program.destroy');
         });
+     
 
         Route::prefix('main-security-program')->group(function () {
             Route::get('/{program}', [MainSecurityProgramController::class, 'index'])->name('user.main-security-program.index');
@@ -251,6 +248,15 @@ Route::prefix('user')->group(function () {
             Route::patch('/{kpi}/send', [KeamananController::class, 'send'])->name('user.keamanan.send');
             Route::patch('{kpi}/upload-note/{areaId}/{note}', [KeamananController::class, 'uploadNote'])->name('user.keamanan.uploadNote');
             // Route::delete('/{kpi}/destroy', [KeamananController::class, 'destroy'])->name('user.keamanan.destroy');
+        });
+
+        Route::prefix('fasum')->group(function () {
+            Route::get('/', [FasumController::class, 'index'])->name('user.fasum.index');
+            Route::get('/create', [FasumController::class, 'create'])->name('user.fasum.create');
+            Route::post('/store', [FasumController::class, 'store'])->name('user.fasum.store');
+            Route::get('/{fasum}/edit', [FasumController::class, 'edit'])->name('user.fasum.edit');
+            Route::patch('/{fasum}/update', [FasumController::class, 'update'])->name('user.fasum.update');
+            Route::delete('/{fasum}/destroy', [FasumController::class, 'destroy'])->name('user.fasum.destroy');
         });
     });
 

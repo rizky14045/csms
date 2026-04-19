@@ -18,13 +18,13 @@
 
     <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
         <div class="flex-grow-1">
-            <h4 class="fs-18 fw-semibold m-0">Unit</h4>
+            <h4 class="fs-18 fw-semibold m-0">Fasilitas Umum</h4>
         </div>
 
         <div class="text-end">
             <ol class="breadcrumb m-0 py-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Tambah Data Unit</li>
+                <li class="breadcrumb-item active">Tambah Data Fasilitas Umum</li>
             </ol>
         </div>
     </div>
@@ -32,13 +32,13 @@
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.unit.store') }}" class="my-4" method="POST" id="form-unit"
+                    <form action="{{ route('user.fasum.store') }}" class="my-4" method="POST" id="form-unit"
                         onsubmit="confirmSave('form-unit', 'Data unit akan disimpan')">
                         @csrf
                         <!-- Formulir Pendaftaran -->
                         <div class="col-xl-12">
                             <div class="form-group mb-3">
-                                <label for="name" class="form-label">Nama Unit</label>
+                                <label for="name" class="form-label">Nama Fasilitas</label>
                                 <input class="form-control" type="text" id="name" required=""
                                     placeholder="Masukan nama unit" name="name" value="{{ old('name') }}">
                                 @if ($errors->has('name'))
@@ -46,19 +46,11 @@
                                 @endif
                             </div>
                             <div class="form-group mb-3">
-                                <label for="unit_code" class="form-label">Kode Unit</label>
-                                <input class="form-control" type="text" id="unit_code" required=""
-                                    placeholder="Masukan kode unit" name="unit_code" value="{{ old('unit_code') }}">
-                                @if ($errors->has('unit_code'))
-                                    <div class="error text-danger">{{ $errors->first('unit_code') }}</div>
-                                @endif
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="type" class="form-label">Tipe Unit</label>
+                                <label for="type" class="form-label">Tipe</label>
                                 <select name="type" id="type" class="form-select">
-                                    <option value="">Pilih Tipe Unit</option>
-                                    <option value="Pusat">Pusat</option>
-                                    <option value="Unit">Unit</option>
+                                    <option value="Damkar">Damkar</option>
+                                    <option value="Rumah Sakit">Rumah Sakit</option>
+                                    <option value="Kantor Polisi">Kantor Polisi</option>
                                 </select>
                                 @if ($errors->has('type'))
                                     <div class="error text-danger">{{ $errors->first('type') }}</div>
@@ -73,20 +65,6 @@
                                 @endif
                             </div>
                             <div class="map-location" id="mapSection">
-                                {{-- LAT LONG --}}
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label>Latitude</label>
-                                        <input type="text" id="latitude" name="latitude" class="form-control" readonly
-                                            required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Longitude</label>
-                                        <input type="text" id="longitude" name="longitude" class="form-control" readonly
-                                            required>
-                                    </div>
-                                </div>
-                                
                                 {{-- Province & City --}}
                                 <div class="row mb-3">
                                     <div class="col-md-6">
@@ -131,7 +109,7 @@
                                 <div class="col-12">
                                     <div class="d-flex gap-3 justify-content-end">
 
-                                        <a href="{{ route('admin.unit.index') }}" class="btn btn-danger"> Kembali</a>
+                                        <a href="{{ route('user.fasum.index') }}" class="btn btn-danger"> Kembali</a>
                                         <button type="submit" class="btn btn-success">
                                             Simpan
                                         </button>

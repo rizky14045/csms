@@ -32,6 +32,12 @@ RUN php artisan optimize
 # clear cache and config
 RUN php artisan config:cache 
 
+# clear cache and route
+RUN php artisan route:cache 
+
+# clear cache and route
+RUN php artisan route:clear 
+
 # Permission
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 storage bootstrap/cache
