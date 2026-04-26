@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Services\Fasum;
+namespace App\Services\FasumType;
 
 use App\Helpers\JsonResponse;
 use App\Models\Fasum;
+use App\Models\FasumType;
 use App\Services\ActivityLog\ActivityLogService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class FasumService
+class FasumTypeService
 {
     protected $logService;
 
@@ -18,7 +19,7 @@ class FasumService
         $this->logService = $logService;
     }
     
-   public function getAllFasum($limit = 10, $paginate = true)
+   public function getAllFasumTypes($limit = 10, $paginate = true)
     {
         try {
             $order  = request('order', 'ASC');
@@ -27,10 +28,11 @@ class FasumService
             $start  = request('start', null);
             $end    = request('end', null);
 
-            $query = Fasum::query();
+            $query = FasumType::query();
 
-            $query->with('type');
-            $query->where('unit_id', Auth::user()->unit_id);
+            if (!empty($with)) {
+                $query->with($with);
+            }
             if (!empty($search)) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%");
@@ -61,13 +63,13 @@ class FasumService
                     : $query->get();
             }
 
-            return JsonResponse::success($data, 'Fasum found', 200);
+            return JsonResponse::success($data, '    found', 200);
 
         } catch (Exception $e) {
 
             $this->logService->log(
-                'fasum.fetch_all',
-                'Failed to fetch fasums',
+                'fasum_type.fetch_all',
+                'Failed to fetch fasum types',
                 500,
                 [
                     'error' => $e->getMessage(),
@@ -83,54 +85,43 @@ class FasumService
         }
     }
 
-    public function createFasum(array $data)
+    public function createFasumType(array $data)
     {
         
         try {
             DB::beginTransaction();
-            $fasum = Fasum::create([
-                'unit_id' => Auth::user()->unit_id,
+            $fasumType = FasumType::create([
                 'name' => $data['name'],
-                'type_id' => $data['type_id'],
-                'address' => $data['address'],
-                'latitude' => $data['latitude'],
-                'longitude' => $data['longitude'],
-                'province_id' => $data['province_id'],
-                'city_id' => $data['city_id'],
+                'color_code' => $data['color_code'],
                 'created_by' => auth()->id(),
             ]);
             
             DB::commit();
 
             $this->logService->log(
-                'fasum.create',
-                'Create fasum',
+                'fasum_type.create',
+                'Create fasum type',
                 201,
                 [
-                    'fasum_id' => $fasum->id,
-                    'user_id'   => $fasum->user_id,
-                    'name'   => $fasum->name,
-                    'address' => $fasum->address,
-                    'type' => $fasum->type,
-                    'latitude' => $fasum->latitude,
-                    'longitude' => $fasum->longitude,
-                    'province_id' => $fasum->province_id,
-                    'city_id' => $fasum->city_id,
+                    'fasum_type_id' => $fasumType->id,
+                    'user_id'   => $fasumType->created_by,
+                    'name'   => $fasumType->name,
+                    'color_code' => $fasumType->color_code,
                     'created_by' => auth()->id(),
                 ]
             );
 
             return JsonResponse::success(
-                $fasum,
-                'Fasum created',
+                $fasumType,
+                'Fasum type created',
                 201
             );
         } catch (Exception $e) {
             DB::rollBack();
 
             $this->logService->log(
-                'fasum.create',
-                'Failed to create fasum',
+                'fasum_type.create',
+                'Failed to create fasum type',
                 500,
                 [
                     'error' => $e->getMessage(),
@@ -143,47 +134,42 @@ class FasumService
 
             return JsonResponse::error(
                 $e->getMessage(),
-                'Failed to create fasum',
+                'Failed to create fasum type',
                 500
             );
         }
     }
 
-    public function updateFasum(Fasum $fasum, array $data)
+    public function updateFasumType(FasumType $fasumType, array $data)
     {
         
         try {
             DB::beginTransaction();
-            $before = $fasum->toArray();
+            $before = $fasumType->toArray();
 
             $updateData = [
                 'name'       => $data['name'],
-                'address'    => $data['address'],
-                'type_id' => $data['type_id'],
-                'latitude' => $data['latitude'],
-                'longitude' => $data['longitude'],
-                'province_id' => $data['province_id'],
-                'city_id' => $data['city_id'],
+                'color_code' => $data['color_code'],
                 'updated_by' => auth()->id(),
-            ];
+            ];  
 
-            $fasum->update($updateData);
+            $fasumType->update($updateData);
 
             DB::commit();
 
             $this->logService->log(
-                'fasum.update',
-                'Update fasum',
+                'fasum_type.update',
+                'Update fasum type',
                 200,
                 [
                     'before' => $before,
-                    'after'  => $fasum->toArray(),
+                    'after'  => $fasumType->toArray(),
                 ]
             );
 
             return JsonResponse::success(
-                $fasum,
-                'Fasum updated',
+                $fasumType,
+                'Fasum type updated',
                 201
             );
 
@@ -191,8 +177,8 @@ class FasumService
             DB::rollBack();
 
             $this->logService->log(
-                'fasum.update',
-                'Failed to update fasum',
+                'fasum_type.update',
+                'Failed to update fasum type',
                 500,
                 [
                     'error' => $e->getMessage(),
@@ -203,19 +189,19 @@ class FasumService
             throw $e;
         }
     }
-    public function deleteFasum(Fasum $fasum)
+    public function deleteFasumType(FasumType $fasumType)
     {
         try {
             DB::beginTransaction();
-            $before = $fasum->toArray();
+            $before = $fasumType->toArray();
 
-            $fasum->delete();
+            $fasumType->delete();
 
             DB::commit();
 
             $this->logService->log(
-                'fasum.delete',
-                'Delete fasum',
+                'fasum_type.delete',
+                'Delete fasum type',
                 200,
                 [
                     'before' => $before,
@@ -224,19 +210,19 @@ class FasumService
 
             return JsonResponse::success(
                 null,
-                'Fasum deleted',
+                'Fasum type deleted',
                 200
             );
         } catch (Exception $e) {
             DB::rollBack();
 
             $this->logService->log(
-                'fasum.delete',
-                'Failed to delete fasum',
+                'fasum_type.delete',
+                'Failed to delete fasum type',
                 500,
                 [
                     'error' => $e->getMessage(),
-                    'fasum_id' => $fasum->id,
+                    'fasum_type_id' => $fasumType->id,
                 ]
             );
 

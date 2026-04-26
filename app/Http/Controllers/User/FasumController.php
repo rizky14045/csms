@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Validation\FasumValidation;
 use App\Models\City;
 use App\Models\Fasum;
+use App\Models\FasumType;
 use App\Models\Province;
 use App\Services\Fasum\FasumService;
+use App\Services\FasumType\FasumTypeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -35,7 +37,7 @@ class FasumController extends Controller
     public function create(){
 
         $provinces = Province::select('id','name')->get();
-
+        $data['types'] = FasumType::select('id','name')->get();
         $data['provinces']= $provinces;
         return view('user.fasum.create',$data);
     }
@@ -55,6 +57,7 @@ class FasumController extends Controller
 
     public function edit(Fasum $fasum){
         $data['fasum'] = $fasum;
+        $data['types'] = FasumType::select('id','name')->get();
         $data['provinces'] = Province::select('id','name')->get();
         $data['cities'] = City::select('id','name')->where('province_id', $fasum->province_id)->get();
         return view('user.fasum.edit',$data);

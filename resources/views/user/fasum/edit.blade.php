@@ -48,10 +48,14 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label for="type" class="form-label">Tipe</label>
-                                <select name="type" id="type" class="form-select">
-                                    <option value="Damkar" {{ $fasum->type == 'Damkar' ? 'selected' : '' }}>Damkar</option>
-                                    <option value="Rumah Sakit" {{ $fasum->type == 'Rumah Sakit' ? 'selected' : '' }}>Rumah Sakit</option>
-                                    <option value="Kantor Polisi" {{ $fasum->type == 'Kantor Polisi' ? 'selected' : '' }}>Kantor Polisi</option>
+                                <select name="type_id" id="type" class="form-select">
+                                    <option value="">Pilih Tipe Fasilitas Umum</option>
+                                    @foreach ($types as $type)
+                                        <option value="{{ $type->id }}"
+                                            {{ old('type_id', $fasum->type_id) == $type->id ? 'selected' : '' }}>
+                                            {{ $type->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                                 @if ($errors->has('type'))
                                     <div class="error text-danger">{{ $errors->first('type') }}</div>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CategoryAssesmentController;
 use App\Http\Controllers\Admin\CriteriaAuditSMPController;
 use App\Http\Controllers\Admin\ElementAuditSMPController;
 use App\Http\Controllers\Admin\EvidenceAuditSMPController;
+use App\Http\Controllers\Admin\FasumTypeController;
 use App\Http\Controllers\Admin\KeamananController;
 use App\Http\Controllers\Admin\KPIAreaController;
 use App\Http\Controllers\Admin\KPILevelController;
@@ -228,6 +229,14 @@ Route::prefix('admin')->group(function () {
             Route::post('/store', [UnitController::class, 'store'])->name('admin.unit.store');
             Route::get('/{unit}/edit', [UnitController::class, 'edit'])->name('admin.unit.edit');
             Route::patch('/{unit}/edit', [UnitController::class, 'update'])->name('admin.unit.update');
+        });
+        Route::prefix('fasum-type')->group(function () {
+            Route::get('/', [FasumTypeController::class, 'index'])->name('admin.fasum-type.index');
+            Route::get('/create', [FasumTypeController::class, 'create'])->name('admin.fasum-type.create');
+            Route::post('/store', [FasumTypeController::class, 'store'])->name('admin.fasum-type.store');
+            Route::get('/{fasumType}/edit', [FasumTypeController::class, 'edit'])->name('admin.fasum-type.edit');
+            Route::patch('/{fasumType}/edit', [FasumTypeController::class, 'update'])->name('admin.fasum-type.update');
+            Route::delete('/{fasumType}/delete', [FasumTypeController::class, 'destroy'])->name('admin.fasum-type.destroy');
         });
     });
 

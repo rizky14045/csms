@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Fasum;
+use App\Models\FasumType;
 use App\Models\SecurityForm;
 use App\Models\Unit;
 use App\Models\User;
@@ -25,12 +26,15 @@ class DashboardFasumController extends Controller
                     'fasum.id',
                     'fasum.unit_id',
                     'fasum.name',
-                    'fasum.type',
+                    'fasum.type_id',
                     'fasum.latitude',
                     'fasum.longitude',
                     'fasum.address'
                 )
-                ->with(['unit:id,name']);
+                ->with([
+                    'unit:id,name',
+                    'type:id,name,color_code'
+                ]);
 
             // filter by unit
             if (!empty($unitId)) {
@@ -39,10 +43,14 @@ class DashboardFasumController extends Controller
 
             $fasum = $fasum->get();
 
+            $fasumTypes = FasumType::select('id', 'name', 'color_code')
+                        ->orderBy('name', 'asc')
+                        ->get();
             return view('fasum.dashboard', [
                 'units'   => $units,
                 'fasum'   => $fasum,
                 'unitId'  => $unitId,
+                'fasumTypes' => $fasumTypes,
             ]);
     }
 }
