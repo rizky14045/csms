@@ -78,18 +78,6 @@
                             {{-- MAP WRAPPER --}}
                             <div id="mapWrapper">
 
-                                {{-- LAT LNG --}}
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input type="text" id="latitude" name="latitude"
-                                            value="{{ $unit->latitude ?? '' }}" class="form-control">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="text" id="longitude" name="longitude"
-                                            value="{{ $unit->longitude ?? '' }}" class="form-control">
-                                    </div>
-                                </div>
-
                                 {{-- Province & City --}}
                                 <div class="row mb-3">
                                     <div class="col-md-6">

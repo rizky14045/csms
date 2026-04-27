@@ -3,371 +3,247 @@
 
 @stop
 @section('content')
-    
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-    <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Data Audit {{ $auditData->unit->name }}</h4>
-    </div>
+  <div class="flex-grow-1">
+    <h4 class="fs-18 fw-semibold m-0">Data Audit {{ $auditData->unit->name }}</h4>
+  </div>
 
-    <div class="text-end">
-        <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Data Audit</li>
-        </ol>
-    </div>
+  <div class="text-end">
+    <ol class="breadcrumb m-0 py-0">
+      <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item active">Data Audit</li>
+    </ol>
+  </div>
 </div>
+
 <div class="row">
-    <div class="col-xl-12">
-        <div class="card">
-            <div class="card-body">  
-                <div class="table-responsive">
-                    @if(count($auditData->childrenHeader) == 0)
-                        <div class="text-center">
-                            <p class="mb-0">Tidak ada data audit.</p>
-                        </div>
-                    @else
-                    <table class="table table-bordered text-center align-middle">
-                        <thead class="text-white text-center align-middle" style="background-color:#5DADE2;">
-                            <tr>
-                                <th rowspan="2" style="background-color:#5DADE2;">Elemen</th>
-                                <th rowspan="2" style="background-color:#5DADE2;">Bobot Elemen</th>
-                                <th colspan="2" rowspan="2" style="background-color:#5DADE2;min-width: 550px; max-width: 550px;">Kriteria</th>
-                                <th colspan="2" style="background-color:#5DADE2;">Audit</th>
-                                <th rowspan="2" style="background-color:#5DADE2;min-width: 200px; max-width: 200px;">Evidence</th>
-                                <th rowspan="2" style="background-color:#5DADE2;min-width: 200px; max-width: 200px;">File Evidence</th>
-                                <th rowspan="2" style="background-color:#5DADE2;min-width: 200px; max-width: 200px;">Temuan</th>
-                                <th rowspan="2" style="background-color:#5DADE2;min-width: 200px; max-width: 200px;">Rekomendasi</th>
-                                <th rowspan="2" style="background-color:#5DADE2;min-width: 150px; max-width: 150px;">Due Date</th>
-                                <th rowspan="2" style="background-color:#5DADE2;min-width: 150px; max-width: 150px;">PIC</th>
-                            </tr>
-                            <tr>
-                                <th style="background-color:#5DADE2;">Pencapaian Kriteria (0,1,2)</th>
-                                <th style="background-color:#5DADE2;">Pencapaian Nilai Elemen</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $totalAllHeader = 0;
-                            @endphp
-                            @foreach ($auditData->childrenHeader as $header)
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-body">
 
-                                @php
-                                    $countKriteria = 0;
-                                    $countPernyataan = 0;
+        <div class="table-responsive">
 
-                                    // =========================
-                                    // Hitung total baris
-                                    // =========================
-                                    $totalRows = 0;
+          @if(count($auditData->childrenHeader) == 0)
 
-                                    // kriteria langsung
-                                    foreach ($header->kriteria as $k) {
-                                        $totalRows += max(1, $k->evidence->count());
-                                    }
+          <div class="text-center">
+            <p class="mb-0">Tidak ada data audit.</p>
+          </div>
 
-                                    // pernyataan + kriteria
-                                    foreach ($header->pernyataan as $p) {
-                                        $totalRows += 1;
-                                        foreach ($p->kriteria as $k) {
-                                            $totalRows += max(1, $k->evidence->count());
-                                        }
-                                    }
+          @else
 
-                                    $totalPembagi = 
-                                            ($header->kriteria->count() +
-                                            $header->pernyataan->flatMap->kriteria->count() ) *2;
+          <table class="table table-bordered text-center align-middle">
 
-                                    $totalRows = $totalRows + 1 + count($header->pernyataan);
+            <thead class="text-white text-center align-middle" style="background-color:#5DADE2;">
+              <tr>
+                <th rowspan="2">Elemen</th>
+                <th rowspan="2">Bobot Elemen</th>
+                <th colspan="2" rowspan="2">Kriteria</th>
 
-                                    $isFirstHeaderRow = true;
-                                    $subTotalElemen = 0;
-                                @endphp
+                {{-- TAMBAHAN --}}
+                <th colspan="2">Self Audit</th>
 
-                                {{-- =========================
-                                    KRITERIA LANGSUNG
-                                ========================== --}}
-                                @foreach ($header->kriteria as $kriteria)
+                <th colspan="2">Audit</th>
 
-                                    @php
-                                        $countKriteria++;
-                                        $evidenceCount = max(1, $kriteria->evidence->count());
-                                        $isFirstKriteriaRow = true;
+                <th rowspan="2">Evidence</th>
+                <th rowspan="2">File Evidence</th>
+                <th rowspan="2">Temuan</th>
+                <th rowspan="2">Rekomendasi</th>
+                <th rowspan="2">Due Date</th>
+                <th rowspan="2">PIC</th>
 
-                                        $evidences = $kriteria->evidence->count()
-                                            ? $kriteria->evidence
-                                            : collect([null]);
-                                    @endphp
+                @if($auditData->status == 0)
+                <th rowspan="2">Action</th>
+                @endif
+              </tr>
+              <tr>
+                {{-- SELF --}}
+                <th>Nilai</th>
+                <th>Elemen</th>
 
-                                    @foreach ($evidences as $evidence)
-                                        <tr>
-                                            {{-- KOLOM A & B --}}
-                                            @if ($isFirstHeaderRow)
-                                                <td rowspan="{{ $totalRows }}" style="writing-mode: vertical-rl;transform: rotate(180deg);vertical-align: middle;white-space: nowrap;">{{ $header->name }}</td>
-                                                <td rowspan="{{ $totalRows }}">{{ $header->bobot }}%</td>
-                                                @php $isFirstHeaderRow = false; @endphp
-                                            @endif
+                {{-- AUDIT --}}
+                <th>Pencapaian Kriteria</th>
+                <th>Pencapaian Nilai Elemen</th>
+              </tr>
+            </thead>
 
-                                            {{-- KRITERIA --}}
-                                            @if ($isFirstKriteriaRow)
-                                                <td rowspan="{{ $evidenceCount }}">
-                                                    {{ $loop->parent->parent->iteration }}.{{ $countKriteria }}
-                                                </td>
-                                                <td rowspan="{{ $evidenceCount }}" style="text-align:left">
-                                                    {{ $kriteria->name }}
-                                                </td>
-                                                @php
-                                                    $nilaiKriteria = is_numeric($kriteria->pencapaian_nilai_kriteria)
-                                                        ? (int) $kriteria->pencapaian_nilai_kriteria
-                                                        : 0;
+            <tbody>
 
-                                                    $bobot = is_numeric($header->bobot) ? (float) $header->bobot : 0;
-                                                    $pembagi = is_numeric($totalPembagi) && $totalPembagi != 0 ? (float) $totalPembagi : 0;
+              @php
+              $totalAllHeader = 0;
+              @endphp
 
-                                                    $nilaiElemen = $pembagi > 0
-                                                        ? ($nilaiKriteria * $bobot) / $pembagi
-                                                        : 0;
+              @foreach ($auditData->childrenHeader as $header)
 
-                                                    switch ($nilaiKriteria) {
-                                                        case 2:
-                                                            $bgColor = '#28a745'; // green
-                                                            $textColor = '#fff';
-                                                            break;
-                                                        case 1:
-                                                            $bgColor = '#ffc107'; // yellow
-                                                            $textColor = '#000';
-                                                            break;
-                                                        default:
-                                                            $bgColor = '#dc3545'; // red (0 or null)
-                                                            $textColor = '#fff';
-                                                            break;
-                                                    }
-                                                @endphp
-                                                <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgColor }}; color: {{ $textColor }};">
-                                                    <div class="d-flex" style="gap: 5px; align-items: center; justify-content: center;">
-                                                        {{ $kriteria->pencapaian_nilai_kriteria ?? '0' }}
-                                                    </div>
-                                                </td>
+              @php
+              $countKriteria = 0;
+              $countPernyataan = 0;
 
-                                                <td rowspan="{{ $evidenceCount }}">
-                                                    {{ number_format($nilaiElemen, 2) }}%
-                                                </td>
-                                                @php 
-                                                $isFirstKriteriaRow = false; 
-                                                $subTotalElemen = $subTotalElemen + $nilaiElemen; 
-                                                @endphp
-                                            @endif
+              $totalRows = 0;
 
-                                            {{-- EVIDENCE --}}
-                                            <td>{{ $evidence->name ?? '-' }}</td>
-                                            <td>
-                                                @if(isset($evidence->evidence_file) && $evidence->evidence_file != '')
-                                                    <a href="{{ asset('storage/' . $evidence->evidence_file) }}" target="_blank" class="btn btn-primary">Lihat File</a>
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
-                                            @php
-                                                if($evidence != null){
-                                                    $evidenceId = $evidence->id;
-                                                }else{
-                                                    $evidenceId = 'new';
-                                                }
-                                            @endphp
-                                            <td>
-                                                {{ $evidence->temuan ?? '-' }}
-                                            </td>
-                                            <td>
-                                                {{ $evidence->rekomendasi ?? '-' }}
-                                            </td>
-                                            <td>
-                                                {{ isset($evidence->due_date) ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y') : '' }}
-                                            </td>
-                                            <td>
-                                                {{ $evidence->pic ?? '-' }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
+              foreach ($header->kriteria as $k) {
+              $totalRows += max(1, $k->evidence->count());
+              }
 
-                                @endforeach
+              foreach ($header->pernyataan as $p) {
+              $totalRows += 1;
+              foreach ($p->kriteria as $k) {
+              $totalRows += max(1, $k->evidence->count());
+              }
+              }
 
-                                {{-- =========================
-                                    PERNYATAAN
-                                ========================== --}}
-                                @foreach ($header->pernyataan as $pernyataan)
+              $totalPembagi =
+              ($header->kriteria->count() +
+              $header->pernyataan->flatMap->kriteria->count()) * 2;
 
-                                    @php $countPernyataan++; @endphp
+              $totalRows = $totalRows + 1 + count($header->pernyataan);
 
-                                    <tr>
-                                        {{-- KOLOM A & B tetap rowspan (tidak diisi lagi) --}}
-                                        {{-- KOLOM A & B --}}
-                                        @if ($isFirstHeaderRow)
-                                            <td rowspan="{{ $totalRows }}" style="writing-mode: vertical-rl;transform: rotate(180deg);vertical-align: middle;white-space: nowrap;">{{ $header->name }}</td>
-                                            <td rowspan="{{ $totalRows }}">{{ $header->bobot }}%</td>
-                                            @php $isFirstHeaderRow = false; @endphp
-                                        @endif
+              $isFirstHeaderRow = true;
+              $subTotalElemen = 0;
+              @endphp
 
-                                        {{-- KOLOM C - F untuk judul pernyataan --}}
-                                        <td colspan="4" style="text-align:left; font-weight:bold; background:#D3D3D3;">
-                                            {{ $loop->parent->iteration }}.{{ chr(64 + $countPernyataan) }}. 
-                                            {{ $pernyataan->name }}
-                                        </td>
+              {{-- ================= KRITERIA LANGSUNG ================= --}}
+              @foreach ($header->kriteria as $kriteria)
 
-                                        <td colspan="@if($auditData->status == 0) 7 @else 6 @endif"></td>
-                                    </tr>
+              @php
+              $countKriteria++;
+              $evidenceCount = max(1, $kriteria->evidence->count());
+              $isFirstKriteriaRow = true;
 
-                                    {{-- KRITERIA DALAM PERNYATAAN --}}
-                                    @php 
-                                    $countKriteria = 0;
-                                    $subTotal = 0;
-                                     @endphp
+              $evidences = $kriteria->evidence->count()
+              ? $kriteria->evidence
+              : collect([null]);
+              @endphp
 
-                                    @foreach ($pernyataan->kriteria as $kriteria)
+              @foreach ($evidences as $evidence)
+              <tr>
 
-                                        @php
-                                            $countKriteria++;
-                                            $evidenceCount = max(1, $kriteria->evidence->count());
-                                            $isFirstKriteriaRow = true;
+                @if ($isFirstHeaderRow)
+                <td rowspan="{{ $totalRows }}">{{ $header->name }}</td>
+                <td rowspan="{{ $totalRows }}">{{ $header->bobot }}%</td>
+                @php $isFirstHeaderRow = false; @endphp
+                @endif
 
-                                            $evidences = $kriteria->evidence->count()
-                                                ? $kriteria->evidence
-                                                : collect([null]);
-                                        @endphp
+                @if ($isFirstKriteriaRow)
 
-                                        @foreach ($evidences as $evidence)
-                                            <tr>
-                                                {{-- KOLOM C - F --}}
-                                                @if ($isFirstKriteriaRow)
-                                                    <td rowspan="{{ $evidenceCount }}">
-                                                        {{ $loop->parent->parent->parent->iteration }}.{{ chr(64 + $countPernyataan) }}.{{ $countKriteria }}
-                                                    </td>
-                                                    <td rowspan="{{ $evidenceCount }}" style="text-align:left">
-                                                        {{ $kriteria->name }}
-                                                    </td>
-                                                    @php
-                                                        $nilaiKriteria = is_numeric($kriteria->pencapaian_nilai_kriteria)
-                                                            ? (int) $kriteria->pencapaian_nilai_kriteria
-                                                            : 0;
+                <td rowspan="{{ $evidenceCount }}">
+                  {{ $loop->parent->parent->iteration }}.{{ $countKriteria }}
+                </td>
 
-                                                        $bobot = is_numeric($header->bobot) ? (float) $header->bobot : 0;
-                                                        $pembagi = is_numeric($totalPembagi) && $totalPembagi != 0 ? (float) $totalPembagi : 0;
+                <td rowspan="{{ $evidenceCount }}" style="text-align:left">
+                  {{ $kriteria->name }}
+                </td>
 
-                                                        $nilaiElemen = $pembagi > 0
-                                                            ? ($nilaiKriteria * $bobot) / $pembagi
-                                                            : 0;
+                @php
+                $nilaiKriteria = (int)($kriteria->pencapaian_nilai_kriteria ?? 0);
+                $nilaiSelf = (int)($kriteria->pencapaian_nilai_kriteria_self ?? 0);
 
-                                                        switch ($nilaiKriteria) {
-                                                            case 2:
-                                                                $bgColor = '#28a745'; // green
-                                                                $textColor = '#fff';
-                                                                break;
-                                                            case 1:
-                                                                $bgColor = '#ffc107'; // yellow
-                                                                $textColor = '#000';
-                                                                break;
-                                                            default:
-                                                                $bgColor = '#dc3545'; // red (0 or null)
-                                                                $textColor = '#fff';
-                                                                break;
-                                                        }
-                                                    @endphp
+                $bobot = (float)$header->bobot;
+                $pembagi = $totalPembagi ?: 1;
 
-                                                    <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgColor }}; color: {{ $textColor }};">
-                                                        <div class="d-flex" style="gap: 5px; align-items: center; justify-content: center;">
-                                                            {{ $kriteria->pencapaian_nilai_kriteria ?? '0' }}
-                                                        </div>
-                                                    </td>
+                $nilaiElemen = ($nilaiKriteria * $bobot) / $pembagi;
+                $nilaiElemenSelf = ($nilaiSelf * $bobot) / $pembagi;
 
-                                                    <td rowspan="{{ $evidenceCount }}">
-                                                        {{ number_format($nilaiElemen, 2) }}%
-                                                    </td>
-                                                    @php 
-                                                    $isFirstKriteriaRow = false; 
-                                                    $subTotalElemen = $subTotalElemen + $nilaiElemen;
-                                                    $subTotal = $subTotal + $nilaiElemen;
-                                                    @endphp
-                                                @endif
+                $bgAudit = $nilaiKriteria == 2 ? '#28a745' : ($nilaiKriteria == 1 ? '#ffc107' : '#dc3545');
+                $bgSelf = $nilaiSelf == 2 ? '#28a745' : ($nilaiSelf == 1 ? '#ffc107' : '#dc3545');
+                @endphp
 
-                                                {{-- KOLOM G --}}
-                                                <td>{{ $evidence->name ?? '-' }}</td>
-                                                <td>
-                                                    @if(isset($evidence->evidence_file) && $evidence->evidence_file != '')
-                                                        <a href="{{ asset('storage/' . $evidence->evidence_file) }}" target="_blank" class="btn btn-primary">Lihat File</a>
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                @php
-                                                    if($evidence != null){
-                                                        $evidenceId = $evidence->id;
-                                                    }else{
-                                                        $evidenceId = 'new';
-                                                    }
-                                                @endphp
-                                                <td>
-                                                    {{ $evidence->temuan ?? '-' }}
-                                                </td>
-                                                <td>
-                                                    {{ $evidence->rekomendasi ?? '-' }}
-                                                </td>
-                                                <td>
-                                                    {{ isset($evidence->due_date) ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y') : '' }}
-                                                </td>
-                                                <td>
-                                                    {{ $evidence->pic ?? '-' }}
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                {{-- ================= SELF (TAMBAHAN) ================= --}}
+                <td rowspan="{{ $evidenceCount }}" style="background:{{ $bgSelf }};color:white;">
+                  {{ $nilaiSelf }}
+                </td>
 
-                                    @endforeach
-                                    
-                                    @if(count($pernyataan->kriteria) > 0)
-                                    <tr>
-                                        <td colspan="3" style="text-align:left; background:#5DADE2;">
-                                            SubTotal
-                                        </td>
-                                        <td colspan="1" style="text-align:left; background:#5DADE2;">
-                                            {{ number_format($subTotal, 2) }}%
-                                        </td>
-                                        <td colspan="@if($auditData->status != 0) 6 @else 5 @endif"></td>
-                                    </tr>
-                                    @endif
+                <td rowspan="{{ $evidenceCount }}">
+                  {{ number_format($nilaiElemenSelf,2) }}%
+                </td>
 
-                                @endforeach
-                                <tr>
-                                    <td colspan="3" style="text-align:left; font-weight:bold; background:#5DADE2;">
-                                        SubTotal Elemen
-                                    </td>
-                                    <td colspan="1" style="text-align:left; font-weight:bold; background:#5DADE2;">
-                                        {{ number_format($subTotalElemen, 2) }}%
-                                    </td>
-                                    <td colspan="@if($auditData->status == 0) 7 @else 6 @endif"></td>
-                                </tr>
-                                @php
-                                    $totalAllHeader += $subTotalElemen;
-                                @endphp
-                            @endforeach
+                {{-- ================= AUDIT (TIDAK DIUBAH) ================= --}}
+                @if ($auditData->status != 0)
+                <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgAudit }}; color: #fff;">
+                  {{ $kriteria->pencapaian_nilai_kriteria ?? '' }}
+                </td>
+                @else
+                <form action="{{ route('auditor.audit-smp-score.update-achievement', $kriteria->id ?? 0) }}" method="POST" id="form-kriteria-{{ $kriteria->id ?? 'new' }}" onsubmit="confirmSave('form-kriteria-{{ $kriteria->id ?? 'new' }}', 'Data akan disimpan')">
+                  @csrf
+                  @method('PUT')
+                  <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgAudit }}; color: #fff;">
+                    <div class="d-flex" style="gap: 5px; align-items: center; justify-content: center;">
+                      <input type="text" name="pencapaian_nilai_kriteria_{{ $kriteria->id }}" value="{{ old('pencapaian_nilai_kriteria_' . $kriteria->id, $kriteria->pencapaian_nilai_kriteria ?? '') }}" class="form-control" style="background-color: {{ $bgAudit }}; color: #fff;">
+                      <button type="submit" class="btn btn-primary"><i data-feather="check"></i></button>
+                    </div>
+                  </td>
+                </form>
+                @endif
 
-                            <tr>
-                                <td colspan="12"></td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" style="text-align:left; font-weight:bold; background:#5DADE2;">
-                                    Total
-                                </td>
-                                <td colspan="1" style="text-align:left; font-weight:bold; background:#5DADE2;">
-                                    {{ number_format($totalAllHeader, 2) }}%
-                                </td>
-                                <td colspan="@if($auditData->status == 0) 7 @else 6 @endif"></td>
-                            </tr>
-                            </tbody>
-                    </table>
-                    @endif
-                </div>
-         
-            </div> <!-- end card body -->
-        </div><!-- end card -->
-    </div><!-- end col -->
-</div> <!-- end row -->
+                <td rowspan="{{ $evidenceCount }}">
+                  {{ number_format($nilaiElemen, 2) }}%
+                </td>
+
+                @php
+                $isFirstKriteriaRow = false;
+                $subTotalElemen += $nilaiElemen;
+                @endphp
+
+                @endif
+
+                <td>{{ $evidence->name ?? '-' }}</td>
+
+                <td>
+                  @if(isset($evidence->evidence_file) && $evidence->evidence_file != '')
+                  <a href="/uploads/evidence_file/{{ $evidence->evidence_file }}" target="_blank" class="btn btn-primary">Lihat File</a>
+                  @else
+                  -
+                  @endif
+                </td>
+
+                @if($auditData->status != 0)
+                <td>{{ $evidence->temuan ?? '-' }}</td>
+                <td>{{ $evidence->rekomendasi ?? '-' }}</td>
+                <td>{{ isset($evidence->due_date) ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y') : '' }}</td>
+                <td>{{ $evidence->pic ?? '-' }}</td>
+                @else
+                <form action="{{ route('auditor.audit-smp-score.update', $evidence->id ?? 0) }}" method="POST">
+                  @csrf
+                  @method('PUT')
+                  <td><textarea name="temuan">{{ $evidence->temuan ?? '' }}</textarea></td>
+                  <td><textarea name="rekomendasi">{{ $evidence->rekomendasi ?? '' }}</textarea></td>
+                  <td><input type="date" name="due_date"></td>
+                  <td><input type="text" name="pic"></td>
+                  <td><button class="btn btn-primary">Update</button></td>
+                </form>
+                @endif
+
+              </tr>
+              @endforeach
+              @endforeach
+
+              <tr>
+                <td colspan="5" style="background:#5DADE2;">SubTotal Elemen</td>
+                <td>{{ number_format($subTotalElemen,2) }}%</td>
+                <td colspan="8"></td>
+              </tr>
+
+              @php
+              $totalAllHeader += $subTotalElemen;
+              @endphp
+
+              @endforeach
+
+              <tr>
+                <td colspan="5" style="background:#5DADE2;">Total</td>
+                <td>{{ number_format($totalAllHeader,2) }}%</td>
+                <td colspan="8"></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          @endif
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
-

@@ -20,6 +20,11 @@
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
+            <div class="d-flex justify-content-end pe-3 pt-3">
+                @can('create.audit.smp.score.unit')
+                <a href="{{route('user.audit-smp-score.create')}}" class="btn btn-primary">Tambah Data</a>
+                @endcan
+            </div>
             <div class="card-body">  
                 <div class="table-responsive">
                     @if(count($audits) == 0)
@@ -46,11 +51,20 @@
                                     <td>{{$audit->unit->name ?? "-"}}</td>
                                     <td>{{ \Carbon\Carbon::parse($audit->start_audit)->format('d-m-Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($audit->end_audit)->format('d-m-Y') }}</td>
-                                    @canany(['view.audit.smp.score.unit', 'edit.audit.smp.score.unit'])                                        
+                                    @canany(['view.audit.smp.score.unit', 'edit.audit.smp.score.unit', 'send.audit.smp.score.unit'])                                        
                                     <td class="text-center">
                                         @can('view.audit.smp.score.unit')
                                         <a href="{{route('user.audit-smp-score.show',['audit'=>$audit->id])}}" class="btn btn-primary btn-sm">View</a>
                                         @endcan
+                                        @if($audit->status == 0)
+                                        @can('send.audit.smp.score.unit')
+                                        <form action="{{route('user.audit-smp-score.send',['audit'=>$audit->id])}}" method="post" class="d-inline" id="send-audit-{{ $audit->id }}" onsubmit="confirmSave('send-audit-{{ $audit->id }}', 'Kirim audit?')">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="btn btn-success btn-sm">Kirim</button>
+                                        </form>
+                                        @endcan
+                                        @endif
                                     </td>
                                     @endcanany
                                 </tr>

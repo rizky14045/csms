@@ -75,7 +75,11 @@ Route::prefix('user')->group(function () {
         
         Route::prefix('audit-smp-score')->group(function () {
             Route::get('/', [AuditSMPScoreController::class, 'index'])->name('user.audit-smp-score.index');
+            Route::get('/create', [AuditSMPScoreController::class, 'create'])->name('user.audit-smp-score.create');
+            Route::post('/', [AuditSMPScoreController::class, 'store'])->name('user.audit-smp-score.store');
             Route::get('/{audit}', [AuditSMPScoreController::class, 'show'])->name('user.audit-smp-score.show');
+            Route::put('/{audit}/send', [AuditSMPScoreController::class, 'send'])->name('user.audit-smp-score.send');
+            Route::put('/{audit_score}/update-self-audit', [AuditSMPScoreController::class, 'updateSelfAudit'])->name('user.audit-smp-score.update-self-audit');
             Route::put('/{audit_score}/update', [AuditSMPScoreController::class, 'updateEvidence'])->name('user.audit-smp-score.update');
         });
     

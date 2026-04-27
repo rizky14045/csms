@@ -48,7 +48,7 @@
                                         @can('view.audit.smp.score.auditor')
                                         <a href="{{route('auditor.audit-smp-score.show',['audit'=>$audit->id])}}" class="btn btn-primary btn-sm">View</a>
                                         @endcan
-                                        @if($audit->auditor_lead_id == auth()->user()->id && $audit->status == 0)
+                                        @if($audit->auditor_lead_id == auth()->user()->id && $audit->status == 1)
                                         <form
                                             id="send-audit-{{ $audit->id }}"
                                             action="{{route('auditor.audit-smp-score.send',['audit'=>$audit->id])}}"

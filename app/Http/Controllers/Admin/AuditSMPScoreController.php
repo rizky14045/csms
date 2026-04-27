@@ -76,7 +76,7 @@ class AuditSMPScoreController extends Controller
     }
 
     public function edit(AuditSmpData $audit){
-        if($audit->status != 0){
+        if($audit->status != 1){
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat diedit');
         }
         $result = $this->unitService->getAllUnit(0, false);
@@ -89,7 +89,7 @@ class AuditSMPScoreController extends Controller
     }
 
     public function update(Request $request, AuditSmpData $audit){
-        if($audit->status != 0){
+        if($audit->status != 1){
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat diedit');
         }
         // Validation rules

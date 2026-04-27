@@ -8,23 +8,6 @@ class AuditSMPDataValidation
     public static function rulesForCreate()
     {
         return [
-            'unit_id' => ['required', 'exists:units,id'],
-
-            'auditor_lead_id' => [
-                'required',
-                Rule::exists('users', 'id')->where(function ($query) {
-                    $query->where('type', 'auditor');
-                }),
-            ],
-
-            'auditors_ids' => ['required', 'array'],
-
-            'auditors_ids.*' => [
-                Rule::exists('users', 'id')->where(function ($query) {
-                    $query->where('type', 'auditor');
-                }),
-            ],
-
             'start_audit' => ['required', 'date'],
             'end_audit' => ['required', 'date', 'after_or_equal:start_audit'],
         ];
@@ -77,6 +60,12 @@ class AuditSMPDataValidation
         ];
     } 
 
+    public static function rulesForUpdateSelfAudit($id){
+        return [
+            "pencapaian_nilai_kriteria_self_$id" => ['required', 'numeric', 'between:0,2'],
+        ];
+    } 
+
     public static function messages($id = null)
     {
         $messages = [
@@ -101,6 +90,10 @@ class AuditSMPDataValidation
             $messages["pencapaian_nilai_kriteria_$id.required"] = 'Pencapaian nilai kriteria harus diisi.';
             $messages["pencapaian_nilai_kriteria_$id.numeric"] = 'Pencapaian nilai kriteria harus berupa angka.';
             $messages["pencapaian_nilai_kriteria_$id.between"] = 'Pencapaian nilai kriteria harus antara 0 dan 2.';
+
+            $messages["pencapaian_nilai_kriteria_self_$id.required"] = 'Pencapaian nilai kriteria harus diisi.';
+            $messages["pencapaian_nilai_kriteria_self_$id.numeric"] = 'Pencapaian nilai kriteria harus berupa angka.';
+            $messages["pencapaian_nilai_kriteria_self_$id.between"] = 'Pencapaian nilai kriteria harus antara 0 dan 2.';
 
             $messages["due_date_$id.date"] = 'Tanggal jatuh tempo harus berupa tanggal yang valid.';
             $messages["due_date_$id.after_or_equal"] = 'Tanggal jatuh tempo harus sama dengan atau setelah hari ini.';

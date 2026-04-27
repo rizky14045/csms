@@ -30,7 +30,15 @@
                                     <input type="month" class="form-control d-inline" id="month" name="month" value="{{ $request['month'] ?? '' }}">
                                 </div>
                                 <div class="mb-3 col-md-3">
-                                    <input type="text" class="form-control d-inline" id="unit_code" placeholder="Kode Unit" name="unit_code" value="{{ $request['unit_code'] ?? '' }}">
+                                    <select name="unit_code" id="unit_code" class="form-control d-inline">
+                                        <option value="">-- Pilih Unit --</option>
+                                        @foreach($all_units as $unit)
+                                            <option value="{{ $unit['unit_code'] }}" 
+                                                {{ (isset($request['unit_code']) && $request['unit_code'] == $unit['unit_code']) ? 'selected' : '' }}>
+                                                {{ $unit['name'] }} ({{ $unit['unit_code'] }})
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="button-search">
                                     <button type="submit" class="btn btn-primary d-inline">Cari</button>
