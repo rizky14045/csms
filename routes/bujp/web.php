@@ -27,7 +27,7 @@ Route::prefix('bujp')->group(function () {
             Route::post('/create', [AssesmentController::class, 'store'])->name('bujp.assesment.store');
             Route::get('/{assesment}/edit', [AssesmentController::class, 'edit'])->name('bujp.assesment.edit');
             Route::patch('/{assesment}/update', [AssesmentController::class, 'update'])->name('bujp.assesment.update');
-            Route::delete('/{assesment}/destroy', [AssesmentController::class, 'destroy'])->name('bujp.assesment.destroy');
+            // Route::delete('/{assesment}/destroy', [AssesmentController::class, 'destroy'])->name('bujp.assesment.destroy');
             Route::patch('/{assesment}/send', [AssesmentController::class, 'send'])->name('bujp.assesment.send');
             Route::get('/{assesment}/show', [AssesmentController::class, 'show'])->name('bujp.assesment.show');
             Route::get('/{assesment}/preview', [AssesmentController::class, 'preview'])->name('bujp.assesment.preview');

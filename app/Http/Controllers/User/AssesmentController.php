@@ -149,16 +149,43 @@ class AssesmentController extends Controller
         return redirect()->route('user.assesment.index');
     }
 
-    public function updateQuestion(Request $request, SignQuestionAssesment $question){
-        $validator = $this->validator($request->all(), AssesmentValidation::rulesForUpdateQuestionUnit($question->id), AssesmentValidation::messages($question->id));
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+    public function updateQuestion(Request $request, SignQuestionAssesment $question)
+    {
+        try {
+
+            // ================= VALIDATION =================
+            $validator = $this->validator(
+                $request->all(),
+                AssesmentValidation::rulesForUpdateQuestionUnit($question->id),
+                AssesmentValidation::messages($question->id)
+            );
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // ================= PROCESS =================
+            $updated = $this->assesmentService->updateQuestionByUnit($request, $question);
+
+            // ================= SUCCESS =================
+            return response()->json([
+                'success' => true,
+                'data' => $question, // penting untuk update UI
+                'message' => 'Data berhasil diperbarui'
+            ], 200);
+
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui data',
+                'error' => $th->getMessage()
+            ], 500);
+
         }
-
-        $this->assesmentService->updateQuestionByUnit($request, $question);
-
-        Alert::success('Update Berhasil', 'Assesment berhasil diupdate!');
-        return redirect()->route('user.assesment.show',['assesment'=>$question->assesment_id,'signCategoryId'=>$question->sign_category_id]);
     }
 
     public function revisionQuestion(Request $request, SignQuestionAssesment $question){

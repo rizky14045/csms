@@ -47,7 +47,7 @@ class DashboardFasumController extends Controller
                         ->orderBy('name', 'asc')
                         ->get();
             return view('fasum.dashboard', [
-                'units'   => $units,
+                'all_units'   => $units,
                 'fasum'   => $fasum,
                 'unitId'  => $unitId,
                 'fasumTypes' => $fasumTypes,
