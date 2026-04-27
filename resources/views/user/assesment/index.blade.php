@@ -68,7 +68,7 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$assesment->bujp_profile->npwp}}</td>
-                                    <td>{{$assesment->vendor->name}}</td>
+                                    <td>{{$assesment->vendor->name}} @if($assesment->send_status == 3) <br> <span style="padding: 2px; background-color:red;color:white; border-radius: 4px">Proses Revisi</span> @endif</td>
                                     <td>{{$assesment->contract}}</td>
                                     <td>{{$assesment->year}}</td>
                                     <td>{{$assesment->triwulan}}</td>
@@ -76,8 +76,6 @@
                                     <td>{{ \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') }}</td>
                                     <td>{{ $assesment->send_date_pusat ? \Carbon\Carbon::parse($assesment->send_date_pusat)->format('d-m-Y') : '-' }}</td>
                                     <td>
-                                        @if($assesment->send_status == 3) <span style="padding: 2px; background-color:red;color:white; border-radius: 4px">Proses Revisi</span> 
-                                        @else
                                         @if ($assesment->send_status == 1)
                                             @can('send.assesment.bujp.unit')
                                             @if(count($assesment->get_invalid_items_question_by_unit) == 0)
@@ -95,7 +93,6 @@
                                             <a href="{{route('user.assesment.preview',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
                                             <a href="{{route('user.assesment.report',['assesment'=>$assesment->id])}}" class="btn btn-success btn-sm">Report</a>
                                         
-                                        @endif
                                         @endif
                                         
                                     </td>

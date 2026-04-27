@@ -71,7 +71,7 @@ class AuditSMPScoreController extends Controller
             return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk memperbarui data ini.');
         }
 
-        if($audit_score->auditData->status != 0){
+        if($audit_score->auditData->status != 1){
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat dikirim');
         }
 
@@ -111,12 +111,11 @@ class AuditSMPScoreController extends Controller
         }
 
         if (!$checkAuditor) {
-            dd("masuk sini2");
             Alert::error('Akses Ditolak', 'Anda tidak memiliki izin untuk memperbarui data ini!');
             return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk memperbarui data ini.');
         }
 
-        if($audit_score->auditData->status != 0){
+        if($audit_score->auditData->status != 1){
             dd("masuk sini3");
             Alert::error('Akses Ditolak', 'Data audit yang sudah selesai tidak dapat diperbarui!');
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat diperbarui!');
@@ -142,11 +141,11 @@ class AuditSMPScoreController extends Controller
             return redirect()->back()->with('error', 'Hanya ketua auditor yang dapat mengirim data audit');
         }
 
-        if($audit->status != 0){
+        if($audit->status != 1){
             Alert::error('Akses Ditolak', 'Data audit yang sudah selesai tidak dapat dikirim!');
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat dikirim');
         }
-        $this->auditSMPDataService->sendAuditData($audit);
+        $this->auditSMPDataService->sendAuditData($audit, 2);
         
         Alert::success('Data Terkirim', 'Data audit berhasil dikirim!');
         return redirect()->route('admin.audit-smp-score.index')->with('success', 'Data audit berhasil dikirim');

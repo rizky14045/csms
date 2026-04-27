@@ -20,10 +20,18 @@ use App\Models\ReportEmployee;
 use App\Models\ResponsiblePerson;
 use App\Models\SecurityExternal;
 use App\Models\SecurityForm;
+use App\Services\Unit\UnitService;
 use Illuminate\Http\Request;
 
 class MonthlyAuditController extends Controller
 {
+    protected $unitService;
+
+    public function __construct(UnitService $unitService)
+    {
+        $this->unitService = $unitService;
+    }
+
     public function index(Request $request)
     {
         $query = MonthlyReport::query();
@@ -53,6 +61,9 @@ class MonthlyAuditController extends Controller
             ->with('detailUnit')
             ->latest()
             ->paginate(25);
+
+        $result = $this->unitService->getAllUnit(0, false);
+        $data['all_units'] = getData($result);
 
         $data['request'] = $request->all();
 

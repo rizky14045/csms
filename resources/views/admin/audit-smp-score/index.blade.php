@@ -56,33 +56,11 @@
                                         @can('view.audit.smp.score.admin')
                                         <a href="{{route('admin.audit-smp-score.show',['audit'=>$audit->id])}}" class="btn btn-primary btn-sm">View</a>
                                         @endcan
-                                        @if($audit->status == 0)
+                                        @if($audit->status == 1)
                                         @can('edit.audit.smp.score.admin')
                                         <a href="{{route('admin.audit-smp-score.edit',['audit'=>$audit->id])}}" class="btn btn-warning btn-sm">Edit</a>
                                         @endcan
-                                        @can('delete.audit.smp.score.admin')
-                                        <form
-                                            id="delete-audit-{{ $audit->id }}"
-                                            action="{{route('admin.audit-smp-score.destroy',['audit'=>$audit->id])}}"
-                                            method="POST"
-                                            class="d-inline"
-                                        >
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button
-                                                type="button"
-                                                class="btn btn-danger btn-sm"
-                                                onclick="confirmDelete(
-                                                    'delete-audit-{{ $audit->id }}',
-                                                    'Audit akan dihapus.'
-                                                )"
-                                            >
-                                                Hapus
-                                            </button>
-                                        </form>
-                                        @endcan
-                                        @if($audit->auditor_lead_id == auth()->user()->id && $audit->status == 0)
+                                        @if($audit->auditor_lead_id == auth()->user()->id && $audit->status == 1)
                                         <form
                                             id="send-audit-{{ $audit->id }}"
                                             action="{{route('admin.audit-smp-score.send',['audit'=>$audit->id])}}"

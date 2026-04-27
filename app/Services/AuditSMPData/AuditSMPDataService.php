@@ -103,7 +103,6 @@ class AuditSMPDataService
         try {
             $audit = AuditSmpData::create([
                 'unit_id'   => $data['unit_id'],
-                'auditor_lead_id' => $data['auditor_lead_id'],
                 'start_audit' => $data['start_audit'],
                 'end_audit' => $data['end_audit'],
                 'created_by' => auth()->id(),
@@ -178,21 +177,6 @@ class AuditSMPDataService
                         ]);
                     }
                 }
-            }
-
-            $auditors = [];
-            foreach ($data['auditors_ids'] as $auditorId) {
-                $auditors[] = [
-                    'audit_smp_data_id' => $audit->id,
-                    'user_id' => $auditorId,
-                    'created_by' => auth()->id(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-
-            if (!empty($auditors)) {
-                DB::table('auditors')->insert($auditors);
             }
 
             DB::commit();
@@ -365,7 +349,7 @@ class AuditSMPDataService
         }
     }
 
-    public function sendAuditData(AuditSmpData $audit)
+    public function sendAuditData(AuditSmpData $audit, $status = 1)
     {
         DB::beginTransaction();
 
@@ -376,7 +360,7 @@ class AuditSMPDataService
             ];
 
             $audit->update([
-                'status' => 1,
+                'status' => $status,
                 'updated_by' => auth()->id(),
             ]);
 
@@ -507,6 +491,55 @@ class AuditSMPDataService
             $this->logService->log(
                 'audit.achievement.update',
                 'Failed to update audit achievement',
+                500,
+                [
+                    'error' => $e->getMessage(),
+                    'payload' => $data,
+                ]
+            );
+
+            throw $e;
+        }
+    }
+
+    public function updateSelfAudit(Request $request, AuditSMPScore $audit_score, array $data)
+    {
+        DB::beginTransaction();
+
+        try {
+            $before = $audit_score->toArray();
+
+            $updateData = [
+                'pencapaian_nilai_kriteria_self' => $data['pencapaian_nilai_kriteria_self_' . $audit_score->id],
+                'updated_by' => auth()->id(),
+            ];
+
+            $audit_score->update($updateData);
+
+            DB::commit();
+
+            $this->logService->log(
+                'audit.self.update',
+                'Update audit self success',
+                200,
+                [
+                    'before' => $before,
+                    'after'  => $audit_score->toArray(),
+                ]
+            );
+
+            return JsonResponse::success(
+                $audit_score,
+                'Audit self updated',
+                200
+            );
+
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->logService->log(
+                'audit.self.update',
+                'Failed to update audit self',
                 500,
                 [
                     'error' => $e->getMessage(),

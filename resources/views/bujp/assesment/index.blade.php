@@ -48,6 +48,7 @@
                         </form>
                     </div>
                     <div class="button-add col-md-12">
+                        @if($canEdit)
                         @can('create.assesment.bujp')
                         <div class="d-flex justify-content-end pe-3 pt-3 col-md-6">
                             <a href="{{ route('bujp.assesment.create', ['unit' => request('unit')]) }}" class="btn btn-primary">
@@ -55,6 +56,7 @@
                             </a>
                         </div>
                         @endcan
+                        @endif
                     </div>
                 </div>
                 <div class="table-responsive">
