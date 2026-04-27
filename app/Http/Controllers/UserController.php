@@ -82,7 +82,6 @@ class UserController extends Controller
             $units = Unit::select('id','name')->where('type', $unit->type)->get();
             $data['units'] = $units;
         }
-
         return view('users.edit', $data);
     }
 

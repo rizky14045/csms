@@ -10,7 +10,7 @@
 
     <div class="card">
         <div class="card-body">
-                 <form action="{{ route('users.update', $user->id) }}" method="POST">
+            <form action="{{ route('users.update', $user->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -38,30 +38,22 @@
                         @endforeach
                     </select>
                 </div>
-
-                {{-- Tipe Unit --}}
-                <div class="mb-3" id="typeUnitContainer" style="display: {{ $user->type == 'user' ? 'block' : 'none' }};">
-                    <label>Tipe Unit</label>
-                    <select id="typeUnitSelect" name="type_unit" class="form-select">
-                        <option value="">Pilih Tipe Unit</option>
-                        <option value="Pusat" {{ $type_unit == 'Pusat' ? 'selected' : '' }}>Pusat</option>
-                        <option value="Unit" {{ $type_unit == 'Unit' ? 'selected' : '' }}>Unit</option>
-                    </select>
-                </div>
-
                 {{-- Unit --}}
-                <div class="mb-3" id="unitContainer" style="display: {{ $user->type == 'user' ? 'block' : 'none' }};">
+                <div class="mb-3" id="unitContainer"
+                    style="display: {{ $user->type == 'user' && in_array(optional($user->roles->first())->id, [2, 3]) ? 'block' : 'none' }}">
+
                     <label>Unit</label>
+
                     <select id="unitSelect" name="unit_id" class="form-select">
-                        @if ($units)
+
+                        @isset($units)
                             @foreach ($units as $unit)
                                 <option value="{{ $unit->id }}" {{ $user->unit_id == $unit->id ? 'selected' : '' }}>
                                     {{ $unit->name }}
                                 </option>
-                                
                             @endforeach
-                        @endif
-                        
+                        @endisset
+
                     </select>
                 </div>
                 <div class="text-end">
@@ -81,24 +73,31 @@
         $(document).ready(function() {
 
             const $role = $('#roleSelect');
-            const $typeUnitContainer = $('#typeUnitContainer');
-            const $typeUnit = $('#typeUnitSelect');
-
             const $unitContainer = $('#unitContainer');
             const $unit = $('#unitSelect');
 
-            // ================= TOGGLE TYPE UNIT =================
-            function toggleTypeUnit() {
+            // ================= TOGGLE UNIT =================
+            function toggleUnitByRole() {
+                const roleValue = parseInt($role.val());
 
-                if (parseInt($role.val()) === 3) {
-                    $typeUnitContainer.show();
-                    $typeUnit.attr('required', true);
-                } else {
-                    $typeUnitContainer.hide();
+                // reset option hanya saat role diganti
+                $unit.html('<option value="">Pilih Unit</option>');
+                $unitContainer.hide();
+
+                // Role 2 = Pusat
+                if (roleValue === 2) {
+                    fetchUnits('Pusat');
+                }
+
+                // Role 3 = Unit
+                else if (roleValue === 3) {
+                    fetchUnits('Unit');
+                }
+
+                // selain itu hide unit
+                else {
+                    $unit.removeAttr('required');
                     $unitContainer.hide();
-
-                    $typeUnit.removeAttr('required').val('');
-                    $unit.html('<option value="">Pilih Unit</option>');
                 }
             }
 
@@ -111,6 +110,8 @@
                     return;
                 }
 
+                $unitContainer.show();
+                $unit.attr('required', true);
                 $unit.html('<option value="">Loading...</option>');
 
                 $.ajax({
@@ -121,24 +122,24 @@
                     },
 
                     success: function(res) {
-
                         console.log('Units:', res);
 
                         $unit.html('<option value="">Pilih Unit</option>');
 
                         if (Array.isArray(res) && res.length > 0) {
 
-                            // 🔥 FIX UTAMA: paksa tampil
-                            $unitContainer.show();
-
                             res.forEach(unit => {
                                 $unit.append(
-                                `<option value="${unit.id}">${unit.name}</option>`);
+                                    `<option value="${unit.id}">${unit.name}</option>`
+                                );
                             });
 
+                            // auto select kalau cuma 1 data
                             if (res.length === 1) {
                                 $unit.val(res[0].id);
                             }
+
+                            $unitContainer.show();
 
                         } else {
                             $unitContainer.hide();
@@ -153,19 +154,14 @@
             }
 
             // ================= EVENT =================
+            // hanya trigger saat role berubah
             $role.on('change', function() {
-                toggleTypeUnit();
+                toggleUnitByRole();
             });
 
-            $typeUnit.on('change', function() {
-                fetchUnits($(this).val());
-            });
-
-            // ================= INIT =================
-            toggleTypeUnit();
+            // TIDAK pakai INIT
+            // toggleUnitByRole();
 
         });
     </script>
 @endsection
-
-

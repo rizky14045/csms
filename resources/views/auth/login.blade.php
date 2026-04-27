@@ -4,7 +4,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Login CSMS - PLN Nusantara Power</title>
+    <title>Login Sidak - PLN Nusantara Power</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -24,15 +24,16 @@
     <div class="account-page">
         <div class="container-fluid p-0">
             <div class="row align-items-center g-0">
-                <div class="col-xl-7">
-                    <div class="account-page-bg p-md-5 p-4">
-                        <div class="text-center">
-                            <h3 class="text-dark mb-3 pera-title">Quick, Effective, and Productive With Tapeli Admin
-                                Dashboard</h3>
-                            <div class="auth-image">
-                                <img src="assets/images/authentication.svg" class="mx-auto img-fluid" alt="images">
-                            </div>
-                        </div>
+                <div class="col-xl-7 p-0">
+                    <div class="account-page-bg position-relative h-100">
+                        <img src="{{ asset('PLNMKR.jpg') }}" alt="images" class="w-100 h-100"
+                            style="object-fit: cover; min-height: 100vh;">
+
+                        {{-- <div class="position-absolute top-50 start-50 translate-middle text-center text-white px-4">
+                            <h3 class="mb-3 pera-title">
+                                Quick, Effective, and Productive With Tapeli Admin Dashboard
+                            </h3>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="col-xl-5">
@@ -49,7 +50,9 @@
                                         @csrf
                                         <div class="form-group mb-3">
                                             <label for="emailaddress" class="form-label">Email</label>
-                                            <input class="form-control" type="email" id="emailaddress" value="{{ old('email') }}" required placeholder="Masukan email" name="email">
+                                            <input class="form-control" type="email" id="emailaddress"
+                                                value="{{ old('email') }}" required placeholder="Masukan email"
+                                                name="email">
                                             @if ($errors->has('email'))
                                                 <div class="error text-danger">{{ $errors->first('email') }}</div>
                                             @endif
@@ -81,7 +84,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-12 text-center mt-2">
-                                                <a href="{{ route('password.request') }}" class="text-muted">Forgot your password?</a>
+                                                <a href="{{ route('password.request') }}" class="text-muted">Forgot your
+                                                    password?</a>
                                             </div>
                                         </div>
                                     </form>

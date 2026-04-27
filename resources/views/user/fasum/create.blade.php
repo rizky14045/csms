@@ -47,10 +47,14 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label for="type" class="form-label">Tipe</label>
-                                <select name="type" id="type" class="form-select">
-                                    <option value="Damkar">Damkar</option>
-                                    <option value="Rumah Sakit">Rumah Sakit</option>
-                                    <option value="Kantor Polisi">Kantor Polisi</option>
+                                <select name="type_id" id="type" class="form-select">
+                                    <option value="">Pilih Tipe Fasilitas Umum</option>
+                                    @foreach ($types as $type)
+                                        <option value="{{ $type->id }}"
+                                            {{ old('type') == $type->id ? 'selected' : '' }}>
+                                            {{ $type->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                                 @if ($errors->has('type'))
                                     <div class="error text-danger">{{ $errors->first('type') }}</div>

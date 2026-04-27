@@ -342,6 +342,69 @@ class MonthlyAuditController extends Controller
         $data['foreignStaff'] = (clone $foreign)->where('position', 'staff')->get()->count();
         $data['foreign'] = (clone $foreign)->get()->count();
 
+         /*
+        |--------------------------------------------------------------------------
+        | Total All
+        |--------------------------------------------------------------------------
+        */
+        $total = 
+            ($data['employee']->employee_man ?? 0) +
+            ($data['employee']->employee_woman ?? 0) +
+            ($data['employee']->student_man ?? 0) +
+            ($data['employee']->student_woman ?? 0) +
+            $data['outsources']->sum('total') +
+            $data['securityExternal'] +
+            $data['foreign'];
+
+        /*
+        |--------------------------------------------------------------------------
+        | Total Man
+        |--------------------------------------------------------------------------
+        */
+        $totalMan =
+            ($data['employee']->employee_man ?? 0) +
+            ($data['employee']->student_man ?? 0) +
+            $data['outsources']->sum('man') +
+
+            (clone $securityExternal)
+                ->where('note', 'TNI')
+                ->where('gender', 'Pria')
+                ->count() +
+
+            (clone $securityExternal)
+                ->where('note', 'Polri')
+                ->where('gender', 'Pria')
+                ->count() +
+
+            $security->where('gender', 'Pria')->count();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Total Woman
+        |--------------------------------------------------------------------------
+        */
+        $totalWoman =
+            ($data['employee']->employee_woman ?? 0) +
+            ($data['employee']->student_woman ?? 0) +
+            $data['outsources']->sum('woman') +
+
+            (clone $securityExternal)
+                ->where('note', 'TNI')
+                ->where('gender', 'Wanita')
+                ->count() +
+
+            (clone $securityExternal)
+                ->where('note', 'Polri')
+                ->where('gender', 'Wanita')
+                ->count() +
+
+        $security->where('gender', 'Wanita')->count();
+
+        $data['totalAll'] = $total;
+        $data['totalAllMan'] = $totalMan;
+        $data['totalAllWoman'] = $totalWoman;
+
+
         $data['persons'] = MonthlyResponsiblePerson::with('person')->where('monthly_report_id', $monthlyId)->get();
         $data['securities'] = MonthlySecurityExternal::with('security')->where('monthly_report_id', $monthlyId)->get();
         $data['agreements'] = MonthlyAgreementExternal::with('agreement')->where('monthly_report_id', $monthlyId)->get();

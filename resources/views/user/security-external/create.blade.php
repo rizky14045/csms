@@ -40,6 +40,18 @@
                             @enderror
                         </div>
                         <div class="form-group mb-3">
+                            <label for="gender" class="form-label">Jenis Kelamin</label>
+                            <select class="form-select" aria-label="Default select example" name="gender" required>
+                                <option value="">Pilih Jenis Kelamin</option>
+                                <option value="Pria" {{old('gender') == 'Pria' ? 'selected' : ''}}>Pria</option>
+                                <option value="Perempuan" {{old('gender') == 'Perempuan' ? 'selected' : ''}}>Perempuan</option>
+                            </select>
+                            @error('gender')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-3">
                             <label for="instansi" class="form-label">Instansi</label>
                             <input class="form-control" type="text" id="instansi" required="" placeholder="Masukan instansi" name="instansi" value="{{old('instansi')}}">
                             @error('instansi')
