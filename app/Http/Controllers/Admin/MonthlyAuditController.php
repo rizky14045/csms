@@ -11,6 +11,7 @@ use App\Models\FormAttribute;
 use App\Models\InternalVulnerability;
 use App\Models\LaporanBulananBiaya;
 use App\Models\MonthlyAgreementExternal;
+use App\Models\MonthlyGangguan;
 use App\Models\MonthlyReport;
 use App\Models\MonthlyResponsiblePerson;
 use App\Models\MonthlySecurityExternal;
@@ -75,6 +76,8 @@ class MonthlyAuditController extends Controller
         $data['monthlyId'] = $monthlyId;
         $data['monthlyReport'] = MonthlyReport::where('id', $monthlyId)->select('report_date')->first();
         $data['employee'] = ReportEmployee::where('monthly_report_id', $monthlyId)->first(); 
+        $gangguan = MonthlyGangguan::where('monthly_report_id', $monthlyId)->first();
+        $data['gangguan'] = $gangguan;
         $data['outsources'] = OutsourceEmployee::where('monthly_report_id', $monthlyId)->latest()->get();
         $security = SecurityForm::join('securities', 'security_forms.security_id','securities.id')->where('monthly_report_id', $monthlyId);
         $data['securityKomandan'] = (clone $security)->where('securities.position', 'Komandan')->get()->count();

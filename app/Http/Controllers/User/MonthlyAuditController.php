@@ -13,6 +13,7 @@ use App\Models\InternalVulnerability;
 use App\Models\LaporanBulananBiaya;
 use App\Models\MainSecurityProgram;
 use App\Models\MonthlyAgreementExternal;
+use App\Models\MonthlyGangguan;
 use App\Models\MonthlyMainSecurityProgram;
 use App\Models\MonthlyReport;
 use App\Models\MonthlyResponsiblePerson;
@@ -44,7 +45,7 @@ class MonthlyAuditController extends Controller
         // ===============================
         // FILTER DEFAULT
         // ===============================
-        $query->where('send_status', true);
+        // $query->where('send_status', false);
 
         if ($request->month) {
             $query->where('report_date', $request->month);
@@ -159,6 +160,11 @@ class MonthlyAuditController extends Controller
                 'monthly_report_id' => $report->id,
                 'user_id' => $userId,
             ]);
+            MonthlyGangguan::create([
+                'monthly_report_id' => $report->id,
+                'user_id' => $userId,
+            ]);
+
             if ($administrations) {
                 foreach ($administrations as $administration) {
                     FormAttribute::create([
@@ -325,6 +331,8 @@ class MonthlyAuditController extends Controller
 
         $data['monthlyId'] = $monthlyId;
         $data['monthlyReport'] = MonthlyReport::where('id', $monthlyId)->select('report_date')->first();
+        $gangguan = MonthlyGangguan::where('monthly_report_id', $monthlyId)->first();
+        $data['gangguan'] = $gangguan;
         $data['employee'] = ReportEmployee::where('monthly_report_id', $monthlyId)->first(); 
         $data['outsources'] = OutsourceEmployee::where('monthly_report_id', $monthlyId)->latest()->get();
         $security = SecurityForm::join('securities', 'security_forms.security_id','securities.id')->where('monthly_report_id', $monthlyId);
@@ -336,6 +344,7 @@ class MonthlyAuditController extends Controller
         $data['securityPolri'] = (clone $securityExternal)->where('note', 'Polri')->get()->count();
         $data['securityTNI'] = (clone $securityExternal)->where('note', 'TNI')->get()->count();
         $data['securityExternal'] = (clone $securityExternal)->get()->count();
+
 
         $foreign = ForeignWorker::where('monthly_report_id', $monthlyId);
         $data['foreignAhli'] = (clone $foreign)->where('position', 'Tenaga Ahli')->get()->count();

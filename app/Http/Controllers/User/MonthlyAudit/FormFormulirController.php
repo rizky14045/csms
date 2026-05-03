@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User\MonthlyAudit;
 use App\Http\Controllers\Controller;
 use App\Http\Helper\BlockMonthly;
 use App\Models\ForeignWorker;
+use App\Models\MonthlyGangguan;
 use App\Models\MonthlyReport;
 use App\Models\MonthlySecurityExternal;
 use App\Models\OutsourceEmployee;
@@ -78,7 +79,8 @@ class FormFormulirController extends Controller
         |--------------------------------------------------------------------------
         */
         $foreign = ForeignWorker::where('monthly_report_id', $monthlyId);
-
+        $gangguan = MonthlyGangguan::where('monthly_report_id', $monthlyId)->first();
+        $data['gangguan'] = $gangguan;
         $data['foreignAhli'] = (clone $foreign)
             ->where('position', 'Tenaga Ahli')
             ->count();
@@ -199,6 +201,33 @@ class FormFormulirController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
+            Alert::error('Update gagal', 'Data gagal di update!');
+            return redirect()->back();
+        }
+    }
+
+    public function updateGangguan(Request $request,$monthlyId){
+
+        try {
+
+            DB::beginTransaction();
+            $userId = Auth::guard('web')->user()->id;
+            $gangguan = MonthlyGangguan::where('monthly_report_id', $monthlyId)->first();
+            $gangguan->kriminal = $request->kriminal;
+            $gangguan->politis = $request->politis;
+            $gangguan->kebakaran = $request->kebakaran;
+            $gangguan->bencana_alam = $request->bencana_alam;
+            $gangguan->other = $request->other;
+            $gangguan->save();
+
+            DB::commit();
+            Alert::success('Update berhasil', 'Data berhasil di update!');
+            return redirect()->back();
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollback();
+            dd($th);
             Alert::error('Update gagal', 'Data gagal di update!');
             return redirect()->back();
         }

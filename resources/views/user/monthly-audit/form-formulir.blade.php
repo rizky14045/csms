@@ -357,44 +357,78 @@
                                             </div>
 
                                             <!-- Section 6 -->
-                                            <div class="mb-3">
-                                                <h6 class="fw-bold">6. GANGGUAN YANG TERJADI</h6>
-                                                <table class="table table-bordered text-center align-middle">
-                                                    <thead class="table-light">
-                                                        <tr>
-                                                            <th>Jenis Gangguan</th>
-                                                            <th>Total Orang</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>6.1 Bersifat Kriminal</td>
-                                                            <td>0 Kali</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>6.2 Bersifat Politis</td>
-                                                            <td>0 Kali</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>6.3 Kebakaran</td>
-                                                            <td>0 Kali</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>6.4 Bencana Alam</td>
-                                                            <td>0 Kali</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>6.5 Lain-lain</td>
-                                                            <td>0 Kali</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                            <form
+                                                action="{{ route('user.monthly-audit.form-formulir.updateGangguan', $monthlyId) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <div class="mb-3">
+                                                    <h6 class="fw-bold">6. GANGGUAN YANG TERJADI</h6>
+                                                    <table class="table table-bordered text-center align-middle">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Jenis Gangguan</th>
+                                                                <th>Total Jumlah</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>6.1 Bersifat Kriminal</td>
+                                                                <td>
+                                                                    <input type="number" name="kriminal"
+                                                                        class="form-control text-center" min="0"
+                                                                        value="{{ $gangguan->kriminal ?? 0 }}" required>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>6.2 Bersifat Politis</td>
+                                                                <td>
+                                                                    <input type="number" name="politis"
+                                                                        class="form-control text-center" min="0"
+                                                                        value="{{ $gangguan->politis ?? 0 }}" required>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>6.3 Kebakaran</td>
+                                                                <td>
+                                                                    <input type="number" name="kebakaran"
+                                                                        class="form-control text-center" min="0"
+                                                                        value="{{ $gangguan->kebakaran ?? 0 }}" required>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>6.4 Bencana Alam</td>
+                                                                <td>
+                                                                    <input type="number" name="bencana_alam"
+                                                                        class="form-control text-center" min="0"
+                                                                        value="{{ $gangguan->bencana_alam ?? 0 }}"
+                                                                        required>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>6.5 Lain-lain</td>
+                                                                <td>
+                                                                    <input type="number" name="other"
+                                                                        class="form-control text-center" min="0"
+                                                                        value="{{ $gangguan->other ?? 0 }}" required>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <div class="d-flex justify-content-end">
+                                                    <button type="submit" class="btn btn-primary">Simpan Gangguan</button>
+                                                </div>
+                                            </form>
 
                                             <!-- Final Total -->
                                             <div class="fw-bold">
-                                                <p>JUMLAH TOTAL (1+2+3+4): <span>{{ $totalAll }} Orang</span> (Pria: <span>{{ $totalAllMan }} Orang</span>)
-                                                    (Wanita: <span>{{ $totalAllWoman }} Orang</span>)</p>
+                                                <p>JUMLAH TOTAL (1+2+3+4): <span>{{ $totalAll }} Orang</span> (Pria:
+                                                    <span>{{ $totalAllMan }} Orang</span>)
+                                                    (Wanita: <span>{{ $totalAllWoman }} Orang</span>)
+                                                </p>
                                             </div>
                                 </div>
 
