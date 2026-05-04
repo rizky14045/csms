@@ -303,29 +303,29 @@
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th>Jenis Gangguan</th>
-                                                                <th>Total Orang</th>
+                                                                <th>Total Jumlah</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr>
                                                                 <td>6.1 Bersifat Kriminal</td>
-                                                                <td>0 Kali</td>
+                                                                <td>{{ $gangguan->kriminal ?? 0 }} Kali</td>
                                                             </tr>
                                                             <tr>
                                                                 <td>6.2 Bersifat Politis</td>
-                                                                <td>0 Kali</td>
+                                                                <td>{{ $gangguan->politik ?? 0 }} Kali</td>
                                                             </tr>
                                                             <tr>
                                                                 <td>6.3 Kebakaran</td>
-                                                                <td>0 Kali</td>
+                                                                <td>{{ $gangguan->kebakaran ?? 0 }} Kali</td>
                                                             </tr>
                                                             <tr>
                                                                 <td>6.4 Bencana Alam</td>
-                                                                <td>0 Kali</td>
+                                                                <td>{{ $gangguan->bencana_alam ?? 0 }} Kali</td>
                                                             </tr>
                                                             <tr>
                                                                 <td>6.5 Lain-lain</td>
-                                                                <td>0 Kali</td>
+                                                                <td>{{ $gangguan->other ?? 0 }} Kali</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>

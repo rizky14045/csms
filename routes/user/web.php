@@ -97,6 +97,7 @@ Route::prefix('user')->group(function () {
             Route::middleware(['monthly-take-over'])->group(function () {    
                 Route::get('/form-formulir/{monthlyId}', [FormFormulirController::class, 'index'])->name('user.monthly-audit.form-formulir.index');
                 Route::post('/form-formulir/{monthlyId}', [FormFormulirController::class, 'saveFormulir'])->name('user.monthly-audit.form-formulir.saveFormulir');
+                Route::put('/form-formulir/{monthlyId}', [FormFormulirController::class, 'updateGangguan'])->name('user.monthly-audit.form-formulir.updateGangguan');
 
                 Route::get('/security-form/{monthlyId}', [SecurityFormController::class, 'index'])->name('user.monthly-audit.security-form.index');
                 Route::post('/security-form/{monthlyId}/upload/{formId}', [SecurityFormController::class, 'upload'])->name('user.monthly-audit.security-form.upload');
