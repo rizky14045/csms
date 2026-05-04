@@ -76,23 +76,47 @@
                                     <td>{{$marturity->semester}}</td>
                                     <td>{{ $marturity->send_date ? \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') : "-" }}</td>
                                     <td>
-                                        @if ($marturity->send_status == false)
-                                            @can('view.marturity.unit')
-                                            <a href="{{route('user.marturity.show',['marturity'=>$marturity->id])}}" class="btn btn-info btn-sm">show</a>
-                                            @endcan
-                                            @can('send.marturity.unit')
-                                            <form action="{{route('user.marturity.send',['marturity'=>$marturity->id])}}" method="post" class="d-inline" id="send-marturity-{{ $marturity->id }}" onsubmit="confirmSave('send-marturity-{{ $marturity->id }}', 'Data marturity akan dikirim')">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-success btn-sm">Kirim</button>
-                                            </form>
-                                            @endcan
-                                        @else
-                                            @can('view.marturity.unit')
-                                            <a href="{{route('user.marturity.preview',['marturity'=>$marturity->id])}}" class="btn btn-info btn-sm">show</a>
-                                            @endcan
-                                        @endif
-                                      
+                                        <div style="
+                                                display:flex;
+                                                flex-wrap:wrap;
+                                                gap:6px;
+                                                justify-content:left;
+                                                align-items:center;
+                                            ">
+                                            @if ($marturity->send_status == false)
+                                                @can('view.marturity.unit')
+                                                <a href="{{route('user.marturity.show',['marturity'=>$marturity->id])}}"
+                                                    class="btn btn-info btn-sm"
+                                                    style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+                                                @endcan
+                                                @can('send.marturity.unit')
+                                                <form action="{{ route('user.marturity.send',['marturity'=>$marturity->id]) }}"
+                                                    method="post"
+                                                    style="margin:0;"
+                                                    id="send-marturity-{{ $marturity->id }}"
+                                                    onsubmit="confirmSave('send-marturity-{{ $marturity->id }}', 'Kirim marturity?')">
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <button type="submit"
+                                                            class="btn btn-success btn-sm"
+                                                            style="min-width:80px;">
+                                                        📤 Kirim
+                                                    </button>
+                                                </form>
+                                                @endcan
+                                            @else
+                                                @can('view.marturity.unit')
+                                                <a href="{{route('user.marturity.preview',['marturity'=>$marturity->id])}}"
+                                                    class="btn btn-info btn-sm"
+                                                    style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+                                                @endcan
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

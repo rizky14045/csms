@@ -141,12 +141,14 @@
                         ">
 
                     {{-- STATUS 1 --}}
-                    @if ($assesment->send_status == 1)
+                    @if ($assesment->send_status == 0 || $assesment->send_status == 3)
 
-                    @can('send.assesment.bujp.unit')
-
-                    @if(count($assesment->get_invalid_items_question_by_unit) == 0)
-                    <form action="{{route('user.assesment.send',['assesment'=>$assesment->id])}}" method="post" style="margin:0;" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
+                    <a href="{{route('bujp.assesment.show',['assesment'=>$assesment->id, 'unit' => request()->input('unit')])}}" class="btn btn-info btn-sm" style="min-width:70px;">
+                      👁 Show
+                    </a>
+                    @can('send.assesment.bujp')
+                    @if(count($assesment->get_invalid_items_question_by_bujp) == 0)
+                    <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id])}}" method="post" style="margin:0;" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
                       @csrf
                       @method('PATCH')
 
@@ -162,18 +164,14 @@
 
                     @endcan
 
-                    <a href="{{route('user.assesment.show',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm" style="min-width:70px;">
-                      👁 Show
-                    </a>
-
                     {{-- STATUS >= 2 --}}
-                    @elseif($assesment->send_status >= 2)
+                    @elseif($assesment->send_status >= 1)
 
-                    <a href="{{route('user.assesment.preview',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm" style="min-width:70px;">
+                    <a href="{{route('bujp.assesment.preview',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm" style="min-width:70px;">
                       👁 Show
                     </a>
 
-                    <a href="{{route('user.assesment.report',['assesment'=>$assesment->id])}}" class="btn btn-success btn-sm" style="min-width:80px;">
+                    <a href="{{route('bujp.assesment.report',['assesment'=>$assesment->id])}}" class="btn btn-success btn-sm" style="min-width:80px;">
                       📄 Report
                     </a>
 
