@@ -145,7 +145,11 @@ class MarturityController extends Controller
         $this->marturityService->sendMarturity($marturity);
         
         Alert::success('Berhasil Dikirim', 'Marturity berhasil dikirim!');
-        return redirect()->route('user.marturity.index');
+        if(auth()->user()->roles[0]->name == 'Pusat'){
+            return redirect()->route('admin.marturity.index');
+        } else {
+            return redirect()->route('user.marturity.index');
+        }
     }
 
     public function destroy(Marturity $marturity){

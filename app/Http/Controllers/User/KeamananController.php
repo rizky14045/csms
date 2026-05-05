@@ -28,7 +28,7 @@ class KeamananController extends Controller
     {
         $this->kpiService = $kpiService;
 
-        $this->middleware('can:view.security.kpi.unit')->only(['index', 'show']);
+        $this->middleware('can:view.security.kpi.unit')->only(['index']);
         $this->middleware('can:create.security.kpi.unit')->only(['create', 'store']);
         $this->middleware('can:edit.security.kpi.unit')->only(['edit', 'update']);
         $this->middleware('can:delete.security.kpi.unit')->only(['destroy']);
@@ -41,7 +41,7 @@ class KeamananController extends Controller
 
     public function index(){
         $user = Auth::guard('web')->user();
-        $result = $this->kpiService->getAllKpi(10, true, $user->id);
+        $result = $this->kpiService->getAllKpi(10, true, $user->unit_id, ['unit', 'getInvalidItemsNotesByUnit']);
         $data['kpis'] = getPaginate($result);
         return view('user.keamanan.index',$data);
     }
@@ -60,13 +60,14 @@ class KeamananController extends Controller
         $year = (int)$request->year;
         $semester = (int)$request->semester;
         $userId = auth()->id();
+        $unitId = auth()->user()->unit_id;
         
         // ===============================
         // ✅ 1. CEK DUPLICATE
         // ===============================
         $exists = Kpi::where('year', $year)
             ->where('semester', $semester)
-            ->where('unit_id', $userId)
+            ->where('unit_id', $unitId)
             ->exists();
 
         if ($exists) {
@@ -97,40 +98,16 @@ class KeamananController extends Controller
         $this->kpiService->createKpi($request->all());
 
         Alert::success('Tambah Berhasil', 'KPI berhasil ditambah!');
-        return redirect()->route('user.keamanan.index');
-    }
-
-    public function edit(Kpi $kpi){
-        $user = Auth::guard('web')->user();
-        if($kpi->unit_id != $user->id){
-            abort(404);
+        if(auth()->user()->roles[0]->name == 'Pusat') {
+            return redirect()->route('admin.keamanan.index');
         }
-
-        if($kpi->send_status == true){
-            Alert::warning('Warning', 'KPI sudah dikirm!');
-            return redirect()->route('user.keamanan.index');
-        }
-
-        $data['kpi'] = $kpi;
-        return view('user.keamanan.edit',$data);
-    }
-    public function update(Request $request , Kpi $kpi){
-        // Validation rules
-        $validator = $this->validator($request->all(), KpiValidation::rulesForUpdate(), KpiValidation::messages());
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $this->kpiService->updateKpi($kpi, $request->all());
-
-        Alert::success('Update Berhasil', 'KPI berhasil diubah!');
         return redirect()->route('user.keamanan.index');
     }
 
     public function show(Kpi $kpi){
 
         $user = Auth::guard('web')->user();
-        if ($kpi->unit_id !== $user->id) {
+        if ($kpi->unit_id !== $user->unit_id) {
             abort(404);
         }
 
@@ -147,7 +124,7 @@ class KeamananController extends Controller
     }
 
     public function preview(Kpi $kpi){
-        if($kpi->unit_id != Auth::guard('web')->user()->id){
+        if($kpi->unit_id != Auth::guard('web')->user()->unit_id){
             abort(404);
         }
 
@@ -164,7 +141,7 @@ class KeamananController extends Controller
     }
 
     public function send(Kpi $kpi){
-        if($kpi->unit_id != Auth::guard('web')->user()->id){
+        if($kpi->unit_id != Auth::guard('web')->user()->unit_id){
             abort(404);
         }
 
@@ -173,14 +150,23 @@ class KeamananController extends Controller
             return redirect()->route('user.keamanan.index');
         }
 
+        $kpi->load(['get_invalid_items_notes_by_unit']);
+        if($kpi->get_invalid_items_notes_by_unit == 0){
+            Alert::warning('Kirim Gagal', 'Terdapat catatan yang belum valid!');
+            return redirect()->route('user.keamanan.index');
+        }
+
         $this->kpiService->sendKpi($kpi);
 
         Alert::success('Berhasil Dikirim', 'KPI berhasil dikirim!');
+        if(auth()->user()->roles[0]->name == 'Pusat') {
+            return redirect()->route('admin.keamanan.index');
+        }
         return redirect()->route('user.keamanan.index');
     }
 
     public function destroy(Kpi $kpi){
-        if($kpi->unit_id != Auth::guard('web')->user()->id){
+        if($kpi->unit_id != Auth::guard('web')->user()->unit_id){
             abort(404);
         }
 
@@ -195,28 +181,44 @@ class KeamananController extends Controller
         return redirect()->route('user.keamanan.index');
     }
 
-    public function uploadNote(Request $request, Kpi $kpi, $areaId, KpiNote $note){
-        if($kpi->unit_id != Auth::guard('web')->user()->id){
-            abort(404);
-        }
-        if($kpi->send_status == true){
-            Alert::warning('Update Gagal', 'KPI sudah dikirm!');
-            return redirect()->back();
-        }
+    public function uploadNote(Request $request, Kpi $kpi, $areaId, KpiNote $note)
+    {
+        try {
 
-        if($note->kpi_id != $kpi->id){
-            abort(404);
+            $validator = Validator::make($request->all(), [
+                'attachment_file_'.$note->id => 'required|file|mimes:pdf|max:2048'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $file = $request->file('attachment_file_'.$note->id);
+            $filename = time().'_'.$file->getClientOriginalName();
+
+            $file->move(public_path('uploads/attachment_file_kpi_file'), $filename);
+
+            $note->update([
+                'attachment_file' => $filename
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $note->id,
+                    'attachment_file' => $filename
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        // Validation rules
-        $validator = $this->validator($request->all(), KpiValidation::rulesForUploadNote($note->id), KpiValidation::messages($note->id));
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $this->kpiService->uploadNote($request, $kpi, $areaId, $note);
-
-        Alert::success('Update Berhasil', 'KPI berhasil diupdate!');
-        return redirect()->route('user.keamanan.show',['kpi'=>$note->kpi_id,'areaId'=>$areaId]);
     }
 }
