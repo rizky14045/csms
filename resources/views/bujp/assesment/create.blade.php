@@ -1,81 +1,98 @@
 @extends('layout.app')
-@section('styles')
-<style>
-    .accordion-button::after {
-        filter: invert(100%);
-    }
-</style>
-@stop
+
 @section('content')
-    
 
-<div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-    <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Assesment</h4>
-    </div>
+<div class="py-3 d-flex justify-content-between align-items-center">
+    <h4 class="m-0">Tambah Data Assesment</h4>
 
-    <div class="text-end">
-        <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Tambah Data Assesment</li>
-        </ol>
-    </div>
+    <ol class="breadcrumb m-0">
+        <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{route('bujp.assesment.index', ['unit' => request()->query('unit')])}}">Assesment</a></li>
+        <li class="breadcrumb-item active">Create</li>
+    </ol>
 </div>
-<div class="row">
-    <div class="col-xl-12">
+
+<div style="display:flex; justify-content:center;">
+    <div style="width:100%; max-width:500px;">
+
         <div class="card">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <form action="{{route('bujp.assesment.store', ['unit' => request('unit')])}}" class="my-4" method="POST" id="form-assesment" onsubmit="confirmSave('form-assesment', 'Data akan disimpan')">
-                                    @csrf
-                                    <div class="col-xl-12">
-                                        <div class="form-group mb-3">
-                                            <label for="year" class="form-label">Tahun</label>
-                                            <input class="form-control" type="number" min="2000" id="year" required="" name="year" value="{{old('year')}}">
-                                            @error('year')
-                                                <div class="error text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label for="triwulan" class="form-label">Triwulan</label>
-                                            <select class="form-select" aria-label="Default select example" id="triwulan" name="triwulan" required>
-                                                <option value="">Pilih Triwulan</option>
-                                                <option value="1" {{old('triwulan') == '1' ? 'selected' : ''}}>1</option>
-                                                <option value="2" {{old('triwulan') == '2' ? 'selected' : ''}}>2</option>
-                                                <option value="3" {{old('triwulan') == '3' ? 'selected' : ''}}>3</option>
-                                                <option value="4" {{old('triwulan') == '4' ? 'selected' : ''}}>4</option>
-                                              </select> 
-                                            @error('triwulan')
-                                                <div class="error text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-12">
-                                                <div class="d-flex gap-3 justify-content-end">
-                                                    <a href="{{route('bujp.assesment.index', ['unit' => request()->query('unit')])}}" class="btn btn-danger"> Kembali</a>
-                                                    <button
-                                                        type="submit"
-                                                        class="btn btn-success"
-                                                    >
-                                                        Simpan
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                
-                                </form>
-                         
-                            </div> <!-- end card body -->
-                        </div><!-- end card -->
-                    </div><!-- end col -->
-                </div> <!-- end row -->
-            </div> <!-- end card body -->
-        </div><!-- end card -->
-    </div><!-- end col -->
-</div> <!-- end row -->
+
+                <form action="{{route('bujp.assesment.store', ['unit' => request('unit')])}}"
+                      method="POST"
+                      id="form-assesment"
+                      onsubmit="confirmSave('form-assesment', 'Data akan disimpan')">
+
+                    @csrf
+
+                    {{-- Tahun --}}
+                    <div class="mb-3">
+                        <label class="form-label">Tahun</label>
+
+                        <select name="year" class="form-select select2" required>
+                            <option value="">Pilih Tahun</option>
+
+                            @for ($i = date('Y'); $i >= 2010; $i--)
+                                <option value="{{ $i }}" {{ old('year') == $i ? 'selected' : '' }}>
+                                    {{ $i }}
+                                </option>
+                            @endfor
+
+                        </select>
+
+                        @error('year')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- Triwulan --}}
+                    <div class="mb-4">
+                        <label class="form-label">Triwulan</label>
+
+                        <select name="triwulan" class="form-select select2" required>
+                            <option value="">Pilih Triwulan</option>
+                            <option value="1" {{old('triwulan') == '1' ? 'selected' : ''}}>Triwulan 1</option>
+                            <option value="2" {{old('triwulan') == '2' ? 'selected' : ''}}>Triwulan 2</option>
+                            <option value="3" {{old('triwulan') == '3' ? 'selected' : ''}}>Triwulan 3</option>
+                            <option value="4" {{old('triwulan') == '4' ? 'selected' : ''}}>Triwulan 4</option>
+                        </select>
+
+                        @error('triwulan')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- ACTION --}}
+                    <div style="display:flex; justify-content:flex-end; gap:10px;">
+                        <a href="{{route('bujp.assesment.index', ['unit' => request()->query('unit')])}}"
+                           class="btn btn-outline-danger">
+                            ← Kembali
+                        </a>
+
+                        <button type="submit" class="btn btn-success">
+                            💾 Simpan
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
 @endsection
 
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('.select2').select2({
+            width: '100%',
+            placeholder: "Pilih",
+            allowClear: true
+        });
+    });
+</script>
+@stop

@@ -65,7 +65,7 @@
                                         Semua Unit
                                     </option>
 
-                                    @foreach ($units as $unit)
+                                    @foreach ($all_units as $unit)
                                         <option value="{{ $unit->id }}" {{ $unitId == $unit->id ? 'selected' : '' }}>
                                             {{ $unit->name }}
                                         </option>

@@ -15,7 +15,17 @@ class Kpi extends Model
 
     public function unit()
     {
-        return $this->hasOne(User::class, 'id', 'unit_id');
+        return $this->hasOne(Unit::class, 'id', 'unit_id');
+    }
+
+    public function getInvalidItemsNotesByUnit()
+    {
+        return $this->hasMany(
+            \App\Models\KpiNote::class,
+            'kpi_id'
+        )->where(function ($q) {
+            $q->whereNull('attachment_file');
+        });
     }
 
 }

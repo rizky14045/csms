@@ -35,7 +35,7 @@ class AssesmentController extends Controller
     }
 
     public function index(){
-        $result = $this->assesmentService->getAllAssesment(25, true, request(), ['vendor', 'bujpProfile', 'getInvalidItemsQuestionByUnit'], ">=", 1, auth()->user()->id);
+        $result = $this->assesmentService->getAllAssesment(25, true, request(), ['vendor', 'bujpProfile', 'getInvalidItemsQuestionByUnit'], ">=", 1, auth()->user()->unit_id);
         $data['assesments'] = getPaginate($result);
         return view('user.assesment.index',$data);
     }
@@ -49,7 +49,7 @@ class AssesmentController extends Controller
     }
     
     public function show(Assesment $assesment){
-        if($assesment->unit_id != auth()->user()->id){
+        if($assesment->unit_id != auth()->user()->unit_id){
             return abort(404);
         }
 
@@ -78,7 +78,7 @@ class AssesmentController extends Controller
     }
 
     public function preview(Assesment $assesment){
-        if($assesment->unit_id != auth()->user()->id){
+        if($assesment->unit_id != auth()->user()->unit_id){
             return abort(404);
         }
 
@@ -111,7 +111,7 @@ class AssesmentController extends Controller
     }
 
     public function send(Assesment $assesment){
-        if($assesment->unit_id != auth()->user()->id){
+        if($assesment->unit_id != auth()->user()->unit_id){
             return abort(404);
         }
 
@@ -134,31 +134,66 @@ class AssesmentController extends Controller
     }
 
     public function revision(Assesment $assesment){
-        if($assesment->unit_id != auth()->user()->id){
+        if($assesment->unit_id != auth()->user()->unit_id){
             return abort(404);
         }
 
         if($assesment->send_status != 1){
             Alert::error('Gagal Dikirim', 'Assesment tidak bisa dikirim!');
-            return redirect()->route('user.assesment.index');
+            if(auth()->user()->roles[0]->name == 'Pusat'){
+                return redirect()->route('admin.assesment.index');
+            } else {
+                return redirect()->route('user.assesment.index');
+            }
         }
 
         $this->assesmentService->revisionAssesmentByUnit($assesment);
 
         Alert::success('Berhasil Dikirim', 'Assesment berhasil dikirim!');
-        return redirect()->route('user.assesment.index');
+        if(auth()->user()->roles[0]->name == 'Pusat'){
+            return redirect()->route('admin.assesment.index');
+        } else {
+            return redirect()->route('user.assesment.index');
+        }
     }
 
-    public function updateQuestion(Request $request, SignQuestionAssesment $question){
-        $validator = $this->validator($request->all(), AssesmentValidation::rulesForUpdateQuestionUnit($question->id), AssesmentValidation::messages($question->id));
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+    public function updateQuestion(Request $request, SignQuestionAssesment $question)
+    {
+        try {
+
+            // ================= VALIDATION =================
+            $validator = $this->validator(
+                $request->all(),
+                AssesmentValidation::rulesForUpdateQuestionUnit($question->id),
+                AssesmentValidation::messages($question->id)
+            );
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // ================= PROCESS =================
+            $updated = $this->assesmentService->updateQuestionByUnit($request, $question);
+
+            // ================= SUCCESS =================
+            return response()->json([
+                'success' => true,
+                'data' => $question, // penting untuk update UI
+                'message' => 'Data berhasil diperbarui'
+            ], 200);
+
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui data',
+                'error' => $th->getMessage()
+            ], 500);
+
         }
-
-        $this->assesmentService->updateQuestionByUnit($request, $question);
-
-        Alert::success('Update Berhasil', 'Assesment berhasil diupdate!');
-        return redirect()->route('user.assesment.show',['assesment'=>$question->assesment_id,'signCategoryId'=>$question->sign_category_id]);
     }
 
     public function revisionQuestion(Request $request, SignQuestionAssesment $question){

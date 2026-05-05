@@ -13,7 +13,7 @@
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">BUJP / Vendor</li>
+            <li class="breadcrumb-item active">BUJP</li>
         </ol>
     </div>
 </div>
@@ -27,6 +27,7 @@
             @endcan
             <div class="card-body">  
                 <div class="table-responsive">
+                    @if($vendors->isNotEmpty())
                     <table class="table table-bordered text-center align-middle">
                         <thead class="table-light">
                             <tr>
@@ -54,6 +55,12 @@
                         </tbody>
                     </table>
                     {{$vendors->links()}}
+                    @else
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox" style="font-size: 48px;"></i>
+                        <p class="mt-3 mb-0">Tidak ada data vendor.</p>
+                    </div>
+                    @endif
                 </div>
          
             </div> <!-- end card body -->

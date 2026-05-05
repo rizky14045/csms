@@ -44,8 +44,29 @@ class KpiService
                 $query->with($with);
             }
 
-            if ($unit_id) {
-                $query->where('unit_id', $unit_id);
+            $user = Auth::guard('web')->user();
+
+            if(auth()->user()->roles[0]->name == 'Pusat') {
+                $query->where(function ($q) use ($user, $send_status) {
+
+                    // base logic Pusat
+                    $q->where(function ($sub) use ($user) {
+                        $sub->where('send_status', 1)
+                            ->orWhere(function ($x) use ($user) {
+                                $x->where('send_status', 0)
+                                ->where('unit_id', $user->unit_id);
+                            });
+                    });
+
+                });
+            } else {
+                if ($unit_id) {
+                    $query->where('unit_id', $unit_id);
+                }
+
+                if($send_status !== null){
+                    $query->where('send_status', $send_status);
+                }
             }
 
             if (!empty($search)) {
@@ -56,10 +77,6 @@ class KpiService
 
             if($date){
                 $query->where('date', $date);
-            }
-
-            if($send_status !== null){
-                $query->where('send_status', $send_status);
             }
 
             if ($start && $end) {
@@ -116,7 +133,7 @@ class KpiService
             $user = Auth::guard('web')->user();
             
             $kpi = Kpi::create([
-                'unit_id' => $user->id,
+                'unit_id' => $user->unit_id,
                 'year' => $data['year'],
                 'semester' => $data['semester'],
                 'created_by' => $user->id,
@@ -127,7 +144,7 @@ class KpiService
             foreach ($areas as $area) {
 
                 $kpiArea = KpiArea::create([
-                    'unit_id' => $user->id,
+                    'unit_id' => $user->unit_id,
                     'kpi_id' => $kpi->id,
                     'name' => $area->name,
                     'created_by' => $user->id,
@@ -136,7 +153,7 @@ class KpiService
                 foreach ($subAreas as $subArea) {
 
                     $kpiSubArea = KpiSubArea::create([
-                        'unit_id' => $user->id,
+                        'unit_id' => $user->unit_id,
                         'kpi_id' => $kpi->id,
                         'area_id' => $kpiArea->id,
                         'name' => $subArea->name,
@@ -149,7 +166,7 @@ class KpiService
                     foreach ($levels as $level){
 
                         $kpiLevel = KpiLevel::create([
-                            'unit_id' => $user->id,
+                            'unit_id' => $user->unit_id,
                             'kpi_id' => $kpi->id,
                             'sub_area_id' => $kpiSubArea->id,
                             'level' => $level->level,
@@ -161,7 +178,7 @@ class KpiService
 
                         foreach ($notes as $note){
                             $kpiNote = KpiNote::create([
-                                'unit_id' => $user->id,
+                                'unit_id' => $user->unit_id,
                                 'kpi_id' => $kpi->id,
                                 'level_id' => $kpiLevel->id,
                                 'note' => $note->note,

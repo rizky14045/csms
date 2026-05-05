@@ -5,6 +5,7 @@ namespace App\Services\User;
 use App\Helpers\JsonResponse;
 use App\Models\BujpProfile;
 use App\Models\Role;
+use App\Models\Unit;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\Vendor;
@@ -161,7 +162,7 @@ class UserService
                 $user->update([
                     'password'   => bcrypt($data['password']),
                     'type'       => $type,
-                    'unit_id'       => $data['unit_id'] ?? null,
+                    'unit_id'       => auth()->user()->unit_id ?? null,
                     'updated_by' => auth()->id(),
                 ]);
 
@@ -186,6 +187,7 @@ class UserService
                             'end_date' => $data['end_date'],
                             'contract_number'=> $data['contract_number'],
                             'user_id' => $user->id,
+                            'unit_id' => auth()->user()->unit_id ?? null,
                             'created_by' => auth()->id(),
                         ]);
                     }
@@ -199,6 +201,7 @@ class UserService
                         'end_date' => $data['end_date'],
                         'contract_number'=> $data['contract_number'],
                         'user_id' => $user->id,
+                        'unit_id' => auth()->user()->unit_id ?? null,
                         'created_by' => auth()->id(),
                     ]);
                 }
@@ -239,7 +242,7 @@ class UserService
                     'email'      => $data['email'],
                     'password'   => bcrypt($data['password']),
                     'type'       => $type,
-                    'unit_id'       => $data['unit_id'] ?? null,
+                    'unit_id'       => auth()->user()->unit_id ?? null,
                     'created_by' => auth()->id(),
                 ]);
 
@@ -260,6 +263,7 @@ class UserService
                         'end_date' => $data['end_date'],
                         'contract_number'=> $data['contract_number'],
                         'user_id' => $user->id,
+                        'unit_id' => auth()->user()->unit_id ?? null,
                         'created_by' => auth()->id(),
                     ]);
                 }
@@ -536,24 +540,23 @@ class UserService
 
             $order  = request('order', 'DESC');
             $search = request('q', '');
-            $ref    = request('ref', 'users.id');
+            $ref    = request('ref', 'units.id');
             $start  = request('start', null);
             $end    = request('end', null);
 
             $getVendor = Vendor::where('user_id', $user_id)->get();
 
-            $parent_user_ids = $getVendor
-                            ->pluck('parent_user_id')
+            $unit_ids = $getVendor
+                            ->pluck('unit_id')
                             ->filter()
                             ->toArray();
 
-            $query = User::query()
-                ->join('vendors', 'vendors.parent_user_id', '=', 'users.id')
-                ->whereIn('users.id', $parent_user_ids)
+            $query = Unit::query()
+                ->join('vendors', 'vendors.unit_id', '=', 'units.id')
+                ->whereIn('units.id', $unit_ids)
                 ->select(
-                    'users.id',
-                    'users.name', 
-                    'users.email',
+                    'units.id',
+                    'units.name', 
                     'vendors.id as vendor_id',
                     'vendors.contract_number',
                     'vendors.created_at as vendor_created_at'
@@ -561,20 +564,19 @@ class UserService
 
             if (!empty($search)) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('users.name', 'like', "%{$search}%")
-                    ->orWhere('users.email', 'like', "%{$search}%");
+                    $q->where('units.name', 'like', "%{$search}%");
                 });
             }
 
             if ($start && $end) {
                 $end = date('Y-m-d', strtotime($end . ' +1 day'));
-                $query->whereBetween('users.created_at', [$start, $end]);
+                $query->whereBetween('units.created_at', [$start, $end]);
 
             } elseif ($start) {
-                $query->whereDate('users.created_at', '>=', $start);
+                $query->whereDate('units.created_at', '>=', $start);
 
             } elseif ($end) {
-                $query->whereDate('users.created_at', '<=', $end);
+                $query->whereDate('units.created_at', '<=', $end);
             }
 
             $query->orderBy($ref, $order);

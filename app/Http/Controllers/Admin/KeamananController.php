@@ -20,7 +20,7 @@ class KeamananController extends Controller
     }
 
     public function index(){
-        $result = $this->kpiService->getAllKpi(10, true, null, ['unit'], true);
+        $result = $this->kpiService->getAllKpi(10, true, null, ['unit', 'getInvalidItemsNotesByUnit'], true);
         $data['kpis'] = getPaginate($result);
         return view('admin.keamanan.index',$data);
     }
