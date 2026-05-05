@@ -23,7 +23,7 @@ class AssesmentController extends Controller
     }
 
     public function index(){
-        $result = $this->assesmentService->getAllAssesment(25, true, request(), ['vendor', 'unit', 'bujpProfile'], "=", 2, null);
+        $result = $this->assesmentService->getAllAssesment(25, true, request(), ['vendor', 'unit', 'bujpProfile', 'getInvalidItemsQuestionByUnit'], "=", 2, null);
         $data['assesments'] = getPaginate($result);
         return view('admin.assesment.index',$data);
     }

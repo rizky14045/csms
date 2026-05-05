@@ -27,9 +27,25 @@
     <div class="card">
 
       <div class="card-body">
-
+        <form action="{{ route('user.assesment.index') }}">
+            <label class="form-label">Cari Data</label>
+            <div class="d-flex gap-3">
+                <div class="mb-3 col-md-3">
+                    <input type="date" 
+                        class="form-control" 
+                        name="date" 
+                        value="{{ request('date', '') }}">
+                </div>
+                <div class="button-search">
+                    <button type="submit" class="btn btn-primary">
+                        Cari
+                    </button>
+                </div>
+            </div>
+        </form>
         {{-- TABLE --}}
         <div class="table-responsive">
+          @if($assesments->isNotEmpty())
           <table class="table table-bordered align-middle text-center" style="white-space:nowrap;">
 
             <thead class="table-light">
@@ -193,6 +209,11 @@
             </tbody>
 
           </table>
+          @else
+            <div class="text-center py-5">
+              <p class="text-muted">Tidak ada data assesment.</p>
+            </div>
+          @endif
         </div>
 
       </div>

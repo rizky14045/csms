@@ -39,11 +39,19 @@
               🔍 Cari
             </button>
           </form>
+          @if($canEdit)
+          @can('create.assesment.bujp')           
+            <div class="d-flex justify-content-end pe-3 pt-3">
+                <a href="{{ route('bujp.assesment.create', ['unit' => request('unit')]) }}" class="btn btn-primary">Tambah Data</a>
+            </div>
+          @endcan
+          @endif
         </div>
 
         {{-- TABLE --}}
         <div class="table-responsive" style="overflow-x:auto;">
-          <table class="table table-bordered text-center align-middle">
+          @if($assesments->isNotEmpty())
+            <table class="table table-bordered text-center align-middle">
 
             <thead class="table-light">
               <tr>
@@ -53,9 +61,8 @@
                 <th style="min-width:160px;">Nomor Kontrak</th>
                 <th style="min-width:100px;">Tahun</th>
                 <th style="min-width:100px;">Triwulan</th>
-                <th style="min-width:130px;">Tgl Buat</th>
-                <th style="min-width:130px;">Kirim BUJP</th>
-                <th style="min-width:130px;">Kirim Pusat</th>
+                <th style="min-width:130px;">Tanggal Buat</th>
+                <th style="min-width:130px;">Tanggal Kirim Unit</th>
                 <th style="min-width:220px;">Status</th>
                 <th style="min-width:240px;">Action</th>
               </tr>
@@ -86,10 +93,6 @@
 
                 <td>
                   {{ $assesment->send_date ? \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') : '-' }}
-                </td>
-
-                <td>
-                  {{ $assesment->send_date_pusat ? \Carbon\Carbon::parse($assesment->send_date_pusat)->format('d-m-Y') : '-' }}
                 </td>
 
                 {{-- STATUS --}}
@@ -186,6 +189,12 @@
             </tbody>
 
           </table>
+          @else
+            <div class="text-center py-5">
+              <i class="bi bi-inbox" style="font-size: 48px;"></i>
+              <p class="mt-3 mb-0">Tidak ada data assesment.</p>
+            </div>
+          @endif
         </div>
 
       </div>

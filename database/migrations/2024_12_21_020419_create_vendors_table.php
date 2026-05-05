@@ -21,6 +21,7 @@ class CreateVendorsTable extends Migration
             $table->string('password');
             $table->string('npwp')->nullable();
             $table->string('address')->nullable();
+            $table->integer('unit_id')->nullable();
             $table->rememberToken();
             $table->softDeletes(); 
             $table->timestamps();
