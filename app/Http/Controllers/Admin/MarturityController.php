@@ -20,7 +20,7 @@ class MarturityController extends Controller
     }
 
     public function index(){
-        $result = $this->marturityService->getAlMarturity(10, true, ['unit'], null, true);
+        $result = $this->marturityService->getAlMarturity(10, true, ['unit', 'getInvalidItemsNotesByUnit'], null, true);
         $data['marturities'] = getPaginate($result);
         return view('admin.marturity.index',$data);
     }

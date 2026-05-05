@@ -92,6 +92,7 @@
                                                 </a>
                                                 @endcan
                                                 @can('send.marturity.unit')
+                                                @if(count($marturity->get_invalid_items_notes_by_unit) == 0)
                                                 <form action="{{ route('user.marturity.send',['marturity'=>$marturity->id]) }}"
                                                     method="post"
                                                     style="margin:0;"
@@ -106,6 +107,12 @@
                                                         📤 Kirim
                                                     </button>
                                                 </form>
+                                                @else
+                                                <button class="btn btn-secondary btn-sm" style="min-width:80px; opacity:0.6;background-color:gray" disabled>
+                                                    📤 Kirim
+                                                </button>
+                                                @endif
+
                                                 @endcan
                                             @else
                                                 @can('view.marturity.unit')

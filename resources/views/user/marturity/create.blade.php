@@ -61,10 +61,18 @@
 
                     {{-- ACTION --}}
                     <div style="display:flex; justify-content:flex-end; gap:10px;">
+                        @if(auth()->user()->roles[0]->name == 'Pusat')
+                        <a href="{{route('admin.marturity.index')}}"
+                           class="btn btn-outline-danger">
+                            ← Kembali
+                        </a>
+                        @else
                         <a href="{{route('user.marturity.index')}}"
                            class="btn btn-outline-danger">
                             ← Kembali
                         </a>
+                        @endif
+
 
                         <button type="submit" class="btn btn-success">
                             💾 Simpan

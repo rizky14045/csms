@@ -27,16 +27,32 @@
            
             <div class="card-body">
                 <div class="d-flex justify-content-between w-100">
-                    <div class="find-data col-md-6">
-                        <label for="" class="form-label">Cari Data</label>
-                        <div class="d-flex gap-3">
-                            <div class="mb-3 col-md-3">
-                                <input type="date" class="form-control d-inline" name="date" value="{{ request('date') }}">
+                    <div class="col-md-6">
+                        <form action="" method="get">
+                            <label class="form-label">Cari Data</label>
+                            <div class="d-flex gap-3">
+
+                                <input type="date"
+                                    class="form-control"
+                                    name="date"
+                                    value="{{ request('date') }}"
+                                    style="max-width:200px;">
+
+                                <button type="submit" class="btn btn-primary">
+                                    Cari
+                                </button>
+
                             </div>
-                            <div class="button-search">
-                                <button type="button" class="btn btn-primary d-inline">Cari</button>
-                            </div>
-                        </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-6 text-end">
+                        @can('create.marturity.unit')
+                            <a href="{{route('user.marturity.create')}}"
+                            class="btn btn-primary">
+                            Tambah Data
+                            </a>
+                        @endcan
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -61,7 +77,57 @@
                                     <td>{{$marturity->year}}</td>
                                     <td>{{$marturity->semester}}</td>
                                     <td>
-                                        <a href="{{route('admin.marturity.show',['marturity'=>$marturity->id])}}" class="btn btn-success btn-sm">show</a>
+                                        @if($marturity->send_status == false)
+                                            <div style="
+                                                    display:flex;
+                                                    flex-wrap:wrap;
+                                                    gap:6px;
+                                                    justify-content:left;
+                                                    align-items:center;
+                                                ">
+                                                <a href="{{route('user.marturity.show',['marturity'=>$marturity->id])}}"
+                                                    class="btn btn-info btn-sm"
+                                                    style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+                                                @can('send.marturity.unit')
+                                                @if(count($marturity->get_invalid_items_notes_by_unit) == 0)
+                                                <form action="{{ route('user.marturity.send',['marturity'=>$marturity->id]) }}"
+                                                    method="post"
+                                                    style="margin:0;"
+                                                    id="send-marturity-{{ $marturity->id }}"
+                                                    onsubmit="confirmSave('send-marturity-{{ $marturity->id }}', 'Kirim marturity?')">
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <button type="submit"
+                                                            class="btn btn-success btn-sm"
+                                                            style="min-width:80px;">
+                                                        📤 Kirim
+                                                    </button>
+                                                </form>
+                                                @else
+                                                <button class="btn btn-secondary btn-sm" style="min-width:80px; opacity:0.6;background-color:gray" disabled>
+                                                    📤 Kirim
+                                                </button>
+                                                @endif
+                                                @endcan
+                                            </div>
+                                        @else
+                                        <div style="
+                                                    display:flex;
+                                                    flex-wrap:wrap;
+                                                    gap:6px;
+                                                    justify-content:left;
+                                                    align-items:center;
+                                                ">
+                                                <a href="{{route('admin.marturity.show',['marturity'=>$marturity->id])}}"
+                                                    class="btn btn-info btn-sm"
+                                                    style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+                                        </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

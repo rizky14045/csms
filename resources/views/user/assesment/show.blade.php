@@ -190,7 +190,11 @@
     </div>
 
     <div class="mt-4 d-flex justify-content-end gap-2">
+        @if(auth()->user()->roles[0]->name == 'Pusat')
+        <a href="{{route('admin.assesment.index')}}" class="btn btn-danger"> Kembali</a>
+        @else
         <a href="{{route('user.assesment.index')}}" class="btn btn-danger"> Kembali</a>
+        @endif
         <form action="{{route('user.assesment.revision',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="revision-assesment-{{ $assesment->id }}" onsubmit="confirmSave('revision-assesment-{{ $assesment->id }}', 'Revisi assesment?')">
             @csrf
             @method('PATCH')

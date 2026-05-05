@@ -23,7 +23,7 @@ class MarturityValidation
     public static function rulesForUploadNote($noteId)
     {
         return [
-            'attachment_file_'.$noteId => ['required', 'mimes:pdf'],
+            'attachment_file_'.$noteId => ['required', 'mimes:pdf', 'max:2048'],
         ];
     }
 
@@ -41,6 +41,7 @@ class MarturityValidation
         if ($noteId) {
             $messages['attachment_file_'.$noteId.'.required'] = 'File lampiran wajib diisi!';
             $messages['attachment_file_'.$noteId.'.mimes'] = 'File lampiran harus beresktensi .pdf!';
+            $messages['attachment_file_'.$noteId.'.max'] = 'File lampiran tidak boleh lebih dari 2MB!';
         }
 
         return $messages;

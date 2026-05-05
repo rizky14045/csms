@@ -25,7 +25,11 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
+                @if(auth()->user()->roles[0]->name == 'Pusat')
+                <a href="{{route('admin.marturity.index')}}" class="btn btn-danger mb-3"> Kembali</a>
+                @else
                 <a href="{{route('user.marturity.index')}}" class="btn btn-danger mb-3"> Kembali</a>
+                @endif
                  <!-- Komitmen Management -->
                  <div class="accordion" id="formAccordion">
 
@@ -39,24 +43,22 @@
                             </button>
                         </h2>
                         <div id="collapse{{$area['id']}}" class="accordion-collapse collapse {{request('areaId') == $area['id'] ? 'show' :''}}" aria-labelledby="heading{{$area['id']}}" data-bs-parent="#formAccordion">
-                            <div class="accordion-body">
-                                <table class="table table-bordered">
+                            <div class="accordion-body" style="overflow-x:auto; width:100%;">
+                                <table class="table table-bordered" style="min-width:1200px;">
                                     <thead class="table-light">
                                         <tr>
-                                            <th scope="col" class="align-middle text-center">No</th>
-                                            <th scope="col" class="align-middle text-center">Sub Area</th>
-                                            <th scope="col" class="align-middle text-center">Level</th>
-                                            <th scope="col" class="align-middle text-center">Uraian</th>
-                                            <th scope="col" class="align-middle text-center">Total Eviden</th>
-                                            <th scope="col" class="align-middle text-center">Jumlah Eviden</th>
-                                            <th scope="col" class="align-middle text-center">Bobot</th>
-                                            <th scope="col" class="align-middle text-center">Catatan Assesment ( Eviden )</th>
-                                            <th scope="col" class="align-middle text-center">File</th>
-                                            <th scope="col" class="align-middle text-center">Action</th>
-                                            <th scope="col" class="align-middle text-center">Hasil Assesment</th>
-                                            <th scope="col" class="align-middle text-center">Score ML</th>
-                                            <th scope="col" class="align-middle text-center">Hasil</th>
-                                         
+                                            <th style="min-width:60px;" class="text-center">No</th>
+                                            <th style="min-width:250px;" class="text-center">Sub Area</th>
+                                            <th style="min-width:80px;" class="text-center">Level</th>
+                                            <th style="min-width:300px;" class="text-center">Uraian</th>
+                                            <th style="min-width:120px;" class="text-center">Total Eviden</th>
+                                            <th style="min-width:140px;" class="text-center">Jumlah Eviden</th>
+                                            <th style="min-width:100px;" class="text-center">Bobot</th>
+                                            <th style="min-width:300px;" class="text-center">Catatan</th>
+                                            <th style="min-width:200px;" class="text-center">File</th>
+                                            <th style="min-width:160px;" class="text-center">Action</th>
+                                            <th style="min-width:120px;" class="text-center">Hasil</th>
+                                            <th style="min-width:120px;" class="text-center">Score ML</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -134,47 +136,50 @@
                                                         <tr>
                                                             <td>{{ $note['note'] }}</td>
 
-                                                            <td style="width:50%;">
-                                                                <form action="{{ route('user.marturity.uploadNote', [
-                                                                    'marturity' => $note['marturity_id'],
-                                                                    'areaId' => $subArea['area_id'],
-                                                                    'note' => $note['id']
-                                                                ]) }}"
-                                                                method="POST"
-                                                                enctype="multipart/form-data">
+                                                            <td style="min-width:200px;">
+                                                                <div id="upload-file-{{$note['id']}}" style="display:flex; flex-direction:column; gap:6px;">
 
-                                                                    @csrf
-                                                                    @method('PATCH')
+                                                                    @if (!empty($note['attachment_file']))
+                                                                        <a href="{{ asset('uploads/attachment_file_marturity_file/'.$note['attachment_file']) }}"
+                                                                        class="btn btn-success btn-sm"
+                                                                        target="_blank">
+                                                                        ⬇ Download File
+                                                                        </a>
 
-                                                                    <input type="file"
-                                                                        class="form-control"
-                                                                        name="attachment_file_{{ $note['id'] }}"
-                                                                        accept=".pdf"
-                                                                        required>
+                                                                        <label style="font-size:12px;">Ganti File:</label>
+                                                                    @endif
 
-                                                                    @error('attachment_file_'.$note['id'])
-                                                                        <div class="text-danger">{{ $message }}</div>
-                                                                    @enderror
+                                                                    <form id="form-upload-{{$note['id']}}"
+                                                                        action="{{ route('user.marturity.uploadNote', [
+                                                                            'marturity' => $note['marturity_id'],
+                                                                            'areaId' => $subArea['area_id'],
+                                                                            'note' => $note['id']
+                                                                        ]) }}"
+                                                                        method="POST"
+                                                                        enctype="multipart/form-data">
+
+                                                                        @csrf
+                                                                        @method('PATCH')
+
+                                                                        <input type="file"
+                                                                            class="form-control form-control-sm"
+                                                                            name="attachment_file_{{ $note['id'] }}"
+                                                                            accept=".pdf"
+                                                                            {{ empty($note['attachment_file']) ? 'required' : '' }}>
+
+                                                                        <div id="error-attachment_file_{{ $note['id'] }}" class="error-text"></div>
+                                                                    </form>
+
+                                                                </div>
                                                             </td>
 
-                                                            <td>
-                                                                    <div class="d-flex gap-2">
-
-                                                                        @if (!empty($note['attachment_file']))
-                                                                            <a href="{{ asset('uploads/attachment_file_marturity_file/'.$note['attachment_file']) }}"
-                                                                            class="btn btn-info btn-sm"
-                                                                            download>
-                                                                            Download
-                                                                            </a>
-                                                                        @endif
-
-                                                                        <button type="submit"
-                                                                                class="btn btn-success btn-sm">
-                                                                                Upload
-                                                                        </button>
-
-                                                                    </div>
-                                                                </form>
+                                                            <td style="min-width:140px;">
+                                                                <button type="button"
+                                                                        class="btn btn-success btn-sm btn-upload"
+                                                                        data-form="form-upload-{{$note['id']}}"
+                                                                        data-id="{{$note['id']}}">
+                                                                    💾 Upload
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                     @endforeach
@@ -217,5 +222,143 @@
         </div><!-- end card -->
     </div><!-- end col -->
 </div> <!-- end row -->
+@endsection
+
+@section('scripts')
+<script>
+
+// CLEAR ERROR
+function clearErrors(form) {
+    form.querySelectorAll("[id^='error-']").forEach(el => el.innerHTML = '');
+    form.querySelectorAll("input").forEach(el => el.style.border = '');
+}
+
+// SHOW ERROR
+function showErrors(form, errors) {
+    Object.keys(errors).forEach(name => {
+
+        let msg = errors[name][0];
+
+        let errorDiv = document.getElementById("error-" + name);
+        if (errorDiv) errorDiv.innerHTML = msg;
+
+        let input = form.querySelector(`[name="${name}"]`);
+        if (input) input.style.border = "1px solid red";
+    });
+}
+
+// SUBMIT AJAX
+async function submitUpload(form, btn, noteId) {
+
+    clearErrors(form);
+
+    let formData = new FormData(form);
+    let original = btn.innerHTML;
+
+    btn.innerHTML = "Uploading...";
+    btn.disabled = true;
+
+    try {
+
+        let res = await fetch(form.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
+                'Accept': 'application/json'
+            }
+        });
+
+        let result = await res.json();
+
+        if (!res.ok) {
+            if (result.errors) showErrors(form, result.errors);
+
+            btn.innerHTML = original;
+            btn.disabled = false;
+            return;
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Upload berhasil',
+            timer: 1000,
+            showConfirmButton: false
+        });
+
+        // UPDATE DOWNLOAD BUTTON TANPA RELOAD
+        if (result.data && result.data.attachment_file) {
+
+            let fileCell = document.getElementById("upload-file-" + noteId);
+
+            let fileUrl = "/uploads/attachment_file_marturity_file/" + result.data.attachment_file;
+
+            fileCell.innerHTML = `
+                <a href="${fileUrl}"
+                class="btn btn-success btn-sm"
+                target="_blank">
+                ⬇ Download File
+                </a>
+
+                <label style="font-size:12px;">Ganti File:</label>
+
+                <form id="form-upload-${noteId}" enctype="multipart/form-data">
+                    <input type="file"
+                        name="attachment_file_${noteId}"
+                        class="form-control form-control-sm"
+                        accept=".pdf">
+
+                    <div id="error-attachment_file_${noteId}" class="error-text"></div>
+                </form>
+            `;
+        }
+
+        btn.innerHTML = "✔ Uploaded";
+
+        setTimeout(() => {
+            btn.innerHTML = original;
+            btn.disabled = false;
+        }, 1200);
+
+    } catch (err) {
+        console.error(err);
+        Swal.fire('Error','Server error','error');
+
+        btn.innerHTML = original;
+        btn.disabled = false;
+    }
+}
+
+// INIT
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".btn-upload").forEach(btn => {
+
+        btn.addEventListener("click", function () {
+
+            let formId = btn.getAttribute("data-form");
+            let noteId = btn.getAttribute("data-id");
+            let form = document.getElementById(formId);
+
+            if (!form) return;
+
+            Swal.fire({
+                title: 'Upload file?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Upload'
+            }).then(res => {
+                if (res.isConfirmed) {
+                    submitUpload(form, btn, noteId);
+                }
+            });
+
+        });
+
+    });
+
+});
+
+</script>
 @endsection
 
