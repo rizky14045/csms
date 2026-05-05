@@ -297,7 +297,7 @@
                         </a>
                     </li>
                 @endcan
-                @canany(['view.user', 'view.role', 'view.permission'])
+                @canany(['view.user', 'view.role', 'view.permission', 'view.email.setting'])
                     <li>
                         <a href="#sidebarSetting" data-bs-toggle="collapse">
                             <i data-feather="settings"></i>
@@ -319,6 +319,11 @@
                                 @can('view.permission')
                                     <li>
                                         <a href="{{ route('permissions.index') }}" class="tp-link">Permission Management</a>
+                                    </li>
+                                @endcan
+                                @can('view.email.setting')
+                                    <li>
+                                        <a href="{{ route('admin.email-setting.index') }}" class="tp-link">Email Setting</a>
                                     </li>
                                 @endcan
                             </ul>

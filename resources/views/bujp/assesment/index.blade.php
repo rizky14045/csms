@@ -1,140 +1,205 @@
 @extends('layout.app')
 @section('styles')
 <style>
-    .accordion-button::after {
-        filter: invert(100%);
-    }
+  .accordion-button::after {
+      filter: invert(100%);
+  }
 </style>
 @stop
+
 @section('content')
-    
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-    <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Assesment</h4>
-    </div>
+  <div class="flex-grow-1">
+    <h4 class="fs-18 fw-semibold m-0">Assesment</h4>
+  </div>
 
-    <div class="text-end">
-        <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Assesment</li>
-        </ol>
-    </div>
+  <div class="text-end">
+    <ol class="breadcrumb m-0 py-0">
+      <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item active">Assesment</li>
+    </ol>
+  </div>
 </div>
-<div class="row">
-    <div class="col-xl-12">
-        <div class="card">
-           
-            <div class="card-body">
-                <div class="d-flex justify-content-between w-100">
-                    <div class="find-data col-md-6">
-                        <form action="{{ route('bujp.assesment.index') }}">
-                            
-                            <input type="hidden" name="unit" value="{{ request('unit') }}">
-                            <label class="form-label">Cari Data</label>
-                            <div class="d-flex gap-3">
-                                <div class="mb-3 col-md-3">
-                                    <input type="date" 
-                                        class="form-control" 
-                                        name="date" 
-                                        value="{{ request('date', '') }}">
-                                </div>
-                                <div class="button-search">
-                                    <button type="submit" class="btn btn-primary">
-                                        Cari
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="button-add col-md-12">
-                        @if($canEdit)
-                        @can('create.assesment.bujp')
-                        <div class="d-flex justify-content-end pe-3 pt-3 col-md-6">
-                            <a href="{{ route('bujp.assesment.create', ['unit' => request('unit')]) }}" class="btn btn-primary">
-                                Tambah Data
-                            </a>
-                        </div>
-                        @endcan
-                        @endif
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-bordered text-center align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col">No</th>
-                                <th scope="col">NPWP</th>
-                                <th scope="col">Nama Perusahaan</th>
-                                <th scope="col">Nomor Kontrak</th>
-                                <th scope="col">Tahun</th>
-                                <th scope="col">Triwulan</th>
-                               <th scope="col">Tanggal Kirim</th>
-                                @canany(['edit.assesment.bujp', 'send.assesment.bujp', 'delete.assesment.bujp', 'view.assesment.bujp'])
-                                <th scope="col">Action</th>
-                                @endcanany
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($assesments as $assesment)
-                                
-                                <tr>
-                                    <td>{{$loop->iteration}}</td>
-                                    <td>{{$assesment->bujp_profile->npwp}}</td>
-                                    <td>{{$assesment->vendor->name}}@if($assesment->send_status == 3) <br> <span style="padding: 2px; background-color:red;color:white; border-radius: 4px">Perlu Revisi</span> @endif</td>
-                                    <td>{{$assesment->contract}}</td>
-                                    <td>{{$assesment->year}}</td>
-                                    <td>{{$assesment->triwulan}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') }}</td>
-                                    @canany(['edit.assesment.bujp', 'send.assesment.bujp', 'delete.assesment.bujp', 'view.assesment.bujp'])
-                                    <td>
-                                        
-                                        @if ($assesment->send_status == 0 || $assesment->send_status == 3)
-                                            @if($canEdit)
-                                            @can('edit.assesment.bujp')
-                                            <a href="{{route('bujp.assesment.show',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-info btn-sm">Show</a>
-                                            @endcan
-                                            @can('send.assesment.bujp')
-                                            @if(count($assesment->get_invalid_items_question_by_bujp) == 0)
-                                            <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-success btn-sm">Kirim</button>
-                                            </form>
-                                            @else
-                                            <button type="button" style="background-color: gray" class="btn btn-secondary btn-sm" disabled>Kirim</button>
-                                            @endif
-                                            @endcan               
-                                            @endif                                                                
-                                        @else
-                                            @can('view.assesment.bujp')
-                                            <a href="{{route('bujp.assesment.preview',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-info btn-sm">Show</a>
-                                            <a href="{{route('bujp.assesment.report',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" class="btn btn-success btn-sm">Report</a>
-                                            @endcan
-                                        @endif
 
-                                        @if ($assesment->send_status == 0)
-                                            @if($canEdit)
-                                            @can('delete.assesment.bujp')
-                                            <form action="{{route('bujp.assesment.destroy',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" method="post" class="d-inline" id="delete-assesment-{{ $assesment->id }}" onsubmit="confirmSave('delete-assesment-{{ $assesment->id }}', 'Hapus assesment?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                            </form>
-                                            @endcan  
-                                            @endif
-                                        @endif
-                                        
-                                    </td>
-                                    @endcanany
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-         
-            </div> <!-- end card body -->
-        </div><!-- end card -->
-    </div><!-- end col -->
-</div> <!-- end row -->
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+
+      <div class="card-body">
+
+        {{-- FILTER --}}
+        <div class="d-flex justify-content-between w-100 mb-3">
+          <form action="{{ route('user.assesment.index') }}" class="d-flex align-items-end gap-2">
+            <div>
+              <label class="form-label mb-1">Tanggal</label>
+              <input type="date" class="form-control" name="date" value="{{ request('date', '') }}">
+            </div>
+            <button type="submit" class="btn btn-primary">
+              🔍 Cari
+            </button>
+          </form>
+          @if($canEdit)
+          @can('create.assesment.bujp')           
+            <div class="d-flex justify-content-end pe-3 pt-3">
+                <a href="{{ route('bujp.assesment.create', ['unit' => request('unit')]) }}" class="btn btn-primary">Tambah Data</a>
+            </div>
+          @endcan
+          @endif
+        </div>
+
+        {{-- TABLE --}}
+        <div class="table-responsive" style="overflow-x:auto;">
+          @if($assesments->isNotEmpty())
+            <table class="table table-bordered text-center align-middle">
+
+            <thead class="table-light">
+              <tr>
+                <th style="min-width:60px;">No</th>
+                <th style="min-width:150px;">NPWP</th>
+                <th style="min-width:220px;">Perusahaan</th>
+                <th style="min-width:160px;">Nomor Kontrak</th>
+                <th style="min-width:100px;">Tahun</th>
+                <th style="min-width:100px;">Triwulan</th>
+                <th style="min-width:130px;">Tanggal Buat</th>
+                <th style="min-width:130px;">Tanggal Kirim Unit</th>
+                <th style="min-width:220px;">Status</th>
+                <th style="min-width:240px;">Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @foreach ($assesments as $assesment)
+
+              <tr>
+
+                <td>{{$loop->iteration}}</td>
+
+                <td>{{$assesment->bujp_profile->npwp}}</td>
+
+                <td style="text-align:left;">
+                  {{$assesment->vendor->name}}
+                </td>
+
+                <td>{{$assesment->contract}}</td>
+
+                <td>{{$assesment->year}}</td>
+
+                <td>{{$assesment->triwulan}}</td>
+
+                <td>
+                  {{ \Carbon\Carbon::parse($assesment->created_at)->format('d-m-Y') }}
+                </td>
+
+                <td>
+                  {{ $assesment->send_date ? \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') : '-' }}
+                </td>
+
+                {{-- STATUS --}}
+                <td>
+                  @php
+                  $status = $assesment->send_status;
+
+                  $label = '';
+                  $bg = '';
+                  $color = '#fff';
+
+                  if ($status == 0) {
+                  $label = 'Proses Input BUJP';
+                  $bg = '#6c757d';
+                  } elseif ($status == 1) {
+                  $label = 'Pengecekan Unit';
+                  $bg = '#0d6efd';
+                  } elseif ($status == 2) {
+                  $label = 'Diterima';
+                  $bg = '#28a745';
+                  } elseif ($status == 3) {
+                  $label = 'Perlu Revisi';
+                  $bg = '#dc3545';
+                  }
+                  @endphp
+
+                  <span style="
+                            display:inline-block;
+                            padding:6px 10px;
+                            font-size:12px;
+                            border-radius:6px;
+                            background:{{ $bg }};
+                            color:{{ $color }};
+                            font-weight:500;
+                            white-space:nowrap;
+                        ">
+                    {{ $status == 3 ? '⚠ ' : '' }}{{ $label }}
+                  </span>
+                </td>
+
+                {{-- ACTION --}}
+                <td>
+                  <div style="
+                            display:flex;
+                            flex-wrap:wrap;
+                            gap:6px;
+                            justify-content:left;
+                            align-items:center;
+                        ">
+
+                    {{-- STATUS 1 --}}
+                    @if ($assesment->send_status == 0 || $assesment->send_status == 3)
+
+                    <a href="{{route('bujp.assesment.show',['assesment'=>$assesment->id, 'unit' => request()->input('unit')])}}" class="btn btn-info btn-sm" style="min-width:70px;">
+                      👁 Show
+                    </a>
+                    @can('send.assesment.bujp')
+                    @if(count($assesment->get_invalid_items_question_by_bujp) == 0)
+                    <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id])}}" method="post" style="margin:0;" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
+                      @csrf
+                      @method('PATCH')
+
+                      <button type="submit" class="btn btn-success btn-sm" style="min-width:70px;">
+                        📤 Kirim
+                      </button>
+                    </form>
+                    @else
+                    <button class="btn btn-secondary btn-sm" style="min-width:70px; opacity:0.6;background-color:gray" disabled>
+                      📤 Kirim
+                    </button>
+                    @endif
+
+                    @endcan
+
+                    {{-- STATUS >= 2 --}}
+                    @elseif($assesment->send_status >= 1)
+
+                    <a href="{{route('bujp.assesment.preview',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm" style="min-width:70px;">
+                      👁 Show
+                    </a>
+
+                    <a href="{{route('bujp.assesment.report',['assesment'=>$assesment->id])}}" class="btn btn-success btn-sm" style="min-width:80px;">
+                      📄 Report
+                    </a>
+
+                    @endif
+
+                  </div>
+                </td>
+
+              </tr>
+
+              @endforeach
+            </tbody>
+
+          </table>
+          @else
+            <div class="text-center py-5">
+              <i class="bi bi-inbox" style="font-size: 48px;"></i>
+              <p class="mt-3 mb-0">Tidak ada data assesment.</p>
+            </div>
+          @endif
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection

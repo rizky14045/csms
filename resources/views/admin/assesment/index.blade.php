@@ -43,24 +43,51 @@
                     </div>
                 </form>
                 <div class="table-responsive">
-                    <table class="table table-bordered text-center align-middle">
+                    @if($assesments->isNotEmpty())
+                    <table class="table table-bordered align-middle text-center" style="white-space:nowrap;">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">No</th>
-                                <th scope="col">Unit</th>
-                                <th scope="col">NPWP</th>
-                                <th scope="col">Nama Perusahaan</th>
-                                <th scope="col">Nomor Kontrak</th>
-                                <th scope="col">Tahun</th>
-                                <th scope="col">Triwulan</th>
-                                <th scope="col">Tanggal Buat</th>
-                               <th scope="col">Tanggal Kirim BUJP</th>
-                               <th scope="col">Tanggal Kirim Pusat</th>
-                                <th scope="col">Action</th>
+                                <th style="min-width:60px;">No</th>
+                                <th style="min-width:150px;">Unit</th>
+                                <th style="min-width:150px;">NPWP</th>
+                                <th style="min-width:220px;">Nama Perusahaan</th>
+                                <th style="min-width:160px;">Nomor Kontrak</th>
+                                <th style="min-width:90px;">Tahun</th>
+                                <th style="min-width:100px;">Triwulan</th>
+                                <th style="min-width:120px;">Tanggal Buat</th>
+                                <th style="min-width:130px;">Kirim BUJP</th>
+                                <th style="min-width:130px;">Kirim Pusat</th>
+                                <th style="min-width:150px;">Status</th>
+                                <th style="min-width:220px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($assesments as $assesment)
+
+                                @php
+                                    switch ($assesment->send_status) {
+                                    case 0:
+                                    $statusText = 'Input BUJP';
+                                    $statusColor = '#6c757d';
+                                    break;
+                                    case 1:
+                                    $statusText = 'Pengecekan Unit';
+                                    $statusColor = '#ffc107';
+                                    break;
+                                    case 2:
+                                    $statusText = 'Diterima';
+                                    $statusColor = '#28a745';
+                                    break;
+                                    case 3:
+                                    $statusText = 'Proses Revisi';
+                                    $statusColor = '#dc3545';
+                                    break;
+                                    default:
+                                    $statusText = '-';
+                                    $statusColor = '#adb5bd';
+                                    break;
+                                    }
+                                    @endphp
                                 
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
@@ -71,16 +98,100 @@
                                     <td>{{$assesment->year}}</td>
                                     <td>{{$assesment->triwulan}}</td>
                                     <td>{{ \Carbon\Carbon::parse($assesment->created_at)->format('d-m-Y') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') }}</td>
+                                    <td>{{ $assesment->send_date ? \Carbon\Carbon::parse($assesment->send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{ $assesment->send_date_pusat ? \Carbon\Carbon::parse($assesment->send_date_pusat)->format('d-m-Y') : '-' }}</td>
                                     <td>
-                                        <a href="{{route('admin.assesment.show',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm">Show</a>
-                                        <a href="{{route('admin.assesment.report',['assesment'=>$assesment->id])}}" class="btn btn-success btn-sm">Report</a>
+                                        <span style="
+                                                    display:inline-block;
+                                                    padding:5px 10px;
+                                                    border-radius:6px;
+                                                    background:{{ $statusColor }};
+                                                    color:{{ $assesment->send_status == 1 ? '#000' : '#fff' }};
+                                                    font-size:12px;
+                                                    font-weight:600;
+                                                ">
+                                            {{ $statusText }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if($assesment->send_status >= 2)
+                                            <div style="
+                                                display:flex;
+                                                flex-wrap:wrap;
+                                                gap:6px;
+                                                justify-content:left;
+                                                align-items:center;
+                                            ">
+                                                <a href="{{route('admin.assesment.show',['assesment'=>$assesment->id])}}"
+                                                    class="btn btn-info btn-sm"
+                                                    style="min-width:80px;">
+                                                    👁 Show
+                                                    </a>
+                                                <a href="{{route('admin.assesment.report',['assesment'=>$assesment->id])}}"
+                                                    class="btn btn-success btn-sm"
+                                                    style="min-width:90px;">
+                                                    📄 Report
+                                                </a>
+                                        </div>
+                                        @else
+                                        <div style="
+                                            display:flex;
+                                            flex-wrap:wrap;
+                                            gap:6px;
+                                            justify-content:left;
+                                            align-items:center;
+                                        ">
+
+                                            {{-- ================= STATUS 1 ================= --}}
+                                            @if ($assesment->send_status == 1)
+
+                                                <a href="{{route('user.assesment.show',['assesment'=>$assesment->id])}}"
+                                                    class="btn btn-info btn-sm"
+                                                    style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+
+                                                @can('send.assesment.bujp.unit')
+
+                                                    @if(count($assesment->get_invalid_items_question_by_unit) == 0)
+                                                    <form action="{{route('user.assesment.send',['assesment'=>$assesment->id])}}"
+                                                        method="post"
+                                                        style="margin:0;"
+                                                        id="send-assesment-{{ $assesment->id }}"
+                                                        onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
+                                                        @csrf
+                                                        @method('PATCH')
+
+                                                        <button type="submit"
+                                                                class="btn btn-success btn-sm"
+                                                                style="min-width:80px;">
+                                                            📤 Kirim
+                                                        </button>
+                                                    </form>
+                                                    @else
+                                                    <button class="btn btn-secondary btn-sm"
+                                                            style="min-width:80px; opacity:0.6; background-color:gray;"
+                                                            disabled>
+                                                        📤 Kirim
+                                                    </button>
+                                                    @endif
+
+                                                @endcan
+
+                                            @endif
+
+                                        </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    @else
+                        <div class="text-center py-5">
+                            <h5 class="mb-0">Data tidak ditemukan</h5>
+                        </div>
+                    @endif
                 </div>
          
             </div> <!-- end card body -->

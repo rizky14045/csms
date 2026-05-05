@@ -68,20 +68,60 @@
                                     <td>{{$kpi->semester}}</td>
                                     <td>{{ $kpi->send_date ? \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') : "-" }}</td>
                                     <td>
-                                        @if ($kpi->send_status == false)
-                                            <a href="{{route('user.keamanan.show',['kpi'=>$kpi->id])}}" class="btn btn-info btn-sm">show</a>
-                                            @can('send.security.kpi.unit')
-                                            <form action="{{route('user.keamanan.send',['kpi'=>$kpi->id])}}" method="post" class="d-inline" id="send-kpi-{{$kpi->id}}" onsubmit="confirmSave('send-kpi-{{$kpi->id}}', 'Data keamanan KPI akan disimpan')">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-success btn-sm">Kirim</button>
-                                            </form>
-                                            @endcan
-                                        @else
-                                            <a href="{{route('user.keamanan.preview',['kpi'=>$kpi->id])}}" class="btn btn-info btn-sm">show</a>
-                                        
-                                        @endif
-                                      
+                                        <div style="
+                                                display:flex;
+                                                flex-wrap:wrap;
+                                                gap:6px;
+                                                justify-content:left;
+                                                align-items:center;
+                                            ">
+
+                                            @if ($kpi->send_status == false)
+
+                                                {{-- SHOW --}}
+                                                <a href="{{route('user.keamanan.show',['kpi'=>$kpi->id])}}"
+                                                class="btn btn-info btn-sm"
+                                                style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+
+                                                {{-- SEND --}}
+                                                @can('send.security.kpi.unit')
+                                                @if($kpi->get_invalid_items_notes_by_unit == 0)
+                                                <form action="{{route('user.keamanan.send',['kpi'=>$kpi->id])}}"
+                                                    method="post"
+                                                    style="margin:0;"
+                                                    id="send-kpi-{{$kpi->id}}"
+                                                    onsubmit="confirmSave('send-kpi-{{$kpi->id}}', 'Kirim KPI?')">
+
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <button type="submit"
+                                                            class="btn btn-success btn-sm"
+                                                            style="min-width:80px;">
+                                                        📤 Kirim
+                                                    </button>
+                                                </form>
+                                                @else
+                                                <button class="btn btn-secondary btn-sm" style="min-width:80px; opacity:0.6;background-color:gray" disabled>
+                                                    📤 Kirim
+                                                </button>
+                                                @endif                                               
+                                                @endcan
+
+                                            @else
+
+                                                {{-- PREVIEW --}}
+                                                <a href="{{route('user.keamanan.preview',['kpi'=>$kpi->id])}}"
+                                                class="btn btn-info btn-sm"
+                                                style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+
+                                            @endif
+
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

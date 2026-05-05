@@ -42,12 +42,32 @@ class MarturityService
                 $query->with($with);
             }
 
-            if ($unit_id) {
-                $query->where('unit_id', $unit_id);
-            }
+            $user = auth()->user();
 
-            if ($send_status !== null) {
-                $query->where('send_status', $send_status);
+            if ($user->roles[0]->name == 'Pusat') {
+
+                $query->where(function ($q) use ($user, $send_status) {
+
+                    // base logic Pusat
+                    $q->where(function ($sub) use ($user) {
+                        $sub->where('send_status', 1)
+                            ->orWhere(function ($x) use ($user) {
+                                $x->where('send_status', 0)
+                                ->where('unit_id', $user->unit_id);
+                            });
+                    });
+
+                });
+
+            } else {
+
+                if ($unit_id) {
+                    $query->where('unit_id', $user->unit_id);
+                }
+
+                if ($send_status !== null) {
+                    $query->where('send_status', $send_status);
+                }
             }
 
             if ($date) {
@@ -106,9 +126,10 @@ class MarturityService
 
         try {
             $userId = auth()->id();
+            $unit_id = auth()->user()->unit_id;
 
             $marturity = Marturity::create([
-                'unit_id'   => $userId,
+                'unit_id'   => $unit_id,
                 'year'  => $data['year'],
                 'semester'  => $data['semester'],
                 'created_by'=> $userId,
@@ -119,7 +140,7 @@ class MarturityService
             foreach ($areas as $area) {
 
                 $marturityArea = MarturityArea::create([
-                    'unit_id'       => $userId,
+                    'unit_id'       => $unit_id,
                     'marturity_id'  => $marturity->id,
                     'name'          => $area->name,
                     'created_by'    => $userId,
@@ -130,7 +151,7 @@ class MarturityService
                 foreach ($subAreas as $subArea) {
 
                     $marturitySubArea = MarturitySubArea::create([
-                        'unit_id'       => $userId,
+                        'unit_id'       => $unit_id,
                         'marturity_id'  => $marturity->id,
                         'area_id'       => $marturityArea->id,
                         'name'          => $subArea->name,
@@ -144,7 +165,7 @@ class MarturityService
                     foreach ($levels as $level) {
 
                         $marturityLevel = MarturityLevel::create([
-                            'unit_id'       => $userId,
+                            'unit_id'       => $unit_id,
                             'marturity_id'  => $marturity->id,
                             'sub_area_id'   => $marturitySubArea->id,
                             'level'         => $level->level,
@@ -157,7 +178,7 @@ class MarturityService
                         foreach ($notes as $note) {
 
                             MarturityNote::create([
-                                'unit_id'       => $userId,
+                                'unit_id'       => $unit_id,
                                 'marturity_id'  => $marturity->id,
                                 'level_id'      => $marturityLevel->id,
                                 'note'          => $note->note,
@@ -387,12 +408,11 @@ class MarturityService
     public function uploadNote(Request $request, Marturity $marturity, $areaid, MarturityNote $note)
     {
         DB::beginTransaction();
-
         try {
 
             $user = auth()->user();
 
-            $note = MarturityNote::where('unit_id', $user->id)
+            $note = MarturityNote::where('unit_id', $user->unit_id)
                 ->where('marturity_id', $marturity->id)
                 ->where('id', $note->id)
                 ->first();
@@ -433,6 +453,8 @@ class MarturityService
 
         } catch (\Exception $e) {
             DB::rollBack();
+
+            dd($e->getMessage());
 
             return JsonResponse::error(
                 $e->getMessage(),

@@ -63,8 +63,22 @@ class AssesmentService
                 $query->whereDate('date', $date);
             }
 
-            if($send_status !== null && $symbol !== null){
-                $query->where('send_status', $symbol, $send_status);
+            if ($send_status !== null && $symbol !== null) {
+                $user = auth()->user();
+
+                if ($user && auth()->user()->roles[0]->name === 'Pusat') {
+                    $query->where(function ($q) use ($user, $symbol, $send_status) {
+                        $q->where(function ($sub) use ($user) {
+                            $sub->where('send_status', '>=', 1)
+                                ->where('unit_id', $user->unit_id);
+                        })
+                        ->orWhere(function ($sub) use ($symbol, $send_status) {
+                            $sub->where('send_status', $symbol, $send_status);
+                        });
+                    });
+                } else {
+                    $query->where('send_status', $symbol, $send_status);
+                }
             }
 
             if($unit_id !== null){
@@ -127,7 +141,7 @@ class AssesmentService
             $vendor = Vendor::find($vendorId);
 
             $assesment = Assesment::create([
-                'unit_id'   => $vendor->parent_user_id,
+                'unit_id'   => $vendor->unit_id,
                 'vendor_id' => $vendor->id,
                 'year'      => $data['year'],
                 'contract'  => $vendor->contract_number,

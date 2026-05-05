@@ -25,7 +25,11 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
+                @if(auth()->user()->roles[0]->name == 'Pusat')
+                <a href="{{route('admin.keamanan.index')}}" class="btn btn-danger mb-3"> Kembali</a>
+                @else
                 <a href="{{route('user.keamanan.index')}}" class="btn btn-danger mb-3"> Kembali</a>
+                @endif
                  <!-- Komitmen Management -->
                  <div class="accordion" id="formAccordion">
                     @foreach ($areas as $area)
@@ -121,49 +125,53 @@
 
                                             <td>{{$note['note']}}</td>
 
-                                            <form action="{{route('user.keamanan.uploadNote',[
-                                                'kpi'=>$note['kpi_id'],
-                                                'areaId'=>$subArea['area_id'],
-                                                'note'=>$note['id']
-                                            ])}}" method="POST" enctype="multipart/form-data" id="form-note-{{ $note['kpi_id'] }}-{{ $subArea['area_id'] }}-{{ $note['id'] }}" onsubmit="confirmSave('form-note-{{ $note['kpi_id'] }}-{{ $subArea['area_id'] }}-{{ $note['id'] }}', 'Data keamanan KPI akan disimpan')">
+                                            {{-- FILE --}}
+                                            <td style="min-width:220px;">
+                                                <div id="upload-file-{{$note['id']}}" style="display:flex; flex-direction:column; gap:6px;">
 
-                                                @csrf
-                                                @method('PATCH')
-
-                                                <td style="width:20%">
-
-                                                    <input type="file"
-                                                        class="form-control"
-                                                        name="attachment_file_{{$note['id']}}"
-                                                        accept=".pdf"
-                                                        required>
-
-                                                </td>
-
-                                                <td>
-
-                                                    <div class="d-flex gap-2">
-
-                                                        @if ($note['attachment_file'])
+                                                    @if ($note['attachment_file'])
                                                         <a href="{{ asset('uploads/attachment_file_kpi_file/'.$note['attachment_file']) }}"
-                                                            class="btn btn-info btn-sm"
-                                                            download>
-
-                                                            Download
+                                                        class="btn btn-success btn-sm"
+                                                        target="_blank">
+                                                        ⬇ Download File
                                                         </a>
-                                                        @endif
 
-                                                        <button type="submit"
-                                                            class="btn btn-success btn-sm">
+                                                        <label style="font-size:12px;">Ganti File:</label>
+                                                    @endif
 
-                                                            Upload
-                                                        </button>
+                                                    <form id="form-upload-{{$note['id']}}"
+                                                        action="{{route('user.keamanan.uploadNote',[
+                                                                'kpi'=>$note['kpi_id'],
+                                                                'areaId'=>$subArea['area_id'],
+                                                                'note'=>$note['id']
+                                                        ])}}"
+                                                        method="POST"
+                                                        enctype="multipart/form-data">
 
-                                                    </div>
+                                                        @csrf
+                                                        @method('PATCH')
 
-                                                </td>
+                                                        <input type="file"
+                                                            name="attachment_file_{{$note['id']}}"
+                                                            class="form-control form-control-sm"
+                                                            accept=".pdf"
+                                                            {{ !$note['attachment_file'] ? 'required' : '' }}>
 
-                                            </form>
+                                                        <div id="error-attachment_file_{{$note['id']}}" class="error-text"></div>
+                                                    </form>
+
+                                                </div>
+                                            </td>
+
+                                            {{-- ACTION --}}
+                                            <td style="min-width:140px;">
+                                                <button type="button"
+                                                        class="btn btn-success btn-sm btn-upload"
+                                                        data-form="form-upload-{{$note['id']}}"
+                                                        data-id="{{$note['id']}}">
+                                                    💾 Upload
+                                                </button>
+                                            </td>
 
                                         </tr>
 
@@ -194,3 +202,137 @@
 </div> <!-- end row -->
 @endsection
 
+@section('scripts')
+<script>
+    // CLEAR ERROR
+    function clearErrors(form) {
+        form.querySelectorAll("[id^='error-']").forEach(el => el.innerHTML = '');
+        form.querySelectorAll("input").forEach(el => el.style.border = '');
+    }
+
+    // SHOW ERROR
+    function showErrors(form, errors) {
+        Object.keys(errors).forEach(name => {
+            let msg = errors[name][0];
+
+            let errorDiv = document.getElementById("error-" + name);
+            if (errorDiv) errorDiv.innerHTML = msg;
+
+            let input = form.querySelector(`[name="${name}"]`);
+            if (input) input.style.border = "1px solid red";
+        });
+    }
+
+    // SUBMIT AJAX
+    async function submitUpload(form, btn, noteId) {
+
+        clearErrors(form);
+
+        let formData = new FormData(form);
+        let original = btn.innerHTML;
+
+        btn.innerHTML = "Uploading...";
+        btn.disabled = true;
+
+        try {
+
+            let res = await fetch(form.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
+                    'Accept': 'application/json'
+                }
+            });
+
+            let result = await res.json();
+
+            if (!res.ok) {
+                if (result.errors) showErrors(form, result.errors);
+
+                btn.innerHTML = original;
+                btn.disabled = false;
+                return;
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Upload berhasil',
+                timer: 1000,
+                showConfirmButton: false
+            });
+
+            // 🔥 UPDATE UI (INI YANG KAMU MAU)
+            if (result.data && result.data.attachment_file) {
+
+                let container = document.getElementById("upload-file-" + noteId);
+
+                let fileUrl = "/uploads/attachment_file_kpi_file/" + result.data.attachment_file;
+
+                container.innerHTML = `
+                    <a href="${fileUrl}"
+                    class="btn btn-success btn-sm"
+                    target="_blank">
+                    ⬇ Download File
+                    </a>
+
+                    <label style="font-size:12px;">Ganti File:</label>
+
+                    <form id="form-upload-${noteId}" enctype="multipart/form-data">
+                        <input type="file"
+                            name="attachment_file_${noteId}"
+                            class="form-control form-control-sm"
+                            accept=".pdf">
+
+                        <div id="error-attachment_file_${noteId}" class="error-text"></div>
+                    </form>
+                `;
+            }
+
+            btn.innerHTML = "✔ Uploaded";
+
+            setTimeout(() => {
+                btn.innerHTML = original;
+                btn.disabled = false;
+            }, 1200);
+
+        } catch (err) {
+            console.error(err);
+            Swal.fire('Error','Server error','error');
+
+            btn.innerHTML = original;
+            btn.disabled = false;
+        }
+    }
+
+    // INIT
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll(".btn-upload").forEach(btn => {
+
+            btn.addEventListener("click", function () {
+
+                let formId = btn.getAttribute("data-form");
+                let noteId = btn.getAttribute("data-id");
+                let form = document.getElementById(formId);
+
+                if (!form) return;
+
+                Swal.fire({
+                    title: 'Upload file?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Upload'
+                }).then(res => {
+                    if (res.isConfirmed) {
+                        submitUpload(form, btn, noteId);
+                    }
+                });
+
+            });
+
+        });
+
+    });
+</script>
+@endsection

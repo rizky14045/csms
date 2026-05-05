@@ -422,18 +422,23 @@ class AssesmentController extends Controller
         ]);
     }
 
-    public function updateQuestion(Request $request, $signQuestionID){
+    public function updateQuestion(Request $request, $signQuestionID)
+    {
         $signQuestion = SignQuestionAssesment::find($signQuestionID);
-         $validateVendor = $this->userService->validateVendorAccess($request->query('unit'));
-        // Validation rules
-        $validator = $this->validator($request->all(), AssesmentValidation::rulesForUpdateQuestion($signQuestion->id), AssesmentValidation::messages($signQuestion->id));
+
+        $validator = Validator::make(
+            $request->all(),
+            AssesmentValidation::rulesForUpdateQuestion($signQuestion->id),
+            AssesmentValidation::messages($signQuestion->id)
+        );
+
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
         }
-        $this->assesmentService->updateQuestion($request, $signQuestion);
-            
-        Alert::success('Update Berhasil', 'Assesment berhasil diupdate!');
-        return redirect()->route('bujp.assesment.show',['assesment'=>$signQuestion->assesment_id,'signCategoryId'=>$signQuestion->sign_category_id,'unit' => $request->query('unit')]);
+
+        return $this->assesmentService->updateQuestion($request, $signQuestion);
     }
     
     public function getTriwulanFromDate($date)

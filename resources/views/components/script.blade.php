@@ -54,6 +54,19 @@
         return false; // extra safety
     }
 
+    function confirmSaveAjax(form, message, callback) {
+        Swal.fire({
+            title: 'Simpan Data?',
+            text: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Simpan',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) callback();
+        });
+    }
+
 
     /**
      * Konfirmasi hapus data

@@ -40,6 +40,13 @@
                             </div>
                         </form>
                     </div>
+                    @can('create.security.kpi.unit')
+                    <div class="button-add col-md-12">
+                        <div class="d-flex justify-content-end pe-3 pt-3 col-md-6">
+                            <a href="{{route('user.keamanan.create')}}" class="btn btn-success">Tambah Data</a>
+                        </div>
+                    </div>
+                    @endcan
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered text-center align-middle">
@@ -59,11 +66,65 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$kpi->unit->name}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') }}</td>
+                                    <td>{{ $kpi->send_date ? \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{$kpi->year}}</td>
                                     <td>{{$kpi->semester}}</td>
                                     <td>
-                                        <a href="{{route('admin.keamanan.show',['kpi'=>$kpi->id])}}" class="btn btn-success btn-sm">show</a>
+                                        @if($kpi->send_status == true)
+                                        <div style="
+                                                display:flex;
+                                                flex-wrap:wrap;
+                                                gap:6px;
+                                                justify-content:left;
+                                                align-items:center;
+                                            ">
+
+                                                {{-- SHOW --}}
+                                                <a href="{{route('admin.keamanan.show',['kpi'=>$kpi->id])}}"
+                                                class="btn btn-info btn-sm"
+                                                style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+                                        </div>
+                                        @else
+                                        <div style="
+                                                display:flex;
+                                                flex-wrap:wrap;
+                                                gap:6px;
+                                                justify-content:left;
+                                                align-items:center;
+                                            ">
+                                                {{-- SHOW --}}
+                                                <a href="{{route('user.keamanan.show',['kpi'=>$kpi->id])}}"
+                                                class="btn btn-info btn-sm"
+                                                style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+
+                                                {{-- SEND --}}
+                                                @if($kpi->get_invalid_items_notes_by_unit == 0)
+                                                <form action="{{route('user.keamanan.send',['kpi'=>$kpi->id])}}"
+                                                    method="post"
+                                                    style="margin:0;"
+                                                    id="send-kpi-{{$kpi->id}}"
+                                                    onsubmit="confirmSave('send-kpi-{{$kpi->id}}', 'Kirim KPI?')">
+
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <button type="submit"
+                                                            class="btn btn-success btn-sm"
+                                                            style="min-width:80px;">
+                                                        📤 Kirim
+                                                    </button>
+                                                </form>
+                                                @else
+                                                <button class="btn btn-secondary btn-sm" style="min-width:80px; opacity:0.6;background-color:gray" disabled>
+                                                    📤 Kirim
+                                                </button>
+                                                @endif                                               
+                                        </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

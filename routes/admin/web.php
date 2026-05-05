@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\QuestionAssesmentController;
 use App\Http\Controllers\Admin\SecurepediaController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\VulnerabilityController;
+use App\Http\Controllers\Admin\EmailSettingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -237,6 +238,11 @@ Route::prefix('admin')->group(function () {
             Route::get('/{fasumType}/edit', [FasumTypeController::class, 'edit'])->name('admin.fasum-type.edit');
             Route::patch('/{fasumType}/edit', [FasumTypeController::class, 'update'])->name('admin.fasum-type.update');
             Route::delete('/{fasumType}/delete', [FasumTypeController::class, 'destroy'])->name('admin.fasum-type.destroy');
+        });
+
+        Route::prefix('email-setting')->group(function () {
+            Route::get('/', [EmailSettingController::class, 'index'])->name('admin.email-setting.index');
+            Route::patch('/edit', [EmailSettingController::class, 'update'])->name('admin.email-setting.update');
         });
     });
 
