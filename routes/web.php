@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardFasumController;
 use App\Http\Controllers\FetchController;
 use App\Http\Controllers\GeoJsonController;
+use App\Http\Controllers\MonthlyAuditExportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,9 @@ Route::get('/register', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 Route::get('/fasum/dashboard', [DashboardFasumController::class, 'index'])->middleware(['auth'])->name('fasum.dashboard');
+
+Route::get('/export-form-formulir/{monthlyId}', [MonthlyAuditExportController::class, 'exportFormFormulir'])->middleware(['auth'])->name('export.monthly.form-formulir');
+Route::get('/export-worker-sum/{monthlyId}', [MonthlyAuditExportController::class, 'exportWorkerSum'])->middleware(['auth'])->name('export.monthly.worker-sum');
 
 Route::prefix('geo')->group(function () {
 
