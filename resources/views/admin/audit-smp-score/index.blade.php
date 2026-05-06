@@ -21,8 +21,8 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="d-flex justify-content-end pe-3 pt-3">
-                @can('create.audit.smp.score.admin')
-                <a href="{{route('admin.audit-smp-score.create')}}" class="btn btn-primary">Tambah Data</a>
+                @can('create.audit.smp.score.unit')
+                <a href="{{route('user.audit-smp-score.create')}}" class="btn btn-primary">Tambah Data</a>
                 @endcan
             </div>
             <div class="card-body">  
@@ -51,38 +51,169 @@
                                     <td>{{$audit->unit->name ?? "-"}}</td>
                                     <td>{{ \Carbon\Carbon::parse($audit->start_audit)->format('d-m-Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($audit->end_audit)->format('d-m-Y') }}</td>
-                                    @canany(['view.audit.smp.score.admin', 'edit.audit.smp.score.admin', 'delete.audit.smp.score.admin'])                                        
-                                    <td class="text-center">
-                                        @can('view.audit.smp.score.admin')
-                                        <a href="{{route('admin.audit-smp-score.show',['audit'=>$audit->id])}}" class="btn btn-primary btn-sm">View</a>
-                                        @endcan
-                                        @if($audit->status == 1)
-                                        @can('edit.audit.smp.score.admin')
-                                        <a href="{{route('admin.audit-smp-score.edit',['audit'=>$audit->id])}}" class="btn btn-warning btn-sm">Edit</a>
-                                        @endcan
-                                        @if($audit->auditor_lead_id == auth()->user()->id && $audit->status == 1)
-                                        <form
-                                            id="send-audit-{{ $audit->id }}"
-                                            action="{{route('admin.audit-smp-score.send',['audit'=>$audit->id])}}"
-                                            method="POST"
-                                            class="d-inline"
-                                        >
-                                            @csrf
+                                    @canany([
+                                        'view.audit.smp.score.admin',
+                                        'edit.audit.smp.score.admin',
+                                        'delete.audit.smp.score.admin'
+                                    ])
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-danger btn-sm"
-                                                onclick="confirmDelete(
-                                                    'send-audit-{{ $audit->id }}',
-                                                    'Audit akan dikirim.'
-                                                )"
-                                            >
-                                                Kirim
-                                            </button>
-                                        </form>
-                                        @endif
-                                        @endif
+                                    <td class="text-center">
+
+                                        <div style="
+                                                display:flex;
+                                                flex-wrap:wrap;
+                                                gap:6px;
+                                                justify-content:left;
+                                                align-items:center;
+                                            ">
+
+                                            {{-- ========================= --}}
+                                            {{-- STATUS 0 --}}
+                                            {{-- ========================= --}}
+                                            @if($audit->status == 0)
+
+                                                {{-- SHOW --}}
+                                                <a href="{{ route('user.audit-smp-score.show',['audit'=>$audit->id]) }}"
+                                                class="btn btn-info btn-sm"
+                                                style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+
+                                                @can('send.audit.smp.score.unit')
+
+                                                    {{-- BUTTON SEND --}}
+                                                    @if($audit->get_invalid_items_evidence_by_unit == 0)
+
+                                                        <form action="{{ route('user.audit-smp-score.send',['audit'=>$audit->id]) }}"
+                                                            method="post"
+                                                            style="margin:0;"
+                                                            id="send-audit-{{$audit->id}}"
+                                                            onsubmit="confirmSave('send-audit-{{$audit->id}}', 'Kirim Audit?')">
+
+                                                            @csrf
+                                                            @method('PATCH')
+
+                                                            <button type="submit"
+                                                                    class="btn btn-success btn-sm"
+                                                                    style="min-width:80px;">
+                                                                📤 Kirim
+                                                            </button>
+
+                                                        </form>
+
+                                                    @else
+
+                                                        <button class="btn btn-secondary btn-sm"
+                                                                style="min-width:80px; opacity:0.6; background-color:gray"
+                                                                disabled>
+                                                            📤 Kirim
+                                                        </button>
+
+                                                    @endif
+
+                                                @endcan
+
+
+                                            {{-- ========================= --}}
+                                            {{-- STATUS 1 --}}
+                                            {{-- ========================= --}}
+                                            @elseif($audit->status == 1)
+
+                                                @can('view.audit.smp.score.admin')
+                                                <a href="{{ route('admin.audit-smp-score.show',['audit'=>$audit->id]) }}"
+                                                class="btn btn-info btn-sm"
+                                                style="min-width:80px;">
+                                                    👁 Show
+                                                </a>
+                                                @endcan
+
+                                                @can('edit.audit.smp.score.admin')
+                                                <a href="{{ route('admin.audit-smp-score.edit',['audit'=>$audit->id]) }}"
+                                                class="btn btn-warning btn-sm"
+                                                style="min-width:80px;">
+                                                    ✏ Edit
+                                                </a>
+                                                @endcan
+
+
+                                            {{-- ========================= --}}
+                                            {{-- STATUS >= 2 --}}
+                                            {{-- ========================= --}}
+                                            @elseif($audit->status >= 2)
+
+                                                @php
+
+                                                    $isLead = $audit->auditor_lead_id == auth()->id();
+
+                                                    $isAuditor = collect($audit->auditors)
+                                                        ->pluck('id')
+                                                        ->contains(auth()->id());
+
+                                                @endphp
+
+                                                {{-- ========================= --}}
+                                                {{-- AUDITOR / LEAD --}}
+                                                {{-- ========================= --}}
+                                                @if($isLead || $isAuditor)
+
+                                                    <a href="{{ route('auditor.audit-smp-score.show',['audit'=>$audit->id]) }}"
+                                                    class="btn btn-info btn-sm"
+                                                    style="min-width:80px;">
+                                                        👁 Show
+                                                    </a>
+
+                                                    {{-- LEAD BISA KIRIM --}}
+                                                    @if($isLead && $audit->status == 2)
+                                                        @if($audit->get_invalid_items_evidence_by_auditor == 0)
+
+                                                            <form action="{{ route('auditor.audit-smp-score.send',['audit'=>$audit->id]) }}"
+                                                                method="post"
+                                                                style="margin:0;"
+                                                                id="send-audit-{{$audit->id}}"
+                                                                onsubmit="confirmSave('send-audit-{{$audit->id}}', 'Kirim Audit?')">
+
+                                                                @csrf
+                                                                @method('PATCH')
+
+                                                                <button type="submit"
+                                                                        class="btn btn-success btn-sm"
+                                                                        style="min-width:80px;">
+                                                                    📤 Kirim
+                                                                </button>
+
+                                                            </form>
+
+                                                        @else
+
+                                                            <button class="btn btn-secondary btn-sm"
+                                                                    style="min-width:80px; opacity:0.6; background-color:gray"
+                                                                    disabled>
+                                                                📤 Kirim
+                                                            </button>
+
+                                                        @endif
+
+                                                    @endif
+
+                                                {{-- ========================= --}}
+                                                {{-- ADMIN / NON AUDITOR --}}
+                                                {{-- ========================= --}}
+                                                @else
+
+                                                    <a href="{{ route('admin.audit-smp-score.show',['audit'=>$audit->id]) }}"
+                                                    class="btn btn-info btn-sm"
+                                                    style="min-width:80px;">
+                                                        👁 Show
+                                                    </a>
+
+                                                @endif
+
+                                            @endif
+
+                                        </div>
+
                                     </td>
+
                                     @endcanany
                                 </tr>
                             @endforeach

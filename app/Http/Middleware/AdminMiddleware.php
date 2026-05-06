@@ -20,7 +20,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         $admin = User::find(Auth::user()->id);
-        if($admin->type == 'admin'){
+        if($admin->type == 'admin' || $admin->type == 'pusat'){
             return $next($request);
         } else {
             return redirect()->route('login');

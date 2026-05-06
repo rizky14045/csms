@@ -33,40 +33,10 @@ class AuditSMPScoreController extends Controller
     }
 
     public function index(){
-        $result = $this->auditSMPDataService->getAllAuditData(10, true, ['unit']);
+        $result = $this->auditSMPDataService->getAllAuditData(10, true, ['unit', 'getInvalidItemsEvidenceByUnit', 'auditors', 'getInvalidItemsEvidenceByAuditor'], null, null, 'header');
         $data['audits'] = getPaginate($result);
         $data['request'] = request();
         return view('admin.audit-smp-score.index',$data);
-    }
-
-    public function create(){
-        $result = $this->unitService->getAllUnit(0, false);
-        $data['units_list'] = getData($result);
-        $result = $this->userService->getAllUser(0, false, "auditor");
-        $data['auditors'] = getData($result);
-        return view('admin.audit-smp-score.create',$data);
-    }
-
-    public function store(Request $request){
-        // Validation rules
-        $validator = $this->validator($request->all(), AuditSMPDataValidation::rulesForCreate(), AuditSMPDataValidation::messages());
-
-        $validator->after(function ($validator) use ($request) {
-            $lead = $request->lead_auditor_id;
-            $members = $request->auditors_ids ?? [];
-
-            if (in_array($lead, $members)) {
-                $validator->errors()->add('auditors_ids', 'Ketua auditor tidak boleh menjadi anggota.');
-            }
-        });
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $this->auditSMPDataService->createAuditData($request->all());
-
-        return redirect()->route('admin.audit-smp-score.index')->with('success', 'Data audit berhasil disimpan');
     }
 
     public function show(AuditSmpData $audit){
@@ -81,7 +51,7 @@ class AuditSMPScoreController extends Controller
         }
         $result = $this->unitService->getAllUnit(0, false);
         $data['units_list'] = getData($result);
-        $result = $this->userService->getAllUser(0, false, "auditor");
+        $result = $this->userService->getAllUser(0, false, ['user', 'pusat']);
         $data['auditors'] = getData($result);
         $audit->load('auditors');
         $data['audit'] = $audit;

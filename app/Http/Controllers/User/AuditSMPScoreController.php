@@ -23,7 +23,7 @@ class AuditSMPScoreController extends Controller
         $this->unitService = $unitService;
         $this->userService = $userService;
 
-        $this->middleware('can:view.audit.smp.score.unit')->only(['index', 'show']);
+        $this->middleware('can:view.audit.smp.score.unit')->only(['index']);
         $this->middleware('can:edit.audit.smp.score.unit')->only(['edit', 'update']);
     }
 
@@ -33,7 +33,7 @@ class AuditSMPScoreController extends Controller
     }
 
     public function index(){
-        $result = $this->auditSMPDataService->getAllAuditData(10, true, ['unit'], null, auth()->user()->unit_id);
+        $result = $this->auditSMPDataService->getAllAuditData(10, true, ['unit', 'getInvalidItemsEvidenceByUnit'], null, auth()->user()->unit_id);
         $data['audits'] = getPaginate($result);
         $data['request'] = request();
         return view('user.audit-smp-score.index',$data);
@@ -50,10 +50,18 @@ class AuditSMPScoreController extends Controller
         $request->merge(['unit_id' => auth()->user()->unit_id]);
         $this->auditSMPDataService->createAuditData($request->all());
 
-        return redirect()->route('user.audit-smp-score.index')->with('success', 'Data audit berhasil disimpan');
+        Alert::success('Tambah Berhasil', 'Audit SMP berhasil dibuat!');
+        if(auth()->user()->roles[0]->name == 'Pusat'){
+            return redirect()->route('admin.audit-smp-score.index');
+        }
+        return redirect()->route('user.audit-smp-score.index');
     }
 
     public function show(AuditSmpData $audit){
+        if($audit->unit_id != auth()->user()->unit_id) {
+            Alert::error('Akses Ditolak', 'Anda tidak memiliki akses untuk melihat data audit ini.');
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk melihat data audit ini.');
+        }
         $audit->load('childrenHeader.pernyataan.kriteria.evidence', 'childrenHeader.kriteria.evidence', 'unit');
         $data['auditData'] = $audit;
         return view('user.audit-smp-score.show',$data);
@@ -64,47 +72,141 @@ class AuditSMPScoreController extends Controller
             Alert::error('Akses Ditolak', 'Data audit yang sudah selesai tidak dapat dikirim!');
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat dikirim');
         }
+        $audit->load('getInvalidItemsEvidenceByUnit');
+        if($audit->get_invalid_items_evidence_by_unit > 0){
+            Alert::error('Akses Ditolak', 'Data audit tidak dapat dikirim karena terdapat item bukti yang belum lengkap!');
+            return redirect()->back()->with('error', 'Data audit tidak dapat dikirim karena terdapat item bukti yang belum lengkap');
+        }
+        
         $this->auditSMPDataService->sendAuditData($audit);
         
         Alert::success('Data Terkirim', 'Data audit berhasil dikirim!');
         return redirect()->route('user.audit-smp-score.index')->with('success', 'Data audit berhasil dikirim');
     }
 
-    public function updateSelfAudit(Request $request, AuditSMPScore $auditScore){
-        $auditScore->load('auditData');
-        $audit = $auditScore->auditData;
-        if($audit->status != 0){
-            return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat diedit');
+    public function updateSelfAudit(Request $request, AuditSMPScore $auditScore)
+    {
+        try {
+
+            $auditScore->load('auditData');
+
+            $audit = $auditScore->auditData;
+
+            // VALIDASI STATUS
+            if ($audit->status != 0) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data audit yang sudah selesai tidak dapat diedit'
+                ], 422);
+
+            }
+
+            // VALIDATION
+            $validator = $this->validator(
+                $request->all(),
+                AuditSMPDataValidation::rulesForUpdateSelfAudit($auditScore->id),
+                AuditSMPDataValidation::messages($auditScore->id)
+            );
+
+            if ($validator->fails()) {
+
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+
+            }
+
+            // UPDATE
+            $this->auditSMPDataService->updateSelfAudit(
+                $request,
+                $auditScore,
+                $request->all()
+            );
+
+            // AMBIL NILAI TERBARU
+            $auditScore->refresh();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data self audit berhasil diperbarui',
+                'data' => [
+                    'id' => $auditScore->id,
+                    'pencapaian_nilai_kriteria_self' => $auditScore->pencapaian_nilai_kriteria_self
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+
         }
-        // Validation rules
-        $validator = $this->validator($request->all(), AuditSMPDataValidation::rulesForUpdateSelfAudit($auditScore->id), AuditSMPDataValidation::messages($auditScore->id));
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $this->auditSMPDataService->updateSelfAudit($request, $auditScore, $request->all());
-
-        Alert::success('Success', 'Data bukti berhasil diperbarui');
-        return redirect()->route('user.audit-smp-score.show', ['audit' => $audit->id])->with('success', 'Data audit berhasil disimpan');
     }
 
-    public function updateEvidence(Request $request, AuditSMPScore $auditScore){
-        $auditScore->load('auditData');
-        $audit = $auditScore->auditData;
-        if($audit->status != 0){
-            return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat diedit');
+    public function updateEvidence(Request $request, AuditSMPScore $auditScore)
+    {
+        try {
+
+            $auditScore->load('auditData');
+
+            $audit = $auditScore->auditData;
+
+            // VALIDASI STATUS
+            if ($audit->status != 0) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data audit yang sudah selesai tidak dapat diedit'
+                ], 422);
+
+            }
+
+            // VALIDATION
+            $validator = $this->validator(
+                $request->all(),
+                AuditSMPDataValidation::rulesForUpdateEvidence($auditScore->id),
+                AuditSMPDataValidation::messages($auditScore->id)
+            );
+
+            if ($validator->fails()) {
+
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+
+            }
+
+            // UPDATE FILE
+            $this->auditSMPDataService->updateEvidenceAudit(
+                $request,
+                $auditScore,
+                $request->all()
+            );
+
+            // REFRESH DATA
+            $auditScore->refresh();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data bukti berhasil diperbarui',
+                'data' => [
+                    'id' => $auditScore->id,
+                    'evidence_file' => $auditScore->evidence_file
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+
         }
-        // Validation rules
-        $validator = $this->validator($request->all(), AuditSMPDataValidation::rulesForUpdateEvidence($auditScore->id), AuditSMPDataValidation::messages($auditScore->id));
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $this->auditSMPDataService->updateEvidenceAudit($request, $auditScore, $request->all());
-
-        Alert::success('Success', 'Data bukti berhasil diperbarui');
-        return redirect()->route('user.audit-smp-score.show', ['audit' => $audit->id])->with('success', 'Data audit berhasil disimpan');
     }
 }

@@ -25,6 +25,7 @@ class AuditSMPDataService
    public function getAllAuditData($limit = 10, $paginate = true, $with = [], $lead_id = null, $unit_id = null)
     {
         try {
+
             $order  = request('order', 'ASC');
             $search = request('q', '');
             $ref    = request('ref', 'order');
@@ -37,44 +38,121 @@ class AuditSMPDataService
                 $query->with($with);
             }
 
-            if (!is_null($lead_id)) {
-                $query->where(function ($q) use ($lead_id) {
-                    $q->where('auditor_lead_id', $lead_id)
-                    ->orWhereHas('auditors', function ($q2) use ($lead_id) {
-                        $q2->where('users.id', $lead_id);
-                    });
+            $user = auth()->user();
+
+            // =========================
+            // ROLE PUSAT / UNIT
+            // =========================
+            if (
+                in_array($user->roles[0]->name, ['Pusat', 'Unit'])
+            ) {
+
+                $query->where(function ($q) use ($user) {
+
+                    // =========================
+                    // ROLE PUSAT
+                    // =========================
+                    if ($user->roles[0]->name == 'Pusat') {
+
+                        // semua data status >= 1 dari unit manapun
+                        $q->where('status', '>=', 1);
+
+                    }
+
+                    // =========================
+                    // SEBAGAI LEAD AUDITOR
+                    // =========================
+                    $q->orWhere('auditor_lead_id', $user->id)
+
+                    // =========================
+                    // SEBAGAI ANGGOTA AUDITOR
+                    // =========================
+                    ->orWhereHas('auditors', function ($q2) use ($user) {
+                        $q2->where('users.id', $user->id);
+                    })
+
+                    // =========================
+                    // SEMUA AUDIT UNIT DIA
+                    // =========================
+                    ->orWhere('unit_id', $user->unit_id);
+
                 });
+
+            }else{
+                // =========================
+                // FILTER AUDITOR / LEAD
+                // =========================
+                if (!is_null($lead_id)) {
+
+                    $query->where(function ($q) use ($lead_id) {
+
+                        $q->where('auditor_lead_id', $lead_id)
+                        ->orWhereHas('auditors', function ($q2) use ($lead_id) {
+                            $q2->where('users.id', $lead_id);
+                        });
+
+                    });
+
+                }
+
+                // =========================
+                // FILTER UNIT
+                // =========================
+                if (!is_null($unit_id)) {
+                    $query->where('unit_id', $unit_id);
+                }
             }
 
-            if (!is_null($unit_id)) {
-                $query->where('unit_id', $unit_id);
-            }
-
+            // =========================
+            // FILTER DATE
+            // =========================
             if ($start && $end) {
+
                 $end = date('Y-m-d', strtotime($end . ' +1 day'));
+
                 $query->whereBetween('created_at', [$start, $end]);
+
             } elseif ($start) {
+
                 $query->whereDate('created_at', '>=', $start);
+
             } elseif ($end) {
+
                 $query->whereDate('created_at', '<=', $end);
+
             }
 
+            // =========================
+            // SORTING
+            // =========================
             $allowedSort = ['id', 'created_at'];
+
             if (!in_array($ref, $allowedSort)) {
                 $ref = 'id';
             }
 
             $query->orderBy($ref, $order);
 
+            // =========================
+            // PAGINATION
+            // =========================
             if ($paginate) {
+
                 $data = $query->paginate($limit)->withQueryString();
+
             } else {
+
                 $data = $limit > 0
                     ? $query->limit($limit)->get()
                     : $query->get();
+
             }
 
-            return JsonResponse::success($data, 'Audit data found', 200);
+            return JsonResponse::success(
+                $data,
+                'Audit data found',
+                200
+            );
 
         } catch (Exception $e) {
 
@@ -231,6 +309,7 @@ class AuditSMPDataService
                 'auditor_lead_id' => $data['auditor_lead_id'],
                 'start_audit' => $data['start_audit'],
                 'end_audit' => $data['end_audit'],
+                'status' => 2,
                 'updated_by' => auth()->id(),
             ];
 
