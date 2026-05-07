@@ -65,7 +65,7 @@
                                     <td>{{ $form->send_status == true ? \Carbon\Carbon::parse($form->send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>
                                         @if ($form->send_status == false)
-                                            <a href="{{route('user.monthly-audit.form-formulir.index',['monthlyId'=>$form->id])}}" class="btn btn-primary btn-sm">Show</a>
+                                            <a href="{{route('user.monthly-audit.form-formulir.index',['monthlyId'=>$form->id])}}" class="btn btn-primary btn-sm">Isi Laporan Bulanan</a>
                                             <form action="{{route('user.monthly-audit.send',['monthlyId'=>$form->id])}}" method="post" class="d-inline">
                                                 @csrf
                                                 @method('PATCH')

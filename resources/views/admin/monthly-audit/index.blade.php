@@ -71,6 +71,7 @@
                                     <td>{{ $form->send_status == true ? \Carbon\Carbon::parse($form->send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>
                                         <a href="{{route('admin.monthly-audit.show',['monthlyId'=>$form->id])}}" class="btn btn-info btn-sm">Show</a>          
+                                        <a href="{{route('export.monthly.all',['monthlyId'=>$form->id])}}" class="btn btn-success btn-sm">Export Excel</a>          
                                     </td>
                                 </tr>
                             @endforeach

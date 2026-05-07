@@ -3,13 +3,14 @@ namespace App\Exports;
 
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class FormFormulirExport implements FromView, WithDrawings, WithStyles, WithColumnWidths
+class FormFormulirExport implements FromView, WithDrawings, WithStyles, WithColumnWidths,WithTitle
 {
     protected $data;
 
@@ -21,6 +22,11 @@ class FormFormulirExport implements FromView, WithDrawings, WithStyles, WithColu
     public function view(): View
     {
         return view('exports.monthly-audit.form-formulir', $this->data);
+    }
+
+    public function title(): string
+    {
+        return 'Worker Summary';
     }
 
     public function columnWidths(): array

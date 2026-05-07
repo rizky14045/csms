@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class WorkerSumExport implements FromView, WithStyles, WithColumnWidths, WithDrawings,WithTitle
+class SecurityFormExport implements FromView, WithStyles, WithColumnWidths, WithDrawings,WithTitle
 {
     protected $data;
 
@@ -20,56 +20,65 @@ class WorkerSumExport implements FromView, WithStyles, WithColumnWidths, WithDra
         $this->data = $data;
     }
 
-    public function title(): string
-    {
-        return 'Jumlah Pekerja';
-    }
-
     public function view(): View
     {
         return view(
-            'exports.monthly-audit.worker-sum-excel',
+            'exports.monthly-audit.security-form-excel',
             $this->data
         );
     }
 
+    public function title(): string
+    {
+        return 'Satpam';
+    }
+
     public function styles(Worksheet $sheet)
     {
-        // Font Global
-        $sheet->getParent()->getDefaultStyle()
+        // Font global
+        $sheet->getParent()
+            ->getDefaultStyle()
             ->getFont()
             ->setName('Arial');
 
-        $sheet->getParent()->getDefaultStyle()
+        $sheet->getParent()
+            ->getDefaultStyle()
             ->getFont()
             ->setSize(10);
 
         // Wrap text
-        $sheet->getStyle('A1:P200')
+        $sheet->getStyle('A1:O300')
             ->getAlignment()
             ->setWrapText(true);
+
+        // Tinggi row header
+        $sheet->getRowDimension(1)->setRowHeight(25);
+        $sheet->getRowDimension(2)->setRowHeight(25);
+        $sheet->getRowDimension(3)->setRowHeight(25);
+        $sheet->getRowDimension(4)->setRowHeight(25);
 
         return [
 
             // Header dokumen
-            'A1:P4' => [
+            'A1:O4' => [
                 'font' => [
-                    'bold' => true
+                    'bold' => true,
                 ],
+
                 'alignment' => [
-                    'vertical' => 'center'
+                    'vertical' => 'center',
                 ]
             ],
 
             // Header table
-            'A7:P8' => [
+            'A7:O8' => [
                 'font' => [
-                    'bold' => true
+                    'bold' => true,
                 ],
 
                 'alignment' => [
                     'horizontal' => 'center',
-                    'vertical' => 'center'
+                    'vertical' => 'center',
                 ]
             ],
         ];
@@ -90,10 +99,9 @@ class WorkerSumExport implements FromView, WithStyles, WithColumnWidths, WithDra
             'J' => 10,
             'K' => 10,
             'L' => 10,
-            'M' => 18,
+            'M' => 20,
             'N' => 25,
             'O' => 20,
-            'P' => 15,
         ];
     }
 
@@ -103,11 +111,16 @@ class WorkerSumExport implements FromView, WithStyles, WithColumnWidths, WithDra
 
         $drawing->setName('Logo');
         $drawing->setDescription('Logo PLN');
+
+        // public/logo.png
         $drawing->setPath(public_path('logo.png'));
 
         $drawing->setHeight(60);
 
         $drawing->setCoordinates('A1');
+
+        $drawing->setOffsetX(10);
+        $drawing->setOffsetY(5);
 
         return $drawing;
     }

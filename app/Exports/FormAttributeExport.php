@@ -11,7 +11,12 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class WorkerSumExport implements FromView, WithStyles, WithColumnWidths, WithDrawings,WithTitle
+class FormAttributeExport implements
+    FromView,
+    WithStyles,
+    WithColumnWidths,
+    WithDrawings,
+    WithTitle
 {
     protected $data;
 
@@ -20,58 +25,45 @@ class WorkerSumExport implements FromView, WithStyles, WithColumnWidths, WithDra
         $this->data = $data;
     }
 
-    public function title(): string
-    {
-        return 'Jumlah Pekerja';
-    }
-
     public function view(): View
     {
         return view(
-            'exports.monthly-audit.worker-sum-excel',
+            'exports.monthly-audit.form-attribute-excel',
             $this->data
         );
     }
 
+
+    public function title(): string
+    {
+        return 'Attribute';
+    }
+
     public function styles(Worksheet $sheet)
     {
-        // Font Global
-        $sheet->getParent()->getDefaultStyle()
+        $sheet->getParent()
+            ->getDefaultStyle()
             ->getFont()
             ->setName('Arial');
 
-        $sheet->getParent()->getDefaultStyle()
+        $sheet->getParent()
+            ->getDefaultStyle()
             ->getFont()
             ->setSize(10);
 
-        // Wrap text
-        $sheet->getStyle('A1:P200')
+        $sheet->getStyle('A1:J500')
             ->getAlignment()
             ->setWrapText(true);
 
         return [
 
             // Header dokumen
-            'A1:P4' => [
+            'A1:J4' => [
                 'font' => [
                     'bold' => true
-                ],
-                'alignment' => [
-                    'vertical' => 'center'
                 ]
             ],
 
-            // Header table
-            'A7:P8' => [
-                'font' => [
-                    'bold' => true
-                ],
-
-                'alignment' => [
-                    'horizontal' => 'center',
-                    'vertical' => 'center'
-                ]
-            ],
         ];
     }
 
@@ -79,21 +71,15 @@ class WorkerSumExport implements FromView, WithStyles, WithColumnWidths, WithDra
     {
         return [
             'A' => 5,
-            'B' => 25,
+            'B' => 35,
             'C' => 20,
-            'D' => 15,
-            'E' => 22,
-            'F' => 18,
-            'G' => 18,
-            'H' => 28,
-            'I' => 10,
-            'J' => 10,
-            'K' => 10,
-            'L' => 10,
-            'M' => 18,
-            'N' => 25,
-            'O' => 20,
-            'P' => 15,
+            'D' => 12,
+            'E' => 20,
+            'F' => 12,
+            'G' => 12,
+            'H' => 18,
+            'I' => 20,
+            'J' => 30,
         ];
     }
 
@@ -103,6 +89,7 @@ class WorkerSumExport implements FromView, WithStyles, WithColumnWidths, WithDra
 
         $drawing->setName('Logo');
         $drawing->setDescription('Logo PLN');
+
         $drawing->setPath(public_path('logo.png'));
 
         $drawing->setHeight(60);
