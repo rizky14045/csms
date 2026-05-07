@@ -1,211 +1,436 @@
 @extends('layout.app')
 
 @section('styles')
+<style>
+    .table td,
+    .table th {
+        vertical-align: middle;
+    }
+
+    .error-text {
+        font-size: 12px;
+        color: #dc3545;
+        margin-top: 4px;
+    }
+</style>
 @stop
 
 @section('content')
 
 <div class="py-3 d-flex justify-content-between">
-  <h4>Data Audit {{ $auditData->unit->name }}</h4>
+    <h4>Data Audit {{ $auditData->unit->name }}</h4>
 </div>
 
 <div class="card">
-  <div class="card-body">
+    <div class="card-body">
 
-    <div class="table-responsive">
+        <div class="table-responsive">
 
-      @if($auditData->childrenHeader->count() == 0)
+            @if($auditData->childrenHeader->count() == 0)
 
-      <div class="text-center">
-        Tidak ada data
-      </div>
+                <div class="text-center">
+                    Tidak ada data
+                </div>
 
-      @else
+            @else
 
-      @php
-      $grandTotalAudit = 0;
-      $grandTotalSelf = 0;
-      @endphp
+            @php
+                $grandTotalAudit = 0;
+                $grandTotalSelf = 0;
+            @endphp
 
-      <table class="table table-bordered text-center align-middle">
+            <table class="table table-bordered text-center align-middle">
 
-        <thead style="background:#5DADE2; color:white;">
-          <tr>
-            <th rowspan="2">Elemen</th>
-            <th rowspan="2">Bobot</th>
-            <th colspan="2">Kriteria</th>
-            <th colspan="2">Self Audit</th>
-            <th colspan="2">Audit</th>
-            <th rowspan="2">Evidence</th>
-            <th rowspan="2">File</th>
-            <th rowspan="2">Temuan</th>
-            <th rowspan="2">Rekomendasi</th>
-          </tr>
-          <tr>
-            <th>No</th>
-            <th>Nama</th>
-            <th>Nilai</th>
-            <th>Elemen</th>
-            <th>Nilai</th>
-            <th>Elemen</th>
-          </tr>
-        </thead>
+                <thead style="background:#5DADE2; color:white;">
+                    <tr>
+                        <th rowspan="2">Elemen</th>
+                        <th rowspan="2">Bobot</th>
+                        <th colspan="2">Kriteria</th>
+                        <th colspan="2">Self Audit</th>
+                        <th colspan="2">Audit</th>
+                        <th rowspan="2">Evidence</th>
+                        <th rowspan="2">File</th>
+                        <th rowspan="2">Temuan</th>
+                        <th rowspan="2">Rekomendasi</th>
+                    </tr>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>Nilai</th>
+                        <th>Elemen</th>
+                        <th>Nilai</th>
+                        <th>Elemen</th>
+                    </tr>
+                </thead>
 
-        <tbody>
+                <tbody>
 
-          @foreach($auditData->childrenHeader as $header)
+                @foreach($auditData->childrenHeader as $header)
 
-          @php
-          $allKriteria = collect();
+                    @php
+                        $allKriteria = collect();
 
-          // gabung semua kriteria (langsung + pernyataan)
-          $allKriteria = $allKriteria->merge($header->kriteria);
+                        $allKriteria = $allKriteria->merge($header->kriteria);
 
-          foreach($header->pernyataan as $p){
-          $allKriteria = $allKriteria->merge($p->kriteria);
-          }
+                        foreach($header->pernyataan as $p){
+                            $allKriteria = $allKriteria->merge($p->kriteria);
+                        }
 
-          $pembagi = max(1, $allKriteria->count() * 2);
+                        $pembagi = max(1, $allKriteria->count() * 2);
 
-          $subAudit = 0;
-          $subSelf = 0;
+                        $subAudit = 0;
+                        $subSelf = 0;
 
-          $rowspan = 0;
+                        $rowspan = 0;
 
-          foreach($allKriteria as $k){
-          $rowspan += max(1, $k->evidence->count());
-          }
-          @endphp
+                        foreach($allKriteria as $k){
+                            $rowspan += max(1, $k->evidence->count());
+                        }
+                    @endphp
 
-          @foreach($allKriteria as $kriteria)
+                    @foreach($allKriteria as $kriteria)
 
-          @php
-          $nilaiSelf = (int)($kriteria->pencapaian_nilai_kriteria_self ?? 0);
-          $nilaiAudit = (int)($kriteria->pencapaian_nilai_kriteria ?? 0);
+                        @php
+                            $nilaiSelf = (int)($kriteria->pencapaian_nilai_kriteria_self ?? 0);
+                            $nilaiAudit = (int)($kriteria->pencapaian_nilai_kriteria ?? 0);
 
-          $nilaiElemenSelf = ($nilaiSelf * $header->bobot) / $pembagi;
-          $nilaiElemenAudit = ($nilaiAudit * $header->bobot) / $pembagi;
+                            $nilaiElemenSelf = ($nilaiSelf * $header->bobot) / $pembagi;
+                            $nilaiElemenAudit = ($nilaiAudit * $header->bobot) / $pembagi;
 
-          $subSelf += $nilaiElemenSelf;
-          $subAudit += $nilaiElemenAudit;
+                            $subSelf += $nilaiElemenSelf;
+                            $subAudit += $nilaiElemenAudit;
 
-          $evidences = $kriteria->evidence->count()
-          ? $kriteria->evidence
-          : collect([null]);
+                            $evidences = $kriteria->evidence->count()
+                                ? $kriteria->evidence
+                                : collect([null]);
 
-          // warna
-          $bgSelf = $nilaiSelf == 2 ? '#28a745' : ($nilaiSelf == 1 ? '#ffc107' : '#dc3545');
-          $bgAudit = $nilaiAudit == 2 ? '#28a745' : ($nilaiAudit == 1 ? '#ffc107' : '#dc3545');
-          @endphp
+                            $bgSelf = $nilaiSelf == 2 ? '#28a745' : ($nilaiSelf == 1 ? '#ffc107' : '#dc3545');
+                            $bgAudit = $nilaiAudit == 2 ? '#28a745' : ($nilaiAudit == 1 ? '#ffc107' : '#dc3545');
+                        @endphp
 
-          @foreach($evidences as $i => $evidence)
+                        @foreach($evidences as $i => $evidence)
 
-          <tr>
+                        <tr>
 
-            @if($loop->parent->first && $loop->first)
-            <td rowspan="{{ $rowspan }}">{{ $header->name }}</td>
-            <td rowspan="{{ $rowspan }}">{{ $header->bobot }}%</td>
+                            @if($loop->parent->first && $loop->first)
+                                <td rowspan="{{ $rowspan }}">{{ $header->name }}</td>
+                                <td rowspan="{{ $rowspan }}">{{ $header->bobot }}%</td>
+                            @endif
+
+                            @if($loop->first)
+
+                                <td rowspan="{{ count($evidences) }}">
+                                    {{ $loop->parent->iteration }}
+                                </td>
+
+                                <td rowspan="{{ count($evidences) }}" style="text-align:left">
+                                    {{ $kriteria->name }}
+                                </td>
+
+                                {{-- SELF AUDIT --}}
+                                <td rowspan="{{ count($evidences) }}"
+                                    style="background:{{ $bgSelf }};color:white;">
+
+                                    @if($auditData->status == 0)
+
+                                    <form class="ajax-form"
+                                          action="{{ route('user.audit-smp-score.update-self-audit',$kriteria->id) }}"
+                                          method="POST">
+
+                                        @csrf
+                                        @method('PUT')
+
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <select name="pencapaian_nilai_kriteria_self_{{ $kriteria->id }}"
+                                                    class="form-select form-select-sm">
+
+                                                <option value="0" {{ $nilaiSelf==0?'selected':'' }}>0</option>
+                                                <option value="1" {{ $nilaiSelf==1?'selected':'' }}>1</option>
+                                                <option value="2" {{ $nilaiSelf==2?'selected':'' }}>2</option>
+
+                                            </select>
+
+                                            <button type="submit"
+                                                    class="btn btn-success btn-sm">
+                                                💾
+                                            </button>
+                                        </div>
+
+                                    </form>
+
+                                    @else
+                                        {{ $nilaiSelf }}
+                                    @endif
+                                </td>
+
+                                <td rowspan="{{ count($evidences) }}">
+                                    {{ number_format($nilaiElemenSelf,2) }}%
+                                </td>
+
+                                {{-- AUDIT --}}
+                                <td rowspan="{{ count($evidences) }}"
+                                    style="background:{{ $bgAudit }};color:white;">
+                                    {{ $nilaiAudit }}
+                                </td>
+
+                                <td rowspan="{{ count($evidences) }}">
+                                    {{ number_format($nilaiElemenAudit,2) }}%
+                                </td>
+
+                            @endif
+
+                            {{-- EVIDENCE --}}
+                            <td>{{ $evidence->name ?? '-' }}</td>
+
+                            {{-- FILE --}}
+                            <td style="min-width:250px;">
+
+                                @if($auditData->status == 0)
+
+                                <div id="upload-file-{{ $evidence->id ?? 0 }}"
+                                     style="display:flex; flex-direction:column; gap:6px;">
+
+                                    @if(isset($evidence->evidence_file) && $evidence->evidence_file != '')
+                                        <a href="{{ asset('uploads/evidence_file/' . $evidence->evidence_file) }}"
+                                           target="_blank"
+                                           class="btn btn-success btn-sm">
+                                            ⬇ Download File
+                                        </a>
+
+                                        <label style="font-size:12px;">
+                                            Ganti File:
+                                        </label>
+                                    @endif
+
+                                    <form class="ajax-form-file"
+                                          id="form-upload-{{ $evidence->id ?? 0 }}"
+                                          action="{{ route('user.audit-smp-score.update',$evidence->id ?? 0) }}"
+                                          method="POST"
+                                          enctype="multipart/form-data">
+
+                                        @csrf
+                                        @method('PUT')
+
+                                        <input type="file"
+                                            name="evidence_file_{{ $evidence->id ?? 0 }}"
+                                            class="form-control form-control-sm">
+
+                                        <div class="error-text"
+                                             id="error-file-{{ $evidence->id ?? 0 }}"></div>
+
+                                    </form>
+
+                                    <button type="button"
+                                            class="btn btn-success btn-sm btn-upload"
+                                            data-form="form-upload-{{ $evidence->id ?? 0 }}"
+                                            data-id="{{ $evidence->id ?? 0 }}">
+                                        💾 Upload
+                                    </button>
+
+                                </div>
+
+                                @else
+                                    -
+                                @endif
+
+                            </td>
+
+                            <td>{{ $evidence->temuan ?? '-' }}</td>
+                            <td>{{ $evidence->rekomendasi ?? '-' }}</td>
+
+                        </tr>
+
+                        @endforeach
+                    @endforeach
+
+                    <tr style="background:#5DADE2;color:white;">
+                        <td colspan="4">SubTotal Elemen</td>
+                        <td>{{ number_format($subSelf,2) }}%</td>
+                        <td></td>
+                        <td>{{ number_format($subAudit,2) }}%</td>
+                        <td></td>
+                        <td colspan="4"></td>
+                    </tr>
+
+                    @php
+                        $grandTotalAudit += $subAudit;
+                        $grandTotalSelf += $subSelf;
+                    @endphp
+
+                @endforeach
+
+                <tr style="background:#2E86C1;color:white;">
+                    <td colspan="4">TOTAL</td>
+                    <td>{{ number_format($grandTotalSelf,2) }}%</td>
+                    <td></td>
+                    <td>{{ number_format($grandTotalAudit,2) }}%</td>
+                    <td></td>
+                    <td colspan="4"></td>
+                </tr>
+
+                </tbody>
+            </table>
+
             @endif
 
-            @if($loop->first)
-            <td rowspan="{{ count($evidences) }}">
-              {{ $loop->parent->iteration }}
-            </td>
-
-            <td rowspan="{{ count($evidences) }}" style="text-align:left">
-              {{ $kriteria->name }}
-            </td>
-
-            {{-- SELF --}}
-            <td rowspan="{{ count($evidences) }}" style="background:{{ $bgSelf }};color:white;">
-              @if($auditData->status == 0)
-              <form method="POST" action="{{ route('user.audit-smp-score.update-self-audit',$kriteria->id) }}">
-                @csrf
-                @method('PUT')
-                <select name="pencapaian_nilai_kriteria_self_{{ $kriteria->id }}">
-                  <option value="0" {{ $nilaiSelf==0?'selected':'' }}>0</option>
-                  <option value="1" {{ $nilaiSelf==1?'selected':'' }}>1</option>
-                  <option value="2" {{ $nilaiSelf==2?'selected':'' }}>2</option>
-                </select>
-                <button class="btn btn-sm btn-success">Save</button>
-              </form>
-              @else
-              {{ $nilaiSelf }}
-              @endif
-            </td>
-
-            <td rowspan="{{ count($evidences) }}">
-              {{ number_format($nilaiElemenSelf,2) }}%
-            </td>
-
-            {{-- AUDIT --}}
-            <td rowspan="{{ count($evidences) }}" style="background:{{ $bgAudit }};color:white;">
-              {{ $nilaiAudit }}
-            </td>
-
-            <td rowspan="{{ count($evidences) }}">
-              {{ number_format($nilaiElemenAudit,2) }}%
-            </td>
-            @endif
-
-            {{-- EVIDENCE --}}
-            <td>{{ $evidence->name ?? '-' }}</td>
-
-            <td>
-              @if($auditData->status == 0)
-              <form method="POST" action="{{ route('user.audit-smp-score.update',$evidence->id ?? 0) }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <input type="file" name="file" class="form-control mb-1">
-                <button class="btn btn-sm btn-success">Save</button>
-              </form>
-              @else
-              -
-              @endif
-            </td>
-
-            <td>{{ $evidence->temuan ?? '-' }}</td>
-            <td>{{ $evidence->rekomendasi ?? '-' }}</td>
-
-          </tr>
-
-          @endforeach
-          @endforeach
-
-          {{-- SUBTOTAL HEADER --}}
-          <tr style="background:#5DADE2;color:white;">
-            <td colspan="4">SubTotal Elemen</td>
-            <td>{{ number_format($subSelf,2) }}%</td>
-            <td></td>
-            <td>{{ number_format($subAudit,2) }}%</td>
-            <td></td>
-            <td colspan="4"></td>
-          </tr>
-
-          @php
-          $grandTotalAudit += $subAudit;
-          $grandTotalSelf += $subSelf;
-          @endphp
-
-          @endforeach
-
-          {{-- GRAND TOTAL --}}
-          <tr style="background:#2E86C1;color:white;">
-            <td colspan="4">TOTAL</td>
-            <td>{{ number_format($grandTotalSelf,2) }}%</td>
-            <td></td>
-            <td>{{ number_format($grandTotalAudit,2) }}%</td>
-            <td></td>
-            <td colspan="4"></td>
-          </tr>
-
-        </tbody>
-      </table>
-
-      @endif
-
+        </div>
     </div>
-  </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script>
+
+// AJAX NORMAL FORM
+document.querySelectorAll('.ajax-form').forEach(form => {
+
+    form.addEventListener('submit', async function(e){
+
+    e.preventDefault();
+
+    Swal.fire({
+        title: 'Simpan data?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Simpan'
+    }).then(async (res) => {
+
+        if(!res.isConfirmed) return;
+
+        let btn = form.querySelector('button');
+        let original = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.innerHTML = '⏳';
+
+        try {
+
+            let formData = new FormData(form);
+
+            let response = await fetch(form.action,{
+                method:'POST',
+                body:formData,
+                headers:{
+                    'X-CSRF-TOKEN':document.querySelector('input[name=_token]').value,
+                    'Accept':'application/json'
+                }
+            });
+
+            let result = await response.json();
+
+            if(!response.ok){
+                throw result;
+            }
+
+            Swal.fire({
+                icon:'success',
+                title:'Berhasil disimpan',
+                timer:1000,
+                showConfirmButton:false
+            });
+
+        } catch(err){
+
+            Swal.fire(
+                'Error',
+                err.message || 'Gagal menyimpan',
+                'error'
+            );
+
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = original;
+
+    });
+
+});
+
+});
+
+// AJAX FILE
+document.querySelectorAll('.btn-upload').forEach(btn => {
+
+    btn.addEventListener('click', async function(){
+
+        let formId = btn.dataset.form;
+        let evidenceId = btn.dataset.id;
+
+        let form = document.getElementById(formId);
+
+        if(!form) return;
+
+        let formData = new FormData(form);
+
+        btn.disabled = true;
+        btn.innerHTML = 'Uploading...';
+
+        try {
+
+            let res = await fetch(form.action,{
+                method:'POST',
+                body:formData,
+                headers:{
+                    'X-CSRF-TOKEN':document.querySelector('input[name=_token]').value,
+                    'Accept':'application/json'
+                }
+            });
+
+            let result = await res.json();
+
+            if(!res.ok){
+
+                let errorKey = 'evidence_file_' + evidenceId;
+
+                if(result.errors?.[errorKey]){
+
+                    document.getElementById('error-file-'+evidenceId)
+                        .innerHTML = result.errors[errorKey][0];
+                }
+
+                btn.disabled = false;
+                btn.innerHTML = '💾 Upload';
+                return;
+            }
+
+            Swal.fire({
+                icon:'success',
+                title:'Upload berhasil',
+                timer:1000,
+                showConfirmButton:false
+            });
+
+            if(result.data?.evidence_file){
+
+                let container = document.getElementById('upload-file-'+evidenceId);
+
+                let fileUrl = "uploads/evidence_file/" + result.data.evidence_file;
+
+                container.querySelector('a')?.remove();
+
+                let link = document.createElement('a');
+
+                link.href = fileUrl;
+                link.target = '_blank';
+                link.className = 'btn btn-success btn-sm';
+                link.innerHTML = '⬇ Download File';
+
+                container.prepend(link);
+            }
+
+        } catch(err){
+
+            Swal.fire('Error','Upload gagal','error');
+
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = '💾 Upload';
+
+    });
+
+});
+
+</script>
 @endsection

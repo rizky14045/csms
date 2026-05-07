@@ -75,8 +75,18 @@ class UserService
             }
 
             // 🧑‍💼 Filter tipe user
-            if ($user_type != null) {
-                $query->where('type', '=', $user_type);
+            if ($user_type !== null) {
+
+                // jika array
+                if (is_array($user_type)) {
+
+                    $query->whereIn('type', $user_type);
+
+                } else {
+
+                    $query->where('type', $user_type);
+
+                }
             }
 
             // 📅 Date filter

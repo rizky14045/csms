@@ -51,7 +51,7 @@
                 <th rowspan="2">Due Date</th>
                 <th rowspan="2">PIC</th>
 
-                @if($auditData->status == 1)
+                @if($auditData->status == 2)
                 <th rowspan="2">Action</th>
                 @endif
               </tr>
@@ -147,19 +147,69 @@
                   {{ number_format($nilaiElemenSelf,2) }}%
                 </td>
 
-                {{-- AUDIT (TIDAK DIUBAH) --}}
-                @if ($auditData->status != 1)
-                <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgAudit }}; color: {{ $bgAudit=='#ffc107'?'#000':'#fff' }};">
-                  {{ $kriteria->pencapaian_nilai_kriteria ?? '' }}
+                {{-- ACHIEVEMENT --}}
+                {{-- ============================== --}}
+                @if ($auditData->status != 2)
+
+                <td rowspan="{{ $evidenceCount }}"
+                    style="background-color: {{ $bgAudit }}; color: {{ $bgAudit=='#ffc107'?'#000':'#fff' }};">
+
+                    {{ $kriteria->pencapaian_nilai_kriteria ?? '' }}
+
                 </td>
+
                 @else
-                <form action="{{ route('auditor.audit-smp-score.update-achievement', $kriteria->id ?? 0) }}" method="POST">
-                  @csrf @method('PUT')
-                  <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgAudit }};">
-                    <input type="text" name="pencapaian_nilai_kriteria_{{ $kriteria->id }}" value="{{ $kriteria->pencapaian_nilai_kriteria }}">
-                    <button class="btn btn-sm btn-success">Save</button>  
-                  </td>
-                </form>
+
+                {{-- AUDIT ACHIEVEMENT --}}
+                <td rowspan="{{ $evidenceCount }}"
+                    style="background-color: {{ $bgAudit }}; min-width:220px;">
+
+                    <form class="ajax-achievement-form"
+                          id="achievement-form-{{ $kriteria->id }}"
+                          action="{{ route('auditor.audit-smp-score.update-achievement', $kriteria->id ?? 0) }}"
+                          method="POST">
+
+                        @csrf
+                        @method('PUT')
+
+                        <div style="display:flex; gap:6px; align-items:start; flex-direction:column;">
+
+                            <select name="pencapaian_nilai_kriteria_{{ $kriteria->id }}"
+                                    class="form-select form-select-sm">
+
+                                <option value="0"
+                                    {{ (int)$kriteria->pencapaian_nilai_kriteria === 0 ? 'selected' : '' }}>
+                                    0
+                                </option>
+
+                                <option value="1"
+                                    {{ (int)$kriteria->pencapaian_nilai_kriteria === 1 ? 'selected' : '' }}>
+                                    1
+                                </option>
+
+                                <option value="2"
+                                    {{ (int)$kriteria->pencapaian_nilai_kriteria === 2 ? 'selected' : '' }}>
+                                    2
+                                </option>
+
+                            </select>
+
+                            <button type="submit"
+                                    class="btn btn-success btn-sm w-100">
+                                💾 Save
+                            </button>
+
+                        </div>
+
+                        <div id="error-pencapaian_nilai_kriteria_{{ $kriteria->id }}"
+                            class="text-danger mt-1"
+                            style="font-size:11px;">
+                        </div>
+
+                    </form>
+
+                </td>
+
                 @endif
 
                 <td rowspan="{{ $evidenceCount }}">
@@ -177,13 +227,100 @@
                   @else - @endif
                 </td>
 
-                <td>{{ $evidence->temuan ?? '-' }}</td>
-                <td>{{ $evidence->rekomendasi ?? '-' }}</td>
-                <td>{{ isset($evidence->due_date) ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y') : '' }}</td>
-                <td>{{ $evidence->pic ?? '-' }}</td>
+                {{-- EVIDENCE --}}
+                {{-- ============================== --}}
+                @if($auditData->status == 2)
 
-                @if($auditData->status == 1)
-                <td>-</td>
+                <td style="min-width:220px;">
+
+                    <form class="ajax-evidence-form"
+                          id="evidence-form-{{ $evidence->id ?? 0 }}"
+                          action="{{ route('auditor.audit-smp-score.update', $evidence->id ?? 0) }}"
+                          method="POST">
+
+                        @csrf
+                        @method('PUT')
+
+                        <textarea name="temuan_{{ $evidence->id ?? 0 }}"
+                                  class="form-control form-control-sm"
+                                  placeholder="Temuan">{{ $evidence->temuan ?? '' }}</textarea>
+
+                        <div id="error-temuan_{{ $evidence->id ?? 0 }}"
+                            class="text-danger"
+                            style="font-size:11px;"></div>
+
+                </td>
+
+                <td style="min-width:220px;">
+
+                        <textarea name="rekomendasi_{{ $evidence->id ?? 0 }}"
+                                  class="form-control form-control-sm"
+                                  placeholder="Rekomendasi">{{ $evidence->rekomendasi ?? '' }}</textarea>
+
+                        <div id="error-rekomendasi_{{ $evidence->id ?? 0 }}"
+                            class="text-danger"
+                            style="font-size:11px;"></div>
+
+                </td>
+
+                <td style="min-width:170px;">
+
+                        <input type="date"
+                              name="due_date_{{ $evidence->id ?? 0 }}"
+                              class="form-control form-control-sm"
+                              value="{{ $evidence->due_date ?? '' }}">
+
+                        <div id="error-due_date_{{ $evidence->id ?? 0 }}"
+                            class="text-danger"
+                            style="font-size:11px;"></div>
+
+                </td>
+
+                <td style="min-width:170px;">
+
+                        <input type="text"
+                              name="pic_{{ $evidence->id ?? 0 }}"
+                              class="form-control form-control-sm"
+                              placeholder="PIC"
+                              value="{{ $evidence->pic ?? '' }}">
+
+                        <div id="error-pic_{{ $evidence->id ?? 0 }}"
+                            class="text-danger"
+                            style="font-size:11px;"></div>
+
+                </td>
+
+                <td style="min-width:120px;">
+
+                        <button type="submit"
+                                class="btn btn-success btn-sm">
+                            💾 Save
+                        </button>
+
+                    </form>
+
+                </td>
+
+                @else
+
+                <td>
+                    {{ $evidence->temuan ?? '-' }}
+                </td>
+
+                <td>
+                    {{ $evidence->rekomendasi ?? '-' }}
+                </td>
+
+                <td>
+                    {{ isset($evidence->due_date)
+                        ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y')
+                        : '-' }}
+                </td>
+
+                <td>
+                    {{ $evidence->pic ?? '-' }}
+                </td>
+
                 @endif
 
               </tr>
@@ -218,4 +355,221 @@
   </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script>
+
+// ======================================
+// CLEAR ERROR
+// ======================================
+function clearErrors(form)
+{
+    if (!form) return;
+
+    form.querySelectorAll("[id^='error-']").forEach(el => {
+        el.innerHTML = '';
+    });
+
+    form.querySelectorAll("input, textarea, select").forEach(el => {
+        el.style.border = '';
+    });
+}
+
+// ======================================
+// SHOW ERROR
+// ======================================
+function showErrors(form, errors)
+{
+    Object.keys(errors).forEach(name => {
+
+        let message = errors[name][0];
+
+        let errorDiv = document.getElementById("error-" + name);
+
+        if (errorDiv) {
+            errorDiv.innerHTML = "⚠ " + message;
+        }
+
+        let input = form.querySelector(`[name="${name}"]`);
+
+        if (input) {
+            input.style.border = "1px solid red";
+        }
+
+    });
+}
+
+// ======================================
+// AJAX SUBMIT
+// ======================================
+async function submitAjax(form, btn)
+{
+    clearErrors(form);
+
+    let formData = new FormData(form);
+
+    let originalText = btn.innerHTML;
+
+    // =========================
+    // LOADING BUTTON
+    // =========================
+    btn.disabled = true;
+
+    btn.innerHTML = `
+        <span class="spinner-border spinner-border-sm"></span>
+        Saving...
+    `;
+
+    try {
+
+        let response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
+                'Accept': 'application/json'
+            }
+        });
+
+        let result;
+
+        try {
+
+            result = await response.json();
+
+        } catch (e) {
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Response Invalid',
+                text: 'Server tidak mengembalikan JSON'
+            });
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+
+            return;
+        }
+
+        // =========================
+        // VALIDATION ERROR
+        // =========================
+        if (!response.ok) {
+
+            if (result.errors) {
+                showErrors(form, result.errors);
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: result.message ?? 'Terjadi kesalahan'
+            });
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+
+            return;
+        }
+
+        // =========================
+        // SUCCESS
+        // =========================
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil disimpan',
+            timer: 1200,
+            showConfirmButton: false
+        });
+
+        btn.innerHTML = "✔ Saved";
+
+        setTimeout(() => {
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+
+        }, 1200);
+
+    } catch (err) {
+
+        console.error(err);
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Server Error',
+            text: 'Terjadi kesalahan server'
+        });
+
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+}
+
+// ======================================
+// INIT
+// ======================================
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ==================================
+    // ACHIEVEMENT FORM
+    // ==================================
+    document.querySelectorAll('.ajax-achievement-form').forEach(form => {
+
+        form.addEventListener('submit', function(e){
+
+            e.preventDefault();
+
+            let btn = e.submitter;
+
+            Swal.fire({
+                title: 'Simpan achievement?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal'
+            }).then((res) => {
+
+                if (res.isConfirmed) {
+                    submitAjax(form, btn);
+                }
+
+            });
+
+        });
+
+    });
+
+    // ==================================
+    // EVIDENCE FORM
+    // ==================================
+    document.querySelectorAll('.ajax-evidence-form').forEach(form => {
+
+        form.addEventListener('submit', function(e){
+
+            e.preventDefault();
+
+            let btn = e.submitter;
+
+            Swal.fire({
+                title: 'Simpan evidence?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal'
+            }).then((res) => {
+
+                if (res.isConfirmed) {
+                    submitAjax(form, btn);
+                }
+
+            });
+
+        });
+
+    });
+
+});
+</script>
 @endsection

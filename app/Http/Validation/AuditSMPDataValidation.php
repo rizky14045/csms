@@ -21,7 +21,7 @@ class AuditSMPDataValidation
             'auditor_lead_id' => [
                 'required',
                 Rule::exists('users', 'id')->where(function ($query) {
-                    $query->where('type', 'auditor');
+                    $query->whereIn('type', ['user', 'pusat']);
                 }),
             ],
 
@@ -29,7 +29,7 @@ class AuditSMPDataValidation
 
             'auditors_ids.*' => [
                 Rule::exists('users', 'id')->where(function ($query) {
-                    $query->where('type', 'auditor');
+                    $query->whereIn('type', ['user', 'pusat']);
                 }),
             ],
 
