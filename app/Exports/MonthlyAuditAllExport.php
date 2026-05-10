@@ -31,15 +31,18 @@ class MonthlyAuditAllExport implements WithMultipleSheets
 
             new WorkerSumExport([
                 'persons' => $this->data['persons'],
+                'monthlyReport' => $this->data['monthlyReport'],
                 'securities' => $this->data['securities'],
                 'agreements' => $this->data['agreements'],
             ]),
 
             new SecurityFormExport([
-                'forms' => $this->data['forms']
+                'forms' => $this->data['forms'],
+                'monthlyReport' => $this->data['monthlyReport']
             ]),
 
             new AghtExport([
+                'monthlyReport' => $this->data['monthlyReport'],
                 'aghts' => $this->data['aghts']
             ]),
 
@@ -47,25 +50,31 @@ class MonthlyAuditAllExport implements WithMultipleSheets
                 'attributes' => $this->data['attributes'],
                 'administrations' => $this->data['administrations'],
                 'saranas' => $this->data['saranas'],
+                'monthlyReport' => $this->data['monthlyReport'],
             ]),
 
             new ForeignWorkerExport([
+                'monthlyReport' => $this->data['monthlyReport'],
                 'foreigns' => $this->data['foreigns']
             ]),
 
             new SecurityProgramExport([
+                'monthlyReport' => $this->data['monthlyReport'],
                 'programs' => $this->data['programs']
             ]),
 
             new VulnerabilityInternalExport([
+                'monthlyReport' => $this->data['monthlyReport'],
                 'internals' => $this->data['internals']
             ]),
 
             new VulnerabilityExternalExport([
+                'monthlyReport' => $this->data['monthlyReport'],
                 'externals' => $this->data['externals']
             ]),
 
             new BudgetAbsorptionExport([
+                'monthlyReport' => $this->data['monthlyReport'],
                 'administrasi' => $this->data['administrasi'],
                 'pemeliharaan' => $this->data['pemeliharaan'],
             ]),

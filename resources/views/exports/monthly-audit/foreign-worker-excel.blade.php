@@ -6,7 +6,7 @@
         <td colspan="16"></td>
 
         <td colspan="6" style="border:1px solid #000; font-weight:bold;">
-            No Dokumen : FM-SMP-KP-01-11-05
+            No Dokumen : 
         </td>
 
     </tr>
@@ -23,7 +23,7 @@
         </td>
 
         <td colspan="6" style="border:1px solid #000;">
-            Tgl Terbit : 1 Agustus 2022
+            Bulan : {{ \Carbon\Carbon::parse($monthlyReport->report_date)->format('F Y') }}
         </td>
 
     </tr>

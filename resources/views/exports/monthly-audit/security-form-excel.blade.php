@@ -16,7 +16,7 @@
         </td>
 
         <td colspan="4" style="border:1px solid #000;">
-            Tgl Terbit : 1 Agustus 2022
+            Bulan : {{ \Carbon\Carbon::parse($monthlyReport->report_date)->format('F Y') }}
         </td>
 
     </tr>

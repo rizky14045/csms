@@ -18,7 +18,7 @@
         </th>
 
         <th colspan="3">No Dokumen</th>
-        <th colspan="3">: FM-SMP-KP-01-11-01</th>
+        <th colspan="3">:</th>
     </tr>
 
     <tr>
@@ -26,8 +26,8 @@
             PT PLN NUSANTARA POWER KANTOR PUSAT
         </th>
 
-        <th colspan="3">Tgl Terbit</th>
-        <th colspan="3">: 1 Agustus 2022</th>
+        <th colspan="3">Bulan</th>
+        <th colspan="3">: {{ \Carbon\Carbon::parse($monthlyReport->report_date)->format('F Y') }}</th>
     </tr>
 
     <tr>

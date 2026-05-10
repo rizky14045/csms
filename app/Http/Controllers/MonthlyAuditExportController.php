@@ -96,6 +96,7 @@ class MonthlyAuditExportController extends Controller
     public function exportWorkerSum($monthlyId)
     {
         $monthly = MonthlyReport::findOrFail($monthlyId);
+        $data['monthlyReport'] = $monthly;
         
         // Pastikan relasi 'person', 'security', dan 'agreement' ada di database
         $data['persons'] = MonthlyResponsiblePerson::with('person')
@@ -120,6 +121,7 @@ class MonthlyAuditExportController extends Controller
     {
         $monthly = MonthlyReport::findOrFail($monthlyId);
 
+        $data['monthlyReport'] = $monthly;
         $data['monthly'] = $monthly;
 
         $data['forms'] = SecurityForm::with('security')
@@ -134,6 +136,7 @@ class MonthlyAuditExportController extends Controller
     public function exportAght($monthlyId)
     {
         $monthly = MonthlyReport::findOrFail($monthlyId);
+        $data['monthlyReport'] = $monthly;
 
         $data['monthly'] = $monthly;
 
@@ -150,6 +153,7 @@ class MonthlyAuditExportController extends Controller
     public function exportFormAttribute($monthlyId)
     {
         $monthly = MonthlyReport::findOrFail($monthlyId);
+        $data['monthlyReport'] = $monthly;
 
         $query = FormAttribute::join(
                 'attributes',
@@ -184,6 +188,9 @@ class MonthlyAuditExportController extends Controller
     }
     public function exportForeignWorker($monthlyId)
     {
+        $monthly = MonthlyReport::findOrFail($monthlyId);
+        $data['monthlyReport'] = $monthly;
+
         $data['monthlyId'] = $monthlyId;
 
         $data['foreigns'] = ForeignWorker::where(
@@ -199,6 +206,7 @@ class MonthlyAuditExportController extends Controller
     public function exportSecurityProgram($monthlyId)
     {
         $monthly = MonthlyReport::findOrFail($monthlyId);
+        $data['monthlyReport'] = $monthly;
 
         $data['monthly'] = $monthly;
 
@@ -217,8 +225,7 @@ class MonthlyAuditExportController extends Controller
     public function exportVulnerabilityInternal($monthlyId)
     {
         $monthly = MonthlyReport::findOrFail($monthlyId);
-
-        $data['monthly'] = $monthly;
+        $data['monthlyReport'] = $monthly;
 
         $data['internals'] = InternalVulnerability::with('vulnerability')
             ->where('monthly_report_id', $monthlyId)
@@ -232,8 +239,7 @@ class MonthlyAuditExportController extends Controller
     public function exportVulnerabilityExternal($monthlyId)
     {
         $monthly = MonthlyReport::findOrFail($monthlyId);
-
-        $data['monthly'] = $monthly;
+        $data['monthlyReport'] = $monthly;
 
         $data['externals'] = ExternalVulnerability::with('vulnerability')
             ->where('monthly_report_id', $monthlyId)
@@ -246,6 +252,9 @@ class MonthlyAuditExportController extends Controller
     }
     public function exportBudgetAbsorption($monthlyId)
     {
+        $monthly = MonthlyReport::findOrFail($monthlyId);
+        $data['monthlyReport'] = $monthly;
+        
         $dataBiaya = LaporanBulananBiaya::where('monthly_report_id', $monthlyId)
             ->whereIn('type', ['administrasi', 'pemeliharaan'])
             ->get()

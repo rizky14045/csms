@@ -26,7 +26,7 @@ $months = [
 
         <td colspan="10"
             style="border:1px solid #000; font-weight:bold;">
-            No Dokumen : FM-SMP-KP-01-11-06
+            No Dokumen : 
         </td>
 
     </tr>
@@ -44,7 +44,7 @@ $months = [
 
         <td colspan="10"
             style="border:1px solid #000;">
-            Tgl Terbit : 1 Agustus 2022
+            Bulan : {{ \Carbon\Carbon::parse($monthlyReport->report_date)->format('F Y') }}
         </td>
 
     </tr>
