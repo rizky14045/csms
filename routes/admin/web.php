@@ -182,8 +182,8 @@ Route::prefix('admin')->group(function () {
 
         Route::prefix('audit-smp')->group(function () {
             Route::get('/', [AuditSMPController::class, 'index'])->name('admin.audit-smp.index');
-            // Route::get('/create', [AuditSMPController::class, 'create'])->name('admin.audit-smp.create');
-            // Route::post('/store', [AuditSMPController::class, 'store'])->name('admin.audit-smp.store');
+            Route::get('/create', [AuditSMPController::class, 'create'])->name('admin.audit-smp.create');
+            Route::post('/store', [AuditSMPController::class, 'store'])->name('admin.audit-smp.store');
             Route::get('/{audit}/edit', [AuditSMPController::class, 'edit'])->name('admin.audit-smp.edit');
             Route::patch('/{audit}/edit', [AuditSMPController::class, 'update'])->name('admin.audit-smp.update');
             Route::delete('/{audit}/delete', [AuditSMPController::class, 'destroy'])->name('admin.audit-smp.destroy');

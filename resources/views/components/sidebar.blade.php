@@ -95,7 +95,7 @@
                         </a>
                     </li>
                 @endif
-                @if (Auth::user()->type == 'admin')
+                @if (Auth::user()->type == 'admin' || Auth::user()->type == 'pusat')
                     <li>
                         <a href="{{ route('admin.monthly-audit.index') }}" class="tp-link">
                             <i data-feather="user"></i>
