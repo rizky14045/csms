@@ -26,7 +26,7 @@ Route::get('/register', function () {
     return view('user.register');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'force.change.password'])->name('dashboard');
 Route::get('/fasum/dashboard', [DashboardFasumController::class, 'index'])->middleware(['auth'])->name('fasum.dashboard');
 
 Route::get('/export-form-formulir/{monthlyId}', [MonthlyAuditExportController::class, 'exportFormFormulir'])->middleware(['auth'])->name('export.monthly.form-formulir');

@@ -13,13 +13,21 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardFasumController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:view.fasum.dashboard')->only(['index']);
+    }
 
     public function index(Request $request)
     {
+        if(auth()->user()->type == 'user') {
+            $unitId = auth()->user()->unit_id;
+            $units = Unit::orderBy('name', 'asc')->where(['id'=> $unitId])->get();
+        } else {
             $unitId = $request->unit_id;
-
             // ambil semua unit untuk dropdown
             $units = Unit::orderBy('name', 'asc')->get();
+        }
 
             // query fasum + relasi unit
             $fasum = Fasum::select(

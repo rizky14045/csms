@@ -1,6 +1,18 @@
 @extends('layout.app')
 
 @section('styles')
+<style>
+    .card-scrollable {
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100vh - 180px);
+    }
+    .card-scrollable .card-body {
+        overflow-y: auto;
+        flex: 1;
+        min-height: 0;
+    }
+</style>
 @stop
 
 @section('content')
@@ -19,24 +31,38 @@
 
 <div class="row">
     <div class="col-xl-12">
-        <div class="card">
-            @can('create.permission')
-            <div class="d-flex justify-content-end pe-3 pt-3">
-                <a href="{{ route('permissions.create') }}" class="btn btn-primary">
-                    Tambah Data
-                </a>
+        <div class="card card-scrollable">
+            <div class="d-flex justify-content-between align-items-center pe-3 ps-3 pt-3 gap-2">
+                <form method="GET" action="{{ route('permissions.index') }}" class="d-flex gap-2">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Cari nama permission..." value="{{ request('search') }}">
+                        <button class="btn btn-outline-primary" type="submit">Cari</button>
+                    </div>
+                    @if(request('search'))
+                        <a href="{{ route('permissions.index') }}" class="btn btn-outline-danger">Reset</a>
+                    @endif
+                </form>
+                @can('create.permission')
+                <a href="{{ route('permissions.create') }}" class="btn btn-primary text-nowrap">Tambah Data</a>
+                @endcan
             </div>
-            @endcan
 
-            <div class="card-body">  
+            <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered text-center align-middle">
+                    <table class="table table-bordered text-center align-middle" style="table-layout: fixed; width: 100%;">
+                        <colgroup>
+                            <col style="width: 60px;">
+                            <col style="width: auto;">
+                            @canany(['edit.permission', 'delete.permission'])
+                            <col style="width: 160px;">
+                            @endcanany
+                        </colgroup>
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Nama</th>
                                 @canany(['edit.permission', 'delete.permission'])
-                                <th scope="col" style="width: 180px;">Action</th>
+                                <th scope="col">Action</th>
                                 @endcanany
                             </tr>
                         </thead>
@@ -47,18 +73,9 @@
                                     <td>{{ $permission->name }}</td>
                                     @canany(['edit.permission', 'delete.permission'])
                                     <td class="text-center">
-
-                                        {{-- Edit --}}
                                         @can('edit.permission')
-                                        <a
-                                            href="{{ route('permissions.edit', $permission->id) }}"
-                                            class="btn btn-warning btn-sm"
-                                        >
-                                            Edit
-                                        </a>
+                                        <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                         @endcan
-
-                                        {{-- Delete --}}
                                         @can('delete.permission')
                                         <form
                                             id="delete-permission-{{ $permission->id }}"
@@ -68,7 +85,6 @@
                                         >
                                             @csrf
                                             @method('DELETE')
-
                                             <button
                                                 type="button"
                                                 class="btn btn-danger btn-sm"

@@ -4,77 +4,104 @@
 @endsection
 
 @section('content')
-    <div class="py-3 d-flex justify-content-between">
-        <h4>User Management - Create</h4>
+    <div class="py-3 d-flex align-items-center gap-2">
+        <a href="{{ route('users.index') }}" class="text-muted text-decoration-none">
+            <i class="ri-arrow-left-line fs-5"></i>
+        </a>
+        <h4 class="mb-0">User Management - Create</h4>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <form id="form-user" action="{{ route('users.store') }}" method="POST">
-                @csrf
-
-                {{-- Nama --}}
-                <div class="mb-3">
-                    <label>Nama</label>
-                    <input type="text" name="name" class="form-control" required>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="ri-user-add-line fs-5 text-primary"></i>
+                        <h6 class="mb-0 fw-semibold">Tambah Pengguna Baru</h6>
+                    </div>
                 </div>
+                <div class="card-body p-4">
+                    <form id="form-user" onsubmit="confirmSave('form-user', 'Simpan data user?')" action="{{ route('users.store') }}" method="POST">
+                        @csrf
 
-                {{-- Email --}}
-                <div class="mb-3">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control" required>
+                        {{-- Nama --}}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nama</label>
+                            <input type="text" name="name" class="form-control" required placeholder="Masukkan nama">
+                        </div>
+
+                        {{-- Email --}}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email</label>
+                            <input type="email" name="email" class="form-control" required placeholder="Masukkan email">
+                        </div>
+
+                        {{-- Role --}}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Role</label>
+                            <select id="roleSelect" name="role" class="form-select" required>
+                                <option value="">Pilih Role</option>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role['id'] }}">{{ $role['name'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Tipe Unit --}}
+                        <div class="mb-3" id="typeUnitContainer" style="display: none;">
+                            <label class="form-label fw-semibold">Tipe Unit</label>
+                            <select id="typeUnitSelect" name="type_unit" class="form-select">
+                                <option value="">Pilih Tipe Unit</option>
+                                <option value="Pusat">Pusat</option>
+                                <option value="Unit">Unit</option>
+                            </select>
+                        </div>
+
+                        {{-- Unit --}}
+                        <div class="mb-3" id="unitContainer" style="display: none;">
+                            <label class="form-label fw-semibold">Unit</label>
+                            <select id="unitSelect" name="unit_id" class="form-select">
+                                <option value="">Pilih Unit</option>
+                            </select>
+                        </div>
+
+                        {{-- Password --}}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Password</label>
+                            <div class="input-group">
+                                <input type="password" id="password" name="password" class="form-control" required placeholder="Masukkan password">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i data-feather="eye" id="eyeIcon"></i>
+                                </button>
+                            </div>
+                            <div id="passwordFeedback" class="mt-2 ps-1 d-flex flex-column gap-1"></div>
+                        </div>
+
+                        {{-- Confirm --}}
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Konfirmasi Password</label>
+                            <div class="input-group">
+                                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required placeholder="Ulangi password">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePasswordConfirmation">
+                                    <i data-feather="eye" id="eyeIconConfirmation"></i>
+                                </button>
+                            </div>
+                            <div id="passwordMatchFeedback" class="mt-2 ps-1"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-danger" type="button" onclick="window.history.back();">
+                                <i class="ri-arrow-go-back-line me-1"></i>Batal
+                            </button>
+                            <button class="btn btn-success" type="submit">
+                                <i class="ri-save-line me-1"></i>Simpan
+                            </button>
+                        </div>
+
+                    </form>
                 </div>
-
-                {{-- Role --}}
-                <div class="mb-3">
-                    <label>Role</label>
-                    <select id="roleSelect" name="role" class="form-select" required>
-                        <option value="">Pilih Role</option>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role['id'] }}">{{ $role['name'] }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                {{-- Tipe Unit --}}
-                <div class="mb-3" id="typeUnitContainer" style="display: none;">
-                    <label>Tipe Unit</label>
-                    <select id="typeUnitSelect" name="type_unit" class="form-select">
-                        <option value="">Pilih Tipe Unit</option>
-                        <option value="Pusat">Pusat</option>
-                        <option value="Unit">Unit</option>
-                    </select>
-                </div>
-
-                {{-- Unit --}}
-                <div class="mb-3" id="unitContainer" style="display: none;">
-                    <label>Unit</label>
-                    <select id="unitSelect" name="unit_id" class="form-select">
-                        <option value="">Pilih Unit</option>
-                    </select>
-                </div>
-
-                {{-- Password --}}
-                <div class="mb-3">
-                    <label>Password</label>
-                    <input type="password" name="password" class="form-control" required>
-                </div>
-
-                {{-- Confirm --}}
-                <div class="mb-3">
-                    <label>Konfirmasi Password</label>
-                    <input type="password" name="password_confirmation" class="form-control" required>
-                </div>
-
-                <div class="text-end">
-                    <button class="btn btn-danger" type="button" onclick="window.history.back();">Batal</button>
-                    <button class="btn btn-success">Simpan</button>
-                </div>
-
-            </form>
-
+            </div>
         </div>
-
     </div>
 @endsection
 
@@ -173,5 +200,8 @@
             toggleUnitByRole();
 
         });
+
+        // ================= PASSWORD CHECKER =================
+        checkPasswordStrength('password', 'passwordFeedback', 'password_confirmation', 'passwordMatchFeedback');
     </script>
 @endsection

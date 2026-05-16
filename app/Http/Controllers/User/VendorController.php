@@ -53,7 +53,7 @@ class VendorController extends Controller
 
             $request->merge([
                     'role' => 4,
-                    'password' => "D3faultP@ssword"
+                    'password' => "DefaultP@ssword"
                 ]);
 
             if($request->vendor_exists == 1){
