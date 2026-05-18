@@ -4,67 +4,80 @@
 @endsection
 
 @section('content')
-    <div class="py-3 d-flex justify-content-between">
-        <h4>User Management - Edit</h4>
+    <div class="py-3 d-flex align-items-center gap-2">
+        <a href="{{ route('users.index') }}" class="text-muted text-decoration-none">
+            <i class="ri-arrow-left-line fs-5"></i>
+        </a>
+        <h4 class="mb-0">User Management - Edit</h4>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <form action="{{ route('users.update', $user->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-
-                {{-- Nama --}}
-                <div class="mb-3">
-                    <label>Nama</label>
-                    <input type="text" name="name" class="form-control" required value="{{ $user->name }}">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="ri-user-settings-line fs-5 text-primary"></i>
+                        <h6 class="mb-0 fw-semibold">Edit Data Pengguna</h6>
+                    </div>
                 </div>
+                <div class="card-body p-4">
+                    <form id="formEditUser" onsubmit="confirmSave('formEditUser', 'Simpan perubahan user?')" action="{{ route('users.update', $user->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
 
-                {{-- Email --}}
-                <div class="mb-3">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control" required value="{{ $user->email }}">
+                        {{-- Nama --}}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nama</label>
+                            <input type="text" name="name" class="form-control" required value="{{ $user->name }}" placeholder="Masukkan nama">
+                        </div>
+
+                        {{-- Email --}}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email</label>
+                            <input type="email" name="email" class="form-control" required value="{{ $user->email }}" placeholder="Masukkan email">
+                        </div>
+
+                        {{-- Role --}}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Role</label>
+                            <select id="roleSelect" name="role" class="form-select" required>
+                                <option value="">Pilih Role</option>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role['id'] }}" {{ $user->roles->contains($role['id']) ? 'selected' : '' }}>
+                                        {{ $role['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Unit --}}
+                        <div class="mb-4" id="unitContainer"
+                            style="display: {{ in_array(optional($user->roles->first())->id, [2, 3]) ? 'block' : 'none' }}">
+                            <label class="form-label fw-semibold">Unit</label>
+                            <select id="unitSelect" name="unit_id" class="form-select">
+                                @isset($units)
+                                    @foreach ($units as $unit)
+                                        <option value="{{ $unit->id }}" {{ $user->unit_id == $unit->id ? 'selected' : '' }}>
+                                            {{ $unit->name }}
+                                        </option>
+                                    @endforeach
+                                @endisset
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-danger" type="button" onclick="window.history.back();">
+                                <i class="ri-arrow-go-back-line me-1"></i>Batal
+                            </button>
+                            <button class="btn btn-success" type="submit">
+                                <i class="ri-save-line me-1"></i>Simpan
+                            </button>
+                        </div>
+
+                    </form>
                 </div>
-
-                {{-- Role --}}
-                <div class="mb-3">
-                    <label>Role</label>
-                    <select id="roleSelect" name="role" class="form-select" required>
-                        <option value="">Pilih Role</option>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role['id'] }}" {{ $user->roles->contains($role['id']) ? 'selected' : '' }}>
-                                {{ $role['name'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                {{-- Unit --}}
-                <div class="mb-3" id="unitContainer"
-                    style="display: {{ $user->type == 'user' && in_array(optional($user->roles->first())->id, [2, 3]) ? 'block' : 'none' }}">
-
-                    <label>Unit</label>
-
-                    <select id="unitSelect" name="unit_id" class="form-select">
-
-                        @isset($units)
-                            @foreach ($units as $unit)
-                                <option value="{{ $unit->id }}" {{ $user->unit_id == $unit->id ? 'selected' : '' }}>
-                                    {{ $unit->name }}
-                                </option>
-                            @endforeach
-                        @endisset
-
-                    </select>
-                </div>
-                <div class="text-end">
-                    <button class="btn btn-danger" type="button" onclick="window.history.back();">Batal</button>
-                    <button class="btn btn-success">Simpan</button>
-                </div>
-
-            </form>
-
+            </div>
         </div>
-    </div>
     </div>
 @endsection
 

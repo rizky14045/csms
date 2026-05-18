@@ -71,12 +71,13 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        $user = User::where('id', $user->id)->first();
         $roles = $this->roleService->getAllRole(0, false);
         
         $data['roles'] = getData($roles);
         $data['user'] = $user;
         $data['provinces'] = Province::select('id','name')->get();
-        if($user->type == 'user'){
+        if($user->type == 'user' || $user->type == 'pusat') {
             $unit = Unit::where('id', $user->unit_id)->first();
             $data['type_unit'] = $unit->type;
             $units = Unit::select('id','name')->where('type', $unit->type)->get();

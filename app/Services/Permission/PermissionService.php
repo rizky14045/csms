@@ -27,19 +27,21 @@ class PermissionService
             $start = request('start', null); // Default to earliest date
             $end = request('end', null); // Default to today
 
-            $permission = new Permission();
-            if(isset($_GET['q'])) $permission = $permission->whereRaw("name like ?", ["%".$_GET['q']."%"]);
+            $search = request('search', request('q', ''));
+
+            $query = Permission::query();
+            if (!empty($search)) $query = $query->whereRaw("name like ?", ["%{$search}%"]);
 
             if ($start && $end) {
                 $end = date('Y-m-d', strtotime($end . ' +1 day'));
-                $permission->whereBetween('permissions.created_at', [$start, $end]);
+                $query = $query->whereBetween('permissions.created_at', [$start, $end]);
             } elseif ($start) {
-                $permission->where('permissions.created_at', '>=', $start);
+                $query = $query->where('permissions.created_at', '>=', $start);
             } elseif ($end) {
-                $permission->where('permissions.created_at', '<=', $end);
+                $query = $query->where('permissions.created_at', '<=', $end);
             }
 
-            $permission = $permission->orderBy($ref, $order);
+            $permission = $query->orderBy($ref, $order);
             if($paginate){
                 $permission = $permission->paginate($limit)->withQueryString();
             } else {

@@ -58,7 +58,6 @@ class AuditSmpData extends Model
             'audit_smp_data_id'
         )->where(function ($q) {
             $q->whereNull('evidence_file')
-            ->orWhere('pencapaian_nilai_kriteria_self', 0)
             ->orWhere('pencapaian_nilai_kriteria_self', null);
         })->where('type', '=', 'evidence');
     }
@@ -70,7 +69,6 @@ class AuditSmpData extends Model
             'audit_smp_data_id'
         )->where(function ($q) {
             $q
-            ->where('pencapaian_nilai_kriteria', 0)
             ->orWhere('pencapaian_nilai_kriteria', null);
         })->where('type', '=', 'evidence');
     }

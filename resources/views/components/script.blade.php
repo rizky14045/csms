@@ -169,4 +169,79 @@
 
     feather.replace();
 </script>
+<script>
+    /**
+     * Cek kekuatan password secara real-time.
+     * @param {string} inputId      - ID elemen input password
+     * @param {string} feedbackId   - ID elemen container feedback checklist
+     * @param {string} [matchInputId]  - (opsional) ID input konfirmasi password
+     * @param {string} [matchFeedbackId] - (opsional) ID elemen feedback kecocokan
+     */
+    function checkPasswordStrength(inputId, feedbackId, matchInputId = null, matchFeedbackId = null) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        const rules = [
+            { id: 'rule-min-' + inputId,    label: 'Minimal 12 karakter',                  test: v => v.length >= 12 },
+            { id: 'rule-upper-' + inputId,  label: 'Huruf besar dan kecil (A-Z, a-z)',      test: v => /[A-Z]/.test(v) && /[a-z]/.test(v) },
+            { id: 'rule-number-' + inputId, label: 'Mengandung angka (0-9)',                test: v => /[0-9]/.test(v) },
+            { id: 'rule-symbol-' + inputId, label: 'Mengandung simbol (!@#$%^&*...)',       test: v => /[^A-Za-z0-9]/.test(v) },
+        ];
+
+        const container = document.getElementById(feedbackId);
+        if (!container) return;
+
+        // Render checklist satu kali
+        if (!container.dataset.rendered) {
+            container.innerHTML = rules.map(r =>
+                `<div id="${r.id}" class="d-flex align-items-center gap-1 small text-muted">
+                    <i class="ri-checkbox-blank-circle-line"></i> ${r.label}
+                </div>`
+            ).join('');
+            container.dataset.rendered = '1';
+        }
+
+        input.addEventListener('input', function () {
+            const val = this.value;
+
+            rules.forEach(r => {
+                const el = document.getElementById(r.id);
+                if (!el) return;
+                const pass = r.test(val);
+                el.className = 'd-flex align-items-center gap-1 small ' + (pass ? 'text-success' : 'text-danger');
+                el.querySelector('i').className = pass ? 'ri-checkbox-circle-line' : 'ri-close-circle-line';
+            });
+
+            // Update match feedback jika ada
+            if (matchInputId && matchFeedbackId) {
+                const matchVal = document.getElementById(matchInputId)?.value ?? '';
+                updatePasswordMatch(matchInputId, matchFeedbackId, val, matchVal);
+            }
+        });
+
+        // Jika ini adalah input konfirmasi, pantau juga dari sisi konfirmasi
+        if (matchInputId && matchFeedbackId) {
+            const matchInput = document.getElementById(matchInputId);
+            if (matchInput) {
+                matchInput.addEventListener('input', function () {
+                    updatePasswordMatch(matchInputId, matchFeedbackId, input.value, this.value);
+                });
+            }
+        }
+    }
+
+    function updatePasswordMatch(matchInputId, matchFeedbackId, password, confirmation) {
+        const el = document.getElementById(matchFeedbackId);
+        if (!el) return;
+        if (confirmation === '') {
+            el.innerHTML = '';
+            return;
+        }
+        const match = password === confirmation;
+        el.innerHTML = `<div class="d-flex align-items-center gap-1 small ${match ? 'text-success' : 'text-danger'}">
+            <i class="${match ? 'ri-checkbox-circle-line' : 'ri-close-circle-line'}"></i>
+            ${match ? 'Password cocok' : 'Password tidak cocok'}
+        </div>`;
+    }
+</script>
 @yield('scripts')
