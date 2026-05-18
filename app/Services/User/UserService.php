@@ -34,7 +34,7 @@ class UserService
         try {
 
             $order  = request('order', 'DESC');
-            $search = request('q', '');
+            $search = request('search', '');
             $ref    = request('ref', 'id');
             $start  = request('start', null);
             $end    = request('end', null);
@@ -71,7 +71,7 @@ class UserService
 
             // 🔍 Search
             if (!empty($search)) {
-                $query->where('name', 'like', "%{$search}%");
+                $query->where('name', 'ILIKE', "%{$search}%");
             }
 
             // 🧑‍💼 Filter tipe user
@@ -154,8 +154,8 @@ class UserService
                 $type = 'admin';
             } elseif ($roleName === 'BUJP') {
                 $type = 'bujp';
-            } elseif ($roleName === 'Auditor') {
-                $type = 'auditor';
+            } elseif ($roleName === 'Pusat') {
+                $type = 'pusat';
             } else {
                 $type = 'user';
             }
@@ -172,7 +172,7 @@ class UserService
                 $user->update([
                     'password'   => bcrypt($data['password']),
                     'type'       => $type,
-                    'unit_id'       => auth()->user()->unit_id ?? null,
+                    'unit_id'       => $data['unit_id'] ?? null,
                     'updated_by' => auth()->id(),
                 ]);
 
@@ -197,7 +197,7 @@ class UserService
                             'end_date' => $data['end_date'],
                             'contract_number'=> $data['contract_number'],
                             'user_id' => $user->id,
-                            'unit_id' => auth()->user()->unit_id ?? null,
+                            'unit_id' => $data['unit_id'] ?? null,
                             'created_by' => auth()->id(),
                         ]);
                     }
@@ -211,7 +211,7 @@ class UserService
                         'end_date' => $data['end_date'],
                         'contract_number'=> $data['contract_number'],
                         'user_id' => $user->id,
-                        'unit_id' => auth()->user()->unit_id ?? null,
+                        'unit_id' => $data['unit_id'] ?? null,
                         'created_by' => auth()->id(),
                     ]);
                 }
@@ -252,7 +252,7 @@ class UserService
                     'email'      => $data['email'],
                     'password'   => bcrypt($data['password']),
                     'type'       => $type,
-                    'unit_id'       => auth()->user()->unit_id ?? null,
+                    'unit_id'       => $data['unit_id'] ?? null,
                     'created_by' => auth()->id(),
                 ]);
 
@@ -273,7 +273,7 @@ class UserService
                         'end_date' => $data['end_date'],
                         'contract_number'=> $data['contract_number'],
                         'user_id' => $user->id,
-                        'unit_id' => auth()->user()->unit_id ?? null,
+                        'unit_id' => $data['unit_id'] ?? null,
                         'created_by' => auth()->id(),
                     ]);
                 }
@@ -367,7 +367,9 @@ class UserService
                 $type = 'admin';
             } elseif ($roleName === 'BUJP') {
                 $type = 'bujp';
-            } else {
+            } elseif( $roleName === 'Pusat') {
+                $type = 'pusat';
+            }else{
                 $type = 'user';
             }
 
@@ -564,6 +566,7 @@ class UserService
             $query = Unit::query()
                 ->join('vendors', 'vendors.unit_id', '=', 'units.id')
                 ->whereIn('units.id', $unit_ids)
+                ->where('vendors.user_id', $user_id)
                 ->select(
                     'units.id',
                     'units.name', 

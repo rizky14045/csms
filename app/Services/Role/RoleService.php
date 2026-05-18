@@ -22,24 +22,27 @@ class RoleService
         try {
             // Get role by ID
             $order = request('order', 'DESC');
-            $search = request('q', '');
+            $search = request('search', '');
             $ref = request('ref', 'id');
             $start = request('start', null); // Default to earliest date
             $end = request('end', null); // Default to today
 
-            $role = new Role;
-            if(isset($_GET['q'])) $role = $role->whereRaw("name like ?", ["%".$_GET['q']."%"]);
+            $query = Role::query();
+
+            if (!empty($search)) {
+                $query->where('name', 'ILIKE', "%{$search}%");
+            }
 
             if ($start && $end) {
                 $end = date('Y-m-d', strtotime($end . ' +1 day'));
-                $role->whereBetween('roles.created_at', [$start, $end]);
+                $query->whereBetween('roles.created_at', [$start, $end]);
             } elseif ($start) {
-                $role->where('roles.created_at', '>=', $start);
+                $query->where('roles.created_at', '>=', $start);
             } elseif ($end) {
-                $role->where('roles.created_at', '<=', $end);
+                $query->where('roles.created_at', '<=', $end);
             }
 
-            $role = $role->orderBy($ref, $order);
+            $role = $query->orderBy($ref, $order);
             if($paginate){
                 $role = $role->paginate($limit)->withQueryString();
             } else {

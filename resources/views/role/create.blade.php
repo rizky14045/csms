@@ -2,25 +2,23 @@
 
 @section('content')
 
-<div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-    <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Role Management</h4>
-    </div>
-
-    <div class="text-end">
-        <ol class="breadcrumb m-0 py-0">
-            <li class="breadcrumb-item">
-                <a href="{{ route('roles.index') }}">Role Management</a>
-            </li>
-            <li class="breadcrumb-item active">Create</li>
-        </ol>
-    </div>
+<div class="py-3 d-flex align-items-center gap-2">
+    <a href="{{ route('roles.index') }}" class="text-muted text-decoration-none">
+        <i class="ri-arrow-left-line fs-5"></i>
+    </a>
+    <h4 class="mb-0">Role Management - Create</h4>
 </div>
 
-<div class="row">
-    <div class="col-xl-12">
-        <div class="card">
-            <div class="card-body">
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm rounded-4">
+            <div class="card-header bg-white border-bottom py-3">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="ri-shield-keyhole-line fs-5 text-primary"></i>
+                    <h6 class="mb-0 fw-semibold">Tambah Role Baru</h6>
+                </div>
+            </div>
+            <div class="card-body p-4">
 
                 <form
                     id="form-role"
@@ -32,12 +30,13 @@
 
                     {{-- Nama Role --}}
                     <div class="mb-3">
-                        <label class="form-label">Nama Role</label>
+                        <label class="form-label fw-semibold">Nama Role</label>
                         <input
                             type="text"
                             name="name"
                             class="form-control @error('name') is-invalid @enderror"
                             value="{{ old('name') }}"
+                            placeholder="Masukkan nama role"
                             required
                         >
                         @error('name')
@@ -46,36 +45,18 @@
                     </div>
 
                     {{-- Permissions --}}
-                    <div class="mb-3">
-                        <label class="form-label">Permissions</label>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Permissions</label>
 
                         <div class="mb-2">
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-primary"
-                                onclick="togglePermissions(true)"
-                            >
-                                Pilih Semua
-                            </button>
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-danger"
-                                onclick="togglePermissions(false)"
-                            >
-                                Hapus Semua
-                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="togglePermissions(true)">Pilih Semua</button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="togglePermissions(false)">Hapus Semua</button>
                         </div>
 
                         <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
-
                             @foreach ($groupedPermissions as $module => $permissions)
                                 <div class="mb-3">
-
-                                    {{-- Module title --}}
-                                    <div class="fw-semibold text-primary mb-2">
-                                        {{ $module }}
-                                    </div>
-
+                                    <div class="fw-semibold text-primary mb-2">{{ $module }}</div>
                                     @foreach ($permissions as $permission)
                                         <div class="form-check ms-3">
                                             <input
@@ -86,19 +67,14 @@
                                                 value="{{ $permission['id'] }}"
                                                 {{ in_array($permission['id'], old('permissions', [])) ? 'checked' : '' }}
                                             >
-                                            <label
-                                                class="form-check-label"
-                                                for="permission-{{ $permission['id'] }}"
-                                            >
+                                            <label class="form-check-label" for="permission-{{ $permission['id'] }}">
                                                 {{ $permission['name'] }}
                                             </label>
                                         </div>
                                     @endforeach
-
                                 </div>
                                 <hr>
                             @endforeach
-
                         </div>
 
                         @error('permissions')
@@ -106,16 +82,12 @@
                         @enderror
                     </div>
 
-                    {{-- Action --}}
                     <div class="d-flex justify-content-end gap-2">
                         <a href="{{ route('roles.index') }}" class="btn btn-danger">
-                            Kembali
+                            <i class="ri-arrow-go-back-line me-1"></i>Batal
                         </a>
-                        <button
-                            type="submit"
-                            class="btn btn-success"
-                        >
-                            Simpan
+                        <button type="submit" class="btn btn-success">
+                            <i class="ri-save-line me-1"></i>Simpan
                         </button>
                     </div>
 
@@ -126,14 +98,11 @@
     </div>
 </div>
 
-{{-- Local helper --}}
 <script>
     function togglePermissions(state) {
-        document
-            .querySelectorAll('input[name="permissions[]"]')
-            .forEach(function (checkbox) {
-                checkbox.checked = state;
-            });
+        document.querySelectorAll('input[name="permissions[]"]').forEach(function (checkbox) {
+            checkbox.checked = state;
+        });
     }
 </script>
 

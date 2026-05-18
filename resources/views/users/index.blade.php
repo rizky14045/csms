@@ -19,14 +19,31 @@
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
-            @can('create.user')           
-            <div class="d-flex justify-content-end pe-3 pt-3">
-                <a href="{{ route('users.create') }}" class="btn btn-primary">Tambah Data</a>
+            <div class="d-flex justify-content-between align-items-center pe-3 ps-3 pt-3 gap-2">
+                <form method="GET" action="{{ route('users.index') }}" class="d-flex gap-2">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Cari nama pengguna..." value="{{ request('search') }}">
+                        <button class="btn btn-outline-primary" type="submit">Cari</button>
+                    </div>
+                    @if(request('search'))
+                        <a href="{{ route('users.index') }}" class="btn btn-outline-danger">Reset</a>
+                    @endif
+                </form>
+                @can('create.user')
+                <a href="{{ route('users.create') }}" class="btn btn-primary text-nowrap">Tambah Data</a>
+                @endcan
             </div>
-            @endcan
             <div class="card-body">  
                 <div class="table-responsive">
-                    <table class="table table-bordered text-center align-middle">
+                    <table class="table table-bordered text-center align-middle" style="table-layout: fixed; width: 100%;">
+                        <colgroup>
+                            <col style="width: 60px;">
+                            <col style="width: auto;">
+                            <col style="width: 160px;">
+                            @canany(['edit.user', 'delete.user'])
+                            <col style="width: 160px;">
+                            @endcanany
+                        </colgroup>
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">No</th>

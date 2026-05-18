@@ -17,7 +17,7 @@ use App\Http\Controllers\Bujp\DashboardController;
 */
 Route::prefix('bujp')->group(function () {
 
-    Route::middleware(['auth.vendor'])->group(function () {
+    Route::middleware(['auth.vendor', 'force.change.password'])->group(function () {
         
         Route::get('/home', [DashboardController::class, 'index'])->name('bujp.home.index');
 
