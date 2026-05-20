@@ -32,7 +32,7 @@ class SecurepediaService
 
             if (!empty($search)) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('title', 'like', "%{$search}%");
+                    $q->where('title', 'ILIKE', "%{$search}%");
                 });
             }
 

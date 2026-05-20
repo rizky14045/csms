@@ -37,20 +37,29 @@ class AuditSMPController extends Controller
     }
 
     public function create(){
-        return view('admin.audit-smp.create');
+        $totalBobot = AuditSMP::where('type', 'header')->sum('bobot');
+        return view('admin.audit-smp.create', [
+            'totalBobot'    => $totalBobot,
+            'remainingBobot' => 100 - $totalBobot,
+        ]);
     }
 
     public function store(Request $request){
-        // Validation rules
         $validator = $this->validator($request->all(), AuditSMPValidation::rulesForCreate(), AuditSMPValidation::messages());
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $request->merge([
-            'type' => 'header'
-        ]);
+        $currentTotal = AuditSMP::where('type', 'header')->sum('bobot');
+        $newBobot     = (int) $request->bobot;
 
+        if ($currentTotal + $newBobot > 100) {
+            $remaining = 100 - $currentTotal;
+            Alert::error('Tambah Gagal', "Total bobot melebihi 100%. Sisa bobot yang dapat ditambahkan: {$remaining}%");
+            return redirect()->back()->withInput();
+        }
+
+        $request->merge(['type' => 'header']);
         $this->auditSMPService->createAudit($request->all());
 
         Alert::success('Tambah Berhasil', 'Audit SMP berhasil dibuat!');
@@ -58,15 +67,26 @@ class AuditSMPController extends Controller
     }
 
     public function edit(AuditSMP $audit){
-        $data['audit'] = $audit;
-        return view('admin.audit-smp.edit',$data);
+        $otherTotal = AuditSMP::where('type', 'header')->where('id', '!=', $audit->id)->sum('bobot');
+        $data['audit']          = $audit;
+        $data['totalBobot']     = $otherTotal + $audit->bobot;
+        $data['remainingBobot'] = 100 - $otherTotal;
+        return view('admin.audit-smp.edit', $data);
     }
 
     public function update(Request $request, AuditSMP $audit){
-        // Validation rules
         $validator = $this->validator($request->all(), AuditSMPValidation::rulesForUpdate(), AuditSMPValidation::messages());
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $otherTotal = AuditSMP::where('type', 'header')->where('id', '!=', $audit->id)->sum('bobot');
+        $newBobot   = (int) $request->bobot;
+
+        if ($otherTotal + $newBobot > 100) {
+            $remaining = 100 - $otherTotal;
+            Alert::error('Update Gagal', "Total bobot melebihi 100%. Bobot maksimal yang dapat digunakan: {$remaining}%");
+            return redirect()->back()->withInput();
         }
 
         $this->auditSMPService->updateAudit($audit, $request->all());

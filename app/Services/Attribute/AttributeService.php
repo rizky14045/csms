@@ -17,11 +17,11 @@ class AttributeService
         $this->logService = $logService;
     }
     
-   public function getAllAttribute($limit = 10, $paginate = true, $type_attribute = null, $user_id = null)
+   public function getAllAttribute($limit = 10, $paginate = true, $type_attribute = null, $user_id = null, $unit_id = null)
     {
         try {
             $order  = request('order', 'DESC');
-            $search = request('q', '');
+            $search = request('search', request('q', ''));
             $ref    = request('ref', 'id');
             $start  = request('start', null);
             $end    = request('end', null);
@@ -38,7 +38,9 @@ class AttributeService
                 $query->where('type_attribute', $type_attribute);
             }
 
-            if($user_id){
+            if ($unit_id) {
+                $query->where('unit_id', $unit_id);
+            } elseif ($user_id) {
                 $query->where('user_id', $user_id);
             }
 
@@ -158,6 +160,7 @@ class AttributeService
 
             $attribute = Attribute::create([
                 'user_id' => $user_id,
+                'unit_id' => $data['unit_id'] ?? null,
                 'name' => $data['name'],
                 'status_ownership' => $data['status_ownership'],
                 'unit' => $data['unit'],

@@ -21,7 +21,7 @@ class SecurityService
     {
         try {
             $order  = request('order', 'DESC');
-            $search = request('q', '');
+            $search = request('search', request('q', ''));
             $ref    = request('ref', 'id');
             $start  = request('start', null);
             $end    = request('end', null);
@@ -166,6 +166,7 @@ class SecurityService
                 'qualification' => $data['qualification'] ?? null,
                 'last_education' => $data['last_education'] ?? null,
                 'note' => $data['note'] ?? null,
+                'kta_file' => $data['kta_file'] ?? null,
                 'created_by' => auth()->user()->id,
             ]);
 
@@ -253,6 +254,10 @@ class SecurityService
                 'note' => $data['note'] ?? null,
                 'updated_by' => auth()->id(),
             ];
+
+            if (isset($data['kta_file'])) {
+                $updateData['kta_file'] = $data['kta_file'];
+            }
 
             $security->update($updateData);
 

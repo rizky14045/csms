@@ -23,6 +23,7 @@ class CreateFasumTable extends Migration
             $table->text('address')->nullable();
             $table->integer('province_id')->nullable();
             $table->integer('city_id')->nullable();
+            $table->text('contact')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->integer('created_by')->nullable();

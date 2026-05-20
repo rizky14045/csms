@@ -16,27 +16,27 @@
 @section('content')
 
 
-    <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-        <div class="flex-grow-1">
-            <h4 class="fs-18 fw-semibold m-0">Fasilitas Umum</h4>
-        </div>
-
-        <div class="text-end">
-            <ol class="breadcrumb m-0 py-0">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Edit Data Fasilitas Umum</li>
-            </ol>
-        </div>
+    <div class="py-3 d-flex align-items-center gap-2">
+        <a href="{{ route('user.fasum.index') }}" class="text-muted text-decoration-none">
+            <i data-feather="arrow-left" style="width:18px;height:18px;"></i>
+        </a>
+        <h4 class="mb-0">Edit Fasilitas Umum</h4>
     </div>
-    <div class="row">
-        <div class="col-xl-12">
-            <div class="card">
-                <div class="card-body">
-                    <form action="{{ route('user.fasum.update', ['fasum' => $fasum->id]) }}" class="my-4" method="POST"
-                        id="form-unit" onsubmit="confirmSave('form-unit', 'Data unit akan disimpan')">
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-9">
+            <div class="card shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i data-feather="edit-2" style="width:18px;height:18px;color:#4361ee;"></i>
+                        <h6 class="mb-0 fw-semibold">Edit Data Fasilitas Umum</h6>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <form action="{{ route('user.fasum.update', ['fasum' => $fasum->id]) }}" method="POST"
+                        id="form-unit" onsubmit="confirmSave('form-unit', 'Data fasilitas umum akan disimpan')">
                         @csrf
                         @method('PATCH')
-                        <!-- Formulir Pendaftaran -->
                         <div class="col-xl-12">
                             <div class="form-group mb-3">
                                 <label for="name" class="form-label">Nama Fasilitas</label>
@@ -66,6 +66,15 @@
                                 <textarea class="form-control" id="address" rows="5" spellcheck="false" name="address">{{ old('address', $fasum->address) }}</textarea>
                                 @if ($errors->has('address'))
                                     <div class="error text-danger">{{ $errors->first('address') }}</div>
+                                @endif
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="contact" class="form-label">Kontak <span class="text-muted small">(opsional)</span></label>
+                                <input class="form-control" type="text" id="contact" name="contact"
+                                    placeholder="Nomor HP, email, atau kontak lainnya"
+                                    value="{{ old('contact', $fasum->contact) }}">
+                                @if ($errors->has('contact'))
+                                    <div class="error text-danger">{{ $errors->first('contact') }}</div>
                                 @endif
                             </div>
                             {{-- MAP WRAPPER --}}
@@ -123,31 +132,21 @@
 
                             </div>
 
-                            <div class="form-group row mt-2">
-                                <div class="col-12">
-                                    <div class="d-flex gap-3 justify-content-end">
-
-                                        <a href="{{ route('user.fasum.index') }}" class="btn btn-danger"> Kembali</a>
-                                        <button type="submit" class="btn btn-success">
-                                            Simpan
-                                        </button>
-                                    </div>
-                                </div>
+                            <div class="d-flex gap-2 justify-content-end mt-2">
+                                <a href="{{ route('user.fasum.index') }}" class="btn btn-danger">
+                                    <i data-feather="arrow-left" style="width:14px;height:14px;" class="me-1"></i>Batal
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i data-feather="save" style="width:14px;height:14px;" class="me-1"></i>Simpan
+                                </button>
                             </div>
                         </div>
 
                     </form>
-
-                </div> <!-- end card body -->
-            </div><!-- end card -->
-            {{-- <div class="card">
-            <div class="card-body">
-                <h5>Pilih titik lokasi unit</h5>
-                <div id="map" style="width: 100%; height: 800px; margin-top: 20px;"></div>
+                </div>
             </div>
-        </div> --}}
-        </div><!-- end col -->
-    </div> <!-- end row -->
+        </div>
+    </div>
 @endsection
 @section('scripts')
     <script>
@@ -289,5 +288,7 @@
             });
 
         });
+
+        feather.replace();
     </script>
 @endsection
