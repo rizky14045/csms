@@ -217,10 +217,11 @@
               @endforeach
               @endforeach
 
+              @php $trailCols = ($auditData->status == 0) ? 9 : 8; @endphp
               <tr>
                 <td colspan="5" style="background:#5DADE2;">SubTotal Elemen</td>
                 <td>{{ number_format($subTotalElemen,2) }}%</td>
-                <td colspan="8"></td>
+                <td colspan="{{ $trailCols }}"></td>
               </tr>
 
               @php
@@ -229,10 +230,32 @@
 
               @endforeach
 
+              @php
+              $kategori = $totalAllHeader < 55
+                  ? 'Kurang'
+                  : ($totalAllHeader <= 70
+                      ? 'Cukup'
+                      : ($totalAllHeader <= 85 ? 'Baik' : 'Baik Sekali'));
+
+              $kategoriColor = match($kategori) {
+                  'Kurang'      => '#dc3545',
+                  'Cukup'       => '#ffc107',
+                  'Baik'        => '#28a745',
+                  'Baik Sekali' => '#198754',
+                  default       => '#6c757d',
+              };
+              @endphp
+
               <tr>
-                <td colspan="5" style="background:#5DADE2;">Total</td>
-                <td>{{ number_format($totalAllHeader,2) }}%</td>
-                <td colspan="8"></td>
+                <td colspan="7" class="fw-bold" style="background:#5DADE2;">Total</td>
+                <td class="fw-bold">{{ number_format($totalAllHeader,2) }}%</td>
+                <td colspan="{{ $trailCols }}"></td>
+              </tr>
+
+              <tr>
+                <td colspan="7" class="fw-bold" style="background:#5DADE2;">Kategori</td>
+                <td class="fw-bold" style="background:{{ $kategoriColor }};color:#fff;">{{ $kategori }}</td>
+                <td colspan="{{ $trailCols }}"></td>
               </tr>
 
             </tbody>

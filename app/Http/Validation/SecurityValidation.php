@@ -28,6 +28,7 @@ class SecurityValidation
             ],
             'last_education' => 'required|string',
             'note' => 'nullable|string',
+            'kta_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ];
     }
 
@@ -54,7 +55,8 @@ class SecurityValidation
                 'in:Pratama,Madya,Utama',
             ],
             'last_education' => 'required|string',
-            'note' => 'required|string',
+            'note' => 'nullable|string',
+            'kta_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ];
     }
 
@@ -91,6 +93,11 @@ class SecurityValidation
 
             'note.required' => 'Catatan harus diisi!',
             'note.string' => 'Catatan harus berupa teks!',
+
+            'kta_file.required' => 'File KTA wajib diunggah!',
+            'kta_file.file' => 'KTA harus berupa file!',
+            'kta_file.mimes' => 'Format KTA harus pdf, jpg, jpeg, atau png!',
+            'kta_file.max' => 'Ukuran file KTA maksimal 5 MB!',
         ];
     }
 

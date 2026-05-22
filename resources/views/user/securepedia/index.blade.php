@@ -17,12 +17,12 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Unit</h4>
+        <h4 class="fs-18 fw-semibold m-0">Securepedia</h4>
     </div>
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Unit</li>
+            <li class="breadcrumb-item active">Securepedia</li>
         </ol>
     </div>
 </div>
@@ -31,19 +31,16 @@
     <div class="col-xl-12">
         <div class="card card-scrollable">
             <div class="d-flex justify-content-between align-items-center pe-3 ps-3 pt-3 gap-2">
-                <form method="GET" action="{{ route('admin.unit.index') }}" class="d-flex gap-2">
+                <form method="GET" action="{{ route('user.securepedia.index') }}" class="d-flex gap-2">
                     <div class="input-group">
                         <input type="text" name="q" class="form-control"
-                            placeholder="Cari nama unit..." value="{{ request('q') }}">
+                            placeholder="Cari judul..." value="{{ request('q') }}">
                         <button class="btn btn-outline-primary" type="submit">Cari</button>
                     </div>
                     @if(request('q'))
-                        <a href="{{ route('admin.unit.index') }}" class="btn btn-outline-danger">Reset</a>
+                        <a href="{{ route('user.securepedia.index') }}" class="btn btn-outline-danger">Reset</a>
                     @endif
                 </form>
-                @can('create.unit.admin')
-                <a href="{{ route('admin.unit.create') }}" class="btn btn-success text-nowrap">Tambah Data</a>
-                @endcan
             </div>
 
             <div class="card-body">
@@ -52,48 +49,43 @@
                         style="table-layout: fixed; width: 100%;">
                         <colgroup>
                             <col style="width: 50px;">
-                            <col style="width: 180px;">
-                            <col style="width: 90px;">
-                            <col style="width: 120px;">
                             <col>
-                            @can('edit.unit.admin')
-                            <col style="width: 90px;">
-                            @endcan
+                            <col style="width: 140px;">
+                            <col style="width: 140px;">
                         </colgroup>
                         <thead class="table-light">
                             <tr>
                                 <th>No</th>
-                                <th>Nama Unit</th>
-                                <th>Tipe</th>
-                                <th>Kode Unit</th>
-                                <th>Alamat</th>
-                                @can('edit.unit.admin')
-                                <th>Action</th>
-                                @endcan
+                                <th>Judul</th>
+                                <th>Status Kepemilikan</th>
+                                <th>File</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($units_list as $unit)
+                            @forelse ($securepedias as $securepedia)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="text-start">{{ $unit->name }}</td>
-                                <td>{{ $unit->type }}</td>
-                                <td>{{ $unit->unit_code }}</td>
-                                <td class="text-start">{{ $unit->address }}</td>
-                                @can('edit.unit.admin')
+                                <td class="text-start">{{ $securepedia->title }}</td>
+                                <td>{{ $securepedia->type }}</td>
                                 <td>
-                                    <a href="{{ route('admin.unit.edit', ['unit' => $unit->id]) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    @if($securepedia->file)
+                                        <a href="{{ asset('uploads/securepedia/' . $securepedia->file) }}"
+                                            target="_blank" class="btn btn-primary btn-sm">
+                                            <i data-feather="download" style="width:13px;height:13px;margin-right:3px;"></i>Unduh
+                                        </a>
+                                    @else
+                                        <span class="text-muted small">-</span>
+                                    @endif
                                 </td>
-                                @endcan
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">Tidak ada data.</td>
+                                <td colspan="4" class="text-center text-muted py-4">Tidak ada data.</td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
-                    {{ $units_list->links() }}
+                    {{ $securepedias->links() }}
                 </div>
             </div>
         </div>

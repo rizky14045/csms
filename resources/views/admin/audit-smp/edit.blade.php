@@ -38,8 +38,16 @@
                             @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="bobot" class="form-label">Bobot</label>
-                            <input class="form-control @error('bobot') is-invalid @enderror" name="bobot" type="number" id="bobot" required="" placeholder="Masukan bobot" value="{{ old('bobot', $audit->bobot) }}">
+                            <label for="bobot" class="form-label">
+                                Bobot
+                                <span class="ms-2 badge {{ $remainingBobot > 0 ? 'bg-success' : 'bg-danger' }}">
+                                    Maks: {{ $remainingBobot }}%
+                                </span>
+                                <span class="ms-1 badge bg-secondary">Total saat ini: {{ $totalBobot }}%</span>
+                            </label>
+                            <input class="form-control @error('bobot') is-invalid @enderror" name="bobot" type="number"
+                                id="bobot" required placeholder="Masukan bobot"
+                                min="1" max="{{ $remainingBobot }}" value="{{ old('bobot', $audit->bobot) }}">
                             @error('bobot')
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror

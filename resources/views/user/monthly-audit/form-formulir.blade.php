@@ -222,17 +222,17 @@
                                                                                 name="name[]"
                                                                                 value="{{ $outsource->name }}"></td>
                                                                         <td><input type="number"
-                                                                                class="form-control w-25 d-inline"
+                                                                                class="form-control w-25 d-inline outsource-total-display"
                                                                                 name="total[]"
-                                                                                value="{{ $outsource->total }}"
-                                                                                min="0"> Orang</td>
+                                                                                value="{{ $outsource->man + $outsource->woman }}"
+                                                                                min="0" readonly> Orang</td>
                                                                         <td><input type="number"
-                                                                                class="form-control w-25 d-inline"
+                                                                                class="form-control w-25 d-inline outsource-man-input"
                                                                                 name="man[]"
                                                                                 value="{{ $outsource->man }}"
                                                                                 min="0"> Orang</td>
                                                                         <td><input type="number"
-                                                                                class="form-control w-25 d-inline"
+                                                                                class="form-control w-25 d-inline outsource-woman-input"
                                                                                 name="woman[]"
                                                                                 value="{{ $outsource->woman }}"
                                                                                 min="0"> Orang</td>
@@ -449,24 +449,23 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group pb-3">
-                        <label class="form-label" for="email-id">Nama</label>
+                        <label class="form-label">Nama</label>
                         <input type="text" class="form-control mb-0 outsource-name" id="name-employee"
                             placeholder="Masukan Nama">
                     </div>
                     <div class="form-group pb-3">
-                        <label class="form-label" for="text-id">Total</label>
-                        <input type="number" value="0" min="0" class="form-control mb-0 outsource-total"
-                            id="total-employee">
-                    </div>
-                    <div class="form-group pb-3">
-                        <label class="form-label" for="text-id">Jumlah Pria</label>
+                        <label class="form-label">Jumlah Pria</label>
                         <input type="number" value="0" min="0" class="form-control mb-0 outsource-man"
                             id="man-employee">
                     </div>
                     <div class="form-group pb-3">
-                        <label class="form-label" for="text-id">Jumlah Wanita</label>
+                        <label class="form-label">Jumlah Wanita</label>
                         <input type="number" value="0" min="0" class="form-control mb-0 outsource-woman"
                             id="woman-employee">
+                    </div>
+                    <div class="form-group pb-3">
+                        <label class="form-label">Total</label>
+                        <input type="number" value="0" min="0" class="form-control mb-0" id="total-employee" readonly>
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
@@ -479,37 +478,48 @@
 @endsection
 @section('scripts')
     <script>
+        // Auto-calculate total in modal when pria/wanita changes
+        $('#man-employee, #woman-employee').on('input', function () {
+            var man   = parseInt($('#man-employee').val()) || 0;
+            var woman = parseInt($('#woman-employee').val()) || 0;
+            $('#total-employee').val(man + woman);
+        });
+
+        // Auto-calculate total in existing table rows when pria/wanita changes
+        $(document).on('input', '.outsource-man-input, .outsource-woman-input', function () {
+            var row   = $(this).closest('tr');
+            var man   = parseInt(row.find('.outsource-man-input').val()) || 0;
+            var woman = parseInt(row.find('.outsource-woman-input').val()) || 0;
+            row.find('.outsource-total-display').val(man + woman);
+        });
+
         $(".btn-outsource-add").unbind('click').click(function() {
-            // var getnumber = $('.tb-person').find('.tr-person').last().find('.tr-number').val()
-
-            var name = $('#name-employee').val()
-            var total = $('#total-employee').val()
-            var man = $('#man-employee').val()
-            var woman = $('#woman-employee').val()
-
-            console.log(name, total, man, woman)
-            // var number
-            // if(getnumber === undefined){
-
-            //     number = 1
-            // }else{
-            //     number = parseInt(getnumber) + 1
-            // }
+            var name  = $('#name-employee').val();
+            var man   = parseInt($('#man-employee').val()) || 0;
+            var woman = parseInt($('#woman-employee').val()) || 0;
+            var total = man + woman;
 
             $('.sum-outsource').before(
                 `<tr class="outsource-row">
               <td><input type="text" class="form-control w-100 d-inline" name="name[]" value="${name}"></td>
-              <td><input type="number" class="form-control w-25 d-inline" name="total[]" value="${total}" min="0"> Orang</td>
-              <td><input type="number" class="form-control w-25 d-inline" name="man[]" value="${man}" min="0"> Orang</td>
-              <td><input type="number" class="form-control w-25 d-inline" name="woman[]" value="${woman}" min="0"> Orang</td>
+              <td><input type="number" class="form-control w-25 d-inline outsource-total-display" name="total[]" value="${total}" min="0" readonly> Orang</td>
+              <td><input type="number" class="form-control w-25 d-inline outsource-man-input" name="man[]" value="${man}" min="0"> Orang</td>
+              <td><input type="number" class="form-control w-25 d-inline outsource-woman-input" name="woman[]" value="${woman}" min="0"> Orang</td>
               <td>
                   <button type="button" class="btn btn-danger" onclick="deleteRow(this)">
                       <span class="mdi mdi-trash-can"></span>
                   </button>
               </td>
           </tr>`
-            )
-            $('#outSourceModal').modal('hide')
+            );
+
+            // Reset modal fields
+            $('#name-employee').val('');
+            $('#man-employee').val(0);
+            $('#woman-employee').val(0);
+            $('#total-employee').val(0);
+
+            $('#outSourceModal').modal('hide');
         });
 
         function deleteRow(e) {
@@ -526,7 +536,6 @@
                     $(e).parent().parent().remove()
                 }
             })
-
         }
     </script>
 @endsection

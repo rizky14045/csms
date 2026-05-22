@@ -9,35 +9,18 @@ class FasumValidation
     public static function rulesForCreate()
     {
         return [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-            'address' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+            'name' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'contact' => ['nullable', 'string', 'max:255'],
         ];
     }
 
-    /**
-     * Validation rules for update role
-     */
     public static function rulesForUpdate()
     {
         return [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-            'address' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+            'name' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'contact' => ['nullable', 'string', 'max:255'],
         ];
     }
 
