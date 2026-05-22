@@ -33,7 +33,15 @@ class AuditSMPScoreController extends Controller
     }
 
     public function index(){
-        $result = $this->auditSMPDataService->getAllAuditData(10, true, ['unit', 'getInvalidItemsEvidenceByUnit'], null, auth()->user()->unit_id);
+        $result = $this->auditSMPDataService->getAllAuditData(10, true, [
+            'unit',
+            'leadAuditor',
+            'auditors',
+            'getInvalidItemsEvidenceByUnit',
+            'getInvalidItemsEvidenceByAuditor',
+            'childrenHeader.kriteria',
+            'childrenHeader.pernyataan.kriteria',
+        ], null, auth()->user()->unit_id);
         $data['audits'] = getPaginate($result);
         $data['request'] = request();
         return view('user.audit-smp-score.index',$data);

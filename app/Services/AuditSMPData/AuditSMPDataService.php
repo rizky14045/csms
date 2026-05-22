@@ -38,6 +38,12 @@ class AuditSMPDataService
                 $query->with($with);
             }
 
+            if (!empty($search)) {
+                $query->whereHas('unit', function ($q) use ($search) {
+                    $q->where('name', 'ILIKE', "%{$search}%");
+                });
+            }
+
             $user = auth()->user();
 
             // =========================
@@ -296,7 +302,7 @@ class AuditSMPDataService
         }
     }
 
-    public function updateAuditData(AuditSmpData $audit, array $data)
+    public function updateAuditData(AuditSmpData $audit, array $data, Request $request = null)
     {
         DB::beginTransaction();
 
@@ -304,13 +310,33 @@ class AuditSMPDataService
             $audit->load('auditors');
             $before = $audit->toArray();
 
+            $skFile = $audit->sk_file;
+            if ($request && $request->hasFile('sk_file')) {
+                $file      = $request->file('sk_file');
+                $fileName  = 'sk-audit-' . time() . '.' . $file->getClientOriginalExtension();
+                if ($audit->sk_file) {
+                    $oldPath = public_path('uploads/sk_audit/' . $audit->sk_file);
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+                $file->move(public_path('uploads/sk_audit/'), $fileName);
+                $skFile = $fileName;
+            }
+
+            $status = $audit->status;
+            if($status < 2){
+                $status = 2;
+            }
+
             $updateData = [
-                'unit_id'   => $data['unit_id'],
+                'unit_id'         => $data['unit_id'],
                 'auditor_lead_id' => $data['auditor_lead_id'],
-                'start_audit' => $data['start_audit'],
-                'end_audit' => $data['end_audit'],
-                'status' => 2,
-                'updated_by' => auth()->id(),
+                'start_audit'     => $data['start_audit'],
+                'end_audit'       => $data['end_audit'],
+                'sk_file'         => $skFile,
+                'status'          => $status,
+                'updated_by'      => auth()->id(),
             ];
 
             $audit->update($updateData);

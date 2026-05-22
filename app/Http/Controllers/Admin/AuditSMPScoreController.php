@@ -33,7 +33,15 @@ class AuditSMPScoreController extends Controller
     }
 
     public function index(){
-        $result = $this->auditSMPDataService->getAllAuditData(10, true, ['unit', 'getInvalidItemsEvidenceByUnit', 'auditors', 'getInvalidItemsEvidenceByAuditor'], null, null, 'header');
+        $result = $this->auditSMPDataService->getAllAuditData(10, true, [
+            'unit',
+            'leadAuditor',
+            'auditors',
+            'getInvalidItemsEvidenceByUnit',
+            'getInvalidItemsEvidenceByAuditor',
+            'childrenHeader.kriteria',
+            'childrenHeader.pernyataan.kriteria',
+        ], null, null, 'header');
         $data['audits'] = getPaginate($result);
         $data['request'] = request();
         return view('admin.audit-smp-score.index',$data);
@@ -46,7 +54,7 @@ class AuditSMPScoreController extends Controller
     }
 
     public function edit(AuditSmpData $audit){
-        if($audit->status != 1){
+        if($audit->status < 1 || $audit->status > 2){
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat diedit');
         }
         $result = $this->unitService->getAllUnit(0, false);
@@ -59,7 +67,7 @@ class AuditSMPScoreController extends Controller
     }
 
     public function update(Request $request, AuditSmpData $audit){
-        if($audit->status != 1){
+        if($audit->status < 1 || $audit->status > 2){
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat diedit');
         }
         // Validation rules
@@ -78,7 +86,7 @@ class AuditSMPScoreController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $this->auditSMPDataService->updateAuditData($audit, $request->all());
+        $this->auditSMPDataService->updateAuditData($audit, $request->all(), $request);
 
         return redirect()->route('admin.audit-smp-score.index')->with('success', 'Data audit berhasil disimpan');
     }
