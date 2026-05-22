@@ -34,7 +34,9 @@ class AuditSMPDataValidation
             ],
 
             'start_audit' => ['required', 'date'],
-            'end_audit' => ['required', 'date', 'after_or_equal:start_audit'],
+            'end_audit'   => ['required', 'date', 'after_or_equal:start_audit'],
+
+            'sk_file' => ['nullable', 'file', 'mimes:pdf', 'max:15360'],
         ];
     }
 
@@ -79,11 +81,15 @@ class AuditSMPDataValidation
             'auditors_ids.array' => 'Format anggota auditor tidak valid.',
             'auditors_ids.*.exists' => 'Anggota auditor yang dipilih tidak valid.',
 
-            'start_audit.required' => 'Tanggal mulai harus diisi.',
-            'start_audit.date' => 'Tanggal mulai harus berupa tanggal yang valid.',
-            'end_audit.required' => 'Tanggal selesai harus diisi.',
-            'end_audit.date' => 'Tanggal selesai harus berupa tanggal yang valid.',
-            'end_audit.after_or_equal' => 'Tanggal selesai harus sama dengan atau setelah tanggal mulai.',
+            'start_audit.required'      => 'Tanggal mulai harus diisi.',
+            'start_audit.date'          => 'Tanggal mulai harus berupa tanggal yang valid.',
+            'end_audit.required'        => 'Tanggal selesai harus diisi.',
+            'end_audit.date'            => 'Tanggal selesai harus berupa tanggal yang valid.',
+            'end_audit.after_or_equal'  => 'Tanggal selesai harus sama dengan atau setelah tanggal mulai.',
+
+            'sk_file.file'  => 'File SK Audit harus berupa file yang valid.',
+            'sk_file.mimes' => 'File SK Audit harus berformat PDF.',
+            'sk_file.max'   => 'Ukuran file SK Audit maksimal 15MB.',
         ];
 
         if ($id) {

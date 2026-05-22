@@ -22,7 +22,7 @@ class FasumService
     {
         try {
             $order  = request('order', 'ASC');
-            $search = request('q', '');
+            $search = request('search', request('q', ''));
             $ref    = request('ref', 'order');
             $start  = request('start', null);
             $end    = request('end', null);
@@ -33,7 +33,7 @@ class FasumService
             $query->where('unit_id', Auth::user()->unit_id);
             if (!empty($search)) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
+                    $q->where('name', 'ILIKE', "%{$search}%");
                 });
             }
 
@@ -97,6 +97,7 @@ class FasumService
                 'longitude' => $data['longitude'],
                 'province_id' => $data['province_id'],
                 'city_id' => $data['city_id'],
+                'contact' => $data['contact'] ?? null,
                 'created_by' => auth()->id(),
             ]);
             
@@ -164,6 +165,7 @@ class FasumService
                 'longitude' => $data['longitude'],
                 'province_id' => $data['province_id'],
                 'city_id' => $data['city_id'],
+                'contact' => $data['contact'] ?? null,
                 'updated_by' => auth()->id(),
             ];
 

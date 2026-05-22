@@ -2,11 +2,6 @@
 
 @section('styles')
 <style>
-    .table td,
-    .table th {
-        vertical-align: middle;
-    }
-
     .error-text {
         font-size: 12px;
         color: #dc3545;
@@ -17,8 +12,20 @@
 
 @section('content')
 
-<div class="py-3 d-flex justify-content-between">
-    <h4>Data Audit {{ $auditData->unit->name }}</h4>
+<div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+    <div class="flex-grow-1 d-flex align-items-center gap-2">
+        <a href="{{ route('user.audit-smp-score.index') }}" class="text-muted text-decoration-none">
+            <i data-feather="arrow-left" style="width:18px;height:18px;"></i>
+        </a>
+        <h4 class="fs-18 fw-semibold m-0">Data Audit {{ $auditData->unit->name }}</h4>
+    </div>
+    <div class="text-end">
+        <ol class="breadcrumb m-0 py-0">
+            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('user.audit-smp-score.index') }}">Data Audit SMP</a></li>
+            <li class="breadcrumb-item active">Detail</li>
+        </ol>
+    </div>
 </div>
 
 <div class="card">
@@ -264,6 +271,22 @@
                     <td>{{ number_format($grandTotalSelf,2) }}%</td>
                     <td></td>
                     <td>{{ number_format($grandTotalAudit,2) }}%</td>
+                    <td></td>
+                    <td colspan="4"></td>
+                </tr>
+
+                @php
+                    $kategoriSelf  = $grandTotalSelf  < 55 ? 'Kurang' : ($grandTotalSelf  <= 70 ? 'Cukup' : ($grandTotalSelf  <= 85 ? 'Baik' : 'Baik Sekali'));
+                    $kategoriAudit = $grandTotalAudit < 55 ? 'Kurang' : ($grandTotalAudit <= 70 ? 'Cukup' : ($grandTotalAudit <= 85 ? 'Baik' : 'Baik Sekali'));
+                    $colorSelf     = $grandTotalSelf  < 55 ? '#dc3545' : ($grandTotalSelf  <= 70 ? '#ffc107' : ($grandTotalSelf  <= 85 ? '#28a745' : '#198754'));
+                    $colorAudit    = $grandTotalAudit < 55 ? '#dc3545' : ($grandTotalAudit <= 70 ? '#ffc107' : ($grandTotalAudit <= 85 ? '#28a745' : '#198754'));
+                @endphp
+
+                <tr style="background:#2E86C1;color:white;">
+                    <td colspan="4">KATEGORI</td>
+                    <td style="background:{{ $colorSelf }};color:white;">{{ $kategoriSelf }}</td>
+                    <td></td>
+                    <td style="background:{{ $colorAudit }};color:white;">{{ $kategoriAudit }}</td>
                     <td></td>
                     <td colspan="4"></td>
                 </tr>

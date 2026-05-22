@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\User\AgreementExternalController;
 use App\Http\Controllers\User\AssesmentController;
+use App\Http\Controllers\User\SecurepediaController;
 use App\Http\Controllers\User\AttributeController;
 use App\Http\Controllers\User\AuditSMPScoreController;
 use App\Http\Controllers\User\ChangePasswordController;
@@ -262,6 +263,10 @@ Route::prefix('user')->group(function () {
             Route::get('/{fasum}/edit', [FasumController::class, 'edit'])->name('user.fasum.edit');
             Route::patch('/{fasum}/update', [FasumController::class, 'update'])->name('user.fasum.update');
             Route::delete('/{fasum}/destroy', [FasumController::class, 'destroy'])->name('user.fasum.destroy');
+        });
+
+        Route::prefix('securepedia')->group(function () {
+            Route::get('/', [SecurepediaController::class, 'index'])->name('user.securepedia.index');
         });
     });
 

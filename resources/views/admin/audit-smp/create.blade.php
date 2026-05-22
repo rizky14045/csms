@@ -37,11 +37,24 @@
                             @enderror
                         </div>
                         <div class="form-group mb-3">
-                            <label for="bobot" class="form-label">Bobot</label>
-                            <input class="form-control @error('bobot') is-invalid @enderror" name="bobot" type="number" id="bobot" required="" placeholder="Masukan bobot" value="{{old('bobot')}}">
+                            <label for="bobot" class="form-label">
+                                Bobot
+                                <span class="ms-2 badge {{ $remainingBobot > 0 ? 'bg-success' : 'bg-danger' }}">
+                                    Sisa: {{ $remainingBobot }}%
+                                </span>
+                                <span class="ms-1 badge bg-secondary">Total saat ini: {{ $totalBobot }}%</span>
+                            </label>
+                            <input class="form-control @error('bobot') is-invalid @enderror" name="bobot" type="number"
+                                id="bobot" required placeholder="Masukan bobot (1–{{ $remainingBobot }})"
+                                min="1" max="{{ $remainingBobot }}" value="{{ old('bobot') }}">
                             @error('bobot')
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror
+                            @if($remainingBobot <= 0)
+                                <div class="alert alert-danger mt-2 py-2 px-3 small">
+                                    Total bobot sudah mencapai 100%. Tidak dapat menambah data baru.
+                                </div>
+                            @endif
                         </div>
                         <div class="form-group row">
                             <div class="col-12">

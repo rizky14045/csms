@@ -176,21 +176,23 @@ class FormFormulirController extends Controller
                 $outsources = [];
     
                 foreach ($request->name as $index => $unit) {
+                    $man   = (int) ($request->man[$index] ?? 0);
+                    $woman = (int) ($request->woman[$index] ?? 0);
                     $outsources[] = [
-                        'name' => $request->name[$index],
-                        'total' => $request->total[$index],
-                        'man' => $request->man[$index],
-                        'woman' => $request->woman[$index],
+                        'name'  => $request->name[$index],
+                        'man'   => $man,
+                        'woman' => $woman,
+                        'total' => $man + $woman,
                     ];
                 }
                 foreach ($outsources as $outsource) {
                     OutsourceEmployee::Create([
                         'monthly_report_id' => $monthlyId,
-                        'user_id' => $userId,
-                        'name' => $outsource['name'],
-                        'total' => $outsource['total'],
-                        'man' => $outsource['man'],
-                        'woman' => $outsource['woman']
+                        'user_id'           => $userId,
+                        'name'              => $outsource['name'],
+                        'man'               => $outsource['man'],
+                        'woman'             => $outsource['woman'],
+                        'total'             => $outsource['total'],
                     ]);
                 };
             }

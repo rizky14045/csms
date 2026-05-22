@@ -30,12 +30,12 @@ class AttributeController extends Controller
     }
     
     public function index(){
-        $result = $this->attributeService->getAllAttribute(25, true, null, auth()->user()->id);
+        $user = auth()->user();
+        $result = $this->attributeService->getAllAttribute(25, true, null, $user->id, $user->unit_id);
         $data['attributes'] = getPaginate($result);
         $data['request'] = request();
 
-        return view('user.attribute.index',$data);
-
+        return view('user.attribute.index', $data);
     }
 
     public function create(){
@@ -51,8 +51,11 @@ class AttributeController extends Controller
                 return redirect()->back()->withErrors($validator)->withInput();
             }
 
-            $user_id = auth()->user()->id;
-            $request->merge(['user_id' => $user_id]);
+            $user = auth()->user();
+            $request->merge([
+                'user_id' => $user->id,
+                'unit_id' => $user->unit_id,
+            ]);
             $this->attributeService->createAttribute($request->all());
 
             Alert::success('Tambah Berhasil', 'Atribut berhasil dibuat!');

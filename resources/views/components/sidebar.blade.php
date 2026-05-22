@@ -160,6 +160,14 @@
                         </a>
                     </li>
                 @endcan
+                @can('view.securepedia.user')
+                    <li>
+                        <a href="{{ route('user.securepedia.index') }}" class="tp-link">
+                            <i data-feather="book-open"></i>
+                            <span> Securepedia </span>
+                        </a>
+                    </li>
+                @endcan
                 @canany(['view.marturity.admin'])
                     <li>
                         <a href="#sidebarBulanan" data-bs-toggle="collapse">
