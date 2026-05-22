@@ -51,7 +51,7 @@ class AttributeValidation
             'standard_contract' => 'required',
             'type_attribute' => [
                 'required',
-                'in:Attribute,Sarana',
+                'in:Attribute,Sarana,Administrasi',
             ],
         ];
     }
@@ -70,7 +70,7 @@ class AttributeValidation
             'standard_contract' => 'required',
             'type_attribute' => [
                 'required',
-                'in:Attribute,Sarana',
+                'in:Attribute,Sarana,Administrasi',
             ],
         ];
     }
@@ -85,7 +85,7 @@ class AttributeValidation
             'unit.in' => 'Satuan harus berupa Unit, Lembar, Jumlah, Orang, Titik, atau Meter!',
             'standard_contract.required' => 'Jumlah Standar Kontrak harus diisi!',
             'type_attribute.required' => 'Type atribut harus diisi!',
-            'type_attribute.in' => 'Tipe atribut harus berupa Attribute atau Sarana!',
+            'type_attribute.in' => 'Tipe atribut harus berupa Attribute, Sarana, atau Administrasi!',
         ];
     }
 }
