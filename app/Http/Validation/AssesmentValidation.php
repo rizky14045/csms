@@ -24,7 +24,7 @@ class AssesmentValidation
     {
         return [
             'level_'.$questionId => 'required',
-                'attachment_file_'.$questionId => 'mimes:pdf|max:2048',
+            'attachment_file_'.$questionId.'.*' => 'mimes:pdf|max:25600',
         ];
     }
 
@@ -56,8 +56,8 @@ class AssesmentValidation
 
         if ($questionId) {
             $messages['level_'.$questionId.'.required'] = 'Level wajib diisi!';
-            $messages['attachment_file_'.$questionId.'.mimes'] = 'File harus berupa PDF!';
-            $messages['attachment_file_'.$questionId.'.max'] = 'Ukuran file maksimal 2MB!';
+            $messages['attachment_file_'.$questionId.'.*.mimes'] = 'File harus berupa PDF!';
+            $messages['attachment_file_'.$questionId.'.*.max'] = 'Ukuran file maksimal 25MB!';
             $messages['evaluation_unit_'.$questionId.'.required'] = 'Level evaluasi unit wajib diisi!';
             $messages['note_revision_'.$questionId.'.required'] = 'Catatan revisi wajib diisi!';
         }

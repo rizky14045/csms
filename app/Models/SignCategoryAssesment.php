@@ -21,6 +21,6 @@ class SignCategoryAssesment extends Model
 
     public function questions()
     {
-        return $this->hasMany(SignQuestionAssesment::class, 'sign_category_id', 'id');
+        return $this->hasMany(SignQuestionAssesment::class, 'sign_category_id', 'id')->orderBy('id');
     }
 }
