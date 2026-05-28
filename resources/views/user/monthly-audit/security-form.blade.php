@@ -98,72 +98,84 @@
                     <div class="tab-pane active" id="navtabs2-security" role="tabpanel">
                         <div class="cooperation mb-3">
                             <div class="d-flex justify-content-between mb-3">
-                                <span class="title">Data Personil Satuan Pengamanan</span>
+                                <span class="title fw-bold">Data Personil Satuan Pengamanan</span>
+                                @can('create.security.unit')
+                                <a href="{{ route('user.security.create') }}?monthly_id={{ $monthlyId }}" class="btn btn-success btn-sm">Tambah</a>
+                                @endcan
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-bordered text-center align-middle">
+                                <table class="table table-bordered text-center align-middle"
+                                    style="table-layout: fixed; width: 100%; min-width: 1600px;">
+                                    <colgroup>
+                                        <col style="width: 45px;">
+                                        <col style="width: 140px;">
+                                        <col style="width: 110px;">
+                                        <col style="width: 100px;">
+                                        <col style="width: 120px;">
+                                        <col style="width: 100px;">
+                                        <col style="width: 90px;">
+                                        <col style="width: 150px;">
+                                        <col style="width: 60px;">
+                                        <col style="width: 70px;">
+                                        <col style="width: 70px;">
+                                        <col style="width: 70px;">
+                                        <col style="width: 130px;">
+                                        <col style="width: 100px;">
+                                        <col style="width: 130px;">
+                                    </colgroup>
                                     <thead class="table-light">
                                         <tr>
-                                            <th scope="col" rowspan="2" class="align-middle">No</th>
-                                            <th scope="col" rowspan="2" class="align-middle">Nama Anggota</th>
-                                            <th scope="col" rowspan="2" class="align-middle">Unit Kerja</th>
-                                            <th scope="col" rowspan="2" class="align-middle">NID</th>
-                                            <th scope="col" rowspan="2" class="align-middle">No Registrasi KTA</th>
-                                            <th scope="col" rowspan="2" class="align-middle">KTA Berlaku</th>
-                                            <th scope="col" rowspan="2" class="align-middle">Jabatan</th>
-                                            <th scope="col" rowspan="2" class="align-middle">Tempat, Tanggal Lahir</th>
-                                            <th scope="col" rowspan="2" class="align-middle">Umur</th>
-                                            <th scope="col" colspan="3">Kualifikasi</th>
-                                            <th scope="col" rowspan="2" class="align-middle">Pendidikan Umum Terakhir</th>
-                                            <th scope="col" rowspan="2" class="align-middle">Keterangan</th>
-                                            <th scope="col" rowspan="2" class="align-middle">File Upload</th>
-                                            <th scope="col" rowspan="2" class="align-middle">Action</th>
+                                            <th rowspan="2" class="align-middle">No</th>
+                                            <th rowspan="2" class="align-middle">Nama Anggota</th>
+                                            <th rowspan="2" class="align-middle">Unit Kerja</th>
+                                            <th rowspan="2" class="align-middle">NID</th>
+                                            <th rowspan="2" class="align-middle">No Registrasi KTA</th>
+                                            <th rowspan="2" class="align-middle">KTA Berlaku</th>
+                                            <th rowspan="2" class="align-middle">Jabatan</th>
+                                            <th rowspan="2" class="align-middle">Tempat, Tanggal Lahir</th>
+                                            <th rowspan="2" class="align-middle">Umur</th>
+                                            <th colspan="3" class="align-middle">Kualifikasi</th>
+                                            <th rowspan="2" class="align-middle">Pendidikan Terakhir</th>
+                                            <th rowspan="2" class="align-middle">Keterangan</th>
+                                            <th rowspan="2" class="align-middle">File KTA</th>
                                         </tr>
                                         <tr>
-                                            <th scope="col">Pratama</th>
-                                            <th scope="col">Madya</th>
-                                            <th scope="col">Utama</th>
+                                            <th>Pratama</th>
+                                            <th>Madya</th>
+                                            <th>Utama</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($forms as $form)
+                                        @php
+                                            $birthDate  = $form->security->birth_date ?? null;
+                                            $birthFormatted = $birthDate ? \Carbon\Carbon::parse($birthDate)->format('d-m-Y') : '-';
+                                            $age        = $birthDate ? \Carbon\Carbon::parse($birthDate)->diffInYears($form->created_at) : '-';
+                                        @endphp
                                             <tr>
-                                                <td>{{$loop->iteration}}</td>
-                                                <td>{{$form->security->name ?? ''}}</td>
-                                                <td>{{$form->security->unit_work ?? ''}}</td>
-                                                <td>{{$form->security->nid ?? ''}}</td>
-                                                <td>{{$form->security->registration_number ?? ''}}</td>
-                                                <td>{{$form->security->expired_card_date ?? ''}}</td>
-                                                <td>{{$form->security->position ?? ''}}</td>
-                                                <td>{{$form->security->birth_place ?? ''}} ,{{$form->security->birth_date}}</td>
-                                                <td>{{$form->security->birth_place ?? ''}} ,{{$form->security->birth_date}}</td>
-                                                <td>{{$form->security->qualification == 'Pratama' ? 'v' :''}}</td>
-                                                <td>{{$form->security->qualification == 'Madya' ? 'v' :''}}</td>
-                                                <td>{{$form->security->qualification == 'Utama' ? 'v' :''}}</td>
-                                                <td>{{$form->security->last_education ?? ''}}</td>
-                                                <td>{{$form->security->note ?? ''}}</td>
-                                                <form action="{{route('user.monthly-audit.security-form.upload',['monthlyId' => $monthlyId,'formId' => $form->id])}}" method="POST" enctype="multipart/form-data">
-                                                    @csrf
-                                                    <td>
-                                                        <input type="file" class="form-control" name="attachment_file_{{$form->id}}" required accept=".pdf">
-                                                        <small>Ekstensi file .pdf</small>
-                                                        @if($errors->has('attachment_file_'.$form->id))
-                                                            <div class="error text-danger">{{ $errors->first('attachment_file_'.$form->id) }}</div>
-                                                        @endif
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td class="text-start">{{ $form->security->name ?? '' }}</td>
+                                                <td>{{ $form->security->unit_work ?? '' }}</td>
+                                                <td>{{ $form->security->nid ?? '' }}</td>
+                                                <td>{{ $form->security->registration_number ?? '' }}</td>
+                                                <td>{{ $form->security->expired_card_date ? \Carbon\Carbon::parse($form->security->expired_card_date)->format('d-m-Y') : '' }}</td>
+                                                <td>{{ $form->security->position ?? '' }}</td>
+                                                <td>{{ $form->security->birth_place ?? '' }}, {{ $birthFormatted }}</td>
+                                                <td>{{ $age }}</td>
+                                                <td>{{ $form->security->qualification == 'Pratama' ? '✓' : '' }}</td>
+                                                <td>{{ $form->security->qualification == 'Madya' ? '✓' : '' }}</td>
+                                                <td>{{ $form->security->qualification == 'Utama' ? '✓' : '' }}</td>
+                                                <td>{{ $form->security->last_education ?? '' }}</td>
+                                                <td>{{ $form->security->note ?? '' }}</td>
+                                                <td>
+                                                    @if($form->security->kta_file ?? null)
+                                                        <a href="{{ asset('uploads/kta_files/' . $form->security->kta_file) }}" target="_blank" class="btn btn-info btn-sm">Lihat KTA</a>
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
                                                 </td>
-                                                    <td>
-                                                        <div class="d-flex gap-2">
-                                                            @if ($form->attachment_file)
-                                                                <a href="{{asset('uploads/attachment_file_security_form/'.$form->attachment_file)}}" download="" class="btn btn-info btn-sm">Download</a>
-                                                            @endif
-                                                            <button class="btn btn-success btn-sm">Upload</button>
-
-                                                        </div>
-                                                    </td>
-                                                </form>
                                             </tr>
                                         @endforeach
-
                                     </tbody>
                                 </table>
                             </div>

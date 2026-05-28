@@ -37,7 +37,7 @@ class VendorController extends Controller
     }
 
     public function create(){
-        $result = $this->userService->getAllUser(0, false, 'bujp');
+        $result = $this->userService->getAllUser(0, false, 'bujp', auth()->user()->unit_id);
         $data['vendors'] = getData($result);
         return view('user.vendor.create', $data);
     }

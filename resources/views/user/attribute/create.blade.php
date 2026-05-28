@@ -1,17 +1,10 @@
 @extends('layout.app')
 
-@section('styles')
-<style>
-    .accordion-button::after {
-        filter: invert(100%);
-    }
-</style>
-@stop
-
 @section('content')
 
+@php $monthlyId = request('monthly_id'); @endphp
 <div class="py-3 d-flex align-items-center gap-2">
-    <a href="{{ route('user.attribute.index') }}" class="text-muted text-decoration-none">
+    <a href="{{ $monthlyId ? route('user.monthly-audit.form-attribute.index', ['monthlyId' => $monthlyId]) : route('user.attribute.index') }}" class="text-muted text-decoration-none">
         <i data-feather="arrow-left" style="width:18px;height:18px;"></i>
     </a>
     <h4 class="mb-0">Tambah Atribut</h4>
@@ -30,6 +23,9 @@
                 <form action="{{ route('user.attribute.store') }}" method="POST" id="form-attribute-unit"
                     onsubmit="confirmSave('form-attribute-unit', 'Data atribut akan disimpan')">
                     @csrf
+                    @if($monthlyId)
+                    <input type="hidden" name="monthly_id" value="{{ $monthlyId }}">
+                    @endif
 
                     <div class="form-group mb-3">
                         <label for="name" class="form-label">Nama</label>
@@ -94,7 +90,7 @@
                     </div>
 
                     <div class="d-flex gap-2 justify-content-end mt-2">
-                        <a href="{{ route('user.attribute.index') }}" class="btn btn-danger">
+                        <a href="{{ $monthlyId ? route('user.monthly-audit.form-attribute.index', ['monthlyId' => $monthlyId]) : route('user.attribute.index') }}" class="btn btn-danger">
                             <i data-feather="arrow-left" style="width:14px;height:14px;" class="me-1"></i>Batal
                         </a>
                         <button type="submit" class="btn btn-success">

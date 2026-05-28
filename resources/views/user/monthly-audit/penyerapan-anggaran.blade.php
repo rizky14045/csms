@@ -135,7 +135,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($administrasi as $item)
+                                            @foreach ($pemeliharaan as $item)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $item->kode_aktifitas }}</td>
@@ -183,7 +183,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($pemeliharaan as $item)
+                                            @foreach ($administrasi as $item)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $item->kode_aktifitas }}</td>

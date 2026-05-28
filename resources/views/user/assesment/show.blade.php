@@ -131,14 +131,25 @@
 
                     {{-- FILE --}}
                     <td id="upload-file-{{$question->id}}">
-                      @if ($question->attachment_file)
-                        <a href="{{ asset('uploads/attachment_file_question_file/'.$question->attachment_file) }}"
-                           class="btn btn-success btn-sm"
-                           target="_blank">
-                           ⬇ Download
-                        </a>
+                      @php
+                          $files = [];
+                          if ($question->attachment_file) {
+                              $decoded = json_decode($question->attachment_file, true);
+                              $files = is_array($decoded) ? $decoded : [$question->attachment_file];
+                          }
+                      @endphp
+                      @if(count($files) > 0)
+                          <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
+                              @foreach($files as $i => $file)
+                              <a href="{{ asset('uploads/attachment_file_question_file/' . $file) }}"
+                                 class="btn btn-success btn-sm"
+                                 target="_blank">
+                                 ⬇ File {{ $i + 1 }}
+                              </a>
+                              @endforeach
+                          </div>
                       @else
-                        -
+                          -
                       @endif
                     </td>
 
@@ -291,13 +302,19 @@ async function submitAjax(form, btn) {
 
             let fileCell = document.getElementById("upload-file-" + data.id);
 
-            fileCell.innerHTML = `
-                <a href="/uploads/attachment_file_question_file/${data.attachment_file}"
-                   class="btn btn-success btn-sm"
-                   target="_blank">
-                   ⬇ Download
-                </a>
-            `;
+            let files = [];
+            try {
+                let parsed = JSON.parse(data.attachment_file);
+                files = Array.isArray(parsed) ? parsed : [data.attachment_file];
+            } catch(e) {
+                files = [data.attachment_file];
+            }
+
+            let links = files.map((f, i) =>
+                `<a href="/uploads/attachment_file_question_file/${f}" class="btn btn-success btn-sm" target="_blank">⬇ File ${i + 1}</a>`
+            ).join('');
+
+            fileCell.innerHTML = `<div style="display:flex; flex-direction:column; gap:4px; align-items:center;">${links}</div>`;
         }
 
         btn.innerHTML = "✔ Updated";

@@ -127,13 +127,24 @@
                                                 </td>
 
                                                 <td>
-                                                    @if ($question->attachment_file)
-                                                        <a href="{{ asset('uploads/attachment_file_question_file/'.$question->attachment_file) }}"
-                                                           class="btn btn-success btn-sm"
-                                                           target="_blank"
-                                                           style="display:inline-flex; align-items:center; gap:4px;">
-                                                            ⬇ Download
-                                                        </a>
+                                                    @php
+                                                        $files = [];
+                                                        if ($question->attachment_file) {
+                                                            $decoded = json_decode($question->attachment_file, true);
+                                                            $files = is_array($decoded) ? $decoded : [$question->attachment_file];
+                                                        }
+                                                    @endphp
+                                                    @if(count($files) > 0)
+                                                        <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
+                                                            @foreach($files as $i => $file)
+                                                            <a href="{{ asset('uploads/attachment_file_question_file/' . $file) }}"
+                                                               class="btn btn-success btn-sm"
+                                                               target="_blank"
+                                                               style="display:inline-flex; align-items:center; gap:4px;">
+                                                                ⬇ File {{ $i + 1 }}
+                                                            </a>
+                                                            @endforeach
+                                                        </div>
                                                     @else
                                                         <span style="color:#999; font-size:12px;">
                                                             Tidak ada file

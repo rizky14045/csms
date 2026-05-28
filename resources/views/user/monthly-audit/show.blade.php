@@ -467,7 +467,25 @@
                                     <span class="title">Data Personil Satuan Pengamanan</span>
                                 </div>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered text-center align-middle">
+                                    <table class="table table-bordered text-center align-middle"
+                                        style="table-layout: fixed; width: 100%; min-width: 1600px;">
+                                        <colgroup>
+                                            <col style="width: 45px;">
+                                            <col style="width: 140px;">
+                                            <col style="width: 110px;">
+                                            <col style="width: 100px;">
+                                            <col style="width: 120px;">
+                                            <col style="width: 100px;">
+                                            <col style="width: 90px;">
+                                            <col style="width: 150px;">
+                                            <col style="width: 60px;">
+                                            <col style="width: 70px;">
+                                            <col style="width: 70px;">
+                                            <col style="width: 70px;">
+                                            <col style="width: 130px;">
+                                            <col style="width: 100px;">
+                                            <col style="width: 130px;">
+                                        </colgroup>
                                         <thead class="table-light">
                                             <tr>
                                                 <th scope="col" rowspan="2">No</th>
@@ -482,7 +500,7 @@
                                                 <th scope="col" colspan="3">Kualifikasi</th>
                                                 <th scope="col" rowspan="2">Pendidikan Umum Terakhir</th>
                                                 <th scope="col" rowspan="2">Keterangan</th>
-                                                <th scope="col" rowspan="2">Action</th>
+                                                <th scope="col" rowspan="2">File KTA</th>
                                             </tr>
                                             <tr>
                                                 <th scope="col">Pratama</th>
@@ -492,27 +510,31 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($securityForms as $form)
+                                            @php
+                                                $birthDate = $form->security->birth_date ?? null;
+                                                $birthFormatted = $birthDate ? \Carbon\Carbon::parse($birthDate)->format('d-m-Y') : '-';
+                                                $age = $birthDate ? \Carbon\Carbon::parse($birthDate)->diffInYears($form->created_at) : '-';
+                                            @endphp
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $form->security->name ?? '' }}</td>
+                                                    <td class="text-start">{{ $form->security->name ?? '' }}</td>
                                                     <td>{{ $form->security->unit_work ?? '' }}</td>
                                                     <td>{{ $form->security->nid ?? '' }}</td>
                                                     <td>{{ $form->security->registration_number ?? '' }}</td>
-                                                    <td>{{ $form->security->expired_card_date ?? '' }}</td>
+                                                    <td>{{ $form->security->expired_card_date ? \Carbon\Carbon::parse($form->security->expired_card_date)->format('d-m-Y') : '' }}</td>
                                                     <td>{{ $form->security->position ?? '' }}</td>
-                                                    <td>{{ $form->security->birth_place ?? '' }}
-                                                        ,{{ $form->security->birth_date }}</td>
-                                                    <td>{{ $form->security->birth_place ?? '' }}
-                                                        ,{{ $form->security->birth_date }}</td>
-                                                    <td>{{ $form->security->qualification == 'Pratama' ? 'v' : '' }}</td>
-                                                    <td>{{ $form->security->qualification == 'Madya' ? 'v' : '' }}</td>
-                                                    <td>{{ $form->security->qualification == 'Utama' ? 'v' : '' }}</td>
+                                                    <td>{{ $form->security->birth_place ?? '' }}, {{ $birthFormatted }}</td>
+                                                    <td>{{ $age }}</td>
+                                                    <td>{{ $form->security->qualification == 'Pratama' ? '✓' : '' }}</td>
+                                                    <td>{{ $form->security->qualification == 'Madya' ? '✓' : '' }}</td>
+                                                    <td>{{ $form->security->qualification == 'Utama' ? '✓' : '' }}</td>
                                                     <td>{{ $form->security->last_education ?? '' }}</td>
                                                     <td>{{ $form->security->note ?? '' }}</td>
                                                     <td>
-                                                        @if ($form->attachment_file)
-                                                            <a href="{{ asset('uploads/attachment_file_security_form/' . $form->attachment_file) }}"
-                                                                download="" class="btn btn-info btn-sm">Download</a>
+                                                        @if($form->security->kta_file ?? null)
+                                                            <a href="{{ asset('uploads/kta_files/' . $form->security->kta_file) }}" target="_blank" class="btn btn-info btn-sm">Lihat KTA</a>
+                                                        @else
+                                                            <span class="text-muted">-</span>
                                                         @endif
                                                     </td>
                                                 </tr>
