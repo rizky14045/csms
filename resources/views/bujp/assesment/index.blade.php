@@ -170,11 +170,11 @@
                     {{-- STATUS >= 2 --}}
                     @elseif($assesment->send_status >= 1)
 
-                    <a href="{{route('bujp.assesment.preview',['assesment'=>$assesment->id])}}" class="btn btn-info btn-sm" style="min-width:70px;">
+                    <a href="{{route('bujp.assesment.preview',['assesment'=>$assesment->id, 'unit' => request()->input('unit')])}}" class="btn btn-info btn-sm" style="min-width:70px;">
                       👁 Show
                     </a>
 
-                    <a href="{{route('bujp.assesment.report',['assesment'=>$assesment->id])}}" class="btn btn-success btn-sm" style="min-width:80px;">
+                    <a href="{{route('bujp.assesment.report',['assesment'=>$assesment->id, 'unit' => request()->input('unit')])}}" class="btn btn-success btn-sm" style="min-width:80px;">
                       📄 Report
                     </a>
 

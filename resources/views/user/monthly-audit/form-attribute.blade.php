@@ -96,6 +96,11 @@
 
                 <div class="tab-content p-3 text-muted">
                     <div class="tab-pane active" id="navtabs2-atribut" role="tabpanel">
+                        <div class="d-flex justify-content-end mb-3">
+                            @can('create.attribute.unit')
+                            <a href="{{ route('user.attribute.create') }}?monthly_id={{ $monthlyId }}" class="btn btn-success btn-sm">Tambah</a>
+                            @endcan
+                        </div>
                         <div class="atribut mb-3">
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="title fw-bold">Atribut & Peralatan</span>

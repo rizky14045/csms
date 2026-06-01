@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Security;
+use App\Models\SecurityForm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -47,18 +48,20 @@ class SecurityController extends Controller
     public function store(Request $request){
 
         try {
+            $monthlyId = $request->monthly_id;
+
+            $rules = $monthlyId
+                ? SecurityValidation::rulesForUpdate()
+                : SecurityValidation::rulesForCreate();
+
             $validator = $this->validator(
                 array_merge($request->all(), ['kta_file' => $request->file('kta_file')]),
-                SecurityValidation::rulesForCreate(),
+                $rules,
                 SecurityValidation::messages()
             );
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
-
-            $user = auth()->user();
-            $data = $request->all();
-            $data['user_id'] = $user->id;
 
             $ktaFile = null;
             if ($request->hasFile('kta_file')) {
@@ -71,6 +74,42 @@ class SecurityController extends Controller
                 $file->move($uploadPath, $file_name);
                 $ktaFile = $file_name;
             }
+
+            if ($monthlyId) {
+                DB::beginTransaction();
+
+                $security = Security::create([
+                    'user_id'             => $request->boolean('save_to_master') ? auth()->id() : null,
+                    'name'                => $request->name ?? '',
+                    'gender'              => $request->gender ?? '',
+                    'unit_work'           => $request->unit_work ?? '',
+                    'nid'                 => $request->nid ?? '',
+                    'registration_number' => $request->registration_number ?? '',
+                    'expired_card_date'   => $request->expired_card_date ?? '',
+                    'position'            => $request->position ?? '',
+                    'birth_place'         => $request->birth_place ?? '',
+                    'birth_date'          => $request->birth_date ?? '',
+                    'qualification'       => $request->qualification ?? '',
+                    'last_education'      => $request->last_education ?? '',
+                    'note'                => $request->note ?? '',
+                    'kta_file'            => $ktaFile,
+                    'created_by'          => auth()->id(),
+                ]);
+
+                SecurityForm::create([
+                    'monthly_report_id' => $monthlyId,
+                    'user_id'           => auth()->id(),
+                    'security_id'       => $security->id,
+                ]);
+
+                DB::commit();
+
+                Alert::success('Tambah Berhasil', 'Data satuan pengamanan berhasil ditambahkan ke laporan bulanan!');
+                return redirect()->route('user.monthly-audit.security-form.index', ['monthlyId' => $monthlyId]);
+            }
+
+            $data = $request->all();
+            $data['user_id'] = auth()->id();
             $data['kta_file'] = $ktaFile;
 
             $this->securityService->createSecurity($data);
@@ -79,8 +118,9 @@ class SecurityController extends Controller
             return redirect()->route('user.security.index');
 
         } catch (\Throwable $th) {
+            DB::rollBack();
             Alert::error('Tambah Gagal', 'Satuan Pengamanan gagal dibuat!');
-            return redirect()->route('user.security.index');
+            return redirect()->back();
         }
     }
 

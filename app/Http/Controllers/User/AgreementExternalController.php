@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Models\AgreementExternal;
+use App\Models\MonthlyAgreementExternal;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Validation\AgreementExternalValidation;
@@ -36,11 +37,44 @@ class AgreementExternalController extends Controller
 
     }
     public function store(Request $request){
-        // Validation rules
         $validator = $this->validator($request->all(), AgreementExternalValidation::rulesForCreate(), AgreementExternalValidation::messages());
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
+        $monthlyId = $request->monthly_id;
+
+        if ($monthlyId) {
+            DB::beginTransaction();
+            try {
+                $agreement = AgreementExternal::create([
+                    'user_id'       => $request->boolean('save_to_master') ? auth()->id() : null,
+                    'instansi'      => $request->instansi ?? '',
+                    'name'          => $request->name ?? '',
+                    'regional_unit' => $request->regional_unit ?? '',
+                    'pkt_number'    => $request->pkt_number ?? '',
+                    'pkt_title'     => $request->pkt_title ?? '',
+                    'expired_date'  => $request->expired_date ?? '',
+                    'note'          => $request->note ?? '',
+                    'created_by'    => auth()->id(),
+                ]);
+
+                MonthlyAgreementExternal::create([
+                    'monthly_report_id'      => $monthlyId,
+                    'user_id'                => auth()->id(),
+                    'agreement_external_id'  => $agreement->id,
+                ]);
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Gagal menyimpan data.')->withInput();
+            }
+
+            Alert::success('Tambah Berhasil', 'Data kerjasama berhasil ditambahkan ke laporan bulanan!');
+            return redirect()->route('user.monthly-audit.worker-sum.index', ['monthlyId' => $monthlyId]);
+        }
+
         $this->agreementExternalService->createAgreementExternal($request->all());
 
         Alert::success('Tambah Berhasil', 'Data kerja sama external berhasil dibuat!');

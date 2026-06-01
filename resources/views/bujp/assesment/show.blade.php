@@ -129,27 +129,34 @@
                         </td>
 
                           <td>
+                            @php
+                                $files = [];
+                                if ($question->attachment_file) {
+                                    $decoded = json_decode($question->attachment_file, true);
+                                    $files = is_array($decoded) ? $decoded : [$question->attachment_file];
+                                }
+                            @endphp
                             <div style="display:flex; flex-direction:column; gap:6px;" id="upload-file">
 
-                                @if ($question->attachment_file)
-                                <a href="{{ asset('uploads/attachment_file_question_file/'.$question->attachment_file) }}"
+                                @foreach($files as $file)
+                                <a href="{{ asset('uploads/attachment_file_question_file/' . $file) }}"
                                 class="btn btn-success btn-sm" target="_blank">
                                     ⬇ Download File
                                 </a>
+                                @endforeach
 
+                                @if(count($files) > 0)
                                 <label style="font-size:12px;">Ganti File:</label>
+                                @endif
 
                                 <input type="file"
-                                    name="attachment_file_{{$question->id}}"
-                                    class="form-control"
-                                    accept=".pdf">
-                                @else
-                                <input type="file"
-                                    name="attachment_file_{{$question->id}}"
+                                    name="attachment_file_{{$question->id}}[]"
                                     class="form-control"
                                     accept=".pdf"
-                                    required>
-                                @endif
+                                    multiple
+                                    {{ count($files) === 0 ? 'required' : '' }}>
+
+                                <div class="form-text text-muted" style="font-size:11px;">Format: PDF, maks 25MB per file</div>
 
                                 <!-- ERROR -->
                                 <div id="error-attachment_file_{{$question->id}}"></div>
@@ -230,7 +237,10 @@ function showErrors(form, errors) {
 
         let message = errors[name][0];
 
-        let errorDiv = document.getElementById("error-" + name);
+        // Strip trailing array index (e.g. "attachment_file_5.0" → "attachment_file_5")
+        let divName = name.replace(/\.\d+$/, '');
+
+        let errorDiv = document.getElementById("error-" + divName);
 
         if (errorDiv) {
             errorDiv.innerHTML = `
@@ -244,7 +254,8 @@ function showErrors(form, errors) {
             `;
         }
 
-        let input = form.querySelector(`[name="${name}"]`);
+        let input = form.querySelector(`[name="${name}"]`)
+                 || form.querySelector(`[name="${divName}[]"]`);
         if (input) {
             input.style.border = '1px solid red';
         }
@@ -305,21 +316,30 @@ async function submitAjax(form, button) {
 
             let fileCell = form.closest("tr").querySelector("#upload-file");
 
-            let fileUrl = "/uploads/attachment_file_question_file/" + data.attachment_file;
+            let files = [];
+            try {
+                let parsed = JSON.parse(data.attachment_file);
+                files = Array.isArray(parsed) ? parsed : [data.attachment_file];
+            } catch(e) {
+                files = [data.attachment_file];
+            }
+
+            let downloadLinks = files.map(f =>
+                `<a href="/uploads/attachment_file_question_file/${f}" class="btn btn-success btn-sm" target="_blank">⬇ Download File</a>`
+            ).join('');
 
             fileCell.innerHTML = `
-                <a href="${fileUrl}"
-                class="btn btn-success btn-sm"
-                target="_blank">
-                ⬇ Download File
-                </a>
+                ${downloadLinks}
 
                 <label style="font-size:12px;">Ganti File:</label>
 
                 <input type="file"
-                    name="attachment_file_${data.id}"
+                    name="attachment_file_${data.id}[]"
                     class="form-control"
-                    accept=".pdf">
+                    accept=".pdf"
+                    multiple>
+
+                <div class="form-text text-muted" style="font-size:11px;">Format: PDF, maks 25MB per file</div>
 
                 <div id="error-attachment_file_${data.id}"></div>
             `;

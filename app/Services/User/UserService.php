@@ -28,7 +28,8 @@ class UserService
         $limit = 10,
         $paginate = true,
         $user_type = null,
-        $only_my_vendor = false
+        $only_my_vendor = false,
+        $unit_id = null
     )
     {
         try {
@@ -67,6 +68,10 @@ class UserService
                     ->pluck('user_id');
 
                 $query->whereIn('id', $vendorUserIds);
+            }
+
+            if ($unit_id) {
+                $query->where('unit_id', $unit_id);
             }
 
             // 🔍 Search

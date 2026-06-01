@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Attribute;
+use App\Models\FormAttribute;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Validation\AttributeValidation;
 use App\Services\Attribute\AttributeService;
@@ -45,13 +47,39 @@ class AttributeController extends Controller
     public function store(Request $request){
 
         try {
-            // Validation rules
             $validator = $this->validator($request->all(), AttributeValidation::rulesForCreateAttributeUnit(), AttributeValidation::messages());
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
 
             $user = auth()->user();
+            $monthlyId = $request->monthly_id;
+
+            if ($monthlyId) {
+                DB::beginTransaction();
+
+                $attribute = Attribute::create([
+                    'user_id'          => $user->id,
+                    'unit_id'          => $user->unit_id,
+                    'name'             => $request->name,
+                    'status_ownership' => $request->status_ownership,
+                    'unit'             => $request->unit,
+                    'standard_contract'=> $request->standard_contract,
+                    'type_attribute'   => $request->type_attribute,
+                    'created_by'       => $user->id,
+                ]);
+
+                FormAttribute::create([
+                    'monthly_report_id' => $monthlyId,
+                    'attribute_id'      => $attribute->id,
+                ]);
+
+                DB::commit();
+
+                Alert::success('Tambah Berhasil', 'Atribut berhasil ditambahkan ke laporan bulanan!');
+                return redirect()->route('user.monthly-audit.form-attribute.index', ['monthlyId' => $monthlyId]);
+            }
+
             $request->merge([
                 'user_id' => $user->id,
                 'unit_id' => $user->unit_id,
@@ -60,10 +88,11 @@ class AttributeController extends Controller
 
             Alert::success('Tambah Berhasil', 'Atribut berhasil dibuat!');
             return redirect()->route('user.attribute.index');
-            
+
         } catch (\Throwable $th) {
+            DB::rollBack();
             Alert::error('Tambah Gagal', 'Atribut gagal dibuat!');
-            return redirect()->route('user.attribute.index');
+            return redirect()->back();
         }
     }
 
