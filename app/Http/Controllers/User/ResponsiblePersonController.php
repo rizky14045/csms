@@ -4,9 +4,11 @@ namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Models\ResponsiblePerson;
+use App\Models\MonthlyResponsiblePerson;
 use App\Http\Controllers\Controller;
 use App\Http\Validation\ResponsiblePersonValidation;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Services\ResponsiblePerson\ResponsiblePersonService;
 
@@ -34,10 +36,46 @@ class ResponsiblePersonController extends Controller
 
     }
     public function store(Request $request){
-        // Validation rules
         $validator = $this->validator($request->all(), ResponsiblePersonValidation::rulesForCreate(), ResponsiblePersonValidation::messages());
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $monthlyId = $request->monthly_id;
+
+        if ($monthlyId) {
+            DB::beginTransaction();
+            try {
+                $person = ResponsiblePerson::create([
+                    'user_id'                => $request->boolean('save_to_master') ? auth()->id() : null,
+                    'name'                   => $request->name ?? '',
+                    'position'               => $request->position ?? '',
+                    'work_unit'              => $request->work_unit ?? '',
+                    'training_smp'           => $request->training_smp ?? '',
+                    'auditor_smp'            => $request->auditor_smp ?? '',
+                    'main'                   => $request->main ?? '',
+                    'investigation'          => $request->investigation ?? '',
+                    'mansrisk'               => $request->mansrisk ?? '',
+                    'stackholder_management' => $request->stackholder_management ?? '',
+                    'last_education'         => $request->last_education ?? '',
+                    'note'                   => $request->note ?? '',
+                    'created_by'             => auth()->id(),
+                ]);
+
+                MonthlyResponsiblePerson::create([
+                    'monthly_report_id'       => $monthlyId,
+                    'user_id'                 => auth()->id(),
+                    'responsible_person_id'   => $person->id,
+                ]);
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Gagal menyimpan data.')->withInput();
+            }
+
+            Alert::success('Tambah Berhasil', 'Data penanggung jawab keamanan berhasil ditambahkan ke laporan bulanan!');
+            return redirect()->route('user.monthly-audit.worker-sum.index', ['monthlyId' => $monthlyId]);
         }
 
         $this->responsiblePersonService->createResponsiblePerson($request->all());

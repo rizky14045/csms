@@ -503,19 +503,33 @@ class AssesmentService
 
             $questionFile = $signQuestion->attachment_file;
 
-            if ($request->hasFile('attachment_file_' . $signQuestion->id)) {
-                $file = $request->file('attachment_file_' . $signQuestion->id);
-                $file_name = 'question-file-' . time() . '.' . $file->getClientOriginalExtension();
-
+            $fileKey = 'attachment_file_' . $signQuestion->id;
+            if ($request->hasFile($fileKey)) {
+                // Delete old files
                 if ($signQuestion->attachment_file) {
-                    $oldPath = public_path('uploads/attachment_file_question_file/' . $signQuestion->attachment_file);
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
+                    $oldDecoded = json_decode($signQuestion->attachment_file, true);
+                    $oldFiles = is_array($oldDecoded) ? $oldDecoded : [$signQuestion->attachment_file];
+                    foreach ($oldFiles as $oldFile) {
+                        $oldPath = public_path('uploads/attachment_file_question_file/' . $oldFile);
+                        if (file_exists($oldPath)) {
+                            unlink($oldPath);
+                        }
                     }
                 }
 
-                $file->move(public_path('uploads/attachment_file_question_file/'), $file_name);
-                $questionFile = $file_name;
+                $uploadedFiles = $request->file($fileKey);
+                if (!is_array($uploadedFiles)) {
+                    $uploadedFiles = [$uploadedFiles];
+                }
+
+                $newFiles = [];
+                foreach ($uploadedFiles as $file) {
+                    $file_name = 'question-file-' . time() . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('uploads/attachment_file_question_file/'), $file_name);
+                    $newFiles[] = $file_name;
+                }
+
+                $questionFile = json_encode($newFiles);
             }
 
             $signQuestion->level = $request->input('level_' . $signQuestion->id);

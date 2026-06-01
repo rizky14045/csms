@@ -1,17 +1,10 @@
 @extends('layout.app')
 
-@section('styles')
-<style>
-    .accordion-button::after {
-        filter: invert(100%);
-    }
-</style>
-@stop
-
 @section('content')
 
+@php $monthlyId = request('monthly_id'); @endphp
 <div class="py-3 d-flex align-items-center gap-2">
-    <a href="{{ route('user.security.index') }}" class="text-muted text-decoration-none">
+    <a href="{{ $monthlyId ? route('user.monthly-audit.security-form.index', ['monthlyId' => $monthlyId]) : route('user.security.index') }}" class="text-muted text-decoration-none">
         <i data-feather="arrow-left" style="width:18px;height:18px;"></i>
     </a>
     <h4 class="mb-0">Tambah Satuan Pengamanan</h4>
@@ -31,6 +24,9 @@
                     enctype="multipart/form-data"
                     onsubmit="confirmSave('form-security', 'Data satuan pengaman akan disimpan')">
                     @csrf
+                    @if($monthlyId)
+                    <input type="hidden" name="monthly_id" value="{{ $monthlyId }}">
+                    @endif
 
                     <div class="form-group mb-3">
                         <label for="name" class="form-label"><span class="text-danger">*</span> Nama</label>
@@ -154,17 +150,31 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="kta_file" class="form-label"><span class="text-danger">*</span> File KTA</label>
+                        <label for="kta_file" class="form-label">
+                            @if(!$monthlyId)<span class="text-danger">*</span> @endif
+                            File KTA
+                            @if($monthlyId)<span class="text-muted small">(opsional)</span>@endif
+                        </label>
                         <input class="form-control @error('kta_file') is-invalid @enderror" id="kta_file" type="file"
-                            name="kta_file" accept=".pdf,.jpg,.jpeg,.png" required>
+                            name="kta_file" accept=".pdf,.jpg,.jpeg,.png" {{ $monthlyId ? '' : 'required' }}>
                         <div class="form-text text-muted">Format: PDF, JPG, JPEG, PNG. Maksimal 5 MB.</div>
                         @error('kta_file')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
+                    @if($monthlyId)
+                    <div class="form-group mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="save_to_master" id="save_to_master" value="1" {{ old('save_to_master') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="save_to_master">Tambahkan ke master data</label>
+                        </div>
+                        <div class="form-text text-muted">Jika dicentang, data juga akan disimpan ke daftar master data satuan pengamanan.</div>
+                    </div>
+                    @endif
+
                     <div class="d-flex gap-2 justify-content-end mt-2">
-                        <a href="{{ route('user.security.index') }}" class="btn btn-danger">
+                        <a href="{{ $monthlyId ? route('user.monthly-audit.security-form.index', ['monthlyId' => $monthlyId]) : route('user.security.index') }}" class="btn btn-danger">
                             <i data-feather="arrow-left" style="width:14px;height:14px;" class="me-1"></i>Batal
                         </a>
                         <button type="submit" class="btn btn-success">

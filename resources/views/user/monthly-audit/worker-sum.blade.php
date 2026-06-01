@@ -99,6 +99,9 @@
                         <div class="security mb-3">
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="title fw-bold">Data Penanggung Jawab Keamanan</span>
+                                @can('create.responsible.person.unit')
+                                <a href="{{ route('user.responsible-person.create') }}?monthly_id={{ $monthlyId }}" class="btn btn-success btn-sm">Tambah</a>
+                                @endcan
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered text-center align-middle">
@@ -148,6 +151,9 @@
                         <div class="security-personil mb-3">
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="fw-bold">Data Personil Keamanan Eksternal</span>
+                                @can('create.security.external.unit')
+                                <a href="{{ route('user.security-external.create') }}?monthly_id={{ $monthlyId }}" class="btn btn-success btn-sm">Tambah</a>
+                                @endcan
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered text-center align-middle">
@@ -179,6 +185,9 @@
                         <div class="cooperation mb-3">
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="title fw-bold">Data Perjanjian Kerjasama Eksternal</span>
+                                @can('create.agreement.external.unit')
+                                <a href="{{ route('user.agreement-external.create') }}?monthly_id={{ $monthlyId }}" class="btn btn-success btn-sm">Tambah</a>
+                                @endcan
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered text-center align-middle">

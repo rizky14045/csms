@@ -1,8 +1,9 @@
 @extends('layout.app')
 @section('content')
 
+@php $monthlyId = request('monthly_id'); @endphp
 <div class="py-3 d-flex align-items-center gap-2">
-    <a href="{{ route('user.worker-sum.index') }}" class="text-muted text-decoration-none">
+    <a href="{{ $monthlyId ? route('user.monthly-audit.worker-sum.index', ['monthlyId' => $monthlyId]) : route('user.worker-sum.index') }}" class="text-muted text-decoration-none">
         <i data-feather="arrow-left" style="width:18px;height:18px;"></i>
     </a>
     <h4 class="mb-0">Tambah Perjanjian Kerjasama Eksternal</h4>
@@ -21,6 +22,9 @@
                 <form action="{{ route('user.agreement-external.store') }}" method="POST" id="form-agreement"
                     onsubmit="confirmSave('form-agreement', 'Data perjanjian kerjasama eksternal akan disimpan')">
                     @csrf
+                    @if($monthlyId)
+                    <input type="hidden" name="monthly_id" value="{{ $monthlyId }}">
+                    @endif
 
                     <div class="form-group mb-3">
                         <label for="instansi" class="form-label"><span class="text-danger">*</span> Instansi</label>
@@ -85,8 +89,18 @@
                         @enderror
                     </div>
 
+                    @if($monthlyId)
+                    <div class="form-group mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="save_to_master" id="save_to_master" value="1" {{ old('save_to_master') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="save_to_master">Tambahkan ke master data</label>
+                        </div>
+                        <div class="form-text text-muted">Jika dicentang, data juga akan disimpan ke daftar master data perjanjian kerjasama.</div>
+                    </div>
+                    @endif
+
                     <div class="d-flex gap-3 justify-content-end">
-                        <a href="{{ route('user.worker-sum.index') }}" class="btn btn-danger">Kembali</a>
+                        <a href="{{ $monthlyId ? route('user.monthly-audit.worker-sum.index', ['monthlyId' => $monthlyId]) : route('user.worker-sum.index') }}" class="btn btn-danger">Kembali</a>
                         <button type="submit" class="btn btn-success">Simpan</button>
                     </div>
                 </form>
