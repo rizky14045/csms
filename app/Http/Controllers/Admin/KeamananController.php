@@ -29,10 +29,37 @@ class KeamananController extends Controller
             abort(404);
         }
 
-        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels', 'subAreas.levels.notes']);
-        
-        $data['areas'] = getData($result);
+        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']);
 
-        return view('admin.keamanan.show',$data);
+        $data['areas'] = getData($result);
+        $data['kpi']   = $kpi;
+
+        return view('admin.keamanan.show', $data);
+    }
+
+    public function export(Kpi $kpi){
+        if($kpi->send_status == false){
+            abort(404);
+        }
+
+        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']);
+        $areas  = getData($result);
+
+        $totalSubAreas = collect($areas)->sum(fn($a) => count($a['sub_areas']));
+        $bobot         = $totalSubAreas > 0 ? 1 / $totalSubAreas : 0;
+
+        $filename = 'kpi-keamanan-' . $kpi->year . '-s' . $kpi->semester . '.xls';
+
+        $html = view('exports.keamanan', [
+            'areas'         => $areas,
+            'kpi'           => $kpi,
+            'bobot'         => $bobot,
+            'totalSubAreas' => $totalSubAreas,
+        ])->render();
+
+        return response($html, 200, [
+            'Content-Type'        => 'application/vnd.ms-excel; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
     }
 }

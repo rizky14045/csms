@@ -14,6 +14,6 @@ class MarturitySubArea extends Model
 
     public function levels()
     {
-        return $this->hasMany(MarturityLevel::class, 'sub_area_id', 'id');
+        return $this->hasMany(MarturityLevel::class, 'sub_area_id', 'id')->orderBy('id', 'asc');
     }
 }

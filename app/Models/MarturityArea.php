@@ -14,6 +14,6 @@ class MarturityArea extends Model
 
     public function subAreas()
     {
-        return $this->hasMany(MarturitySubArea::class, 'area_id', 'id');
+        return $this->hasMany(MarturitySubArea::class, 'area_id', 'id')->orderBy('id', 'asc');
     }
 }

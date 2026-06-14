@@ -11,6 +11,7 @@ use App\Models\KpiNote;
 use App\Models\SubArea;
 use App\Models\KpiLevel;
 use App\Models\KpiSubArea;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -116,11 +117,12 @@ class KeamananController extends Controller
             return redirect()->route('user.keamanan.index');
         }
 
-        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels', 'subAreas.levels.notes']);
-        
-        $data['areas'] = getData($result);
+        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']);
 
-        return view('user.keamanan.show',$data);
+        $data['areas'] = getData($result);
+        $data['kpi']   = $kpi;
+
+        return view('user.keamanan.show', $data);
     }
 
     public function preview(Kpi $kpi){
@@ -179,6 +181,48 @@ class KeamananController extends Controller
 
         Alert::success('Delete Berhasil', 'KPI berhasil dihapus!');
         return redirect()->route('user.keamanan.index');
+    }
+
+    public function uploadLevel(Request $request, Kpi $kpi, KpiLevel $level)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'file' => 'required|file|mimes:pdf|max:25600',
+            ], [
+                'file.required' => 'File harus dipilih!',
+                'file.mimes'    => 'File harus berupa PDF!',
+                'file.max'      => 'Ukuran file maksimal 25MB!',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+            }
+
+            // Delete old file
+            if ($level->attachment_file) {
+                $oldPath = public_path('uploads/attachment_file_kpi_file/' . $level->attachment_file);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+
+            $file     = $request->file('file');
+            $filename = 'kpi-level-' . time() . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/attachment_file_kpi_file'), $filename);
+
+            $level->update([
+                'attachment_file' => $filename,
+                'updated_by'      => auth()->id(),
+            ]);
+
+            return response()->json([
+                'success'  => true,
+                'filename' => $filename,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function uploadNote(Request $request, Kpi $kpi, $areaId, KpiNote $note)
