@@ -18,10 +18,10 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-xl-12">
-        <div class="card">
-            <div class="card-body">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
 
                 <div class="d-flex gap-2 mb-3">
                     <a href="{{ route('admin.keamanan.index') }}" class="btn btn-danger">Kembali</a>
@@ -35,7 +35,7 @@
                     $grandTotalML    = 0;
                 @endphp
 
-                <div class="accordion" id="formAccordion">
+                    <div class="accordion" id="formAccordion">
 
                 @foreach ($areas as $area)
                 <div class="accordion-item">
@@ -127,7 +127,7 @@
                 </div>
                 @endforeach
 
-                </div>
+        </div>
 
                 {{-- GRAND TOTAL --}}
                 <div class="card mt-4 border-0 shadow-sm">
@@ -159,6 +159,7 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 
 @endsection
+
