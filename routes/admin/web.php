@@ -55,11 +55,13 @@ Route::prefix('admin')->group(function () {
         Route::prefix('marturity')->group(function () {
             Route::get('/', [MarturityController::class, 'index'])->name('admin.marturity.index');
             Route::get('/{marturity}/show', [MarturityController::class, 'show'])->name('admin.marturity.show');
+            Route::get('/{marturity}/export', [MarturityController::class, 'export'])->name('admin.marturity.export');
         });
 
         Route::prefix('keamanan')->group(function () {
             Route::get('/', [KeamananController::class, 'index'])->name('admin.keamanan.index');
             Route::get('/{kpi}/show', [KeamananController::class, 'show'])->name('admin.keamanan.show');
+            Route::get('/{kpi}/export', [KeamananController::class, 'export'])->name('admin.keamanan.export');
         });
 
         Route::prefix('vulnerability')->group(function () {

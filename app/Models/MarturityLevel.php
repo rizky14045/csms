@@ -14,6 +14,6 @@ class MarturityLevel extends Model
 
     public function notes()
     {
-        return $this->hasMany(MarturityNote::class, 'level_id', 'id');
+        return $this->hasMany(MarturityNote::class, 'level_id', 'id')->orderBy('id', 'asc');
     }
 }

@@ -28,12 +28,13 @@ class LevelService
             $lastLevel = Level::where('type',$data['type'])->latest()->first();
             $order = $lastLevel ? $lastLevel->order + 1 : 1; 
             Level::create([
-                'sub_area_id' => $subArea->id,
-                'level' => $data['level'],
-                'description' => $data['description'],
-                'order' => $order,
-                'type' =>$data['type'],
-                'created_by' => auth()->id(),
+                'sub_area_id'    => $subArea->id,
+                'level'          => $data['level'],
+                'description'    => $data['description'],
+                'total_evidence' => $data['total_evidence'],
+                'order'          => $order,
+                'type'           => $data['type'],
+                'created_by'     => auth()->id(),
             ]);
 
             DB::commit();
@@ -87,9 +88,10 @@ class LevelService
             $before = $level->toArray();
 
             $updateData = [
-                'level' => $data['level'],
-                'description' => $data['description'],
-                'updated_by' => auth()->id(),
+                'level'          => $data['level'],
+                'description'    => $data['description'],
+                'total_evidence' => $data['total_evidence'],
+                'updated_by'     => auth()->id(),
             ];
 
             $level->update($updateData);

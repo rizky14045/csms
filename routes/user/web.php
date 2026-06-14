@@ -160,6 +160,8 @@ Route::prefix('user')->group(function () {
             Route::get('/preview/{marturity}', [MarturityController::class, 'preview'])->name('user.marturity.preview');
             Route::patch('/send/{marturity}', [MarturityController::class, 'send'])->name('user.marturity.send');
             Route::patch('{marturity}/upload-note/{areaId}/{note}', [MarturityController::class, 'uploadNote'])->name('user.marturity.uploadNote');
+            Route::post('{marturity}/upload-level/{level}', [MarturityController::class, 'uploadLevel'])->name('user.marturity.uploadLevel');
+            Route::delete('{marturity}/delete-level-file/{level}', [MarturityController::class, 'deleteLevelFile'])->name('user.marturity.deleteLevelFile');
             // Route::delete('/destroy/{marturity}', [MarturityController::class, 'destroy'])->name('user.marturity.destroy');
         });
 
@@ -253,6 +255,7 @@ Route::prefix('user')->group(function () {
             Route::get('/{kpi}/preview', [KeamananController::class, 'preview'])->name('user.keamanan.preview');
             Route::patch('/{kpi}/send', [KeamananController::class, 'send'])->name('user.keamanan.send');
             Route::patch('{kpi}/upload-note/{areaId}/{note}', [KeamananController::class, 'uploadNote'])->name('user.keamanan.uploadNote');
+            Route::post('{kpi}/upload-level/{level}', [KeamananController::class, 'uploadLevel'])->name('user.keamanan.uploadLevel');
             // Route::delete('/{kpi}/destroy', [KeamananController::class, 'destroy'])->name('user.keamanan.destroy');
         });
 
