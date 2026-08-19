@@ -49,6 +49,12 @@ class DashboardFasumController extends Controller
                 $fasum->where('unit_id', $unitId);
             }
 
+            // filter by type
+            $typeId = $request->type_id;
+            if (!empty($typeId)) {
+                $fasum->where('type_id', $typeId);
+            }
+
             $fasum = $fasum->get();
 
             $fasumTypes = FasumType::select('id', 'name', 'color_code')
@@ -58,6 +64,7 @@ class DashboardFasumController extends Controller
                 'all_units'   => $units,
                 'fasum'   => $fasum,
                 'unitId'  => $unitId,
+                'typeId'  => $typeId,
                 'fasumTypes' => $fasumTypes,
             ]);
     }

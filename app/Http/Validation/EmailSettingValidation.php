@@ -53,8 +53,7 @@ class EmailSettingValidation
             'security' => [
                 'required',
                 'string',
-                'max:255',
-                'in:true,false',
+                'in:ssl,tls,none',
             ],
             'email_test' => [
                 'required',
@@ -82,10 +81,9 @@ class EmailSettingValidation
             'alias.max' => 'Alias tidak boleh lebih dari 255 karakter.',
             'timeout.integer' => 'Timeout harus berupa angka.',
             'security.string' => 'Security harus berupa string.',
-            'security.max' => 'Security tidak boleh lebih dari 255 karakter.',
             'email_test.string' => 'Email test harus berupa string.',
             'email_test.max' => 'Email test tidak boleh lebih dari 255 karakter.',
-            'security.in' => 'Security harus bernilai true atau false.',
+            'security.in' => 'Security harus bernilai SSL, TLS, atau None.',
             'provider.required' => 'Provider wajib diisi.',
             'host.required' => 'Host wajib diisi.',
             'port.required' => 'Port wajib diisi.',

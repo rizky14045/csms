@@ -10,6 +10,7 @@ use App\Http\Validation\AuthValidation;
 use App\Models\PasswordHistory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Services\Auth\ForgotPasswordService;
 use Illuminate\Support\Facades\Validator;
@@ -50,7 +51,9 @@ class AuthController extends Controller
             return redirect()->back();
         }
 
-        if (!Hash::check($request->password, $user->password)) {
+        $ldapAuthenticated = $this->authenticateViaLdap($request->email, $request->password);
+
+        if (!$ldapAuthenticated && !Hash::check($request->password, $user->password)) {
 
             $user->increment('access_failed_count');
 
@@ -80,6 +83,22 @@ class AuthController extends Controller
         Alert::success('Login Berhasil', 'User berhasil login!');
 
         return redirect()->route('dashboard');
+    }
+
+    private function authenticateViaLdap(string $username, string $password): bool
+    {
+        try {
+            $response = Http::asMultipart()
+                ->timeout(5)
+                ->post(config('services.ldap.auth_url'), [
+                    ['name' => 'username', 'contents' => $username],
+                    ['name' => 'password', 'contents' => $password],
+                ]);
+
+            return $response->successful();
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     public function logout(Request $request)
