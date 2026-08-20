@@ -105,8 +105,13 @@
 
                         <div class="mb-3">
                             <label for="security" class="form-label fw-semibold">Security</label>
-                            <input class="form-control" type="text" id="security" required
-                                placeholder="Masukkan security (true / false)" name="security" value="{{ old('security', $emailSetting['security'] ?? '') }}">
+                            @php $securityValue = old('security', $emailSetting['security'] ?? ''); @endphp
+                            <select class="form-control" id="security" required name="security">
+                                <option value="" disabled {{ $securityValue === '' ? 'selected' : '' }}>Pilih tipe security</option>
+                                <option value="tls" {{ $securityValue === 'tls' ? 'selected' : '' }}>TLS</option>
+                                <option value="ssl" {{ $securityValue === 'ssl' ? 'selected' : '' }}>SSL</option>
+                                <option value="none" {{ $securityValue === 'none' ? 'selected' : '' }}>None</option>
+                            </select>
                             @if ($errors->has('security'))
                                 <div class="text-danger small mt-1">{{ $errors->first('security') }}</div>
                             @endif

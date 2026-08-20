@@ -16,7 +16,7 @@ class CreateNotesTable extends Migration
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
             $table->integer('level_id')->refences('id')->on('levels')->nullable();
-            $table->string('note')->nullable();
+            $table->longText('note')->nullable();
             $table->integer('order')->nullable();
             $table->enum('type', ['marturity', 'kpi'])->nullable();
             $table->softDeletes();

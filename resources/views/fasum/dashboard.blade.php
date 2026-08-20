@@ -56,12 +56,12 @@
 
     <div class="row g-3">
 
-        {{-- FILTER (hanya tampil jika bukan type user) --}}
-        @if(auth()->user()->type !== 'user')
+        {{-- FILTER --}}
         <div class="col-12">
             <div class="card shadow-sm rounded-3">
                 <div class="card-body py-3">
                     <form method="GET" class="d-flex align-items-end gap-3 flex-wrap">
+                        @if(auth()->user()->type !== 'user')
                         <div>
                             <label class="form-label fw-semibold mb-1 small">Filter Unit</label>
                             <select name="unit_id" id="selectUnit" class="form-select form-select-sm" style="min-width:220px;">
@@ -73,10 +73,22 @@
                                 @endforeach
                             </select>
                         </div>
+                        @endif
+                        <div>
+                            <label class="form-label fw-semibold mb-1 small">Filter Tipe</label>
+                            <select name="type_id" id="selectType" class="form-select form-select-sm" style="min-width:220px;">
+                                <option value="">Semua Tipe</option>
+                                @foreach ($fasumTypes as $type)
+                                    <option value="{{ $type->id }}" {{ $typeId == $type->id ? 'selected' : '' }}>
+                                        {{ $type->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                         <button type="submit" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
                             <i data-feather="search" style="width:14px;height:14px;"></i> Tampilkan
                         </button>
-                        @if($unitId)
+                        @if($unitId || $typeId)
                             <a href="{{ route('fasum.dashboard') }}" class="btn btn-outline-secondary btn-sm">
                                 Reset
                             </a>
@@ -85,7 +97,6 @@
                 </div>
             </div>
         </div>
-        @endif
 
         {{-- MAP --}}
         <div class="col-12">
@@ -250,6 +261,11 @@
         // Select2
         $('#selectUnit').select2({
             placeholder: 'Semua Unit',
+            allowClear: true,
+            width: '220px'
+        });
+        $('#selectType').select2({
+            placeholder: 'Semua Tipe',
             allowClear: true,
             width: '220px'
         });

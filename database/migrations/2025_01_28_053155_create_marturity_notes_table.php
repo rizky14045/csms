@@ -18,7 +18,7 @@ class CreateMarturityNotesTable extends Migration
             $table->integer('unit_id')->refences('id')->on('users')->nullable();
             $table->integer('marturity_id')->refences('id')->on('marturities')->nullable();
             $table->integer('level_id')->refences('id')->on('marturity_levels')->nullable();
-            $table->string('note')->nullable();
+            $table->longText('note')->nullable();
             $table->string('attachment_file')->nullable();
             $table->timestamps();
         });

@@ -165,12 +165,13 @@ class MarturityService
                     foreach ($levels as $level) {
 
                         $marturityLevel = MarturityLevel::create([
-                            'unit_id'       => $unit_id,
-                            'marturity_id'  => $marturity->id,
-                            'sub_area_id'   => $marturitySubArea->id,
-                            'level'         => $level->level,
-                            'description'   => $level->description,
-                            'created_by'    => $userId,
+                            'unit_id'        => $unit_id,
+                            'marturity_id'   => $marturity->id,
+                            'sub_area_id'    => $marturitySubArea->id,
+                            'level'          => $level->level,
+                            'description'    => $level->description,
+                            'total_evidence' => $level->total_evidence,
+                            'created_by'     => $userId,
                         ]);
 
                         $notes = Note::where('level_id', $level->id)->get();
@@ -461,6 +462,72 @@ class MarturityService
                 'Failed to upload attachment file',
                 500
             );
+        }
+    }
+
+    public function uploadLevelFiles(Request $request, MarturityLevel $level)
+    {
+        DB::beginTransaction();
+        try {
+            $existing = json_decode($level->attachment_files ?? '[]', true) ?: [];
+            $uploaded = $request->file('files') ?? [];
+            if (!is_array($uploaded)) {
+                $uploaded = [$uploaded];
+            }
+
+            $uploadPath = public_path('uploads/attachment_file_marturity_file/');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0775, true);
+            }
+
+            $newFiles = [];
+            foreach ($uploaded as $file) {
+                $name = 'marturity-file-' . time() . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move($uploadPath, $name);
+                $newFiles[] = $name;
+            }
+
+            $allFiles = array_values(array_merge($existing, $newFiles));
+
+            $level->update([
+                'attachment_files' => json_encode($allFiles),
+                'updated_by'       => auth()->id(),
+            ]);
+
+            DB::commit();
+
+            return JsonResponse::success(['files' => $allFiles], 'Upload berhasil', 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return JsonResponse::error($e->getMessage(), 'Upload gagal', 500);
+        }
+    }
+
+    public function deleteLevelFile(MarturityLevel $level, string $filename)
+    {
+        DB::beginTransaction();
+        try {
+            $existing = json_decode($level->attachment_files ?? '[]', true) ?: [];
+            $existing = array_values(array_filter($existing, fn($f) => $f !== $filename));
+
+            $filePath = public_path('uploads/attachment_file_marturity_file/' . $filename);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            $level->update([
+                'attachment_files' => json_encode($existing),
+                'updated_by'       => auth()->id(),
+            ]);
+
+            DB::commit();
+
+            return JsonResponse::success(['files' => $existing], 'File dihapus', 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return JsonResponse::error($e->getMessage(), 'Hapus gagal', 500);
         }
     }
 

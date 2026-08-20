@@ -30,4 +30,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'ldap' => [
+        'auth_url' => env('LDAP_AUTH_URL', 'http://192.168.3.203/ldap_api/auth_opendj/post'),
+    ],
+
 ];

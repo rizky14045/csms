@@ -144,6 +144,13 @@ class UserService
             $user = User::withTrashed()
                 ->where('email', $data['email'])
                 ->first();
+            $unit_id = null;
+
+            if(isset($data['unit_id'])){
+                $unit_id = $data['unit_id'];
+            }else{
+                $unit_id = auth()->user()->unit_id ?? null;
+            }
 
             // Get role name
             $roleName = null;
@@ -177,7 +184,7 @@ class UserService
                 $user->update([
                     'password'   => bcrypt($data['password']),
                     'type'       => $type,
-                    'unit_id'       => $data['unit_id'] ?? null,
+                    'unit_id'       => $unit_id,
                     'updated_by' => auth()->id(),
                 ]);
 
@@ -202,7 +209,7 @@ class UserService
                             'end_date' => $data['end_date'],
                             'contract_number'=> $data['contract_number'],
                             'user_id' => $user->id,
-                            'unit_id' => $data['unit_id'] ?? null,
+                            'unit_id' => $unit_id,
                             'created_by' => auth()->id(),
                         ]);
                     }
@@ -216,7 +223,7 @@ class UserService
                         'end_date' => $data['end_date'],
                         'contract_number'=> $data['contract_number'],
                         'user_id' => $user->id,
-                        'unit_id' => $data['unit_id'] ?? null,
+                        'unit_id' => $unit_id,
                         'created_by' => auth()->id(),
                     ]);
                 }
@@ -257,7 +264,7 @@ class UserService
                     'email'      => $data['email'],
                     'password'   => bcrypt($data['password']),
                     'type'       => $type,
-                    'unit_id'       => $data['unit_id'] ?? null,
+                    'unit_id'       => $unit_id,
                     'created_by' => auth()->id(),
                 ]);
 
@@ -278,7 +285,7 @@ class UserService
                         'end_date' => $data['end_date'],
                         'contract_number'=> $data['contract_number'],
                         'user_id' => $user->id,
-                        'unit_id' => $data['unit_id'] ?? null,
+                        'unit_id' => auth()->user()->unit_id ?? null,
                         'created_by' => auth()->id(),
                     ]);
                 }
@@ -382,7 +389,7 @@ class UserService
                 'name'       => $data['name'],
                 'email'      => $data['email'],
                 'type'       => $type,
-                'unit_id'       => $data['unit_id'] ?? null,
+                'unit_id'       => $unit_id,
                 'updated_by' => auth()->id(),
             ];
 

@@ -9,6 +9,7 @@ use App\Models\FasumType;
 use App\Services\ActivityLog\ActivityLogService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class EmailSettingService
@@ -101,6 +102,8 @@ class EmailSettingService
             }
 
             DB::commit();
+
+            Cache::forget('app.email_setting');
 
             $this->logService->log(
                 'email_setting.update',

@@ -73,7 +73,7 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$marturity->unit->name}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') ?? "-" }}</td>
+                                    <td>{{ $marturity->send_date ? \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') : "-" }}</td>
                                     <td>{{$marturity->year}}</td>
                                     <td>{{$marturity->semester}}</td>
                                     <td>

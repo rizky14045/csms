@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Marturity;
+use App\Models\MarturityLevel;
 use Illuminate\Http\Request;
 use App\Models\MarturityNote;
 use App\Http\Controllers\Controller;
@@ -109,9 +110,10 @@ class MarturityController extends Controller
             abort(404);
         }
 
-        $result = $this->marturityService->getAlMarturityArea(['subAreas','subAreas.levels','subAreas.levels.notes'], $marturity->id);
+        $result = $this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels'], $marturity->id);
         $data['areas'] = getData($result);
-        return view('user.marturity.show',$data);
+        $data['marturity'] = $marturity;
+        return view('user.marturity.show', $data);
     }
 
     public function preview(Marturity $marturity){
@@ -170,6 +172,84 @@ class MarturityController extends Controller
         Alert::success('Delete Berhasil', 'Marturity berhasil dihapus!');
         return redirect()->route('user.marturity.index');
     }
+    public function uploadLevel(Request $request, Marturity $marturity, MarturityLevel $level)
+    {
+        try {
+            $totalEvidence  = $level->total_evidence ?? 999;
+            $existingCount  = count(json_decode($level->attachment_files ?? '[]', true) ?: []);
+            $remainingSlots = max(0, $totalEvidence - $existingCount);
+
+            $validator = $this->validator(
+                array_merge($request->all(), ['files' => $request->file('files')]),
+                [
+                    'files'   => "required|array|min:1|max:{$remainingSlots}",
+                    'files.*' => 'mimes:pdf|max:25600',
+                ],
+                [
+                    'files.required' => 'Minimal 1 file harus dipilih!',
+                    'files.min'      => 'Minimal 1 file harus dipilih!',
+                    'files.max'      => "Maksimal {$remainingSlots} file lagi yang bisa ditambahkan!",
+                    'files.*.mimes'  => 'File harus berupa PDF!',
+                    'files.*.max'    => 'Ukuran file maksimal 25MB!',
+                ]
+            );
+
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+
+            $result     = $this->marturityService->uploadLevelFiles($request, $level);
+            $statusCode = $result->getStatusCode();
+            $data       = json_decode($result->getContent(), true);
+
+            if ($statusCode !== 200) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $data['message'] ?? 'Upload gagal',
+                ], $statusCode);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Upload berhasil',
+                'files'   => $data['data']['files'] ?? [],
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteLevelFile(Request $request, Marturity $marturity, MarturityLevel $level)
+    {
+        try {
+            $filename = $request->input('filename');
+            if (!$filename) {
+                return response()->json(['error' => 'Filename tidak ditemukan'], 422);
+            }
+
+            $result     = $this->marturityService->deleteLevelFile($level, $filename);
+            $statusCode = $result->getStatusCode();
+            $data       = json_decode($result->getContent(), true);
+
+            if ($statusCode !== 200) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $data['message'] ?? 'Hapus gagal',
+                ], $statusCode);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'File berhasil dihapus',
+                'files'   => $data['data']['files'] ?? [],
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function uploadNote(Request $request, Marturity $marturity, $areaId, MarturityNote $note)
     {
         try {
