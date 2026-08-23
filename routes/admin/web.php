@@ -245,6 +245,7 @@ Route::prefix('admin')->group(function () {
         Route::prefix('email-setting')->group(function () {
             Route::get('/', [EmailSettingController::class, 'index'])->name('admin.email-setting.index');
             Route::patch('/edit', [EmailSettingController::class, 'update'])->name('admin.email-setting.update');
+            Route::post('/test', [EmailSettingController::class, 'test'])->name('admin.email-setting.test');
         });
     });
 

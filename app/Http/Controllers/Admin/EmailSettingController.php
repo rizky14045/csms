@@ -18,7 +18,7 @@ class EmailSettingController extends Controller
         $this->emailSettingService = $emailSettingService;
 
         $this->middleware('can:view.email.setting')->only('index');
-        $this->middleware('can:edit.email.setting')->only('update');
+        $this->middleware('can:edit.email.setting')->only(['update', 'test']);
     }
 
     protected function validator(array $data, $validation, array $messages = [])
@@ -42,5 +42,18 @@ class EmailSettingController extends Controller
 
         Alert::success('Update Berhasil', 'Pengaturan email berhasil diubah!');
         return redirect()->route('admin.email-setting.index');
+    }
+
+    public function test(Request $request){
+        $validator = $this->validator($request->all(), EmailSettingValidation::rulesForTest(), EmailSettingValidation::messages());
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data pengaturan email tidak valid',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        return $this->emailSettingService->sendTestEmail($request->all());
     }
 }

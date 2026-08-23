@@ -51,7 +51,9 @@ class AuthController extends Controller
             return redirect()->back();
         }
 
-        $ldapAuthenticated = $this->authenticateViaLdap($request->email, $request->password);
+        $ldapAuthenticated = $user->login_type == 1
+            ? $this->authenticateViaLdap($request->email, $request->password)
+            : false;
 
         if (!$ldapAuthenticated && !Hash::check($request->password, $user->password)) {
 

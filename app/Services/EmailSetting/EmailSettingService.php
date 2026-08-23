@@ -10,7 +10,10 @@ use App\Services\ActivityLog\ActivityLogService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class EmailSettingService
 {
@@ -135,6 +138,50 @@ class EmailSettingService
             );
 
             throw $e;
+        }
+    }
+
+    /**
+     * Send a test email using the given (saved or unsaved) SMTP settings.
+     */
+    public function sendTestEmail(array $data)
+    {
+        Config::set([
+            'mail.mailers.smtp.host' => $data['host'],
+            'mail.mailers.smtp.port' => (int) $data['port'],
+            'mail.mailers.smtp.username' => $data['username'],
+            'mail.mailers.smtp.password' => $data['password'],
+            'mail.mailers.smtp.encryption' => EmailSetting::encryptionFromSecurity($data['security']),
+            'mail.mailers.smtp.timeout' => $data['timeout'] ? (int) $data['timeout'] : null,
+            'mail.from.address' => $data['from'],
+            'mail.from.name' => $data['alias'],
+        ]);
+
+        try {
+            Mail::raw(
+                "Ini adalah email test dari pengaturan Email Setting CSMS.\nJika Anda menerima email ini, konfigurasi SMTP sudah benar.",
+                function ($message) use ($data) {
+                    $message->to($data['email_test'])->subject('Test Email - CSMS');
+                }
+            );
+
+            $this->logService->log(
+                'email_setting.test',
+                'Test email sent',
+                200,
+                ['to' => $data['email_test']]
+            );
+
+            return JsonResponse::success(null, 'Email test berhasil dikirim', 200);
+        } catch (Throwable $e) {
+            $this->logService->log(
+                'email_setting.test',
+                'Failed to send test email',
+                500,
+                ['error' => $e->getMessage(), 'to' => $data['email_test']]
+            );
+
+            return JsonResponse::error($e->getMessage(), 'Gagal mengirim email test', 500);
         }
     }
 }

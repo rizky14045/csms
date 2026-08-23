@@ -52,8 +52,7 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        $security = strtolower((string) $emailSetting->security);
-        $encryption = in_array($security, ['ssl', 'tls'], true) ? $security : null;
+        $encryption = EmailSetting::encryptionFromSecurity($emailSetting->security);
 
         Config::set([
             'mail.mailers.smtp.host' => $emailSetting->host,
