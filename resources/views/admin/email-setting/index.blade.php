@@ -119,14 +119,19 @@
 
                         <div class="mb-4">
                             <label for="email_test" class="form-label fw-semibold">Email Test</label>
-                            <input class="form-control" type="text" id="email_test" required
+                            <input class="form-control" type="email" id="email_test" required
                                 placeholder="Masukkan email test" name="email_test" value="{{ old('email_test', $emailSetting['email_test'] ?? '') }}">
                             @if ($errors->has('email_test'))
                                 <div class="text-danger small mt-1">{{ $errors->first('email_test') }}</div>
                             @endif
                         </div>
 
-                        <div class="d-flex justify-content-end">
+                        <div id="testEmailResult" class="mb-3"></div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" id="btnTestEmail" class="btn btn-outline-primary">
+                                <i class="ri-send-plane-line me-1"></i>Kirim Email Test
+                            </button>
                             <button type="submit" class="btn btn-success">
                                 <i class="ri-save-line me-1"></i>Simpan
                             </button>
@@ -140,4 +145,66 @@
 
 @endsection
 @section('scripts')
+    <script>
+        document.getElementById('btnTestEmail').addEventListener('click', function () {
+            const btn = this;
+            const resultBox = document.getElementById('testEmailResult');
+            const form = document.getElementById('form-unit');
+
+            const payload = {
+                provider: form.provider.value,
+                host: form.host.value,
+                username: form.username.value,
+                password: form.password.value,
+                port: form.port.value,
+                from: form.from.value,
+                alias: form.alias.value,
+                timeout: form.timeout.value,
+                security: form.security.value,
+                email_test: form.email_test.value,
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ri-loader-4-line me-1"></i>Mengirim...';
+            resultBox.innerHTML = '';
+
+            fetch(@json(route('admin.email-setting.test')), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': form._token.value,
+                },
+                body: JSON.stringify(payload),
+            })
+                .then(response => response.json().then(data => ({ status: response.status, data })))
+                .then(({ data }) => {
+                    if (data.success) {
+                        resultBox.innerHTML = `
+                            <div class="alert alert-success mb-0">
+                                <i class="ri-checkbox-circle-line me-1"></i>${data.message}
+                            </div>`;
+                    } else {
+                        const errorDetail = typeof data.errors === 'string'
+                            ? data.errors
+                            : JSON.stringify(data.errors);
+                        resultBox.innerHTML = `
+                            <div class="alert alert-danger mb-0">
+                                <div class="fw-semibold"><i class="ri-error-warning-line me-1"></i>${data.message}</div>
+                                <div class="small mt-1" style="word-break:break-word;">${errorDetail ?? ''}</div>
+                            </div>`;
+                    }
+                })
+                .catch(err => {
+                    resultBox.innerHTML = `
+                        <div class="alert alert-danger mb-0">
+                            <i class="ri-error-warning-line me-1"></i>Gagal menghubungi server: ${err.message}
+                        </div>`;
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="ri-send-plane-line me-1"></i>Kirim Email Test';
+                });
+        });
+    </script>
 @endsection

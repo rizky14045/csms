@@ -57,10 +57,20 @@ class EmailSettingValidation
             ],
             'email_test' => [
                 'required',
-                'string',
+                'email',
                 'max:255',
             ],
         ];
+    }
+
+    /**
+     * Validation rules for sending a test email.
+     * Same shape as the update form since the test uses whatever
+     * values are currently filled in (saved or not).
+     */
+    public static function rulesForTest()
+    {
+        return self::rulesForUpdate();
     }
 
     public static function messages()
@@ -81,7 +91,7 @@ class EmailSettingValidation
             'alias.max' => 'Alias tidak boleh lebih dari 255 karakter.',
             'timeout.integer' => 'Timeout harus berupa angka.',
             'security.string' => 'Security harus berupa string.',
-            'email_test.string' => 'Email test harus berupa string.',
+            'email_test.email' => 'Email test harus berupa alamat email yang valid.',
             'email_test.max' => 'Email test tidak boleh lebih dari 255 karakter.',
             'security.in' => 'Security harus bernilai SSL, TLS, atau None.',
             'provider.required' => 'Provider wajib diisi.',
