@@ -51,8 +51,9 @@
 
                         <div class="mb-3">
                             <label for="username" class="form-label fw-semibold">Username</label>
-                            <input class="form-control" type="text" id="username" required
-                                placeholder="Masukan Username" name="username" value="{{ old('username', $emailSetting['username'] ?? '') }}">
+                            <input class="form-control" type="text" id="username"
+                                placeholder="Kosongkan jika server tidak butuh autentikasi" name="username" value="{{ old('username', $emailSetting['username'] ?? '') }}">
+                            <div class="form-text">Kosongkan bersama Password jika mail server mengizinkan relay tanpa autentikasi (mis. IP internal terpercaya).</div>
                             @if ($errors->has('username'))
                                 <div class="text-danger small mt-1">{{ $errors->first('username') }}</div>
                             @endif
@@ -60,8 +61,8 @@
 
                         <div class="mb-3">
                             <label for="password" class="form-label fw-semibold">Password</label>
-                            <input class="form-control" type="password" id="password" required
-                                placeholder="Masukan Password" name="password" value="{{ old('password', $emailSetting['password'] ?? '') }}">
+                            <input class="form-control" type="password" id="password"
+                                placeholder="Kosongkan jika server tidak butuh autentikasi" name="password" value="{{ old('password', $emailSetting['password'] ?? '') }}">
                             @if ($errors->has('password'))
                                 <div class="text-danger small mt-1">{{ $errors->first('password') }}</div>
                             @endif

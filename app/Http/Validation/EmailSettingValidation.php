@@ -27,12 +27,12 @@ class EmailSettingValidation
                 'integer',
             ],
             'username' => [
-                'required',
+                'nullable',
                 'string',
                 'max:255',
             ],
             'password' => [
-                'required',
+                'nullable',
                 'string',
                 'max:255',
             ],
@@ -97,8 +97,6 @@ class EmailSettingValidation
             'provider.required' => 'Provider wajib diisi.',
             'host.required' => 'Host wajib diisi.',
             'port.required' => 'Port wajib diisi.',
-            'username.required' => 'Username wajib diisi.',
-            'password.required' => 'Password wajib diisi.',
             'from.required' => 'From wajib diisi.',
             'alias.required' => 'Alias wajib diisi.',
             'timeout.required' => 'Timeout wajib diisi.',
