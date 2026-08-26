@@ -47,6 +47,12 @@
                             </select>
                         </div>
 
+                        {{-- LDAP --}}
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_ldap" name="is_ldap" value="1">
+                            <label class="form-check-label" for="is_ldap">Login via LDAP</label>
+                        </div>
+
                         {{-- Tipe Unit --}}
                         <div class="mb-3" id="typeUnitContainer" style="display: none;">
                             <label class="form-label fw-semibold">Tipe Unit</label>

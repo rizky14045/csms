@@ -38,6 +38,11 @@ class UserValidation
                 'integer',
                 'exists:roles,id',
             ],
+
+            'is_ldap' => [
+                'nullable',
+                'boolean',
+            ],
         ];
     }
 
@@ -71,6 +76,11 @@ class UserValidation
                 'required',
                 'integer',
                 'exists:roles,id',
+            ],
+
+            'is_ldap' => [
+                'nullable',
+                'boolean',
             ],
         ];
     }

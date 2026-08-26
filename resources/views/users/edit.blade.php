@@ -50,6 +50,12 @@
                             </select>
                         </div>
 
+                        {{-- LDAP --}}
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_ldap" name="is_ldap" value="1" {{ $user->login_type == 1 ? 'checked' : '' }}>
+                            <label class="form-check-label" for="is_ldap">Login via LDAP</label>
+                        </div>
+
                         {{-- Unit --}}
                         <div class="mb-4" id="unitContainer"
                             style="display: {{ in_array(optional($user->roles->first())->id, [2, 3]) ? 'block' : 'none' }}">
