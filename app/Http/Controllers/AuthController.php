@@ -51,11 +51,11 @@ class AuthController extends Controller
             return redirect()->back();
         }
 
-        $ldapAuthenticated = $user->login_type == 1
+        $ldapData = $user->login_type == 1
             ? $this->authenticateViaLdap($request->email, $request->password)
-            : false;
+            : null;
 
-        if (!$ldapAuthenticated && !Hash::check($request->password, $user->password)) {
+        if (!$ldapData && !Hash::check($request->password, $user->password)) {
 
             $user->increment('access_failed_count');
 
@@ -73,6 +73,10 @@ class AuthController extends Controller
             return redirect()->route('login')->withInput();
         }
 
+        if ($ldapData) {
+            $this->syncUserFromLdap($user, $ldapData);
+        }
+
         Auth::login($user, true);
 
         $request->session()->regenerate();
@@ -87,7 +91,14 @@ class AuthController extends Controller
         return redirect()->route('dashboard');
     }
 
-    private function authenticateViaLdap(string $username, string $password): bool
+    /**
+     * Authenticate against the LDAP API. Returns the decoded response
+     * (including userdetail) only when the API explicitly reports
+     * valid credentials (valid === 1) — an HTTP 200 alone is not
+     * proof of a valid login, this API returns 200 for failed
+     * credentials too and signals success only via the "valid" field.
+     */
+    private function authenticateViaLdap(string $username, string $password): ?array
     {
         try {
             $response = Http::asMultipart()
@@ -97,9 +108,34 @@ class AuthController extends Controller
                     ['name' => 'password', 'contents' => $password],
                 ]);
 
-            return $response->successful();
+            if (!$response->successful() || (int) $response->json('valid') !== 1) {
+                return null;
+            }
+
+            return $response->json();
         } catch (\Throwable $e) {
-            return false;
+            return null;
+        }
+    }
+
+    /**
+     * Sync the local user record with the latest data returned by LDAP.
+     * "jabatan" is intentionally not touched here: the LDAP API response
+     * doesn't include any job-title/jabatan field, so there is nothing
+     * to sync it from.
+     */
+    private function syncUserFromLdap(User $user, array $ldapData): void
+    {
+        $detail = $ldapData['userdetail'] ?? [];
+
+        try {
+            $user->update([
+                'nid' => $ldapData['nid'] ?? $user->nid,
+                'unit_code' => $detail['unit']['0'] ?? $user->unit_code,
+                'name' => $detail['displayname']['0'] ?? $user->name,
+            ]);
+        } catch (\Throwable $e) {
+            // Sync is best-effort; never block login because of it.
         }
     }
 
