@@ -49,9 +49,9 @@
                                     <form action="{{ route('login.post') }}" class="my-4" method="POST">
                                         @csrf
                                         <div class="form-group mb-3">
-                                            <label for="emailaddress" class="form-label">Email</label>
-                                            <input class="form-control" type="email" id="emailaddress"
-                                                value="{{ old('email') }}" required placeholder="Masukan email"
+                                            <label for="emailaddress" class="form-label">Email / Username</label>
+                                            <input class="form-control" type="text" id="emailaddress"
+                                                value="{{ old('email') }}" required placeholder="Masukan email atau username"
                                                 name="email">
                                             @if ($errors->has('email'))
                                                 <div class="error text-danger">{{ $errors->first('email') }}</div>

@@ -185,6 +185,7 @@ class UserService
                     'password'   => bcrypt($data['password']),
                     'type'       => $type,
                     'unit_id'       => $unit_id,
+                    'login_type' => !empty($data['is_ldap']) ? 1 : 0,
                     'updated_by' => auth()->id(),
                 ]);
 
@@ -265,6 +266,7 @@ class UserService
                     'password'   => bcrypt($data['password']),
                     'type'       => $type,
                     'unit_id'       => $unit_id,
+                    'login_type' => !empty($data['is_ldap']) ? 1 : 0,
                     'created_by' => auth()->id(),
                 ]);
 
@@ -390,6 +392,7 @@ class UserService
                 'email'      => $data['email'],
                 'type'       => $type,
                 'unit_id'       => $unit_id,
+                'login_type' => !empty($data['is_ldap']) ? 1 : 0,
                 'updated_by' => auth()->id(),
             ];
 

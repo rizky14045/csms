@@ -8,7 +8,7 @@ class AuthValidation
     public static function rulesForLogin()
     {
         return [
-            'email' => 'required|email',
+            'email' => 'required|string',
             'password' => 'required',
         ];
     }
@@ -60,8 +60,7 @@ class AuthValidation
 
     public static function messages(){
         return [
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Email harus berformat email yang valid.',
+            'email.required' => 'Email/Username wajib diisi.',
             'email.exists'   => 'Email not found.',
             'password.required' => 'Password wajib diisi.',
             'password.confirmed' => 'Konfirmasi password tidak sesuai.',
