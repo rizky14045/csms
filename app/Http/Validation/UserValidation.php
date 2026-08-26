@@ -18,7 +18,7 @@ class UserValidation
 
             'email' => [
                 'required',
-                'email',
+                'string',
                 'max:255',
                 Rule::unique('users', 'email')
                     ->whereNull('deleted_at'),
@@ -57,7 +57,8 @@ class UserValidation
 
             'email' => [
                 'required',
-                'email',
+                'string',
+                'max:255',
                 Rule::unique('users', 'email')
                     ->whereNull('deleted_at')
                     ->ignore($userId),
@@ -92,9 +93,8 @@ class UserValidation
             'name.string'   => 'Nama harus berupa teks.',
             'name.max'      => 'Nama maksimal 255 karakter.',
 
-            'email.required' => 'Email wajib diisi.',
-            'email.email'    => 'Format email tidak valid.',
-            'email.unique'   => 'Email sudah digunakan.',
+            'email.required' => 'Email/Username wajib diisi.',
+            'email.unique'   => 'Email/Username sudah digunakan.',
 
             'password.required' => 'Password wajib diisi.',
             'password.confirmed' => 'Konfirmasi password tidak sesuai.',

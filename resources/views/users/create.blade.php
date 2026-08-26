@@ -30,10 +30,10 @@
                             <input type="text" name="name" class="form-control" required placeholder="Masukkan nama">
                         </div>
 
-                        {{-- Email --}}
+                        {{-- Email / Username --}}
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Email</label>
-                            <input type="email" name="email" class="form-control" required placeholder="Masukkan email">
+                            <label class="form-label fw-semibold">Email / Username</label>
+                            <input type="text" name="email" class="form-control" required placeholder="Masukkan email atau username (untuk login LDAP)">
                         </div>
 
                         {{-- Role --}}
