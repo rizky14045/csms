@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Marturity;
+use App\Models\Unit;
 use App\Http\Controllers\Controller;
 use App\Services\Marturity\MarturityService;
+use Illuminate\Support\Str;
 
 class MarturityController extends Controller
 {
@@ -18,8 +20,12 @@ class MarturityController extends Controller
     }
 
     public function index(){
-        $result = $this->marturityService->getAlMarturity(10, true, ['unit', 'getInvalidItemsNotesByUnit'], null, true);
+        $unitId = request('unit_id');
+
+        $result = $this->marturityService->getAlMarturity(10, true, ['unit', 'getInvalidItemsNotesByUnit'], $unitId, true);
         $data['marturities'] = getPaginate($result);
+        $data['unit_lists'] = Unit::orderBy('name', 'asc')->get();
+        $data['unitId'] = $unitId;
         return view('admin.marturity.index',$data);
     }
 
@@ -46,7 +52,8 @@ class MarturityController extends Controller
         $totalSubAreas = collect($areas)->sum(fn($a) => count($a['sub_areas']));
         $bobot         = $totalSubAreas > 0 ? 1 / $totalSubAreas : 0;
 
-        $filename = 'maturity-' . $marturity->year . '-s' . $marturity->semester . '.xls';
+        $unitName = Str::slug($marturity->unit->name ?? 'unit');
+        $filename = 'maturity-' . $unitName . '-' . $marturity->year . '-s' . $marturity->semester . '.xls';
 
         $html = view('exports.marturity', [
             'areas'        => $areas,

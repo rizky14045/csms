@@ -7,7 +7,7 @@ use Illuminate\Validation\Rule;
 
 class UserValidation
 {
-    public static function rulesForCreate()
+    public static function rulesForCreate($isLdap = false)
     {
         return [
             'name' => [
@@ -25,7 +25,7 @@ class UserValidation
             ],
 
             'password' => [
-                'required',
+                $isLdap ? 'nullable' : 'required',
                 'confirmed',
                 Password::min(12)
                     ->mixedCase()

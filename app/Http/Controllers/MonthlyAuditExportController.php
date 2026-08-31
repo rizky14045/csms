@@ -28,7 +28,9 @@ use App\Models\MonthlySecurityProgram;
 use App\Models\OutsourceEmployee;
 use App\Models\ReportEmployee;
 use App\Models\SecurityForm;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
 class MonthlyAuditExportController extends Controller
@@ -528,9 +530,13 @@ class MonthlyAuditExportController extends Controller
             collect()
         );
 
+        $monthLabel = $data['monthlyReport'] && $data['monthlyReport']->report_date
+            ? Str::slug(Carbon::parse($data['monthlyReport']->report_date)->locale('id')->translatedFormat('F Y'))
+            : $monthlyId;
+
         return Excel::download(
             new MonthlyAuditAllExport($data),
-            'Monthly-Audit.xlsx'
+            "laporan-bulanan-{$monthLabel}.xlsx"
         );
     }
 
