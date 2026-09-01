@@ -120,6 +120,8 @@
             const $isLdap = $('#is_ldap');
             const $password = $('#password');
             const $passwordConfirmation = $('#password_confirmation');
+            const $passwordContainer = $('#passwordContainer');
+            const $passwordConfirmationContainer = $('#passwordConfirmationContainer');
 
             // ================= TOGGLE PASSWORD REQUIREMENT (LDAP) =================
             function togglePasswordRequirement() {
@@ -127,6 +129,9 @@
 
                 $password.prop('required', !isLdap);
                 $passwordConfirmation.prop('required', !isLdap);
+
+                $passwordContainer.toggle(!isLdap);
+                $passwordConfirmationContainer.toggle(!isLdap);
 
                 if (isLdap) {
                     $password.val('');
