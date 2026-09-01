@@ -11,13 +11,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Marturity</h4>
+        <h4 class="fs-18 fw-semibold m-0">Maturity Level</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Marturity</li>
+            <li class="breadcrumb-item active">Maturity Level</li>
         </ol>
     </div>
 </div>
@@ -38,9 +38,24 @@
                                     value="{{ request('date') }}"
                                     style="max-width:200px;">
 
+                                <select name="unit_id" class="form-select" style="max-width:220px;">
+                                    <option value="">Semua Unit</option>
+                                    @foreach ($unit_lists as $unit)
+                                        <option value="{{ $unit->id }}" {{ (string) $unitId === (string) $unit->id ? 'selected' : '' }}>
+                                            {{ $unit->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
                                 <button type="submit" class="btn btn-primary">
                                     Cari
                                 </button>
+
+                                @if ($unitId || request('date'))
+                                    <a href="{{ route('admin.marturity.index') }}" class="btn btn-outline-secondary">
+                                        Reset
+                                    </a>
+                                @endif
 
                             </div>
                         </form>

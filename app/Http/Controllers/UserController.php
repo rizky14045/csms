@@ -60,7 +60,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         // Validation rules
-        $validator = $this->validator($request->all(), UserValidation::rulesForCreate(), UserValidation::messages());
+        $validator = $this->validator($request->all(), UserValidation::rulesForCreate($request->boolean('is_ldap')), UserValidation::messages());
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }

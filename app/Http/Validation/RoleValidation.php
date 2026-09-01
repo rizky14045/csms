@@ -2,6 +2,7 @@
 
 namespace App\Http\Validation;
 
+use App\Models\Permission;
 use Illuminate\Validation\Rule;
 
 class RoleValidation
@@ -19,11 +20,16 @@ class RoleValidation
                 'required',
                 'array',
                 'min:1',
+                function ($attribute, $value, $fail) {
+                    $validCount = Permission::whereIn('id', $value)->count();
+                    if ($validCount !== count(array_unique($value))) {
+                        $fail('Beberapa permission tidak valid.');
+                    }
+                },
             ],
             'permissions.*' => [
                 'integer',
                 'distinct',
-                'exists:permissions,id',
             ],
         ];
     }
@@ -44,11 +50,16 @@ class RoleValidation
                 'required',
                 'array',
                 'min:1',
+                function ($attribute, $value, $fail) {
+                    $validCount = Permission::whereIn('id', $value)->count();
+                    if ($validCount !== count(array_unique($value))) {
+                        $fail('Beberapa permission tidak valid.');
+                    }
+                },
             ],
             'permissions.*' => [
                 'integer',
                 'distinct',
-                'exists:permissions,id',
             ],
         ];
     }
@@ -64,7 +75,6 @@ class RoleValidation
             'permissions.min'      => 'Pilih minimal 1 permission.',
 
             'permissions.*.distinct'=> 'Permission tidak boleh duplikat.',
-            'permissions.*.exists'  => 'Permission tidak valid.',
         ];
     }
 }

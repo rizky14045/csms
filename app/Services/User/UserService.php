@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class UserService
 {
@@ -144,6 +145,11 @@ class UserService
             $user = User::withTrashed()
                 ->where('email', $data['email'])
                 ->first();
+
+            // LDAP users don't need a local password; generate a random,
+            // unguessable one instead of hashing an empty string.
+            $plainPassword = !empty($data['password']) ? $data['password'] : Str::random(32);
+
             $unit_id = null;
 
             if(isset($data['unit_id'])){
@@ -182,7 +188,7 @@ class UserService
                 $user->restore();
 
                 $user->update([
-                    'password'   => bcrypt($data['password']),
+                    'password'   => bcrypt($plainPassword),
                     'type'       => $type,
                     'unit_id'       => $unit_id,
                     'login_type' => !empty($data['is_ldap']) ? 1 : 0,
@@ -263,7 +269,7 @@ class UserService
                 $user = User::create([
                     'name'       => $data['name'],
                     'email'      => $data['email'],
-                    'password'   => bcrypt($data['password']),
+                    'password'   => bcrypt($plainPassword),
                     'type'       => $type,
                     'unit_id'       => $unit_id,
                     'login_type' => !empty($data['is_ldap']) ? 1 : 0,

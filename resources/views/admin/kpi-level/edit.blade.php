@@ -44,6 +44,13 @@
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="form-group mb-3">
+                            <label for="total_evidence" class="form-label">Total Evidence</label>
+                            <input class="form-control @error('total_evidence') is-invalid @enderror" name="total_evidence" type="number" id="total_evidence" required min="1" placeholder="Masukan total evidence" value="{{ old('total_evidence',$level->total_evidence) }}">
+                            @error('total_evidence')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">

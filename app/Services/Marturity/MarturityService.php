@@ -59,10 +59,14 @@ class MarturityService
 
                 });
 
+                if ($unit_id) {
+                    $query->where('unit_id', $unit_id);
+                }
+
             } else {
 
                 if ($unit_id) {
-                    $query->where('unit_id', $user->unit_id);
+                    $query->where('unit_id', $unit_id);
                 }
 
                 if ($send_status !== null) {

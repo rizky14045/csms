@@ -72,7 +72,7 @@
                         </div>
 
                         {{-- Password --}}
-                        <div class="mb-3">
+                        <div class="mb-3" id="passwordContainer">
                             <label class="form-label fw-semibold">Password</label>
                             <div class="input-group">
                                 <input type="password" id="password" name="password" class="form-control" required placeholder="Masukkan password">
@@ -81,10 +81,11 @@
                                 </button>
                             </div>
                             <div id="passwordFeedback" class="mt-2 ps-1 d-flex flex-column gap-1"></div>
+                            <div class="form-text">Kosongkan jika "Login via LDAP" dicentang.</div>
                         </div>
 
                         {{-- Confirm --}}
-                        <div class="mb-4">
+                        <div class="mb-4" id="passwordConfirmationContainer">
                             <label class="form-label fw-semibold">Konfirmasi Password</label>
                             <div class="input-group">
                                 <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required placeholder="Ulangi password">
@@ -116,6 +117,25 @@
         $(document).ready(function() {
 
             const $role = $('#roleSelect');
+            const $isLdap = $('#is_ldap');
+            const $password = $('#password');
+            const $passwordConfirmation = $('#password_confirmation');
+
+            // ================= TOGGLE PASSWORD REQUIREMENT (LDAP) =================
+            function togglePasswordRequirement() {
+                const isLdap = $isLdap.is(':checked');
+
+                $password.prop('required', !isLdap);
+                $passwordConfirmation.prop('required', !isLdap);
+
+                if (isLdap) {
+                    $password.val('');
+                    $passwordConfirmation.val('');
+                }
+            }
+
+            $isLdap.on('change', togglePasswordRequirement);
+            togglePasswordRequirement();
 
             const $typeUnitContainer = $('#typeUnitContainer');
             const $typeUnit = $('#typeUnitSelect');
