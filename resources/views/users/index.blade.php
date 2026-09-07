@@ -25,7 +25,17 @@
                         <input type="text" name="search" class="form-control" placeholder="Cari nama pengguna..." value="{{ request('search') }}">
                         <button class="btn btn-outline-primary" type="submit">Cari</button>
                     </div>
-                    @if(request('search'))
+
+                    <select name="role" class="form-select" style="max-width:200px;" onchange="this.form.submit()">
+                        <option value="">Semua Role</option>
+                        @foreach ($roles as $role)
+                            <option value="{{ $role['id'] }}" {{ (string) $selectedRole === (string) $role['id'] ? 'selected' : '' }}>
+                                {{ $role['name'] }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    @if(request('search') || request('role'))
                         <a href="{{ route('users.index') }}" class="btn btn-outline-danger">Reset</a>
                     @endif
                 </form>
@@ -70,6 +80,7 @@
                                         <a href="{{ route('users.edit', ['user' => $user->id]) }}" class="btn btn-warning btn-sm">Edit</a>
                                         @endcan
                                         @can('delete.user')
+                                        @if ($user->id !== auth()->id())
                                         <form
                                             id="delete-user-{{ $user->id }}"
                                             action="{{ route('users.destroy', $user->id) }}"
@@ -90,6 +101,7 @@
                                                 Hapus
                                             </button>
                                         </form>
+                                        @endif
                                         @endcan
                                     </td>
                                     @endcanany

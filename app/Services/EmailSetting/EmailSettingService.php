@@ -79,16 +79,19 @@ class EmailSettingService
                 $before = $emailSetting->toArray();
 
                 $updateData = [
-                    'provider' => $data['provider'] ?? $emailSetting->provider,
-                    'host' => $data['host'] ?? $emailSetting->host,
-                    'port' => $data['port'] ?? $emailSetting->port,
-                    'username' => $data['username'] ?? $emailSetting->username,
-                    'password' => $data['password'] ?? $emailSetting->password,
-                    'from' => $data['from'] ?? $emailSetting->from,
-                    'alias' => $data['alias'] ?? $emailSetting->alias,
-                    'timeout' => $data['timeout'] ?? $emailSetting->timeout,
-                    'security' => $data['security'] ?? $emailSetting->security, 
-                    'email_test' => $data['email_test'] ?? $emailSetting->email_test,
+                    'provider' => $data['provider'],
+                    'host' => $data['host'],
+                    'port' => $data['port'],
+                    // username/password are intentionally nullable — a blank
+                    // submission (converted to null by ConvertEmptyStringsToNull)
+                    // must clear the stored value, not fall back to the old one.
+                    'username' => $data['username'] ?? null,
+                    'password' => $data['password'] ?? null,
+                    'from' => $data['from'],
+                    'alias' => $data['alias'],
+                    'timeout' => $data['timeout'],
+                    'security' => $data['security'],
+                    'email_test' => $data['email_test'],
                     'updated_by' => auth()->id(),
                 ];
 
