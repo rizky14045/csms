@@ -543,6 +543,7 @@ class UserService
                     'end_date' => $data['end_date'],
                     'contract_number'=> $data['contract_number'],
                     'user_id' => $user_id,
+                    'unit_id' => $data['unit_id'] ?? auth()->user()->unit_id,
                     'created_by' => auth()->id(),
                 ]);
             }
