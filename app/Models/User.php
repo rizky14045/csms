@@ -60,6 +60,9 @@ class User extends Authenticatable
     }
     public function vendor()
     {
-        return $this->hasOne(Vendor::class, 'user_id', 'id');
+        // A vendor/BUJP user can have multiple contract rows over time
+        // (a new one is added each time a contract is renewed/created).
+        // Always resolve to the most recently created contract.
+        return $this->hasOne(Vendor::class, 'user_id', 'id')->latestOfMany();
     }
 }
