@@ -56,13 +56,38 @@
                             <label class="form-check-label" for="is_ldap">Login via LDAP</label>
                         </div>
 
+                        {{-- Password --}}
+                        <div class="mb-3" id="passwordContainer">
+                            <label class="form-label fw-semibold">Password</label>
+                            <div class="input-group">
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Kosongkan jika tidak ingin mengubah password">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i data-feather="eye" id="eyeIcon"></i>
+                                </button>
+                            </div>
+                            <div id="passwordFeedback" class="mt-2 ps-1 d-flex flex-column gap-1"></div>
+                            <div class="form-text">Kosongkan jika tidak ingin mengubah password.</div>
+                        </div>
+
+                        {{-- Confirm --}}
+                        <div class="mb-4" id="passwordConfirmationContainer">
+                            <label class="form-label fw-semibold">Konfirmasi Password</label>
+                            <div class="input-group">
+                                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Ulangi password baru">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePasswordConfirmation">
+                                    <i data-feather="eye" id="eyeIconConfirmation"></i>
+                                </button>
+                            </div>
+                            <div id="passwordMatchFeedback" class="mt-2 ps-1"></div>
+                        </div>
+
                         {{-- Unit --}}
                         <div class="mb-4" id="unitContainer"
                             style="display: {{ in_array(optional($user->roles->first())->id, [2, 3]) ? 'block' : 'none' }}">
                             <label class="form-label fw-semibold">Unit</label>
                             <select id="unitSelect" name="unit_id" class="form-select">
-                                @isset($units)
-                                    @foreach ($units as $unit)
+                                @isset($unit_lists)
+                                    @foreach ($unit_lists as $unit)
                                         <option value="{{ $unit->id }}" {{ $user->unit_id == $unit->id ? 'selected' : '' }}>
                                             {{ $unit->name }}
                                         </option>
@@ -94,6 +119,28 @@
             const $role = $('#roleSelect');
             const $unitContainer = $('#unitContainer');
             const $unit = $('#unitSelect');
+
+            const $isLdap = $('#is_ldap');
+            const $password = $('#password');
+            const $passwordConfirmation = $('#password_confirmation');
+            const $passwordContainer = $('#passwordContainer');
+            const $passwordConfirmationContainer = $('#passwordConfirmationContainer');
+
+            // ================= TOGGLE PASSWORD (LDAP) =================
+            function togglePasswordVisibility() {
+                const isLdap = $isLdap.is(':checked');
+
+                $passwordContainer.toggle(!isLdap);
+                $passwordConfirmationContainer.toggle(!isLdap);
+
+                if (isLdap) {
+                    $password.val('');
+                    $passwordConfirmation.val('');
+                }
+            }
+
+            $isLdap.on('change', togglePasswordVisibility);
+            togglePasswordVisibility();
 
             // ================= TOGGLE UNIT =================
             function toggleUnitByRole() {
@@ -182,5 +229,8 @@
             // toggleUnitByRole();
 
         });
+
+        // ================= PASSWORD CHECKER =================
+        checkPasswordStrength('password', 'passwordFeedback', 'password_confirmation', 'passwordMatchFeedback');
     </script>
 @endsection

@@ -36,7 +36,9 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $users = $this->userService->getAllUser(10, true);
+        $roleId = $request->role;
+
+        $users = $this->userService->getAllUser(10, true, null, false, null, false, $roleId);
         $status = getStatus($users);
         if (!$status) {
             $message = getMsgError($users);
@@ -45,6 +47,10 @@ class UserController extends Controller
         }
         $data['users'] = getPaginate($users);
         $data['request'] = $request;
+
+        $roles = $this->roleService->getAllRole(0, false);
+        $data['roles'] = getData($roles);
+        $data['selectedRole'] = $roleId;
 
         return view('users.index', $data);
     }
@@ -80,8 +86,8 @@ class UserController extends Controller
         if($user->type == 'user' || $user->type == 'pusat') {
             $unit = Unit::where('id', $user->unit_id)->first();
             $data['type_unit'] = $unit->type;
-            $units = Unit::select('id','name')->where('type', $unit->type)->get();
-            $data['units'] = $units;
+            $unit_lists = Unit::select('id','name')->where('type', $unit->type)->get();
+            $data['unit_lists'] = $unit_lists;
         }
         return view('users.edit', $data);
     }

@@ -30,7 +30,9 @@ class UserService
         $paginate = true,
         $user_type = null,
         $only_my_vendor = false,
-        $unit_id = null
+        $unit_id = null,
+        $excludeSelf = true,
+        $roleId = null
     )
     {
         try {
@@ -54,8 +56,11 @@ class UserService
             /**
              * ✅ Query awal
              */
-            $query = User::with($with)
-                ->where('id', '!=', auth()->id());
+            $query = User::with($with);
+
+            if ($excludeSelf) {
+                $query->where('id', '!=', auth()->id());
+            }
 
             /**
              * 🔥 Filter ONLY MY VENDOR
@@ -73,6 +78,13 @@ class UserService
 
             if ($unit_id) {
                 $query->where('unit_id', $unit_id);
+            }
+
+            // 🎭 Filter role
+            if (!empty($roleId)) {
+                $query->whereHas('roles', function ($q) use ($roleId) {
+                    $q->where('roles.id', $roleId);
+                });
             }
 
             // 🔍 Search
@@ -392,6 +404,8 @@ class UserService
             }else{
                 $type = 'user';
             }
+
+            $unit_id = $data['unit_id'] ?? $user->unit_id;
 
             $updateData = [
                 'name'       => $data['name'],

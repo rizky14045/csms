@@ -112,14 +112,25 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>Latitude</label>
-                                        <input type="text" id="latitude" name="latitude"
-                                            value="{{ $fasum->latitude ?? '' }}" class="form-control">
+                                        <input type="number" step="any" id="latitude" name="latitude"
+                                            min="-11" max="6.5" placeholder="Contoh: -6.914744"
+                                            value="{{ old('latitude', $fasum->latitude) }}"
+                                            class="form-control @error('latitude') is-invalid @enderror" required>
+                                        @error('latitude')
+                                            <div class="error text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-6">
                                         <label>Longitude</label>
-                                        <input type="text" id="longitude" name="longitude"
-                                            value="{{ $fasum->longitude ?? '' }}" class="form-control">
+                                        <input type="number" step="any" id="longitude" name="longitude"
+                                            min="95" max="141" placeholder="Contoh: 107.609810"
+                                            value="{{ old('longitude', $fasum->longitude) }}"
+                                            class="form-control @error('longitude') is-invalid @enderror" required>
+                                        @error('longitude')
+                                            <div class="error text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
+                                    <div class="form-text">Bisa diisi manual, atau klik lokasi langsung di peta di bawah.</div>
                                 </div>
 
                                 {{-- MAP --}}
@@ -207,6 +218,21 @@
             });
 
             roleSelect.addEventListener('change', toggleMap);
+
+            // INPUT MANUAL LAT/LONG -> SYNC KE MARKER PETA
+            function syncMarkerFromInput() {
+                let lat = parseFloat(document.getElementById('latitude').value);
+                let lng = parseFloat(document.getElementById('longitude').value);
+
+                if (isNaN(lat) || isNaN(lng)) return;
+
+                if (marker) map.removeLayer(marker);
+                marker = L.marker([lat, lng]).addTo(map);
+                map.setView([lat, lng], Math.max(map.getZoom(), 13));
+            }
+
+            document.getElementById('latitude').addEventListener('change', syncMarkerFromInput);
+            document.getElementById('longitude').addEventListener('change', syncMarkerFromInput);
 
             // ======================
             // PROVINCE
