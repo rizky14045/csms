@@ -25,7 +25,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('user.marturity.update',['marturity' =>$marturity->id])}}" class="my-4" method="POST" id="form-marturity" onsubmit="confirmSave('form-marturity', 'Data marturity akan disimpan')">
+                <form action="{{route('user.marturity.update',['marturity' =>$marturity->id])}}" class="my-4" method="POST" id="form-marturity" onsubmit="confirmSave('form-marturity', 'Data maturity akan disimpan')">
                     @csrf
                     @method('PATCH')
                     <!-- Formulir Pendaftaran -->

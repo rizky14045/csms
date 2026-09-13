@@ -238,7 +238,7 @@
                                 @endcan
                                 @can('view.marturity.area')
                                     <li>
-                                        <a href="{{ route('admin.marturity-area.index') }}" class="tp-link">Marturity</a>
+                                        <a href="{{ route('admin.marturity-area.index') }}" class="tp-link">Maturity</a>
                                     </li>
                                 @endcan
                                 @can('view.kpi.area')

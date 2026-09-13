@@ -116,7 +116,7 @@ Route::prefix('admin')->group(function () {
             Route::delete('{level_assesment}/delete/{question_assesment}', [LevelAssesmentController::class, 'destroy'])->name('admin.level-assesment.destroy');
         });
 
-        Route::prefix('marturity-area')->group(function () {
+        Route::prefix('maturity-area')->group(function () {
             Route::get('/', [MarturityAreaController::class, 'index'])->name('admin.marturity-area.index');
             Route::get('/create', [MarturityAreaController::class, 'create'])->name('admin.marturity-area.create');
             Route::post('/store', [MarturityAreaController::class, 'store'])->name('admin.marturity-area.store');
@@ -125,7 +125,7 @@ Route::prefix('admin')->group(function () {
             Route::delete('/{area}/delete', [MarturityAreaController::class, 'destroy'])->name('admin.marturity-area.destroy');
         });
 
-        Route::prefix('marturity-sub-area')->group(function () {
+        Route::prefix('maturity-sub-area')->group(function () {
             Route::get('/create/{area}', [MarturitySubAreaController::class, 'create'])->name('admin.marturity-sub-area.create');
             Route::post('/store/{area}', [MarturitySubAreaController::class, 'store'])->name('admin.marturity-sub-area.store');
             Route::get('/{sub_area}/edit/{area}', [MarturitySubAreaController::class, 'edit'])->name('admin.marturity-sub-area.edit');
@@ -133,7 +133,7 @@ Route::prefix('admin')->group(function () {
             Route::delete('/{sub_area}/delete/{area}', [MarturitySubAreaController::class, 'destroy'])->name('admin.marturity-sub-area.destroy');
         });
 
-        Route::prefix('marturity-level')->group(function () {
+        Route::prefix('maturity-level')->group(function () {
             Route::get('/create/{sub_area}', [MarturityLevelController::class, 'create'])->name('admin.marturity-level.create');
             Route::post('/store/{sub_area}', [MarturityLevelController::class, 'store'])->name('admin.marturity-level.store');
             Route::get('/{level}/edit/{sub_area}', [MarturityLevelController::class, 'edit'])->name('admin.marturity-level.edit');
@@ -141,7 +141,7 @@ Route::prefix('admin')->group(function () {
             Route::delete('/{level}/delete/{sub_area}', [MarturityLevelController::class, 'destroy'])->name('admin.marturity-level.destroy');
         });
 
-        Route::prefix('marturity-note')->group(function () {
+        Route::prefix('maturity-note')->group(function () {
             Route::get('/create/{level}', [MarturityNoteController::class, 'create'])->name('admin.marturity-note.create');
             Route::post('/store/{level}', [MarturityNoteController::class, 'store'])->name('admin.marturity-note.store');
             Route::get('/{note}/edit/{level}', [MarturityNoteController::class, 'edit'])->name('admin.marturity-note.edit');

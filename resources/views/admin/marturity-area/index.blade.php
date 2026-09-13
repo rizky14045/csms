@@ -60,12 +60,12 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Marturity</h4>
+        <h4 class="fs-18 fw-semibold m-0">Maturity</h4>
     </div>
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Data Marturity</li>
+            <li class="breadcrumb-item active">Data Maturity</li>
         </ol>
     </div>
 </div>
@@ -76,7 +76,7 @@
             <div class="card-body">
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="m-0 fw-semibold text-dark">Struktur Marturity Area</h5>
+                    <h5 class="m-0 fw-semibold text-dark">Struktur Maturity Area</h5>
                     @can('create.marturity.area')
                     <a href="{{route('admin.marturity-area.create')}}" class="btn btn-sm btn-primary">
                         <i data-feather="plus" style="width:14px;height:14px;margin-right:4px;"></i>Tambah Area
