@@ -30,7 +30,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <a href="{{route('user.assesment.index')}}" class="btn btn-danger">Kembali</a>
-                                <h4 class="text-center pb-4 fw-bold">Hasil Assesment {{$assesment['vendor']['name']}} pada Triwulan Ke {{$assesment['triwulan']}} Tahun {{date('Y', strtotime($assesment['date']))}}</h4>
+                                <h4 class="text-center pb-4 fw-bold">Hasil Assesment {{$assesment['vendor']['name']}} pada Triwulan Ke {{$assesment['triwulan']}} Tahun {{$assesment['year']}}</h4>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <table class="table table-bordered text-center align-middle">
