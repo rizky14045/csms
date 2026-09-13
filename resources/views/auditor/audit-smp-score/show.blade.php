@@ -6,7 +6,7 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
   <div class="flex-grow-1 d-flex align-items-center gap-2">
-    <a href="{{ route('auditor.audit-smp-score.index') }}" class="text-muted text-decoration-none">
+    <a href="{{ route('user.audit-smp-score.index') }}" class="text-muted text-decoration-none">
       <i data-feather="arrow-left" style="width:18px;height:18px;"></i>
     </a>
     <h4 class="fs-18 fw-semibold m-0">Data Audit {{ $auditData->unit->name }}</h4>
@@ -15,7 +15,7 @@
   <div class="text-end">
     <ol class="breadcrumb m-0 py-0">
       <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-      <li class="breadcrumb-item"><a href="{{route('auditor.audit-smp-score.index')}}">Data Audit SMP</a></li>
+      <li class="breadcrumb-item"><a href="{{route('user.audit-smp-score.index')}}">Data Audit SMP</a></li>
       <li class="breadcrumb-item active">Detail</li>
     </ol>
   </div>
