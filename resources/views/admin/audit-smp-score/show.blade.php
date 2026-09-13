@@ -51,10 +51,6 @@
                 <th rowspan="2">Rekomendasi</th>
                 <th rowspan="2">Due Date</th>
                 <th rowspan="2">PIC</th>
-
-                @if($auditData->status == 0)
-                <th rowspan="2">Action</th>
-                @endif
               </tr>
               <tr>
                 {{-- SELF --}}
@@ -157,23 +153,10 @@
                   {{ number_format($nilaiElemenSelf,2) }}%
                 </td>
 
-                {{-- ================= AUDIT (TIDAK DIUBAH) ================= --}}
-                @if ($auditData->status != 0)
+                {{-- ================= AUDIT (READ-ONLY, halaman admin cuma tampilan) ================= --}}
                 <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgAudit }}; color: #fff;">
                   {{ $kriteria->pencapaian_nilai_kriteria ?? '' }}
                 </td>
-                @else
-                <form action="{{ route('auditor.audit-smp-score.update-achievement', $kriteria->id ?? 0) }}" method="POST" id="form-kriteria-{{ $kriteria->id ?? 'new' }}" onsubmit="confirmSave('form-kriteria-{{ $kriteria->id ?? 'new' }}', 'Data akan disimpan')">
-                  @csrf
-                  @method('PUT')
-                  <td rowspan="{{ $evidenceCount }}" style="background-color: {{ $bgAudit }}; color: #fff;">
-                    <div class="d-flex" style="gap: 5px; align-items: center; justify-content: center;">
-                      <input type="text" name="pencapaian_nilai_kriteria_{{ $kriteria->id }}" value="{{ old('pencapaian_nilai_kriteria_' . $kriteria->id, $kriteria->pencapaian_nilai_kriteria ?? '') }}" class="form-control" style="background-color: {{ $bgAudit }}; color: #fff;">
-                      <button type="submit" class="btn btn-primary"><i data-feather="check"></i></button>
-                    </div>
-                  </td>
-                </form>
-                @endif
 
                 <td rowspan="{{ $evidenceCount }}">
                   {{ number_format($nilaiElemen, 2) }}%
@@ -188,36 +171,24 @@
 
                 <td>{{ $evidence->name ?? '-' }}</td>
 
-                <td>
+                <td style="min-width:150px;">
                   @if(isset($evidence->evidence_file) && $evidence->evidence_file != '')
-                  <a href="/uploads/evidence_file/{{ $evidence->evidence_file }}" target="_blank" class="btn btn-primary">Lihat File</a>
+                  <a href="/uploads/evidence_file/{{ $evidence->evidence_file }}" target="_blank" class="btn btn-primary btn-sm">Lihat File</a>
                   @else
                   -
                   @endif
                 </td>
 
-                @if($auditData->status != 0)
                 <td>{{ $evidence->temuan ?? '-' }}</td>
                 <td>{{ $evidence->rekomendasi ?? '-' }}</td>
-                <td>{{ isset($evidence->due_date) ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y') : '' }}</td>
+                <td>{{ isset($evidence->due_date) ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y') : '-' }}</td>
                 <td>{{ $evidence->pic ?? '-' }}</td>
-                @else
-                <form action="{{ route('auditor.audit-smp-score.update', $evidence->id ?? 0) }}" method="POST">
-                  @csrf
-                  @method('PUT')
-                  <td><textarea name="temuan">{{ $evidence->temuan ?? '' }}</textarea></td>
-                  <td><textarea name="rekomendasi">{{ $evidence->rekomendasi ?? '' }}</textarea></td>
-                  <td><input type="date" name="due_date"></td>
-                  <td><input type="text" name="pic"></td>
-                  <td><button class="btn btn-primary">Update</button></td>
-                </form>
-                @endif
 
               </tr>
               @endforeach
               @endforeach
 
-              @php $trailCols = ($auditData->status == 0) ? 9 : 8; @endphp
+              @php $trailCols = 8; @endphp
               <tr>
                 <td colspan="5" style="background:#5DADE2;">SubTotal Elemen</td>
                 <td>{{ number_format($subTotalElemen,2) }}%</td>
