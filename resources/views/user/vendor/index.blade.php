@@ -45,7 +45,7 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$contract->user->name ?? ''}}</td>
-                                    <td>{{$contract->user->bujpProfile->npwp ?? ''}}</td>
+                                    <td>{{$contract->user->bujp_profile->npwp ?? ''}}</td>
                                     <td>{{$contract->user->email ?? ''}}</td>
                                     <td>{{$contract->contract_number ?? ''}}</td>
                                     <td>{{$contract->start_date ? \Carbon\Carbon::parse($contract->start_date)->format('d-m-Y') : ''}}</td>
