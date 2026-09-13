@@ -34,9 +34,24 @@
                                 <div class="mb-3 col-md-3">
                                     <input type="date" class="form-control d-inline" id="date" name="date" value="{{request('date', '')}}">
                                 </div>
+                                <div class="mb-3 col-md-3">
+                                    <select name="unit_id" class="form-select">
+                                        <option value="">Semua Unit</option>
+                                        @foreach ($unit_lists as $unit)
+                                            <option value="{{ $unit->id }}" {{ (string) $unitId === (string) $unit->id ? 'selected' : '' }}>
+                                                {{ $unit->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 <div class="button-search">
                                     <button type="submit" class="btn btn-primary d-inline">Cari</button>
                                 </div>
+                                @if ($unitId || request('date'))
+                                    <div>
+                                        <a href="{{ route('admin.keamanan.index') }}" class="btn btn-outline-secondary d-inline">Reset</a>
+                                    </div>
+                                @endif
                             </div>
                         </form>
                     </div>

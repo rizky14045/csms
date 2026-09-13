@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Kpi;
 use App\Models\KpiArea;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Kpi\KpiService;
@@ -20,8 +21,12 @@ class KeamananController extends Controller
     }
 
     public function index(){
-        $result = $this->kpiService->getAllKpi(10, true, null, ['unit', 'getInvalidItemsNotesByUnit'], true);
+        $unitId = request('unit_id');
+
+        $result = $this->kpiService->getAllKpi(10, true, $unitId, ['unit', 'getInvalidItemsNotesByUnit'], true);
         $data['kpis'] = getPaginate($result);
+        $data['unit_lists'] = Unit::orderBy('name', 'asc')->get();
+        $data['unitId'] = $unitId;
         return view('admin.keamanan.index',$data);
     }
     public function show(Kpi $kpi){
