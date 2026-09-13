@@ -8,6 +8,7 @@ class SecurityExternalValidation
     {
         return [
             'name' => 'required',
+            'gender' => 'required|in:Pria,Perempuan',
             'instansi' => 'required',
             'regional_unit' => 'required',
             'warrant_number' => 'required',
@@ -30,6 +31,8 @@ class SecurityExternalValidation
     {
         $messages = [
             'name.required' => 'Nama harus diisi!',
+            'gender.required' => 'Jenis kelamin harus diisi!',
+            'gender.in' => 'Jenis kelamin tidak valid!',
             'instansi.required' => 'Instansi harus diisi!',
             'regional_unit.required' => 'Satuan wilayah harus diisi!',
             'warrant_number.required' => 'Nomor surat perintah harus diisi!',
