@@ -314,7 +314,7 @@ class AssesmentController extends Controller
             abort(404);
         }
 
-        if($assesment->send_status != 0){
+        if($assesment->send_status != 0 && $assesment->send_status != 3){
             Alert::warning('Warning', 'Assesment sudah dikirm!');
             return redirect()->route('bujp.assesment.index');
         }
