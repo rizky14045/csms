@@ -41,15 +41,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($vendors as $vendor)    
+                            @foreach ($vendors as $contract)
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
-                                    <td>{{$vendor->name}}</td>
-                                    <td>{{$vendor->bujp_profile->npwp ?? ''}}</td>
-                                    <td>{{$vendor->email}}</td>
-                                    <td>{{$vendor->vendor->contract_number ?? ''}}</td>
-                                    <td>{{$vendor->vendor->start_date ? \Carbon\Carbon::parse($vendor->vendor->start_date)->format('d-m-Y') : ''}}</td>
-                                    <td>{{$vendor->vendor->end_date ? \Carbon\Carbon::parse($vendor->vendor->end_date)->format('d-m-Y') : ''}}</td>
+                                    <td>{{$contract->user->name ?? ''}}</td>
+                                    <td>{{$contract->user->bujpProfile->npwp ?? ''}}</td>
+                                    <td>{{$contract->user->email ?? ''}}</td>
+                                    <td>{{$contract->contract_number ?? ''}}</td>
+                                    <td>{{$contract->start_date ? \Carbon\Carbon::parse($contract->start_date)->format('d-m-Y') : ''}}</td>
+                                    <td>{{$contract->end_date ? \Carbon\Carbon::parse($contract->end_date)->format('d-m-Y') : ''}}</td>
                                 </tr>
                             @endforeach
                         </tbody>

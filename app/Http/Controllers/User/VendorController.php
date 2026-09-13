@@ -30,7 +30,7 @@ class VendorController extends Controller
 
     public function index(){
 
-        $result = $this->userService->getAllUser(10, true, 'bujp', true);
+        $result = $this->userService->getAllVendorContracts(10, true);
         $data['vendors'] = getPaginate($result);
         return view('user.vendor.index',$data);
 

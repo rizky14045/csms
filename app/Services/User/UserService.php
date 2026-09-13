@@ -148,6 +148,54 @@ class UserService
         }
     }
 
+    /**
+     * List every vendor contract (one row per contract) belonging to the
+     * current admin's vendors, newest first. Unlike getAllUser(), a vendor
+     * with multiple contracts appears once per contract instead of being
+     * collapsed into a single row.
+     */
+    public function getAllVendorContracts($limit = 10, $paginate = true)
+    {
+        try {
+            $search = request('search', '');
+
+            $query = Vendor::with(['user.bujpProfile'])
+                ->whereHas('user', function ($q) {
+                    $q->where('type', 'bujp');
+                })
+                ->where('parent_user_id', auth()->id());
+
+            if (!empty($search)) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'ILIKE', "%{$search}%");
+                });
+            }
+
+            $query->orderByDesc('created_at');
+
+            $contracts = $paginate
+                ? $query->paginate($limit)->withQueryString()
+                : ($limit > 0 ? $query->limit($limit)->get() : $query->get());
+
+            return JsonResponse::success($contracts, 'Vendor contracts found', 200);
+
+        } catch (\Exception $e) {
+
+            $this->logService->log(
+                'vendor.fetch_all',
+                'Failed to fetch vendor contracts',
+                500,
+                ['error' => $e->getMessage()]
+            );
+
+            return JsonResponse::error(
+                $e->getMessage(),
+                'Vendor contracts not found',
+                500
+            );
+        }
+    }
+
     public function createUser(array $data, $withVendor = false)
     {
         DB::beginTransaction();

@@ -65,4 +65,10 @@ class User extends Authenticatable
         // Always resolve to the most recently created contract.
         return $this->hasOne(Vendor::class, 'user_id', 'id')->latestOfMany();
     }
+
+    public function vendors()
+    {
+        // All contract rows for this vendor/BUJP user, newest first.
+        return $this->hasMany(Vendor::class, 'user_id', 'id')->orderByDesc('created_at');
+    }
 }
