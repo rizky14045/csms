@@ -33,11 +33,10 @@
           <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#c{{$category->id}}">
             {{$category->category_name}}
 
-            @if($category->invalid_questions_count > 0)
-            <span style="margin-left:8px; background:red; color:white; padding:3px 6px; border-radius:4px;">
-              {{$category->invalid_questions_count}} belum diisi
+            <span id="invalid-badge-{{ $category->id }}"
+                  style="margin-left:8px; background:red; color:white; padding:3px 6px; border-radius:4px; {{ $category->invalid_questions_count > 0 ? '' : 'display:none;' }}">
+              <span id="invalid-count-{{ $category->id }}">{{$category->invalid_questions_count}}</span> belum diisi
             </span>
-            @endif
           </button>
         </h2>
 
@@ -65,8 +64,10 @@
                 <tbody>
 
                 @foreach ($category->questions as $question)
-
-                <tr>
+                @php
+                    $isQuestionInvalid = empty($question->evaluation_unit);
+                @endphp
+                <tr data-category-id="{{ $category->id }}" data-invalid="{{ $isQuestionInvalid ? '1' : '0' }}">
 
                   {{-- FORM PER ROW (VALID) --}}
                   <form id="form-{{$question->id}}"
@@ -211,15 +212,12 @@
             @method('PATCH')
             <button type="submit" class="btn btn-warning">Revisi</button>
         </form>
-        @if(count($assesment->getInvalidItemsQuestionByUnit) == 0)
-            <form action="{{route('user.assesment.send',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
-                @csrf
-                @method('PATCH')
-                <button type="submit" class="btn btn-success">Kirim</button>
-            </form>
-        @else
-            <button type="button" style="background-color: gray" class="btn btn-secondary" disabled>Kirim</button>
-        @endif
+        @php $allDone = count($assesment->getInvalidItemsQuestionByUnit) == 0; @endphp
+        <form action="{{route('user.assesment.send',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
+            @csrf
+            @method('PATCH')
+            <button type="submit" id="btn-kirim" class="btn {{ $allDone ? 'btn-success' : 'btn-secondary' }}" {{ $allDone ? '' : 'disabled style=background-color:gray;' }}>Kirim</button>
+        </form>
     </div>
 
   </div>
@@ -317,6 +315,9 @@ async function submitAjax(form, btn) {
             fileCell.innerHTML = `<div style="display:flex; flex-direction:column; gap:4px; align-items:center;">${links}</div>`;
         }
 
+        // 🔥 update badge "X belum diisi" & tombol Kirim, tanpa reload halaman
+        updateInvalidStatus(form, data);
+
         btn.innerHTML = "✔ Updated";
 
         setTimeout(() => {
@@ -330,6 +331,39 @@ async function submitAjax(form, btn) {
 
         btn.innerHTML = original;
         btn.disabled = false;
+    }
+}
+
+// UPDATE BADGE "BELUM DIISI" & TOMBOL KIRIM
+function updateInvalidStatus(form, data) {
+
+    let tr = form.closest('tr');
+    let categoryId = tr.dataset.categoryId;
+
+    let isValid = !!data.evaluation_unit;
+
+    tr.dataset.invalid = isValid ? '0' : '1';
+
+    let remainingInCategory = document.querySelectorAll(
+        `tr[data-category-id="${categoryId}"][data-invalid="1"]`
+    ).length;
+
+    let badge = document.getElementById(`invalid-badge-${categoryId}`);
+    let countEl = document.getElementById(`invalid-count-${categoryId}`);
+
+    if (badge && countEl) {
+        countEl.textContent = remainingInCategory;
+        badge.style.display = remainingInCategory > 0 ? 'inline-block' : 'none';
+    }
+
+    let totalRemaining = document.querySelectorAll('tr[data-invalid="1"]').length;
+    let btnKirim = document.getElementById('btn-kirim');
+
+    if (btnKirim) {
+        btnKirim.disabled = totalRemaining > 0;
+        btnKirim.classList.toggle('btn-success', totalRemaining === 0);
+        btnKirim.classList.toggle('btn-secondary', totalRemaining > 0);
+        btnKirim.style.backgroundColor = totalRemaining > 0 ? 'gray' : '';
     }
 }
 
