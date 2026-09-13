@@ -254,8 +254,9 @@
                                            class="btn btn-success btn-sm">
                                             ⬇ Download File
                                         </a>
+                                    @else
+                                        -
                                     @endif
-                                    -
                                 </div>
                                 @endif
 
