@@ -28,7 +28,8 @@ class AuditSmpData extends Model
     {
         return $this->hasMany(AuditSMPScore::class, 'audit_smp_data_id')
             ->where('type', 'header')
-            ->orderBy('created_at', 'asc');
+            ->orderBy('created_at', 'asc')
+            ->orderBy('id', 'asc');
     }
 
     public function unit()

@@ -63,7 +63,7 @@
                     <tr>
                         <th>No</th>
                         <th>Nama</th>
-                        <th>Nilai</th>
+                        <th style="min-width:150px;">Nilai</th>
                         <th>Elemen</th>
                         <th>Nilai</th>
                         <th>Elemen</th>
@@ -136,20 +136,24 @@
 
                                 {{-- SELF AUDIT --}}
                                 <td rowspan="{{ count($evidences) }}"
-                                    style="background:{{ $bgSelf }};color:white;">
+                                    id="self-audit-cell-{{ $kriteria->id }}"
+                                    style="background:{{ $bgSelf }};color:white; min-width:150px;">
 
                                     @if($auditData->status == 0)
 
                                     <form class="ajax-form"
                                           action="{{ route('user.audit-smp-score.update-self-audit',$kriteria->id) }}"
-                                          method="POST">
+                                          method="POST"
+                                          data-header-id="{{ $header->id }}"
+                                          data-bobot="{{ $header->bobot }}"
+                                          data-pembagi="{{ $pembagi }}">
 
                                         @csrf
                                         @method('PUT')
 
                                         <div class="d-flex gap-2 align-items-center">
                                             <select name="pencapaian_nilai_kriteria_self_{{ $kriteria->id }}"
-                                                    class="form-select form-select-sm">
+                                                    class="form-select form-select-sm" style="min-width:70px;">
 
                                                 <option value="0" {{ $nilaiSelf==0?'selected':'' }}>0</option>
                                                 <option value="1" {{ $nilaiSelf==1?'selected':'' }}>1</option>
@@ -170,7 +174,11 @@
                                     @endif
                                 </td>
 
-                                <td rowspan="{{ count($evidences) }}">
+                                <td rowspan="{{ count($evidences) }}"
+                                    id="nilai-elemen-self-{{ $kriteria->id }}"
+                                    class="nilai-elemen-self"
+                                    data-header-id="{{ $header->id }}"
+                                    data-value="{{ $nilaiElemenSelf }}">
                                     {{ number_format($nilaiElemenSelf,2) }}%
                                 </td>
 
@@ -252,7 +260,7 @@
 
                     <tr style="background:#5DADE2;color:white;">
                         <td colspan="4">SubTotal Elemen</td>
-                        <td>{{ number_format($subSelf,2) }}%</td>
+                        <td id="subtotal-self-{{ $header->id }}">{{ number_format($subSelf,2) }}%</td>
                         <td></td>
                         <td>{{ number_format($subAudit,2) }}%</td>
                         <td></td>
@@ -268,7 +276,7 @@
 
                 <tr style="background:#2E86C1;color:white;">
                     <td colspan="4">TOTAL</td>
-                    <td>{{ number_format($grandTotalSelf,2) }}%</td>
+                    <td id="grand-total-self">{{ number_format($grandTotalSelf,2) }}%</td>
                     <td></td>
                     <td>{{ number_format($grandTotalAudit,2) }}%</td>
                     <td></td>
@@ -284,7 +292,7 @@
 
                 <tr style="background:#2E86C1;color:white;">
                     <td colspan="4">KATEGORI</td>
-                    <td style="background:{{ $colorSelf }};color:white;">{{ $kategoriSelf }}</td>
+                    <td id="kategori-self-cell" style="background:{{ $colorSelf }};color:white;">{{ $kategoriSelf }}</td>
                     <td></td>
                     <td style="background:{{ $colorAudit }};color:white;">{{ $kategoriAudit }}</td>
                     <td></td>
@@ -304,6 +312,44 @@
 
 @section('scripts')
 <script>
+
+// ================= HELPER: warna & kategori =================
+function getScoreBgColor(val) {
+    return val == 2 ? '#28a745' : (val == 1 ? '#ffc107' : '#dc3545');
+}
+
+function getKategori(total) {
+    if (total < 55) return { label: 'Kurang', color: '#dc3545' };
+    if (total <= 70) return { label: 'Cukup', color: '#ffc107' };
+    if (total <= 85) return { label: 'Baik', color: '#28a745' };
+    return { label: 'Baik Sekali', color: '#198754' };
+}
+
+// ================= RECALC SUBTOTAL/TOTAL/KATEGORI (SELF) =================
+function recalcSelfTotals(headerId) {
+    let subtotal = 0;
+    document.querySelectorAll(`.nilai-elemen-self[data-header-id="${headerId}"]`).forEach(el => {
+        subtotal += parseFloat(el.dataset.value) || 0;
+    });
+
+    const subtotalEl = document.getElementById('subtotal-self-' + headerId);
+    if (subtotalEl) subtotalEl.textContent = subtotal.toFixed(2) + '%';
+
+    let grandTotal = 0;
+    document.querySelectorAll('[id^="subtotal-self-"]').forEach(el => {
+        grandTotal += parseFloat(el.textContent) || 0;
+    });
+
+    const grandTotalEl = document.getElementById('grand-total-self');
+    if (grandTotalEl) grandTotalEl.textContent = grandTotal.toFixed(2) + '%';
+
+    const kategori = getKategori(grandTotal);
+    const kategoriEl = document.getElementById('kategori-self-cell');
+    if (kategoriEl) {
+        kategoriEl.textContent = kategori.label;
+        kategoriEl.style.background = kategori.color;
+    }
+}
 
 // AJAX NORMAL FORM
 document.querySelectorAll('.ajax-form').forEach(form => {
@@ -344,6 +390,28 @@ document.querySelectorAll('.ajax-form').forEach(form => {
 
             if(!response.ok){
                 throw result;
+            }
+
+            // 🔥 Update warna & perhitungan elemen tanpa reload halaman
+            if (result.data && result.data.pencapaian_nilai_kriteria_self !== undefined) {
+
+                const newVal    = parseInt(result.data.pencapaian_nilai_kriteria_self);
+                const kriteriaId = result.data.id;
+                const headerId   = form.dataset.headerId;
+                const bobot      = parseFloat(form.dataset.bobot);
+                const pembagi    = parseFloat(form.dataset.pembagi);
+
+                const cell = document.getElementById('self-audit-cell-' + kriteriaId);
+                if (cell) cell.style.background = getScoreBgColor(newVal);
+
+                const nilaiElemen = (newVal * bobot) / pembagi;
+                const elemenEl = document.getElementById('nilai-elemen-self-' + kriteriaId);
+                if (elemenEl) {
+                    elemenEl.dataset.value = nilaiElemen;
+                    elemenEl.textContent = nilaiElemen.toFixed(2) + '%';
+                }
+
+                recalcSelfTotals(headerId);
             }
 
             Swal.fire({
