@@ -25,6 +25,7 @@ class SecurityExternalService
             $securityExternal = SecurityExternal::create([
                 'user_id' => auth()->id(),
                 'name' => $data['name'] ?? "",
+                'gender' => $data['gender'] ?? "",
                 'instansi' => $data['instansi'] ?? "",
                 'regional_unit' => $data['regional_unit'] ?? "",
                 'warrant_number' => $data['warrant_number'] ?? "",
@@ -81,6 +82,7 @@ class SecurityExternalService
 
             $updateData = [
                 'name' => $data['name'] ?? "",
+                'gender' => $data['gender'] ?? "",
                 'instansi' => $data['instansi'] ?? "",
                 'regional_unit' => $data['regional_unit'] ?? "",
                 'warrant_number' => $data['warrant_number'] ?? "",
