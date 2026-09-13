@@ -65,6 +65,7 @@
                                         <th style="min-width:230px;" class="text-center">Uraian</th>
                                         <th style="min-width:95px;"  class="text-center">Total Evidence</th>
                                         <th style="min-width:95px;"  class="text-center">Jumlah Evidence</th>
+                                        <th style="min-width:95px;"  class="text-center">Belum Terisi</th>
                                         <th style="min-width:260px;" class="text-center">File Evidence</th>
                                         <th style="min-width:80px;"  class="text-center">Bobot</th>
                                         <th style="min-width:80px;"  class="text-center">Hasil</th>
@@ -84,7 +85,8 @@
                                         $jumlah  = count($files);
                                         $totalEv = max(1, (int)($lvl['total_evidence'] ?? 1));
                                         $calc    = round($jumlah / $totalEv, 4);
-                                        $levelCalcs[] = compact('lvl', 'files', 'jumlah', 'totalEv', 'calc');
+                                        $kurang  = max(0, $totalEv - $jumlah);
+                                        $levelCalcs[] = compact('lvl', 'files', 'jumlah', 'totalEv', 'calc', 'kurang');
                                     }
 
                                     $hasil   = round(array_sum(array_column($levelCalcs, 'calc')), 4);
@@ -112,6 +114,12 @@
                                     <td style="white-space:normal;">{{ $lc['lvl']['description'] }}</td>
                                     <td class="text-center">{{ $lc['totalEv'] }}</td>
                                     <td class="text-center" id="jumlah-{{ $lc['lvl']['id'] }}">{{ $lc['jumlah'] }}</td>
+                                    <td class="text-center">
+                                        <span id="kurang-{{ $lc['lvl']['id'] }}"
+                                              class="badge {{ $lc['kurang'] > 0 ? 'bg-danger' : 'bg-success' }}">
+                                            {{ $lc['kurang'] > 0 ? $lc['kurang'] : 'Lengkap' }}
+                                        </span>
+                                    </td>
 
                                     {{-- FILE CELL — stores all data attrs needed by JS --}}
                                     <td data-level-id="{{ $lc['lvl']['id'] }}"
@@ -255,6 +263,7 @@ function renderFileList(levelId, files, totalEv, subAreaId) {
     const td        = document.querySelector(`td[data-level-id="${levelId}"]`);
     const listEl    = document.getElementById('file-list-'     + levelId);
     const jumlahEl  = document.getElementById('jumlah-'        + levelId);
+    const kurangEl  = document.getElementById('kurang-'        + levelId);
     const calcEl    = document.getElementById('calc-'          + levelId);
     const sectionEl = document.getElementById('upload-section-'+ levelId);
     const deleteUrl = td.dataset.deleteUrl;
@@ -285,6 +294,14 @@ function renderFileList(levelId, files, totalEv, subAreaId) {
 
     // Upload section
     const remaining = Math.max(0, totalEv - jumlah);
+
+    // Badge "Belum Terisi"
+    if (kurangEl) {
+        kurangEl.textContent = remaining > 0 ? remaining : 'Lengkap';
+        kurangEl.classList.toggle('bg-danger', remaining > 0);
+        kurangEl.classList.toggle('bg-success', remaining === 0);
+    }
+
     if (sectionEl) {
         if (remaining > 0) {
             sectionEl.innerHTML = `
