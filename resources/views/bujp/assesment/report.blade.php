@@ -52,7 +52,7 @@
                                                     </tr>
                                                 @endforeach
                                                 <tr class="table-info">
-                                                    <td>Skor Marturity</td>
+                                                    <td>Skor Maturity</td>
                                                     <td colspan="2">{{number_format(collect($categories)->avg('average'),2)}}</td>
                                                 </tr>
                                             </tbody>

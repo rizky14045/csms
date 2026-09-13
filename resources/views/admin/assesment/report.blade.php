@@ -52,14 +52,14 @@
                                                     </tr>
                                                 @endforeach
                                                 <tr class="table-info">
-                                                    <td>Skor Marturity</td>
+                                                    <td>Skor Maturity</td>
                                                     <td colspan="2">{{number_format(collect($categories)->avg('average'),2)}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                     <div class="col-md-6">
-                                        <h4 class="fw-bold text-center">Assesment Marturity Level Pengelolaan Proses Bisnis Pengamanan</h4>
+                                        <h4 class="fw-bold text-center">Assesment Maturity Level Pengelolaan Proses Bisnis Pengamanan</h4>
                                         <div class="mx-auto col-md-9">
                                             <canvas id="myChart"></canvas>
                                         </div>
