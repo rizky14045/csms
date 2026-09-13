@@ -41,6 +41,16 @@
                 <div class="accordion" id="formAccordion">
 
                 @foreach ($areas as $area)
+                @php
+                    $areaInvalidCount = 0;
+                    foreach ($area['sub_areas'] as $sa) {
+                        foreach ($sa['levels'] as $lvl) {
+                            if (empty($lvl['attachment_file'])) {
+                                $areaInvalidCount++;
+                            }
+                        }
+                    }
+                @endphp
                 <div class="accordion-item">
                     <h2 class="accordion-header bg-light">
                         <button class="accordion-button collapsed" type="button"
@@ -48,6 +58,11 @@
                                 data-bs-target="#collapse{{ $area['id'] }}"
                                 aria-expanded="false">
                             {{ $area['name'] }}
+
+                            <span id="invalid-badge-{{ $area['id'] }}"
+                                  style="margin-left:8px; background:red; color:white; padding:3px 6px; border-radius:4px; {{ $areaInvalidCount > 0 ? '' : 'display:none;' }}">
+                              <span id="invalid-count-{{ $area['id'] }}">{{ $areaInvalidCount }}</span> belum diisi
+                            </span>
                         </button>
                     </h2>
 
@@ -209,6 +224,33 @@ const subAreaLevels = {
     @endforeach
 };
 
+// levelId → areaId (untuk update badge "X belum diisi" per Area)
+const levelAreaMap = {
+    @foreach ($areas as $area)
+        @foreach ($area['sub_areas'] as $subArea)
+            @foreach ($subArea['levels'] as $level)
+            {{ $level['id'] }}: {{ $area['id'] }},
+            @endforeach
+        @endforeach
+    @endforeach
+};
+
+function updateAreaInvalidBadge(areaId) {
+    if (!areaId) return;
+
+    const invalidCount = Object.keys(levelAreaMap)
+        .filter(levelId => levelAreaMap[levelId] == areaId && !levelHasFile[levelId])
+        .length;
+
+    const badge   = document.getElementById('invalid-badge-' + areaId);
+    const countEl = document.getElementById('invalid-count-' + areaId);
+
+    if (badge && countEl) {
+        countEl.textContent = invalidCount;
+        badge.style.display = invalidCount > 0 ? 'inline-block' : 'none';
+    }
+}
+
 function updateSubAreaTotals(subAreaId) {
     const levelIds  = subAreaLevels[subAreaId] || [];
     const total     = levelIds.length;
@@ -284,6 +326,7 @@ async function doUpload(levelId) {
 
         levelHasFile[levelId] = true;
         updateSubAreaTotals(subAreaId);
+        updateAreaInvalidBadge(levelAreaMap[levelId]);
 
     } catch (e) {
         Swal.fire('Error', 'Server error', 'error');
