@@ -5,14 +5,18 @@
 @section('content')
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-  <div class="flex-grow-1">
+  <div class="flex-grow-1 d-flex align-items-center gap-2">
+    <a href="{{ route('auditor.audit-smp-score.index') }}" class="text-muted text-decoration-none">
+      <i data-feather="arrow-left" style="width:18px;height:18px;"></i>
+    </a>
     <h4 class="fs-18 fw-semibold m-0">Data Audit {{ $auditData->unit->name }}</h4>
   </div>
 
   <div class="text-end">
     <ol class="breadcrumb m-0 py-0">
       <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-      <li class="breadcrumb-item active">Data Audit</li>
+      <li class="breadcrumb-item"><a href="{{route('auditor.audit-smp-score.index')}}">Data Audit SMP</a></li>
+      <li class="breadcrumb-item active">Detail</li>
     </ol>
   </div>
 </div>
@@ -147,12 +151,16 @@
 
                             {{-- AUDIT ACHIEVEMENT (form tetap seperti existing) --}}
                             <td rowspan="{{ count($evidences) }}"
+                                id="audit-cell-{{ $kriteria->id }}"
                                 style="background-color: {{ $bgAudit }}; min-width:220px;">
 
                                 <form class="ajax-achievement-form"
                                       id="achievement-form-{{ $kriteria->id }}"
                                       action="{{ route('auditor.audit-smp-score.update-achievement', $kriteria->id ?? 0) }}"
-                                      method="POST">
+                                      method="POST"
+                                      data-header-id="{{ $header->id }}"
+                                      data-bobot="{{ $header->bobot }}"
+                                      data-pembagi="{{ $pembagi }}">
 
                                     @csrf
                                     @method('PUT')
@@ -185,7 +193,11 @@
 
                             @endif
 
-                            <td rowspan="{{ count($evidences) }}">
+                            <td rowspan="{{ count($evidences) }}"
+                                id="nilai-elemen-audit-{{ $kriteria->id }}"
+                                class="nilai-elemen-audit"
+                                data-header-id="{{ $header->id }}"
+                                data-value="{{ $nilaiElemen }}">
                                 {{ number_format($nilaiElemen,2) }}%
                             </td>
 
@@ -271,7 +283,7 @@
                     <td colspan="4">SubTotal Elemen</td>
                     <td>{{ number_format($subSelf,2) }}%</td>
                     <td></td>
-                    <td>{{ number_format($subAudit,2) }}%</td>
+                    <td id="subtotal-audit-{{ $header->id }}">{{ number_format($subAudit,2) }}%</td>
                     <td></td>
                     <td colspan="6"></td>
                 </tr>
@@ -287,7 +299,7 @@
                   <td colspan="4">TOTAL</td>
                   <td>{{ number_format($grandTotalSelf,2) }}%</td>
                   <td></td>
-                  <td>{{ number_format($grandTotalAudit,2) }}%</td>
+                  <td id="grand-total-audit">{{ number_format($grandTotalAudit,2) }}%</td>
                   <td></td>
                   <td colspan="6"></td>
               </tr>
@@ -303,7 +315,7 @@
                   <td colspan="4">KATEGORI</td>
                   <td style="background:{{ $colorSelf }};color:white;">{{ $kategoriSelf }}</td>
                   <td></td>
-                  <td style="background:{{ $colorAudit }};color:white;">{{ $kategoriAudit }}</td>
+                  <td id="kategori-audit-cell" style="background:{{ $colorAudit }};color:white;">{{ $kategoriAudit }}</td>
                   <td></td>
                   <td colspan="6"></td>
               </tr>
@@ -323,6 +335,48 @@
 
 @section('scripts')
 <script>
+
+// ======================================
+// HELPER: warna & kategori
+// ======================================
+function getScoreBgColor(val) {
+    return val == 2 ? '#28a745' : (val == 1 ? '#ffc107' : '#dc3545');
+}
+
+function getKategori(total) {
+    if (total < 55) return { label: 'Kurang', color: '#dc3545' };
+    if (total <= 70) return { label: 'Cukup', color: '#ffc107' };
+    if (total <= 85) return { label: 'Baik', color: '#28a745' };
+    return { label: 'Baik Sekali', color: '#198754' };
+}
+
+// ======================================
+// RECALC SUBTOTAL/TOTAL/KATEGORI (AUDIT)
+// ======================================
+function recalcAuditTotals(headerId) {
+    let subtotal = 0;
+    document.querySelectorAll(`.nilai-elemen-audit[data-header-id="${headerId}"]`).forEach(el => {
+        subtotal += parseFloat(el.dataset.value) || 0;
+    });
+
+    const subtotalEl = document.getElementById('subtotal-audit-' + headerId);
+    if (subtotalEl) subtotalEl.textContent = subtotal.toFixed(2) + '%';
+
+    let grandTotal = 0;
+    document.querySelectorAll('[id^="subtotal-audit-"]').forEach(el => {
+        grandTotal += parseFloat(el.textContent) || 0;
+    });
+
+    const grandTotalEl = document.getElementById('grand-total-audit');
+    if (grandTotalEl) grandTotalEl.textContent = grandTotal.toFixed(2) + '%';
+
+    const kategori = getKategori(grandTotal);
+    const kategoriEl = document.getElementById('kategori-audit-cell');
+    if (kategoriEl) {
+        kategoriEl.textContent = kategori.label;
+        kategoriEl.style.background = kategori.color;
+    }
+}
 
 // ======================================
 // CLEAR ERROR
@@ -435,6 +489,30 @@ async function submitAjax(form, btn)
             btn.innerHTML = originalText;
 
             return;
+        }
+
+        // =========================
+        // UPDATE WARNA & PERHITUNGAN ELEMEN (khusus form achievement)
+        // =========================
+        if (result.data && result.data.pencapaian_nilai_kriteria !== undefined) {
+
+            const newVal     = parseInt(result.data.pencapaian_nilai_kriteria);
+            const kriteriaId = result.data.id;
+            const headerId   = form.dataset.headerId;
+            const bobot      = parseFloat(form.dataset.bobot);
+            const pembagi    = parseFloat(form.dataset.pembagi);
+
+            const cell = document.getElementById('audit-cell-' + kriteriaId);
+            if (cell) cell.style.background = getScoreBgColor(newVal);
+
+            const nilaiElemen = (newVal * bobot) / pembagi;
+            const elemenEl = document.getElementById('nilai-elemen-audit-' + kriteriaId);
+            if (elemenEl) {
+                elemenEl.dataset.value = nilaiElemen;
+                elemenEl.textContent = nilaiElemen.toFixed(2) + '%';
+            }
+
+            recalcAuditTotals(headerId);
         }
 
         // =========================
