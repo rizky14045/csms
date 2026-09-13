@@ -33,10 +33,7 @@ class Assesment extends Model
         )->where(function ($q) {
             $q->whereNull('level')
             ->orWhere('level', 0)
-            ->orWhereNull('attachment_file')
-            ->orWhereNull('note')
-            ->orWhere('note', '')
-            ->orWhereRaw("TRIM(note) = ''");
+            ->orWhereNull('attachment_file');
         });
     }
 
