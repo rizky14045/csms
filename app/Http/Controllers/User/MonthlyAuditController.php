@@ -31,6 +31,7 @@ use App\Models\Vulnerability;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class MonthlyAuditController extends Controller
@@ -253,7 +254,11 @@ class MonthlyAuditController extends Controller
                             'user_id' => $userId,
                             'monthly_program_id' => $monthlyProgram->id,
                             'program_id' => $program->id,
-                            'main_program_id' => $item->id
+                            'main_program_id' => $item->id,
+                            'start_month' => $item->start_month,
+                            'start_week' => $item->start_week,
+                            'end_month' => $item->end_month,
+                            'end_week' => $item->end_week,
                         ]);
                     }
                     
@@ -267,6 +272,15 @@ class MonthlyAuditController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollback();
+
+            Log::error('monthly-audit.store failed', [
+                'user_id'     => Auth::id(),
+                'report_date' => $request->report_date,
+                'error'       => $th->getMessage(),
+                'file'        => $th->getFile(),
+                'line'        => $th->getLine(),
+            ]);
+
             Alert::error('Tambah Gagal', 'Laporan bulanan gagal dibuat!');
             return redirect()->route('user.monthly-audit.index');
         }
