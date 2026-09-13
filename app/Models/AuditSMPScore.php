@@ -30,28 +30,32 @@ class AuditSMPScore extends Model
     public function children()
     {
         return $this->hasMany(AuditSMPScore::class, 'parent_id')
-            ->orderBy('created_at', 'asc');
+            ->orderBy('created_at', 'asc')
+            ->orderBy('id', 'asc');
     }
 
     public function pernyataan()
     {
         return $this->hasMany(AuditSMPScore::class, 'parent_id')
             ->where('type', 'pernyataan')
-            ->orderBy('created_at', 'asc');
+            ->orderBy('created_at', 'asc')
+            ->orderBy('id', 'asc');
     }
 
     public function kriteria()
     {
         return $this->hasMany(AuditSMPScore::class, 'parent_id')
             ->where('type', 'kriteria')
-            ->orderBy('created_at', 'asc');
+            ->orderBy('created_at', 'asc')
+            ->orderBy('id', 'asc');
     }
 
     public function evidence()
     {
         return $this->hasMany(AuditSMPScore::class, 'parent_id')
             ->where('type', 'evidence')
-            ->orderBy('created_at', 'asc');
+            ->orderBy('created_at', 'asc')
+            ->orderBy('id', 'asc');
     }
 
 }
