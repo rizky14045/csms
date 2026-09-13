@@ -245,7 +245,18 @@
                                 </div>
 
                                 @else
+                                    <div id="upload-file-{{ $evidence->id ?? 0 }}"
+                                     style="display:flex; flex-direction:column; gap:6px;">
+
+                                    @if(isset($evidence->evidence_file) && $evidence->evidence_file != '')
+                                        <a href="{{ asset('uploads/evidence_file/' . $evidence->evidence_file) }}"
+                                           target="_blank"
+                                           class="btn btn-success btn-sm">
+                                            ⬇ Download File
+                                        </a>
+                                    @endif
                                     -
+                                </div>
                                 @endif
 
                             </td>
