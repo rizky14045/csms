@@ -106,6 +106,9 @@
                                                     👁 Show
                                                 </a>
                                                 @can('send.marturity.unit')
+                                                {{--
+                                                Dinonaktifkan sesuai permintaan: Marturity boleh dikirim
+                                                walau belum semua catatan/evidence terisi.
                                                 @if(count($marturity->get_invalid_items_notes_by_unit) == 0)
                                                 <form action="{{ route('user.marturity.send',['marturity'=>$marturity->id]) }}"
                                                     method="post"
@@ -126,6 +129,22 @@
                                                     📤 Kirim
                                                 </button>
                                                 @endif
+                                                --}}
+
+                                                <form action="{{ route('user.marturity.send',['marturity'=>$marturity->id]) }}"
+                                                    method="post"
+                                                    style="margin:0;"
+                                                    id="send-marturity-{{ $marturity->id }}"
+                                                    onsubmit="confirmSave('send-marturity-{{ $marturity->id }}', 'Kirim marturity?')">
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <button type="submit"
+                                                            class="btn btn-success btn-sm"
+                                                            style="min-width:80px;">
+                                                        📤 Kirim
+                                                    </button>
+                                                </form>
                                                 @endcan
                                             </div>
                                         @else
