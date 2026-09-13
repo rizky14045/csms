@@ -12,6 +12,9 @@ RUN docker-php-ext-install \
 
 RUN docker-php-ext-enable opcache
 
+# Raise upload limits to match the app's largest allowed upload (25MB)
+COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
