@@ -151,7 +151,7 @@
                     </a>
                     @can('send.assesment.bujp')
                     @if(count($assesment->get_invalid_items_question_by_bujp) == 0)
-                    <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id])}}" method="post" style="margin:0;" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
+                    <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" method="post" style="margin:0;" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
                       @csrf
                       @method('PATCH')
 
