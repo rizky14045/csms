@@ -102,6 +102,12 @@
                                                 </a>
 
                                                 {{-- SEND --}}
+                                                {{--
+                                                Dinonaktifkan sesuai permintaan: KPI boleh dikirim
+                                                walau belum semua catatan/evidence terisi.
+                                                (catatan: kondisi ini juga selalu false di PHP karena
+                                                membandingkan array/collection dengan int pakai ==,
+                                                jadi sebelumnya tombol Kirim selalu ter-disable permanen)
                                                 @if($kpi->get_invalid_items_notes_by_unit == 0)
                                                 <form action="{{route('user.keamanan.send',['kpi'=>$kpi->id])}}"
                                                     method="post"
@@ -122,7 +128,24 @@
                                                 <button class="btn btn-secondary btn-sm" style="min-width:80px; opacity:0.6;background-color:gray" disabled>
                                                     📤 Kirim
                                                 </button>
-                                                @endif                                               
+                                                @endif
+                                                --}}
+
+                                                <form action="{{route('user.keamanan.send',['kpi'=>$kpi->id])}}"
+                                                    method="post"
+                                                    style="margin:0;"
+                                                    id="send-kpi-{{$kpi->id}}"
+                                                    onsubmit="confirmSave('send-kpi-{{$kpi->id}}', 'Kirim KPI?')">
+
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <button type="submit"
+                                                            class="btn btn-success btn-sm"
+                                                            style="min-width:80px;">
+                                                        📤 Kirim
+                                                    </button>
+                                                </form>
                                         </div>
                                         @endif
                                     </td>
