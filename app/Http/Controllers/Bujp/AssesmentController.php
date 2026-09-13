@@ -327,16 +327,14 @@ class AssesmentController extends Controller
                         ->where(function ($q) {
                             $q->whereNull('level')
                             ->orWhere('level', 0)
-                            ->orWhereNull('attachment_file')
-                            ->orWhereNull('note')
-                            ->orWhere('note', '');
+                            ->orWhereNull('attachment_file');
                         })
                         ->exists();
 
                     if ($invalidData) {
                         Alert::error(
                             'Gagal Kirim',
-                            'Masih ada data yang belum lengkap! Pastikan level, attachment, dan catatan sudah terisi.'
+                            'Masih ada data yang belum lengkap! Pastikan level dan attachment sudah terisi.'
                         );
 
                         return redirect()->back()->withInput();

@@ -39,11 +39,10 @@
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{$category->id}}">
                 {{$category->category_name}}
 
-                @if($category->invalid_questions_count > 0)
-                <span style="margin-left:8px; padding:4px; background:red; color:white; border-radius:4px;">
-                  {{ $category->invalid_questions_count }} belum diisi
+                <span id="invalid-badge-{{ $category->id }}"
+                      style="margin-left:8px; padding:4px; background:red; color:white; border-radius:4px; {{ $category->invalid_questions_count > 0 ? '' : 'display:none;' }}">
+                  <span id="invalid-count-{{ $category->id }}">{{ $category->invalid_questions_count }}</span> belum diisi
                 </span>
-                @endif
               </button>
             </h2>
 
@@ -73,7 +72,11 @@
                     <tbody>
 
                       @foreach ($category->questions as $question)
-                      <tr>
+                      @php
+                        $questionFiles = $question->attachment_file ? (json_decode($question->attachment_file, true) ?: []) : [];
+                        $isQuestionInvalid = empty($question->level) || empty($questionFiles);
+                      @endphp
+                      <tr data-category-id="{{ $category->id }}" data-invalid="{{ $isQuestionInvalid ? '1' : '0' }}">
 
                         <form action="{{ route('bujp.assesment.updateQuestion', ['question' => $question->id, 'unit' => request()->query('unit')]) }}"
                               method="POST"
@@ -192,15 +195,12 @@
             <a href="{{route('bujp.assesment.index', ['unit' => request()->query('unit')])}}" class="btn btn-danger">
               Kembali
             </a>
-            @if(count($assesment->getInvalidItemsQuestionByBujp) == 0)
-                <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
-                    @csrf
-                    @method('PATCH')
-                    <button type="submit" class="btn btn-success">Kirim</button>
-                </form>
-            @else
-                <button type="button" style="background-color: gray" class="btn btn-secondary" disabled>Kirim</button>
-            @endif
+            @php $allDone = count($assesment->getInvalidItemsQuestionByBujp) == 0; @endphp
+            <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
+                @csrf
+                @method('PATCH')
+                <button type="submit" id="btn-kirim" class="btn {{ $allDone ? 'btn-success' : 'btn-secondary' }}" {{ $allDone ? '' : 'disabled style=background-color:gray;' }}>Kirim</button>
+            </form>
           </div>
 
         </div>
@@ -345,6 +345,9 @@ async function submitAjax(form, button) {
             `;
         }
 
+        // 🔥 update badge "X belum diisi" & tombol Kirim, tanpa reload halaman
+        updateInvalidStatus(form, data);
+
         button.innerHTML = '✔ Updated';
 
         setTimeout(() => {
@@ -357,6 +360,50 @@ async function submitAjax(form, button) {
 
         button.innerHTML = originalText;
         button.disabled = false;
+    }
+}
+
+// ================= UPDATE BADGE "BELUM DIISI" & TOMBOL KIRIM =================
+function updateInvalidStatus(form, data) {
+
+    let tr = form.closest('tr');
+    let categoryId = tr.dataset.categoryId;
+
+    // cek apakah pertanyaan ini sudah lengkap (level + file terisi)
+    let hasLevel = !!data.level;
+
+    let hasFile = false;
+    try {
+        let parsed = JSON.parse(data.attachment_file || '[]');
+        hasFile = Array.isArray(parsed) ? parsed.length > 0 : !!data.attachment_file;
+    } catch (e) {
+        hasFile = !!data.attachment_file;
+    }
+
+    tr.dataset.invalid = (hasLevel && hasFile) ? '0' : '1';
+
+    // hitung ulang jumlah "belum diisi" untuk kategori ini
+    let remainingInCategory = document.querySelectorAll(
+        `tr[data-category-id="${categoryId}"][data-invalid="1"]`
+    ).length;
+
+    let badge = document.getElementById(`invalid-badge-${categoryId}`);
+    let countEl = document.getElementById(`invalid-count-${categoryId}`);
+
+    if (badge && countEl) {
+        countEl.textContent = remainingInCategory;
+        badge.style.display = remainingInCategory > 0 ? 'inline-block' : 'none';
+    }
+
+    // hitung ulang total "belum diisi" di seluruh area untuk tombol Kirim
+    let totalRemaining = document.querySelectorAll('tr[data-invalid="1"]').length;
+    let btnKirim = document.getElementById('btn-kirim');
+
+    if (btnKirim) {
+        btnKirim.disabled = totalRemaining > 0;
+        btnKirim.classList.toggle('btn-success', totalRemaining === 0);
+        btnKirim.classList.toggle('btn-secondary', totalRemaining > 0);
+        btnKirim.style.backgroundColor = totalRemaining > 0 ? 'gray' : '';
     }
 }
 
