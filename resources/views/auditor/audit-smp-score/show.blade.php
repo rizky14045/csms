@@ -24,11 +24,16 @@
 
         <div class="table-responsive">
 
-          @if(count($auditData->childrenHeader) == 0)
+          @if($auditData->childrenHeader->count() == 0)
           <div class="text-center">
             <p class="mb-0">Tidak ada data audit.</p>
           </div>
           @else
+
+          @php
+              $grandTotalAudit = 0;
+              $grandTotalSelf = 0;
+          @endphp
 
           <table class="table table-bordered text-center align-middle">
 
@@ -50,10 +55,6 @@
                 <th rowspan="2">Rekomendasi</th>
                 <th rowspan="2">Due Date</th>
                 <th rowspan="2">PIC</th>
-
-                @if($auditData->status == 2)
-                <th rowspan="2">Action</th>
-                @endif
               </tr>
               <tr>
                 <th>Nilai</th>
@@ -65,283 +66,246 @@
 
             <tbody>
 
-              @php $totalAllHeader = 0; @endphp
-
               @foreach ($auditData->childrenHeader as $header)
 
-              @php
-              $countKriteria = 0;
-              $countPernyataan = 0;
-              $totalRows = 0;
-
-              foreach ($header->kriteria as $k) {
-              $totalRows += max(1, $k->evidence->count());
-              }
-              foreach ($header->pernyataan as $p) {
-              $totalRows += 1;
-              foreach ($p->kriteria as $k) {
-              $totalRows += max(1, $k->evidence->count());
-              }
-              }
-
-              $totalPembagi = ($header->kriteria->count() +
-              $header->pernyataan->flatMap->kriteria->count()) * 2;
-
-              $totalRows += 1 + count($header->pernyataan);
-
-              $isFirstHeaderRow = true;
-              $subTotalElemen = 0;
-              @endphp
-
-              {{-- ================= KRITERIA ================= --}}
-              @foreach ($header->kriteria as $kriteria)
-
-              @php
-              $countKriteria++;
-              $evidenceCount = max(1, $kriteria->evidence->count());
-              $isFirstKriteriaRow = true;
-
-              $evidences = $kriteria->evidence->count()
-              ? $kriteria->evidence
-              : collect([null]);
-              @endphp
-
-              @foreach ($evidences as $evidence)
-              <tr>
-
-                @if ($isFirstHeaderRow)
-                <td rowspan="{{ $totalRows }}">{{ $header->name }}</td>
-                <td rowspan="{{ $totalRows }}">{{ $header->bobot }}%</td>
-                @php $isFirstHeaderRow = false; @endphp
-                @endif
-
-                @if ($isFirstKriteriaRow)
-
-                <td rowspan="{{ $evidenceCount }}">
-                  {{ $loop->parent->parent->iteration }}.{{ $countKriteria }}
-                </td>
-
-                <td rowspan="{{ $evidenceCount }}" style="text-align:left">
-                  {{ $kriteria->name }}
-                </td>
-
                 @php
-                $nilaiKriteria = (int)($kriteria->pencapaian_nilai_kriteria ?? 0);
-                $nilaiSelf = (int)($kriteria->pencapaian_nilai_kriteria_self ?? 0);
+                    $allKriteria = collect();
 
-                $bobot = (float)$header->bobot;
-                $pembagi = $totalPembagi ?: 1;
+                    $allKriteria = $allKriteria->merge($header->kriteria);
 
-                $nilaiElemen = ($nilaiKriteria * $bobot) / $pembagi;
-                $nilaiElemenSelf = ($nilaiSelf * $bobot) / $pembagi;
+                    foreach($header->pernyataan as $p){
+                        $allKriteria = $allKriteria->merge($p->kriteria);
+                    }
 
-                $bgAudit = $nilaiKriteria == 2 ? '#28a745' : ($nilaiKriteria == 1 ? '#ffc107' : '#dc3545');
-                $bgSelf = $nilaiSelf == 2 ? '#28a745' : ($nilaiSelf == 1 ? '#ffc107' : '#dc3545');
+                    $pembagi = max(1, $allKriteria->count() * 2);
+
+                    $subAudit = 0;
+                    $subSelf = 0;
+
+                    $rowspan = 0;
+
+                    foreach($allKriteria as $k){
+                        $rowspan += max(1, $k->evidence->count());
+                    }
                 @endphp
 
-                {{-- SELF --}}
-                <td rowspan="{{ $evidenceCount }}" style="background:{{ $bgSelf }};color:white;">
-                  {{ $nilaiSelf }}
-                </td>
-                <td rowspan="{{ $evidenceCount }}">
-                  {{ number_format($nilaiElemenSelf,2) }}%
-                </td>
+                @foreach($allKriteria as $kriteria)
 
-                {{-- ACHIEVEMENT --}}
-                {{-- ============================== --}}
-                @if ($auditData->status != 2)
+                    @php
+                        $nilaiKriteria = (int)($kriteria->pencapaian_nilai_kriteria ?? 0);
+                        $nilaiSelf = (int)($kriteria->pencapaian_nilai_kriteria_self ?? 0);
 
-                <td rowspan="{{ $evidenceCount }}"
-                    style="background-color: {{ $bgAudit }}; color: {{ $bgAudit=='#ffc107'?'#000':'#fff' }};">
+                        $nilaiElemen = ($nilaiKriteria * $header->bobot) / $pembagi;
+                        $nilaiElemenSelf = ($nilaiSelf * $header->bobot) / $pembagi;
 
-                    {{ $kriteria->pencapaian_nilai_kriteria ?? '' }}
+                        $subAudit += $nilaiElemen;
+                        $subSelf += $nilaiElemenSelf;
 
-                </td>
+                        $evidences = $kriteria->evidence->count()
+                            ? $kriteria->evidence
+                            : collect([null]);
 
-                @else
+                        $bgAudit = $nilaiKriteria == 2 ? '#28a745' : ($nilaiKriteria == 1 ? '#ffc107' : '#dc3545');
+                        $bgSelf = $nilaiSelf == 2 ? '#28a745' : ($nilaiSelf == 1 ? '#ffc107' : '#dc3545');
+                    @endphp
 
-                {{-- AUDIT ACHIEVEMENT --}}
-                <td rowspan="{{ $evidenceCount }}"
-                    style="background-color: {{ $bgAudit }}; min-width:220px;">
+                    @foreach($evidences as $evidence)
+                    <tr>
 
-                    <form class="ajax-achievement-form"
-                          id="achievement-form-{{ $kriteria->id }}"
-                          action="{{ route('auditor.audit-smp-score.update-achievement', $kriteria->id ?? 0) }}"
-                          method="POST">
+                        @if($loop->parent->first && $loop->first)
+                            <td rowspan="{{ $rowspan }}">{{ $header->name }}</td>
+                            <td rowspan="{{ $rowspan }}">{{ $header->bobot }}%</td>
+                        @endif
 
-                        @csrf
-                        @method('PUT')
+                        @if($loop->first)
 
-                        <div style="display:flex; gap:6px; align-items:start; flex-direction:column;">
+                            <td rowspan="{{ count($evidences) }}">
+                                {{ $loop->parent->iteration }}
+                            </td>
 
-                            <select name="pencapaian_nilai_kriteria_{{ $kriteria->id }}"
-                                    class="form-select form-select-sm">
+                            <td rowspan="{{ count($evidences) }}" style="text-align:left">
+                                {{ $kriteria->name }}
+                            </td>
 
-                                <option value="0"
-                                    {{ (int)$kriteria->pencapaian_nilai_kriteria === 0 ? 'selected' : '' }}>
-                                    0
-                                </option>
+                            {{-- SELF (read-only, diisi oleh unit) --}}
+                            <td rowspan="{{ count($evidences) }}" style="background:{{ $bgSelf }};color:white;">
+                                {{ $nilaiSelf }}
+                            </td>
+                            <td rowspan="{{ count($evidences) }}">
+                                {{ number_format($nilaiElemenSelf,2) }}%
+                            </td>
 
-                                <option value="1"
-                                    {{ (int)$kriteria->pencapaian_nilai_kriteria === 1 ? 'selected' : '' }}>
-                                    1
-                                </option>
+                            {{-- ACHIEVEMENT --}}
+                            @if ($auditData->status != 2)
 
-                                <option value="2"
-                                    {{ (int)$kriteria->pencapaian_nilai_kriteria === 2 ? 'selected' : '' }}>
-                                    2
-                                </option>
+                            <td rowspan="{{ count($evidences) }}"
+                                style="background-color: {{ $bgAudit }}; color: {{ $bgAudit=='#ffc107'?'#000':'#fff' }};">
+                                {{ $kriteria->pencapaian_nilai_kriteria ?? '' }}
+                            </td>
 
-                            </select>
+                            @else
 
-                            <button type="submit"
-                                    class="btn btn-success btn-sm w-100">
-                                💾 Save
-                            </button>
+                            {{-- AUDIT ACHIEVEMENT (form tetap seperti existing) --}}
+                            <td rowspan="{{ count($evidences) }}"
+                                style="background-color: {{ $bgAudit }}; min-width:220px;">
 
-                        </div>
+                                <form class="ajax-achievement-form"
+                                      id="achievement-form-{{ $kriteria->id }}"
+                                      action="{{ route('auditor.audit-smp-score.update-achievement', $kriteria->id ?? 0) }}"
+                                      method="POST">
 
-                        <div id="error-pencapaian_nilai_kriteria_{{ $kriteria->id }}"
-                            class="text-danger mt-1"
-                            style="font-size:11px;">
-                        </div>
+                                    @csrf
+                                    @method('PUT')
 
-                    </form>
+                                    <div style="display:flex; gap:6px; align-items:start; flex-direction:column;">
 
-                </td>
+                                        <select name="pencapaian_nilai_kriteria_{{ $kriteria->id }}"
+                                                class="form-select form-select-sm">
 
-                @endif
+                                            <option value="0" {{ (int)$kriteria->pencapaian_nilai_kriteria === 0 ? 'selected' : '' }}>0</option>
+                                            <option value="1" {{ (int)$kriteria->pencapaian_nilai_kriteria === 1 ? 'selected' : '' }}>1</option>
+                                            <option value="2" {{ (int)$kriteria->pencapaian_nilai_kriteria === 2 ? 'selected' : '' }}>2</option>
 
-                <td rowspan="{{ $evidenceCount }}">
-                  {{ number_format($nilaiElemen,2) }}%
-                </td>
+                                        </select>
 
-                @php $subTotalElemen += $nilaiElemen; $isFirstKriteriaRow = false; @endphp
-                @endif
+                                        <button type="submit" class="btn btn-success btn-sm w-100">
+                                            💾 Save
+                                        </button>
 
-                <td>{{ $evidence->name ?? '-' }}</td>
+                                    </div>
 
-                <td>
-                  @if(isset($evidence->evidence_file))
-                  <a href="/uploads/evidence_file/{{ $evidence->evidence_file }}" target="_blank">Lihat</a>
-                  @else - @endif
-                </td>
+                                    <div id="error-pencapaian_nilai_kriteria_{{ $kriteria->id }}"
+                                        class="text-danger mt-1"
+                                        style="font-size:11px;">
+                                    </div>
 
-                {{-- EVIDENCE --}}
-                {{-- ============================== --}}
-                @if($auditData->status == 2)
+                                </form>
 
-                <td style="min-width:220px;">
+                            </td>
 
-                    <form class="ajax-evidence-form"
-                          id="evidence-form-{{ $evidence->id ?? 0 }}"
-                          action="{{ route('auditor.audit-smp-score.update', $evidence->id ?? 0) }}"
-                          method="POST">
+                            @endif
 
-                        @csrf
-                        @method('PUT')
+                            <td rowspan="{{ count($evidences) }}">
+                                {{ number_format($nilaiElemen,2) }}%
+                            </td>
 
-                        <textarea name="temuan_{{ $evidence->id ?? 0 }}"
-                                  class="form-control form-control-sm"
-                                  placeholder="Temuan">{{ $evidence->temuan ?? '' }}</textarea>
+                        @endif
 
-                        <div id="error-temuan_{{ $evidence->id ?? 0 }}"
-                            class="text-danger"
-                            style="font-size:11px;"></div>
+                        <td>{{ $evidence->name ?? '-' }}</td>
 
-                </td>
+                        <td>
+                            @if(isset($evidence->evidence_file) && $evidence->evidence_file != '')
+                            <a href="{{ asset('uploads/evidence_file/' . $evidence->evidence_file) }}" target="_blank" class="btn btn-primary btn-sm">Lihat File</a>
+                            @else
+                            -
+                            @endif
+                        </td>
 
-                <td style="min-width:220px;">
+                        {{-- TEMUAN / REKOMENDASI / DUE DATE / PIC (form tetap seperti existing) --}}
+                        @if($auditData->status == 2)
 
-                        <textarea name="rekomendasi_{{ $evidence->id ?? 0 }}"
-                                  class="form-control form-control-sm"
-                                  placeholder="Rekomendasi">{{ $evidence->rekomendasi ?? '' }}</textarea>
+                        <td style="min-width:220px;">
+                            <form class="ajax-evidence-form"
+                                  id="evidence-form-{{ $evidence->id ?? 0 }}"
+                                  action="{{ route('auditor.audit-smp-score.update', $evidence->id ?? 0) }}"
+                                  method="POST">
 
-                        <div id="error-rekomendasi_{{ $evidence->id ?? 0 }}"
-                            class="text-danger"
-                            style="font-size:11px;"></div>
+                                @csrf
+                                @method('PUT')
 
-                </td>
+                                <textarea name="temuan_{{ $evidence->id ?? 0 }}"
+                                          class="form-control form-control-sm"
+                                          placeholder="Temuan">{{ $evidence->temuan ?? '' }}</textarea>
 
-                <td style="min-width:170px;">
+                                <div id="error-temuan_{{ $evidence->id ?? 0 }}" class="text-danger" style="font-size:11px;"></div>
 
-                        <input type="date"
-                              name="due_date_{{ $evidence->id ?? 0 }}"
-                              class="form-control form-control-sm"
-                              value="{{ $evidence->due_date ?? '' }}">
+                        </td>
 
-                        <div id="error-due_date_{{ $evidence->id ?? 0 }}"
-                            class="text-danger"
-                            style="font-size:11px;"></div>
+                        <td style="min-width:220px;">
+                                <textarea name="rekomendasi_{{ $evidence->id ?? 0 }}"
+                                          class="form-control form-control-sm"
+                                          placeholder="Rekomendasi">{{ $evidence->rekomendasi ?? '' }}</textarea>
 
-                </td>
+                                <div id="error-rekomendasi_{{ $evidence->id ?? 0 }}" class="text-danger" style="font-size:11px;"></div>
+                        </td>
 
-                <td style="min-width:170px;">
+                        <td style="min-width:170px;">
+                                <input type="date"
+                                      name="due_date_{{ $evidence->id ?? 0 }}"
+                                      class="form-control form-control-sm"
+                                      value="{{ $evidence->due_date ?? '' }}">
 
-                        <input type="text"
-                              name="pic_{{ $evidence->id ?? 0 }}"
-                              class="form-control form-control-sm"
-                              placeholder="PIC"
-                              value="{{ $evidence->pic ?? '' }}">
+                                <div id="error-due_date_{{ $evidence->id ?? 0 }}" class="text-danger" style="font-size:11px;"></div>
+                        </td>
 
-                        <div id="error-pic_{{ $evidence->id ?? 0 }}"
-                            class="text-danger"
-                            style="font-size:11px;"></div>
+                        <td style="min-width:170px;">
+                                <input type="text"
+                                      name="pic_{{ $evidence->id ?? 0 }}"
+                                      class="form-control form-control-sm"
+                                      placeholder="PIC"
+                                      value="{{ $evidence->pic ?? '' }}">
 
-                </td>
+                                <div id="error-pic_{{ $evidence->id ?? 0 }}" class="text-danger" style="font-size:11px;"></div>
 
-                <td style="min-width:120px;">
+                                <button type="submit" class="btn btn-success btn-sm mt-1 w-100">
+                                    💾 Save
+                                </button>
 
-                        <button type="submit"
-                                class="btn btn-success btn-sm">
-                            💾 Save
-                        </button>
+                            </form>
+                        </td>
 
-                    </form>
+                        @else
 
-                </td>
+                        <td>{{ $evidence->temuan ?? '-' }}</td>
+                        <td>{{ $evidence->rekomendasi ?? '-' }}</td>
+                        <td>{{ isset($evidence->due_date) ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y') : '-' }}</td>
+                        <td>{{ $evidence->pic ?? '-' }}</td>
 
-                @else
+                        @endif
 
-                <td>
-                    {{ $evidence->temuan ?? '-' }}
-                </td>
+                    </tr>
+                    @endforeach
+                @endforeach
 
-                <td>
-                    {{ $evidence->rekomendasi ?? '-' }}
-                </td>
+                <tr style="background:#5DADE2;color:white;">
+                    <td colspan="4">SubTotal Elemen</td>
+                    <td>{{ number_format($subSelf,2) }}%</td>
+                    <td></td>
+                    <td>{{ number_format($subAudit,2) }}%</td>
+                    <td></td>
+                    <td colspan="6"></td>
+                </tr>
 
-                <td>
-                    {{ isset($evidence->due_date)
-                        ? \Carbon\Carbon::parse($evidence->due_date)->format('d-m-Y')
-                        : '-' }}
-                </td>
+                @php
+                    $grandTotalAudit += $subAudit;
+                    $grandTotalSelf += $subSelf;
+                @endphp
 
-                <td>
-                    {{ $evidence->pic ?? '-' }}
-                </td>
+              @endforeach
 
-                @endif
-
+              <tr style="background:#2E86C1;color:white;">
+                  <td colspan="4">TOTAL</td>
+                  <td>{{ number_format($grandTotalSelf,2) }}%</td>
+                  <td></td>
+                  <td>{{ number_format($grandTotalAudit,2) }}%</td>
+                  <td></td>
+                  <td colspan="6"></td>
               </tr>
-              @endforeach
-              @endforeach
 
-              {{-- SUBTOTAL --}}
-              <tr>
-                <td colspan="6" style="background:#5DADE2;">SubTotal Elemen</td>
-                <td>{{ number_format($subTotalElemen,2) }}%</td>
-                <td colspan="8"></td>
-              </tr>
+              @php
+                  $kategoriSelf  = $grandTotalSelf  < 55 ? 'Kurang' : ($grandTotalSelf  <= 70 ? 'Cukup' : ($grandTotalSelf  <= 85 ? 'Baik' : 'Baik Sekali'));
+                  $kategoriAudit = $grandTotalAudit < 55 ? 'Kurang' : ($grandTotalAudit <= 70 ? 'Cukup' : ($grandTotalAudit <= 85 ? 'Baik' : 'Baik Sekali'));
+                  $colorSelf     = $grandTotalSelf  < 55 ? '#dc3545' : ($grandTotalSelf  <= 70 ? '#ffc107' : ($grandTotalSelf  <= 85 ? '#28a745' : '#198754'));
+                  $colorAudit    = $grandTotalAudit < 55 ? '#dc3545' : ($grandTotalAudit <= 70 ? '#ffc107' : ($grandTotalAudit <= 85 ? '#28a745' : '#198754'));
+              @endphp
 
-              @php $totalAllHeader += $subTotalElemen; @endphp
-
-              @endforeach
-
-              <tr>
-                <td colspan="6" style="background:#5DADE2;">Total</td>
-                <td>{{ number_format($totalAllHeader,2) }}%</td>
-                <td colspan="8"></td>
+              <tr style="background:#2E86C1;color:white;">
+                  <td colspan="4">KATEGORI</td>
+                  <td style="background:{{ $colorSelf }};color:white;">{{ $kategoriSelf }}</td>
+                  <td></td>
+                  <td style="background:{{ $colorAudit }};color:white;">{{ $kategoriAudit }}</td>
+                  <td></td>
+                  <td colspan="6"></td>
               </tr>
 
             </tbody>
