@@ -42,12 +42,29 @@
                 <div class="accordion" id="formAccordion">
 
                 @foreach ($areas as $area)
+                @php
+                    $areaInvalidCount = 0;
+                    foreach ($area['sub_areas'] as $sa) {
+                        foreach ($sa['levels'] as $lvl) {
+                            $f  = json_decode($lvl['attachment_files'] ?? '[]', true) ?: [];
+                            $te = max(1, (int)($lvl['total_evidence'] ?? 1));
+                            if (count($f) < $te) {
+                                $areaInvalidCount++;
+                            }
+                        }
+                    }
+                @endphp
                 <div class="accordion-item">
                     <h2 class="accordion-header bg-light">
                         <button class="accordion-button collapsed" type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapse{{ $area['id'] }}">
                             {{ $area['name'] }}
+
+                            <span id="invalid-badge-{{ $area['id'] }}"
+                                  style="margin-left:8px; background:red; color:white; padding:3px 6px; border-radius:4px; {{ $areaInvalidCount > 0 ? '' : 'display:none;' }}">
+                              <span id="invalid-count-{{ $area['id'] }}">{{ $areaInvalidCount }}</span> belum diisi
+                            </span>
                         </button>
                     </h2>
 
@@ -65,7 +82,6 @@
                                         <th style="min-width:230px;" class="text-center">Uraian</th>
                                         <th style="min-width:95px;"  class="text-center">Total Evidence</th>
                                         <th style="min-width:95px;"  class="text-center">Jumlah Evidence</th>
-                                        <th style="min-width:95px;"  class="text-center">Belum Terisi</th>
                                         <th style="min-width:260px;" class="text-center">File Evidence</th>
                                         <th style="min-width:80px;"  class="text-center">Bobot</th>
                                         <th style="min-width:80px;"  class="text-center">Hasil</th>
@@ -85,8 +101,7 @@
                                         $jumlah  = count($files);
                                         $totalEv = max(1, (int)($lvl['total_evidence'] ?? 1));
                                         $calc    = round($jumlah / $totalEv, 4);
-                                        $kurang  = max(0, $totalEv - $jumlah);
-                                        $levelCalcs[] = compact('lvl', 'files', 'jumlah', 'totalEv', 'calc', 'kurang');
+                                        $levelCalcs[] = compact('lvl', 'files', 'jumlah', 'totalEv', 'calc');
                                     }
 
                                     $hasil   = round(array_sum(array_column($levelCalcs, 'calc')), 4);
@@ -114,16 +129,11 @@
                                     <td style="white-space:normal;">{{ $lc['lvl']['description'] }}</td>
                                     <td class="text-center">{{ $lc['totalEv'] }}</td>
                                     <td class="text-center" id="jumlah-{{ $lc['lvl']['id'] }}">{{ $lc['jumlah'] }}</td>
-                                    <td class="text-center">
-                                        <span id="kurang-{{ $lc['lvl']['id'] }}"
-                                              class="badge {{ $lc['kurang'] > 0 ? 'bg-danger' : 'bg-success' }}">
-                                            {{ $lc['kurang'] > 0 ? $lc['kurang'] : 'Lengkap' }}
-                                        </span>
-                                    </td>
 
                                     {{-- FILE CELL — stores all data attrs needed by JS --}}
                                     <td data-level-id="{{ $lc['lvl']['id'] }}"
                                         data-subarea-id="{{ $subArea['id'] }}"
+                                        data-area-id="{{ $area['id'] }}"
                                         data-total-evidence="{{ $lc['totalEv'] }}"
                                         data-upload-url="{{ route('user.marturity.uploadLevel', ['marturity' => $marturity->id, 'level' => $lc['lvl']['id']]) }}"
                                         data-delete-url="{{ route('user.marturity.deleteLevelFile', ['marturity' => $marturity->id, 'level' => $lc['lvl']['id']]) }}">
@@ -258,12 +268,34 @@ function updateSubAreaTotals(subAreaId) {
     if (grandEl) grandEl.textContent = Math.round(grandML * 10000) / 10000;
 }
 
+// ─── Hitung ulang & tampilkan badge "X belum diisi" per Area ──────────────────
+function updateAreaInvalidBadge(areaId) {
+    if (!areaId) return;
+
+    let invalidCount = 0;
+    document.querySelectorAll(`td[data-area-id="${areaId}"]`).forEach(td => {
+        const levelId  = td.dataset.levelId;
+        const totalEv  = parseInt(td.dataset.totalEvidence) || 0;
+        const jumlahEl = document.getElementById('jumlah-' + levelId);
+        const jumlah   = jumlahEl ? (parseInt(jumlahEl.textContent) || 0) : 0;
+
+        if (jumlah < totalEv) invalidCount++;
+    });
+
+    const badge   = document.getElementById('invalid-badge-' + areaId);
+    const countEl = document.getElementById('invalid-count-' + areaId);
+
+    if (badge && countEl) {
+        countEl.textContent = invalidCount;
+        badge.style.display = invalidCount > 0 ? 'inline-block' : 'none';
+    }
+}
+
 // ─── Re-render the file list + upload section for a level ────────────────────
-function renderFileList(levelId, files, totalEv, subAreaId) {
+function renderFileList(levelId, files, totalEv, subAreaId, areaId) {
     const td        = document.querySelector(`td[data-level-id="${levelId}"]`);
     const listEl    = document.getElementById('file-list-'     + levelId);
     const jumlahEl  = document.getElementById('jumlah-'        + levelId);
-    const kurangEl  = document.getElementById('kurang-'        + levelId);
     const calcEl    = document.getElementById('calc-'          + levelId);
     const sectionEl = document.getElementById('upload-section-'+ levelId);
     const deleteUrl = td.dataset.deleteUrl;
@@ -295,12 +327,8 @@ function renderFileList(levelId, files, totalEv, subAreaId) {
     // Upload section
     const remaining = Math.max(0, totalEv - jumlah);
 
-    // Badge "Belum Terisi"
-    if (kurangEl) {
-        kurangEl.textContent = remaining > 0 ? remaining : 'Lengkap';
-        kurangEl.classList.toggle('bg-danger', remaining > 0);
-        kurangEl.classList.toggle('bg-success', remaining === 0);
-    }
+    // Badge "X belum diisi" untuk area terkait
+    updateAreaInvalidBadge(areaId);
 
     if (sectionEl) {
         if (remaining > 0) {
@@ -329,6 +357,7 @@ async function doUpload(levelId) {
     const uploadUrl = td.dataset.uploadUrl;
     const totalEv   = parseInt(td.dataset.totalEvidence);
     const subAreaId = td.dataset.subareaId;
+    const areaId    = td.dataset.areaId;
     const fileInput = document.getElementById('file-input-' + levelId);
     const errorEl   = document.getElementById('error-level-' + levelId);
     const btn       = td.querySelector('.btn-upload-level');
@@ -363,7 +392,7 @@ async function doUpload(levelId) {
         }
 
         Swal.fire({ icon: 'success', title: 'Upload berhasil', timer: 1000, showConfirmButton: false });
-        renderFileList(levelId, result.files, totalEv, subAreaId);
+        renderFileList(levelId, result.files, totalEv, subAreaId, areaId);
 
     } catch (e) {
         Swal.fire('Error', 'Server error', 'error');
@@ -384,6 +413,7 @@ async function doDelete(levelId, filename) {
     const deleteUrl = td.dataset.deleteUrl;
     const totalEv   = parseInt(td.dataset.totalEvidence);
     const subAreaId = td.dataset.subareaId;
+    const areaId    = td.dataset.areaId;
 
     try {
         const res    = await fetch(deleteUrl, {
@@ -403,7 +433,7 @@ async function doDelete(levelId, filename) {
         }
 
         Swal.fire({ icon: 'success', title: 'File dihapus', timer: 800, showConfirmButton: false });
-        renderFileList(levelId, result.files, totalEv, subAreaId);
+        renderFileList(levelId, result.files, totalEv, subAreaId, areaId);
 
     } catch (e) {
         Swal.fire('Error', 'Server error', 'error');

@@ -137,12 +137,13 @@ class MarturityController extends Controller
             return redirect()->route('user.marturity.index');
         }
 
-        $marturity->load('getInvalidItemsNotesByUnit');
-
-        if(count($marturity->getInvalidItemsNotesByUnit) > 0){
-            Alert::error('Gagal Dikirim', 'Marturity tidak bisa dikirim karena terdapat catatan yang belum diisi!');
-            return redirect()->route('user.marturity.index');
-        }
+        // Dinonaktifkan sesuai permintaan: Marturity boleh dikirim ke Pusat
+        // walau belum semua catatan/evidence terisi.
+        // $marturity->load('getInvalidItemsNotesByUnit');
+        // if(count($marturity->getInvalidItemsNotesByUnit) > 0){
+        //     Alert::error('Gagal Dikirim', 'Maturity tidak bisa dikirim karena terdapat catatan yang belum diisi!');
+        //     return redirect()->route('user.marturity.index');
+        // }
 
         $this->marturityService->sendMarturity($marturity);
         
