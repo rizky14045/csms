@@ -47,18 +47,18 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label for="type" class="form-label">Tipe</label>
-                                <select name="type_id" id="type" class="form-select">
+                                <select name="type_id" id="type" class="form-select @error('type_id') is-invalid @enderror" required>
                                     <option value="">Pilih Tipe Fasilitas Umum</option>
                                     @foreach ($types as $type)
                                         <option value="{{ $type->id }}"
-                                            {{ old('type') == $type->id ? 'selected' : '' }}>
+                                            {{ old('type_id') == $type->id ? 'selected' : '' }}>
                                             {{ $type->name }}
                                         </option>
                                     @endforeach
                                 </select>
-                                @if ($errors->has('type'))
-                                    <div class="error text-danger">{{ $errors->first('type') }}</div>
-                                @endif
+                                @error('type_id')
+                                    <div class="error text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             
                             <div class="form-group mb-3">
@@ -82,19 +82,25 @@
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label>Provinsi</label>
-                                        <select id="province" class="form-select" name="province_id">
+                                        <select id="province" class="form-select @error('province_id') is-invalid @enderror" name="province_id">
                                             <option value="">Pilih Provinsi</option>
                                             @foreach ($provinces as $prov)
-                                                <option value="{{ $prov->id }}">{{ $prov->name }}</option>
+                                                <option value="{{ $prov->id }}" {{ old('province_id') == $prov->id ? 'selected' : '' }}>{{ $prov->name }}</option>
                                             @endforeach
                                         </select>
+                                        @error('province_id')
+                                            <div class="error text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
                                         <label>Kota</label>
-                                        <select id="city" class="form-select" name="city_id">
+                                        <select id="city" class="form-select @error('city_id') is-invalid @enderror" name="city_id">
                                             <option value="">Pilih Kota</option>
                                         </select>
+                                        @error('city_id')
+                                            <div class="error text-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                                 {{-- LAT LONG --}}
@@ -160,6 +166,10 @@
         const routeCities = "{{ route('geo.cities', ':id') }}";
         const routeCity = "{{ route('geo.city', ':id') }}";
 
+        // Nilai lama (kalau balik dari validasi gagal), supaya provinsi & kota tidak hilang
+        const oldProvinceId = "{{ old('province_id') }}";
+        const oldCityId = "{{ old('city_id') }}";
+
         document.addEventListener("DOMContentLoaded", function() {
 
             // BATAS INDONESIA
@@ -207,6 +217,12 @@
 
             document.getElementById('latitude').addEventListener('change', syncMarkerFromInput);
             document.getElementById('longitude').addEventListener('change', syncMarkerFromInput);
+
+            // Restore pilihan provinsi (dan trigger load kota) kalau balik dari validasi gagal
+            if (oldProvinceId) {
+                document.getElementById('province').value = oldProvinceId;
+                document.getElementById('province').dispatchEvent(new Event('change'));
+            }
 
         });
 
@@ -262,6 +278,11 @@
                         opt.text = item.name;
                         city.appendChild(opt);
                     });
+
+                    // Restore pilihan kota kalau balik dari validasi gagal
+                    if (oldCityId) {
+                        city.value = oldCityId;
+                    }
                 });
 
         });
