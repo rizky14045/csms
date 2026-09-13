@@ -152,11 +152,13 @@ class KeamananController extends Controller
             return redirect()->route('user.keamanan.index');
         }
 
-        $kpi->load(['get_invalid_items_notes_by_unit']);
-        if($kpi->get_invalid_items_notes_by_unit == 0){
-            Alert::warning('Kirim Gagal', 'Terdapat catatan yang belum valid!');
-            return redirect()->route('user.keamanan.index');
-        }
+        // Dinonaktifkan sesuai permintaan: KPI boleh dikirim ke Pusat
+        // walau belum semua catatan/evidence terisi.
+        // $kpi->load(['getInvalidItemsNotesByUnit']);
+        // if(count($kpi->getInvalidItemsNotesByUnit) > 0){
+        //     Alert::warning('Kirim Gagal', 'Terdapat catatan yang belum valid!');
+        //     return redirect()->route('user.keamanan.index');
+        // }
 
         $this->kpiService->sendKpi($kpi);
 
