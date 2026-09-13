@@ -196,7 +196,7 @@
               Kembali
             </a>
             @php $allDone = count($assesment->getInvalidItemsQuestionByBujp) == 0; @endphp
-            <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
+            <form action="{{route('bujp.assesment.send',['assesment'=>$assesment->id, 'unit' => request()->query('unit')])}}" method="post" class="d-inline" id="send-assesment-{{ $assesment->id }}" onsubmit="confirmSave('send-assesment-{{ $assesment->id }}', 'Kirim assesment?')">
                 @csrf
                 @method('PATCH')
                 <button type="submit" id="btn-kirim" class="btn {{ $allDone ? 'btn-success' : 'btn-secondary' }}" {{ $allDone ? '' : 'disabled style=background-color:gray;' }}>Kirim</button>
