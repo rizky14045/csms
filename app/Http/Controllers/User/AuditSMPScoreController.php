@@ -81,7 +81,7 @@ class AuditSMPScoreController extends Controller
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat dikirim');
         }
         $audit->load('getInvalidItemsEvidenceByUnit');
-        if($audit->get_invalid_items_evidence_by_unit > 0){
+        if(count($audit->getInvalidItemsEvidenceByUnit) > 0){
             Alert::error('Akses Ditolak', 'Data audit tidak dapat dikirim karena terdapat item bukti yang belum lengkap!');
             return redirect()->back()->with('error', 'Data audit tidak dapat dikirim karena terdapat item bukti yang belum lengkap');
         }

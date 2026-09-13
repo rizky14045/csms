@@ -149,7 +149,7 @@
                                             @endcan
 
                                             @can('send.audit.smp.score.unit')
-                                                @if($audit->get_invalid_items_evidence_by_unit == 0)
+                                                @if(count($audit->get_invalid_items_evidence_by_unit) == 0)
                                                     <form action="{{ route('user.audit-smp-score.send', ['audit' => $audit->id]) }}"
                                                           method="post" id="send-audit-{{ $audit->id }}"
                                                           onsubmit="confirmSave('send-audit-{{ $audit->id }}', 'Kirim Audit?')">
