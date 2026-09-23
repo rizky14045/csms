@@ -21,16 +21,19 @@ use App\Models\ReportEmployee;
 use App\Models\ResponsiblePerson;
 use App\Models\SecurityExternal;
 use App\Models\SecurityForm;
+use App\Services\MonthlyReport\UlAggregationService;
 use App\Services\Unit\UnitService;
 use Illuminate\Http\Request;
 
 class MonthlyAuditController extends Controller
 {
     protected $unitService;
+    protected $ulAggregationService;
 
-    public function __construct(UnitService $unitService)
+    public function __construct(UnitService $unitService, UlAggregationService $ulAggregationService)
     {
         $this->unitService = $unitService;
+        $this->ulAggregationService = $ulAggregationService;
     }
 
     public function index(Request $request)
@@ -76,23 +79,41 @@ class MonthlyAuditController extends Controller
     
     public function show($monthlyId){
 
+        $ownReport = MonthlyReport::findOrFail($monthlyId);
+        $reportIds = $this->ulAggregationService->reportIdsFor($ownReport);
+
         $data['monthlyId'] = $monthlyId;
-        $data['monthlyReport'] = MonthlyReport::where('id', $monthlyId)->select('report_date')->first();
-        $data['employee'] = ReportEmployee::where('monthly_report_id', $monthlyId)->first(); 
-        $gangguan = MonthlyGangguan::where('monthly_report_id', $monthlyId)->first();
+        $data['monthlyReport'] = $ownReport;
+
+        $employees = ReportEmployee::whereIn('monthly_report_id', $reportIds)->get();
+        $data['employee'] = (object) [
+            'employee_man' => $employees->sum('employee_man'),
+            'employee_woman' => $employees->sum('employee_woman'),
+            'student_man' => $employees->sum('student_man'),
+            'student_woman' => $employees->sum('student_woman'),
+        ];
+
+        $gangguanRows = MonthlyGangguan::whereIn('monthly_report_id', $reportIds)->get();
+        $gangguan = (object) [
+            'kriminal' => $gangguanRows->sum('kriminal'),
+            'politis' => $gangguanRows->sum('politis'),
+            'kebakaran' => $gangguanRows->sum('kebakaran'),
+            'bencana_alam' => $gangguanRows->sum('bencana_alam'),
+            'other' => $gangguanRows->sum('other'),
+        ];
         $data['gangguan'] = $gangguan;
-        $data['outsources'] = OutsourceEmployee::where('monthly_report_id', $monthlyId)->latest()->get();
-        $security = SecurityForm::join('securities', 'security_forms.security_id','securities.id')->whereNull('securities.deleted_at')->where('monthly_report_id', $monthlyId);
+        $data['outsources'] = OutsourceEmployee::whereIn('monthly_report_id', $reportIds)->latest()->get();
+        $security = SecurityForm::join('securities', 'security_forms.security_id','securities.id')->whereNull('securities.deleted_at')->whereIn('monthly_report_id', $reportIds);
         $data['securityKomandan'] = (clone $security)->where('securities.position', 'Komandan')->get()->count();
         $data['securityAnggota'] = (clone $security)->where('securities.position', 'Anggota')->get()->count();
         $data['securityChief'] = (clone $security)->where('securities.position', 'Chief')->get()->count();
         $data['security'] = (clone $security)->get()->count();
-        $securityExternal = MonthlySecurityExternal::join('security_externals','security_externals.id','monthly_security_externals.security_external_id')->whereNull('security_externals.deleted_at')->where('monthly_report_id', $monthlyId);
+        $securityExternal = MonthlySecurityExternal::join('security_externals','security_externals.id','monthly_security_externals.security_external_id')->whereNull('security_externals.deleted_at')->whereIn('monthly_report_id', $reportIds);
         $data['securityPolri'] = (clone $securityExternal)->where('note', 'Polri')->get()->count();
         $data['securityTNI'] = (clone $securityExternal)->where('note', 'TNI')->get()->count();
         $data['securityExternal'] = (clone $securityExternal)->get()->count();
 
-        $foreign = ForeignWorker::where('monthly_report_id', $monthlyId);
+        $foreign = ForeignWorker::whereIn('monthly_report_id', $reportIds);
         $data['foreignAhli'] = (clone $foreign)->where('position', 'Tenaga Ahli')->get()->count();
         $data['foreignStaff'] = (clone $foreign)->where('position', 'staff')->get()->count();
         $data['foreign'] = (clone $foreign)->get()->count();
@@ -160,26 +181,26 @@ class MonthlyAuditController extends Controller
         $data['totalAllWoman'] = $totalWoman;
         
 
-        $data['persons'] = MonthlyResponsiblePerson::with('person')->where('monthly_report_id', $monthlyId)->get();
-        $data['securities'] = MonthlySecurityExternal::with('security')->where('monthly_report_id', $monthlyId)->get();
-        $data['agreements'] = MonthlyAgreementExternal::with('agreement')->where('monthly_report_id', $monthlyId)->get();
-        
-        $data['securityForms'] = SecurityForm::with('security')->where('monthly_report_id', $monthlyId)->get();
-        
-        $data['aghts'] = AghtData::where('monthly_report_id', $monthlyId)->get();
+        $data['persons'] = MonthlyResponsiblePerson::with('person')->whereIn('monthly_report_id', $reportIds)->get();
+        $data['securities'] = MonthlySecurityExternal::with('security')->whereIn('monthly_report_id', $reportIds)->get();
+        $data['agreements'] = MonthlyAgreementExternal::with('agreement')->whereIn('monthly_report_id', $reportIds)->get();
+
+        $data['securityForms'] = SecurityForm::with('security')->whereIn('monthly_report_id', $reportIds)->get();
+
+        $data['aghts'] = AghtData::whereIn('monthly_report_id', $reportIds)->get();
 
         $attribute = FormAttribute::join('attributes', 'attributes.id', 'form_attributes.attribute_id')
-        ->select('form_attributes.*', 'attributes.name', 'attributes.status_ownership', 'attributes.unit', 'attributes.standard_contract')->where('monthly_report_id', $monthlyId);
-    
+        ->select('form_attributes.*', 'attributes.name', 'attributes.status_ownership', 'attributes.unit', 'attributes.standard_contract')->whereIn('monthly_report_id', $reportIds);
+
         $data['attributes'] = (clone $attribute)->where('attributes.type_attribute', 'Attribute')->get();
         $data['administrations'] = (clone $attribute)->where('attributes.type_attribute', 'Administrasi')->get();
         $data['saranas'] = (clone $attribute)->where('attributes.type_attribute', 'Sarana')->get();
-        $data['foreignWorkers'] = ForeignWorker::where('monthly_report_id', $monthlyId)->get();
-        $data['programs'] = MonthlySecurityProgram::with('securityProgram','programs')->where('monthly_report_id',$monthlyId)->get();
+        $data['foreignWorkers'] = ForeignWorker::whereIn('monthly_report_id', $reportIds)->get();
+        $data['programs'] = MonthlySecurityProgram::with('securityProgram','programs')->whereIn('monthly_report_id', $reportIds)->get();
 
-        $data['internals'] = InternalVulnerability::with('vulnerability')->where('monthly_report_id', $monthlyId)->get();
-        $data['externals'] = ExternalVulnerability::with('vulnerability')->where('monthly_report_id', $monthlyId)->get();
-        $dataBiaya = LaporanBulananBiaya::where('monthly_report_id', $monthlyId)
+        $data['internals'] = InternalVulnerability::with('vulnerability')->whereIn('monthly_report_id', $reportIds)->get();
+        $data['externals'] = ExternalVulnerability::with('vulnerability')->whereIn('monthly_report_id', $reportIds)->get();
+        $dataBiaya = LaporanBulananBiaya::whereIn('monthly_report_id', $reportIds)
             ->whereIn('type', ['administrasi', 'pemeliharaan'])
             ->get()
             ->map(function ($item) {

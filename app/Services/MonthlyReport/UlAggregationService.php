@@ -56,12 +56,21 @@ class UlAggregationService
             ->map(fn($s) => $s['report']);
     }
 
+    /** Id laporan induk + seluruh UL yang sudah kirim untuk bulan yang sama. Dipakai untuk menggabungkan total di semua tab. */
+    public function reportIdsFor(MonthlyReport $ownReport)
+    {
+        $unit = Unit::find($ownReport->unit_id);
+        $ulReports = $this->sentUlReports($unit, $ownReport->report_date);
+
+        return collect([$ownReport->id])->merge($ulReports->pluck('id'));
+    }
+
     /** Total gabungan (induk + seluruh UL yang sudah kirim) untuk tab Form Formulir. */
     public function aggregateFormFormulir(MonthlyReport $ownReport)
     {
         $unit = Unit::find($ownReport->unit_id);
         $ulReports = $this->sentUlReports($unit, $ownReport->report_date);
-        $reportIds = collect([$ownReport->id])->merge($ulReports->pluck('id'));
+        $reportIds = $this->reportIdsFor($ownReport);
 
         $employees = ReportEmployee::whereIn('monthly_report_id', $reportIds)->get();
         $outsources = OutsourceEmployee::whereIn('monthly_report_id', $reportIds)->get();
