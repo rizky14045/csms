@@ -21,7 +21,7 @@ class KPINoteController extends Controller
         $this->noteService = $noteService;
 
         $this->middleware('can:create.kpi.note')->only(['create', 'store']);
-        $this->middleware('can:edit.kpi.note')->only(['edit', 'update']);
+        $this->middleware('can:edit.kpi.note')->only(['edit', 'update', 'move']);
         $this->middleware('can:delete.kpi.note')->only(['destroy']);
     }
 
@@ -90,9 +90,19 @@ class KPINoteController extends Controller
 
             Alert::success('Delete Berhasil', 'Note berhasil dihapus!');
             return redirect()->route('admin.kpi-area.index');
-            
+
         } catch (\Throwable $th) {
             Alert::error('Delete Gagal', 'Note gagal dihapus!');
+            return redirect()->route('admin.kpi-area.index');
+        }
+    }
+
+    public function move(Note $note, Level $level, $direction){
+        try {
+            $this->noteService->moveNote($note, $direction);
+            return redirect()->route('admin.kpi-area.index');
+        } catch (\Throwable $th) {
+            Alert::error('Gagal', 'Urutan Note gagal diubah!');
             return redirect()->route('admin.kpi-area.index');
         }
     }

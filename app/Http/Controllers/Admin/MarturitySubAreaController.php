@@ -20,7 +20,7 @@ class MarturitySubAreaController extends Controller
         $this->subareaService = $subareaService;
 
         $this->middleware('can:create.marturity.subarea')->only(['create', 'store']);
-        $this->middleware('can:edit.marturity.subarea')->only(['edit', 'update']);
+        $this->middleware('can:edit.marturity.subarea')->only(['edit', 'update', 'move']);
         $this->middleware('can:delete.marturity.subarea')->only(['destroy']);
     }
 
@@ -87,9 +87,19 @@ class MarturitySubAreaController extends Controller
             $this->subareaService->deleteSubArea($subArea);
             Alert::success('Delete Berhasil', 'Sub Area berhasil dihapus!');
             return redirect()->route('admin.marturity-area.index');
-            
+
         } catch (\Throwable $th) {
             Alert::error('Delete Gagal', 'Sub Area gagal dihapus!');
+            return redirect()->route('admin.marturity-area.index');
+        }
+    }
+
+    public function move(SubArea $subArea, Area $area, $direction){
+        try {
+            $this->subareaService->moveSubArea($subArea, $direction);
+            return redirect()->route('admin.marturity-area.index');
+        } catch (\Throwable $th) {
+            Alert::error('Gagal', 'Urutan Sub Area gagal diubah!');
             return redirect()->route('admin.marturity-area.index');
         }
     }

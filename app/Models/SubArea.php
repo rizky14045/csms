@@ -14,6 +14,6 @@ class SubArea extends Model
 
     public function levels()
     {
-        return $this->hasMany(Level::class, 'sub_area_id', 'id');
+        return $this->hasMany(Level::class, 'sub_area_id', 'id')->orderBy('order');
     }
 }

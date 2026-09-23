@@ -79,6 +79,7 @@ class MonthlyAuditController extends Controller
     }
     
     public function store(Request $request){
+        set_time_limit(120);
 
         try {
             DB::beginTransaction();
@@ -133,23 +134,13 @@ class MonthlyAuditController extends Controller
                 // kalau tidak sesuai urutan → tolak
                 if ($year != $expectedYear || $month != $expectedMonth) {
                     DB::rollback();
-                    Alert::error('Urutan Laporan Salah', 'Anda harus mengisi laporan bulan sebelumnya terlebih dahulu!');
+                    Alert::error('Urutan Laporan Salah', 'Laporan terakhir Anda adalah bulan ' . sprintf('%04d-%02d', $lastYear, $lastMonth) . '. Laporan berikutnya yang harus dibuat adalah bulan ' . sprintf('%04d-%02d', $expectedYear, $expectedMonth) . '.');
                     return back()->withErrors([
                         'report_date' => "Harus mengisi bulan {$expectedYear}-" . sprintf('%02d', $expectedMonth) . " terlebih dahulu."
                     ])->withInput();
                 }
             }
                         
-            $administrations = Attribute::select('id')->where('type_attribute','Administrasi')->get();
-            $attributes = Attribute::select('id')->where('user_id',$userId)->get();
-            $persons = ResponsiblePerson::select('id')->where('user_id',$userId)->get();
-            $agreements = AgreementExternal::select('id')->where('user_id',$userId)->get();
-            $securityExternals = SecurityExternal::select('id')->where('user_id',$userId)->get();
-            $securities = Security::select('id')->where('user_id',$userId)->get();
-            $externals = Vulnerability::select('id')->where('type','eksternal')->get();
-            $internals = Vulnerability::select('id')->where('type','internal')->get();
-            $programs = SecurityProgram::where('user_id',$userId)->where('year',$date[0])->get();
-
             $report = MonthlyReport::create([
                 'user_id' => $userId,
                 'unit_id' => $unitId,
@@ -166,104 +157,7 @@ class MonthlyAuditController extends Controller
                 'user_id' => $userId,
             ]);
 
-            if ($administrations) {
-                foreach ($administrations as $administration) {
-                    FormAttribute::create([
-                        'monthly_report_id' => $report->id,
-                        'user_id' => $userId,
-                        'attribute_id' => $administration->id
-                    ]);
-                }
-            }
-            if ($attributes) {
-                foreach ($attributes as $attribute) {
-                    FormAttribute::create([
-                        'monthly_report_id' => $report->id,
-                        'user_id' => $userId,
-                        'attribute_id' => $attribute->id
-                    ]);
-                }
-            }
-            if ($securities) {
-                foreach ($securities as $security) {
-                    SecurityForm::create([
-                        'monthly_report_id' => $report->id,
-                        'user_id' => $userId,
-                        'security_id' => $security->id
-                    ]);
-                }
-            }
-            if ($persons) {
-                foreach ($persons as $person) {
-                    MonthlyResponsiblePerson::create([
-                        'monthly_report_id' => $report->id,
-                        'user_id' => $userId,
-                        'responsible_person_id' => $person->id
-                    ]);
-                }
-            }
-            if ($agreements) {
-                foreach ($agreements as $agreement) {
-                    MonthlyAgreementExternal::create([
-                        'monthly_report_id' => $report->id,
-                        'user_id' => $userId,
-                        'agreement_external_id' => $agreement->id
-                    ]);
-                }
-            }
-            if ($securityExternals) {
-                foreach ($securityExternals as $item) {
-                    MonthlySecurityExternal::create([
-                        'monthly_report_id' => $report->id,
-                        'user_id' => $userId,
-                        'security_external_id' => $item->id
-                    ]);
-                }
-            }
-            if ($externals) {
-                foreach ($externals as $external) {
-                    ExternalVulnerability::create([
-                        'monthly_report_id' => $report->id,
-                        'user_id' => $userId,
-                        'vulnerability_id' => $external->id
-                    ]);
-                }
-            }
-            if ($internals) {
-                foreach ($internals as $internal) {
-                    InternalVulnerability::create([
-                        'monthly_report_id' => $report->id,
-                        'user_id' => $userId,
-                        'vulnerability_id' => $internal->id
-                    ]);
-                }
-            }  
-           
-            if ($programs) {
-               
-                foreach($programs as $program) {
-                    $monthlyProgram = MonthlySecurityProgram::create([
-                        'monthly_report_id' => $report->id,
-                        'user_id' => $userId,
-                        'program_id' => $program->id
-                    ]);
-                    $mainPrograms = MainSecurityProgram::where('program_id', $program->id)->where('user_id', $userId)->get();
-                    foreach ($mainPrograms as $item) {
-                        MonthlyMainSecurityProgram::create([
-                            'monthly_report_id' => $report->id,
-                            'user_id' => $userId,
-                            'monthly_program_id' => $monthlyProgram->id,
-                            'program_id' => $program->id,
-                            'main_program_id' => $item->id,
-                            'start_month' => $item->start_month,
-                            'start_week' => $item->start_week,
-                            'end_month' => $item->end_month,
-                            'end_week' => $item->end_week,
-                        ]);
-                    }
-                    
-                }
-            }
+            app(\App\Services\MonthlyReport\MasterSyncService::class)->copyAll($report);
 
             DB::commit();
             Alert::success('Tambah Berhasil', 'Laporan bulanan berhasil dibuat!');
@@ -326,8 +220,43 @@ class MonthlyAuditController extends Controller
 
         try {
 
-            DB::beginTransaction();
             $report = MonthlyReport::where('id', $monthlyId)->first();
+
+            if (!$report || $report->user_id !== Auth::id()) {
+                abort(404);
+            }
+
+            if ($report->send_status || $report->sent_to_parent) {
+                Alert::warning('Warning', 'Laporan bulanan sudah dikirim!');
+                return redirect()->route('user.monthly-audit.index');
+            }
+
+            $unit = \App\Models\Unit::find($report->unit_id);
+            $ulService = app(\App\Services\MonthlyReport\UlAggregationService::class);
+
+            DB::beginTransaction();
+
+            if ($unit && $unit->type === 'UL') {
+                // UL mengirim ke unit induk dulu, bukan langsung ke Pusat/MMRK.
+                $report->sent_to_parent = true;
+                $report->sent_to_parent_date = now();
+                $report->save();
+
+                DB::commit();
+                Alert::success('Berhasil Dikirim', 'Laporan bulanan berhasil dikirim ke unit induk!');
+                return redirect()->route('user.monthly-audit.index');
+            }
+
+            if ($unit && $ulService->hasUls($unit)) {
+                $pending = $ulService->pendingUls($unit, $report->report_date);
+                if ($pending->isNotEmpty()) {
+                    DB::rollback();
+                    $names = $pending->pluck('unit.name')->implode(', ');
+                    Alert::error('Belum Bisa Dikirim', "Masih ada UL yang belum mengirim laporan bulan ini: {$names}");
+                    return redirect()->route('user.monthly-audit.index');
+                }
+            }
+
             $report->send_status = true;
             $report->send_date = now();
             $report->save();
@@ -349,12 +278,12 @@ class MonthlyAuditController extends Controller
         $data['gangguan'] = $gangguan;
         $data['employee'] = ReportEmployee::where('monthly_report_id', $monthlyId)->first(); 
         $data['outsources'] = OutsourceEmployee::where('monthly_report_id', $monthlyId)->latest()->get();
-        $security = SecurityForm::join('securities', 'security_forms.security_id','securities.id')->where('monthly_report_id', $monthlyId);
+        $security = SecurityForm::join('securities', 'security_forms.security_id','securities.id')->whereNull('securities.deleted_at')->where('monthly_report_id', $monthlyId);
         $data['securityKomandan'] = (clone $security)->where('securities.position', 'Komandan')->get()->count();
         $data['securityAnggota'] = (clone $security)->where('securities.position', 'Anggota')->get()->count();
         $data['securityChief'] = (clone $security)->where('securities.position', 'Chief')->get()->count();
         $data['security'] = (clone $security)->get()->count();
-        $securityExternal = MonthlySecurityExternal::join('security_externals','security_externals.id','monthly_security_externals.security_external_id')->where('monthly_report_id', $monthlyId);
+        $securityExternal = MonthlySecurityExternal::join('security_externals','security_externals.id','monthly_security_externals.security_external_id')->whereNull('security_externals.deleted_at')->where('monthly_report_id', $monthlyId);
         $data['securityPolri'] = (clone $securityExternal)->where('note', 'Polri')->get()->count();
         $data['securityTNI'] = (clone $securityExternal)->where('note', 'TNI')->get()->count();
         $data['securityExternal'] = (clone $securityExternal)->get()->count();

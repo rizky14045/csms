@@ -15,6 +15,6 @@ class QuestionAssesment extends Model
 
     public function levels()
     {
-        return $this->hasMany(LevelAssesment::class, 'question_id', 'id');
+        return $this->hasMany(LevelAssesment::class, 'question_id', 'id')->orderBy('order')->orderBy('id');
     }
 }

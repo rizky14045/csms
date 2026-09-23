@@ -117,10 +117,13 @@ class AuditSMPService
 
         try {
 
+            $nextOrder = (int) AuditSMP::where('type', $data['type'])->whereNull('parent_id')->max('order') + 1;
+
             $audit = AuditSMP::create([
                 'name' => $data['name'],
                 'bobot' => $data['bobot'],
                 'type' => $data['type'],
+                'order' => $nextOrder,
                 'created_by' => auth()->id(),
             ]);
             

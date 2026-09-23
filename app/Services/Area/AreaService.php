@@ -52,7 +52,7 @@ class AreaService
                 $query->whereDate('created_at', '<=', $end);
             }
 
-            $allowedSort = ['id', 'name', 'created_at'];
+            $allowedSort = ['id', 'name', 'created_at', 'order'];
             if (!in_array($ref, $allowedSort)) {
                 $ref = 'id';
             }
@@ -94,8 +94,8 @@ class AreaService
         DB::beginTransaction();
 
         try {
-            $lastarea = Area::where('type', $data['type'])->latest()->first();
-            $order = $lastarea ? $lastarea->order + 1 : 1; 
+            $lastarea = Area::where('type', $data['type'])->orderBy('order', 'desc')->first();
+            $order = $lastarea ? $lastarea->order + 1 : 1;
 
             $area = Area::create([
                 'name' => $data['name'],
@@ -193,6 +193,41 @@ class AreaService
 
             throw $e;
         }
+    }
+
+    public function moveArea(Area $area, string $direction)
+    {
+        $siblings = Area::where('type', $area->type)
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get();
+
+        $this->swapOrder($siblings, $area, $direction);
+
+        return JsonResponse::success(null, 'Area order updated', 200);
+    }
+
+    protected function swapOrder($siblings, $item, string $direction)
+    {
+        $index = $siblings->search(function ($sibling) use ($item) {
+            return $sibling->id == $item->id;
+        });
+
+        if ($index === false) {
+            return;
+        }
+
+        if ($direction === 'up' && $index > 0) {
+            $target = $siblings[$index - 1];
+        } elseif ($direction === 'down' && $index < $siblings->count() - 1) {
+            $target = $siblings[$index + 1];
+        } else {
+            return;
+        }
+
+        $currentOrder = $item->order;
+        $item->update(['order' => $target->order]);
+        $target->update(['order' => $currentOrder]);
     }
 
     public function deleteArea(Area $area)

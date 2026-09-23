@@ -19,6 +19,8 @@ class UnitValidation
                 'string',
                 'max:255',
             ],
+            'type' => 'nullable|in:Pusat,Unit,UL',
+            'parent_unit_id' => 'required_if:type,UL|nullable|exists:units,id',
         ];
     }
 
@@ -38,6 +40,8 @@ class UnitValidation
                 'string',
                 'max:255',
             ],
+            'type' => 'nullable|in:Pusat,Unit,UL',
+            'parent_unit_id' => 'required_if:type,UL|nullable|exists:units,id',
         ];
     }
 
@@ -46,6 +50,8 @@ class UnitValidation
         return [
             'name.required' => 'Nama unit wajib diisi.',
             'address.required' => 'Alamat unit wajib diisi.',
+            'parent_unit_id.required_if' => 'Unit induk wajib dipilih untuk tipe UL.',
+            'parent_unit_id.exists' => 'Unit induk tidak valid.',
         ];
     }
 }

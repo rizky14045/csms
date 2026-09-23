@@ -149,17 +149,15 @@
                                             @endcan
 
                                             @can('send.audit.smp.score.unit')
-                                                @if(count($audit->get_invalid_items_evidence_by_unit) == 0)
-                                                    <form action="{{ route('user.audit-smp-score.send', ['audit' => $audit->id]) }}"
-                                                          method="post" id="send-audit-{{ $audit->id }}"
-                                                          onsubmit="confirmSave('send-audit-{{ $audit->id }}', 'Kirim Audit?')">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button type="submit" class="btn btn-success btn-sm">📤 Kirim</button>
-                                                    </form>
-                                                @else
-                                                    <button class="btn btn-secondary btn-sm" disabled style="opacity:.6;">📤 Kirim</button>
-                                                @endif
+                                                {{-- Boleh dikirim walau belum semua evidence dan self audit terisi
+                                                     (self audit default 0 jika kosong). --}}
+                                                <form action="{{ route('user.audit-smp-score.send', ['audit' => $audit->id]) }}"
+                                                      method="post" id="send-audit-{{ $audit->id }}"
+                                                      onsubmit="confirmSave('send-audit-{{ $audit->id }}', 'Kirim Audit?')">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="btn btn-success btn-sm">📤 Kirim</button>
+                                                </form>
                                             @endcan
 
                                         @elseif($audit->status == 1)

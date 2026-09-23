@@ -23,8 +23,8 @@ class LevelAssesmentService
         DB::beginTransaction();
 
         try {
-            $lastLevel = LevelAssesment::where('question_id',$question->id)->latest()->first();
-            $order = $lastLevel ? $lastLevel->order + 1 : 1; 
+            // Level yang menentukan urutan, jadi order selalu mengikuti nilai level.
+            $order = (int) $data['level'];
             
             $level = LevelAssesment::create([
                 'question_id' => $question->id,
@@ -87,6 +87,7 @@ class LevelAssesmentService
             $updateData = [
                 'level' => $data['level'],
                 'level_description' => $data['level_description'],
+                'order' => (int) $data['level'],
                 'updated_by' => auth()->id(),
             ];
 
@@ -139,15 +140,7 @@ class LevelAssesmentService
 
             $levelAssesment->delete();
 
-            // Reorder remaining levels
-            $remainingLevels = LevelAssesment::where('question_id', $questionID)
-                ->orderBy('order')
-                ->get();
-            
-            $newOrder = 1;
-            foreach ($remainingLevels as $index => $level) {
-                $level->update(['order' => $newOrder++]);
-            }
+            // order selalu mengikuti level, tidak perlu dirapatkan ulang saat hapus.
 
             DB::commit();
 

@@ -17,10 +17,55 @@
                     </button>
                 </li>
 
+                @auth
+                    @php
+                        $unreadNotifications = auth()->user()->unreadNotifications()->latest()->take(5)->get();
+                        $unreadCount = auth()->user()->unreadNotifications()->count();
+                    @endphp
+
+                    <li class="dropdown notification-list topbar-dropdown">
+                        <a class="nav-link dropdown-toggle nav-user me-0 position-relative" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                            <i data-feather="bell" class="noti-icon"></i>
+                            @if($unreadCount > 0)
+                                <span class="badge bg-danger rounded-pill" style="position:absolute; top:0; right:0; font-size:10px;">
+                                    {{ $unreadCount }}
+                                </span>
+                            @endif
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg" style="min-width:320px;">
+                            <div class="dropdown-item noti-title px-3 py-2 border-bottom">
+                                <h6 class="m-0">
+                                    Notifikasi
+                                    @if($unreadCount > 0)
+                                        <span class="badge bg-danger">{{ $unreadCount }} baru</span>
+                                    @endif
+                                </h6>
+                            </div>
+
+                            @forelse($unreadNotifications as $notification)
+                                <a href="{{ $notification->data['url'] ?? route('user.notifications.index') }}" class="dropdown-item notify-item">
+                                    <p class="notify-details mb-0" style="white-space:normal;">
+                                        <strong>{{ $notification->data['title'] ?? 'Notifikasi' }}</strong><br>
+                                        <small class="text-muted">{{ \Illuminate\Support\Str::limit($notification->data['message'] ?? '', 80) }}</small>
+                                    </p>
+                                </a>
+                            @empty
+                                <div class="dropdown-item text-muted text-center py-3">
+                                    Tidak ada notifikasi baru.
+                                </div>
+                            @endforelse
+
+                            <a href="{{ route('user.notifications.index') }}" class="dropdown-item text-center text-primary border-top">
+                                Lihat Semua Notifikasi
+                            </a>
+                        </div>
+                    </li>
+                @endauth
+
                 <li class="dropdown notification-list topbar-dropdown">
                     <a class="nav-link dropdown-toggle nav-user me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                         <span class="pro-user-name ms-1">
-                            {{Auth::user()->name ?? ''}} <i class="mdi mdi-chevron-down"></i> 
+                            {{Auth::user()->name ?? ''}} <i class="mdi mdi-chevron-down"></i>
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end profile-dropdown ">

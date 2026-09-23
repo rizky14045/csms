@@ -11,13 +11,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Audit Bulanan</h4>
+        <h4 class="fs-18 fw-semibold m-0">Laporan Bulanan</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Tambah Data Detail Audit Bulanan</li>
+            <li class="breadcrumb-item active">Tambah Data Detail Laporan Bulanan</li>
         </ol>
     </div>
 </div>
@@ -26,7 +26,7 @@
         
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-3">Detail Audit Bulanan</h5>
+                <h5 class="card-title mb-3">Detail Laporan Bulanan</h5>
                 <a href="{{route('user.monthly-audit.index')}}" class="btn btn-danger"> Back</a>
             </div><!-- end card header -->
 
@@ -98,7 +98,10 @@
                     <div class="tab-pane active" id="navtabs2-atribut" role="tabpanel">
                         <div class="d-flex justify-content-end mb-3">
                             @can('create.attribute.unit')
-                            <a href="{{ route('user.attribute.create') }}?monthly_id={{ $monthlyId }}" class="btn btn-success btn-sm">Tambah</a>
+                            <div class="d-flex gap-2">
+                                @include('user.monthly-audit.partials.sync-button', ['monthlyId' => $monthlyId, 'section' => 'attribute', 'rowId' => ''])
+                                <a href="{{ route('user.attribute.create') }}?monthly_id={{ $monthlyId }}" class="btn btn-success btn-sm">Tambah</a>
+                            </div>
                             @endcan
                         </div>
                         <div class="atribut mb-3">
@@ -119,6 +122,7 @@
                                                 <th scope="col" class="text-nowrap align-middle" colspan="2">Kondisi</th>
                                                 <th scope="col" class="text-nowrap align-middle" colspan="2">Masa Berlaku</th>
                                                 <th scope="col" class="text-nowrap align-middle" rowspan="2">Keterangan</th>
+                                                <th scope="col" class="text-nowrap align-middle" rowspan="2">Aksi</th>
                                             </tr>
                                             <tr>
                                                 <th scope="col" class="text-nowrap">Ada</th>
@@ -172,6 +176,7 @@
                                                     <td>
                                                         <input type="text" class="form-control" name="note_{{$attribute->id}}" value="{{$attribute->note}}">
                                                     </td>
+                                                <td class="text-nowrap">@include('user.monthly-audit.partials.row-actions', ['monthlyId' => $monthlyId, 'section' => 'attribute', 'rowId' => $attribute->id])</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -183,6 +188,7 @@
                         <div class="administrasi mb-3">
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="title fw-bold">Administrasi</span>
+                                @include('user.monthly-audit.partials.sync-button', ['monthlyId' => $monthlyId, 'section' => 'administration', 'rowId' => ''])
                             </div>
                             <div class="table-responsive">
                                 <form action="{{route('user.monthly-audit.form-attribute.saveAdministration',['monthlyId' => $monthlyId])}}" method="POST" enctype="multipart/form-data">
@@ -287,6 +293,7 @@
                                                 <th scope="col" class="text-nowrap align-middle" colspan="2">Kondisi</th>
                                                 <th scope="col" class="text-nowrap align-middle" colspan="2">Masa Berlaku</th>
                                                 <th scope="col" class="text-nowrap align-middle" rowspan="2">Keterangan</th>
+                                                <th scope="col" class="text-nowrap align-middle" rowspan="2">Aksi</th>
                                             </tr>
                                             <tr>
                                                 <th scope="col" class="text-nowrap">Ada</th>
@@ -339,6 +346,7 @@
                                                     <td>
                                                         <input type="text" class="form-control" name="note_{{$sarana->id}}" value="{{$sarana->note}}">
                                                     </td>
+                                                <td class="text-nowrap">@include('user.monthly-audit.partials.row-actions', ['monthlyId' => $monthlyId, 'section' => 'attribute', 'rowId' => $sarana->id])</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>

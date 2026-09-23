@@ -7,6 +7,8 @@ use App\Models\Area;
 use App\Models\Level;
 use App\Models\Marturity;
 use App\Models\MarturityArea;
+use App\Models\MarturityFileCheck;
+use App\Models\User;
 use App\Models\MarturityLevel;
 use App\Models\MarturityNote;
 use App\Models\MarturitySubArea;
@@ -19,6 +21,8 @@ use Illuminate\Support\Facades\DB;
 
 class MarturityService
 {
+    use \App\Services\Concerns\AllocatesIds;
+
     protected $logService;
 
     public function __construct(ActivityLogService $logService)
@@ -126,6 +130,8 @@ class MarturityService
 
     public function createMarturity(array $data)
     {
+        set_time_limit(120);
+
         DB::beginTransaction();
 
         try {
@@ -139,60 +145,86 @@ class MarturityService
                 'created_by'=> $userId,
             ]);
 
-            $areas = Area::where('type', 'marturity')->get();
+            $areas = Area::where('type', 'marturity')->orderBy('order')->orderBy('id')->get();
 
-            foreach ($areas as $area) {
+            if ($areas->isEmpty()) {
+                DB::rollBack();
 
-                $marturityArea = MarturityArea::create([
-                    'unit_id'       => $unit_id,
-                    'marturity_id'  => $marturity->id,
-                    'name'          => $area->name,
-                    'created_by'    => $userId,
-                ]);
+                return JsonResponse::error(
+                    'Master data Maturity belum tersedia',
+                    'Failed to create marturity',
+                    422
+                );
+            }
 
-                $subAreas = SubArea::where('area_id', $area->id)->get();
+            $subAreasByArea = SubArea::whereIn('area_id', $areas->pluck('id'))
+                ->orderBy('order')->orderBy('id')->get()->groupBy('area_id');
+            $levelsBySub = Level::whereIn('sub_area_id', $subAreasByArea->flatten()->pluck('id'))
+                ->orderBy('order')->orderBy('id')->get()->groupBy('sub_area_id');
+            $notesByLevel = Note::whereIn('level_id', $levelsBySub->flatten()->pluck('id'))
+                ->orderBy('order')->orderBy('id')->get()->groupBy('level_id');
 
-                foreach ($subAreas as $subArea) {
+            $now = now();
+            $base = ['unit_id' => $unit_id, 'marturity_id' => $marturity->id, 'created_by' => $userId, 'created_at' => $now, 'updated_at' => $now];
 
-                    $marturitySubArea = MarturitySubArea::create([
-                        'unit_id'       => $unit_id,
-                        'marturity_id'  => $marturity->id,
-                        'area_id'       => $marturityArea->id,
-                        'name'          => $subArea->name,
-                        'description'   => $subArea->description,
-                        'reference'     => $subArea->reference,
-                        'created_by'    => $userId,
-                    ]);
+            $areaIds = $this->allocateIds('marturity_areas', $areas->count());
+            $areaRows = [];
+            $subRows = [];
+            $levelRows = [];
+            $noteRows = [];
+            $subCount = $levelCount = $noteCount = 0;
 
-                    $levels = Level::where('sub_area_id', $subArea->id)->get();
+            foreach ($areas as $ai => $area) {
+                $newAreaId = $areaIds[$ai];
+                $areaRows[] = $base + ['id' => $newAreaId, 'name' => $area->name, 'order' => $ai + 1];
+                $subCount += ($subAreasByArea[$area->id] ?? collect())->count();
+            }
 
-                    foreach ($levels as $level) {
-
-                        $marturityLevel = MarturityLevel::create([
-                            'unit_id'        => $unit_id,
-                            'marturity_id'   => $marturity->id,
-                            'sub_area_id'    => $marturitySubArea->id,
-                            'level'          => $level->level,
-                            'description'    => $level->description,
-                            'total_evidence' => $level->total_evidence,
-                            'created_by'     => $userId,
-                        ]);
-
-                        $notes = Note::where('level_id', $level->id)->get();
-
-                        foreach ($notes as $note) {
-
-                            MarturityNote::create([
-                                'unit_id'       => $unit_id,
-                                'marturity_id'  => $marturity->id,
-                                'level_id'      => $marturityLevel->id,
-                                'note'          => $note->note,
-                                'created_by'    => $userId,
-                            ]);
-                        }
+            $subIds = $this->allocateIds('marturity_sub_areas', $subCount);
+            $si = 0;
+            $pendingLevels = [];
+            foreach ($areas as $ai => $area) {
+                foreach (($subAreasByArea[$area->id] ?? collect())->values() as $sj => $subArea) {
+                    $newSubId = $subIds[$si++];
+                    $subRows[] = $base + [
+                        'id' => $newSubId, 'area_id' => $areaIds[$ai], 'name' => $subArea->name,
+                        'description' => $subArea->description, 'reference' => $subArea->reference, 'order' => $sj + 1,
+                    ];
+                    foreach (($levelsBySub[$subArea->id] ?? collect())->values() as $lk => $level) {
+                        $pendingLevels[] = [$newSubId, $level, $lk + 1];
                     }
                 }
             }
+
+            $levelIds = $this->allocateIds('marturity_levels', count($pendingLevels));
+            $pendingNotes = [];
+            foreach ($pendingLevels as $li => [$newSubId, $level, $order]) {
+                $newLevelId = $levelIds[$li];
+                $levelRows[] = $base + [
+                    'id' => $newLevelId, 'sub_area_id' => $newSubId, 'level' => $level->level,
+                    'description' => $level->description, 'total_evidence' => $level->total_evidence, 'order' => $order,
+                ];
+                foreach (($notesByLevel[$level->id] ?? collect())->values() as $nk => $note) {
+                    $noteRows[] = $base + ['level_id' => $newLevelId, 'note' => $note->note, 'order' => $nk + 1];
+                }
+            }
+
+            $totalLevelsCreated = count($levelRows);
+
+            if ($totalLevelsCreated === 0) {
+                DB::rollBack();
+
+                return JsonResponse::error(
+                    'Master data Maturity belum lengkap (tidak ada level yang tersedia)',
+                    'Failed to create marturity',
+                    422
+                );
+            }
+
+            MarturityArea::insert($areaRows);
+            if ($subRows) { MarturitySubArea::insert($subRows); }
+            MarturityLevel::insert($levelRows);
+            if ($noteRows) { MarturityNote::insert($noteRows); }
 
             DB::commit();
 
@@ -469,6 +501,27 @@ class MarturityService
         }
     }
 
+    public function isLevelUnlocked(MarturityLevel $level)
+    {
+        $siblings = MarturityLevel::where('sub_area_id', $level->sub_area_id)
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get();
+
+        foreach ($siblings as $sibling) {
+            if ($sibling->id == $level->id) {
+                return true;
+            }
+
+            $files = json_decode($sibling->attachment_files ?? '[]', true) ?: [];
+            if (count($files) === 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function uploadLevelFiles(Request $request, MarturityLevel $level)
     {
         DB::beginTransaction();
@@ -540,57 +593,134 @@ class MarturityService
         DB::beginTransaction();
 
         try {
-            if($marturity->send_status == true){
+            if($marturity->send_status == true || (int) $marturity->status === 1){
+                DB::rollBack();
                 return JsonResponse::error(
                     'Marturity sudah dikirim',
                     'Failed to send marturity',
                     400
                 );
             }
-            
+
+            $user = auth()->user();
+            // Selalu dikirim ke MMRK dulu; MMRK yang meneruskan ke Pusat.
             $marturity->update([
-                'send_status' => true,
-                'send_date' => date('Y-m-d'),
-                'updated_by' => auth()->id(),
+                'status' => 1,
+                'mmrk_send_date' => date('Y-m-d'),
+                'updated_by' => $user->id,
             ]);
 
             DB::commit();
 
-            $this->logService->log(
-                'marturity.send',
-                'Send marturity',
-                200,
-                [
-                    'marturity_id' => $marturity->id,
-                    'date' => $marturity->date,
-                    'triwulan' => $marturity->triwulan,
-                ]
-            );
+            $this->logService->log('marturity.send', 'Send marturity', 200, [
+                'marturity_id' => $marturity->id,
+                'status' => $marturity->status,
+            ]);
 
-            return JsonResponse::success(
-                $marturity,
-                'Marturity sent successfully',
-                200
-            );
+            return JsonResponse::success($marturity, 'Marturity sent successfully', 200);
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            $this->logService->log(
-                'marturity.send',
-                'Failed to send marturity',
-                500,
-                [
-                    'marturity_id' => $marturity->id,
-                    'error' => $e->getMessage(),
-                ]
+            $this->logService->log('marturity.send', 'Failed to send marturity', 500, [
+                'marturity_id' => $marturity->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return JsonResponse::error($e->getMessage(), 'Failed to send marturity', 500);
+        }
+    }
+
+    public function sendToPusat(Marturity $marturity)
+    {
+        if ((int) $marturity->status !== 1) {
+            return false;
+        }
+
+        $marturity->update([
+            'status' => 2,
+            'send_status' => true,
+            'send_date' => date('Y-m-d'),
+            'updated_by' => auth()->id(),
+        ]);
+
+        return true;
+    }
+
+    public function finishValidation(Marturity $marturity)
+    {
+        if ((int) $marturity->status !== 2) {
+            return false;
+        }
+
+        $marturity->update(['status' => 3, 'updated_by' => auth()->id()]);
+
+        return true;
+    }
+
+    public function getCheckedMap(Marturity $marturity)
+    {
+        $map = [];
+        foreach (MarturityFileCheck::where('marturity_id', $marturity->id)->get() as $c) {
+            $map[$c->level_id . '|' . $c->filename] = true;
+        }
+
+        return $map;
+    }
+
+    public function toggleCheck(Marturity $marturity, MarturityLevel $level, $filename, $checked)
+    {
+        if ((int) $marturity->status !== 2) {
+            return [false, 'Data tidak dalam tahap validasi Pusat!'];
+        }
+
+        if ($level->marturity_id != $marturity->id) {
+            return [false, 'Level tidak valid!'];
+        }
+
+        $files = json_decode($level->attachment_files ?? '[]', true) ?: [];
+        if (!in_array($filename, $files, true)) {
+            return [false, 'File tidak ditemukan!'];
+        }
+
+        $siblings = MarturityLevel::where('sub_area_id', $level->sub_area_id)
+            ->orderBy('order')->orderBy('id')->get();
+
+        if ($checked) {
+            foreach ($siblings as $sibling) {
+                if ($sibling->id == $level->id) {
+                    break;
+                }
+
+                $siblingFiles = json_decode($sibling->attachment_files ?? '[]', true) ?: [];
+                $done = MarturityFileCheck::where('level_id', $sibling->id)
+                    ->whereIn('filename', $siblingFiles)->count();
+
+                if (count($siblingFiles) === 0 || $done < count($siblingFiles)) {
+                    return [false, 'Centang semua file level sebelumnya terlebih dahulu!'];
+                }
+            }
+
+            MarturityFileCheck::firstOrCreate(
+                ['level_id' => $level->id, 'filename' => $filename],
+                ['marturity_id' => $marturity->id, 'checked_by' => auth()->id()]
             );
 
-            return JsonResponse::error(
-                $e->getMessage(),
-                'Failed to send marturity',
-                500
-            );
+            return [true, 'ok'];
         }
+
+        MarturityFileCheck::where('level_id', $level->id)->where('filename', $filename)->delete();
+
+        $after = false;
+        foreach ($siblings as $sibling) {
+            if ($after) {
+                MarturityFileCheck::where('level_id', $sibling->id)->delete();
+            }
+            if ($sibling->id == $level->id) {
+                $after = true;
+            }
+        }
+
+        return [true, 'ok'];
     }
 }

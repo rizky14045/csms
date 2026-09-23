@@ -160,6 +160,16 @@
                     fetchUnits('Unit');
                 }
 
+                // Role MMRK = bisa memilih unit bertipe Pusat maupun Unit
+                else if ($role.find('option:selected').text().trim() === 'MMRK') {
+                    fetchUnits('Pusat,Unit');
+                }
+
+                // Role UL = hanya bisa memilih unit bertipe UL
+                else if ($role.find('option:selected').text().trim() === 'UL') {
+                    fetchUnits('UL');
+                }
+
                 // selain itu hide unit
                 else {
                     $unit.removeAttr('required');

@@ -15,7 +15,7 @@ class SecurityFormController extends Controller
     public function index($monthlyId){
 
         $data['monthlyId'] = $monthlyId;
-        $data['forms'] = SecurityForm::with('security')->where('monthly_report_id', $monthlyId)->get();
+        $data['forms'] = SecurityForm::with('security')->whereHas('security')->where('monthly_report_id', $monthlyId)->get();
         return view('user.monthly-audit.security-form',$data);
     }
 

@@ -27,10 +27,13 @@ class ElementAuditSMPService
 
         try {
 
+            $nextOrder = (int) AuditSMP::where('type', $data['type'])->where('parent_id', $auditId)->max('order') + 1;
+
             $audit = AuditSMP::create([
                 'name' => $data['name'],
                 'type' => $data['type'],
                 'parent_id' => $auditId,
+                'order' => $nextOrder,
                 'created_by' => auth()->id(),
             ]);
             

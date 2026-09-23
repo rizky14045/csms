@@ -1,6 +1,8 @@
 @extends('layout.app')
 @section('styles')
 <style>
+    .sortable-ghost { opacity:.4; }
+    .drag-handle:active { cursor:grabbing; }
     .accordion-button::after { filter: invert(100%); }
 
     .cat-item {
@@ -77,9 +79,9 @@
                     @endcan
                 </div>
 
-                <div class="accordion" id="catAccordion">
+                <div class="accordion" id="catAccordion" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-entity="assesment_category" data-item=".cat-item">
                     @foreach ($categories as $category)
-                    <div class="accordion-item cat-item">
+                    <div class="accordion-item cat-item sortable-item" data-id="{{ $category->id }}">
 
                         <h2 class="accordion-header">
                             <div class="d-flex align-items-center w-100 pe-3">
@@ -97,6 +99,7 @@
                                 @endcan
 
                                 <div class="btn-action-group ms-3">
+<span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                     @can('edit.category.assesment')
                                     <a href="{{route('admin.category-assesment.edit',['category_assesment'=>$category->id])}}" class="btn btn-soft-warning btn-xs">Edit</a>
                                     @endcan
@@ -113,7 +116,7 @@
 
                         @can('view.question.assesment')
                         <div id="catBody{{ $category->id }}" class="accordion-collapse collapse">
-                            <div class="accordion-body bg-white pb-3">
+                            <div class="accordion-body bg-white pb-3" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-entity="assesment_question" data-item=".question-item">
 
                                 @can('create.question.assesment')
                                 <div class="mb-3">
@@ -126,7 +129,7 @@
                                 @if(!empty($category->questions))
                                 <span class="label-section">Indikator / Pertanyaan</span>
                                 @foreach ($category->questions as $question)
-                                <div class="accordion-item question-item">
+                                <div class="accordion-item question-item sortable-item" data-id="{{ $question->id }}">
 
                                     <h2 class="accordion-header">
                                         <div class="d-flex align-items-center w-100 pe-3">
@@ -144,6 +147,7 @@
                                             @endcan
 
                                             <div class="btn-action-group ms-3">
+<span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                                 @can('create.level.assesment')
                                                 <a href="{{route('admin.level-assesment.create',['question_assesment'=>$question->id])}}" class="btn btn-soft-success btn-xs">+ Level</a>
                                                 @endcan
@@ -163,16 +167,17 @@
 
                                     @can('view.level.assesment')
                                     <div id="questionBody{{ $question->id }}" class="accordion-collapse collapse">
-                                        <div class="question-body">
+                                        <div class="question-body" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-entity="assesment_level" data-item=".level-item">
                                             @if(!empty($question->levels))
                                             <span class="label-section">Level</span>
                                             @foreach ($question->levels as $level)
-                                            <div class="level-item d-flex justify-content-between align-items-start">
+                                            <div class="level-item sortable-item d-flex justify-content-between align-items-start" data-id="{{ $level->id }}">
                                                 <div class="flex-grow-1 fs-13">
-                                                    <span class="badge bg-warning text-dark me-2" style="font-size:10px;">Level {{ $level->level }}</span>
+                                                    <span class="badge bg-warning text-dark me-2 level-badge" style="font-size:10px;">Level {{ $level->level }}</span>
                                                     <span class="text-dark">{{ $level->level_description }}</span>
                                                 </div>
                                                 <div class="btn-action-group ms-3 mt-1">
+<span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                                     @can('edit.level.assesment')
                                                     <a href="{{route('admin.level-assesment.edit',['level_assesment'=>$level->id,'question_assesment'=>$question->id])}}" class="btn btn-soft-warning btn-xs">Edit</a>
                                                     @endcan

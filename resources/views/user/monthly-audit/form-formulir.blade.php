@@ -11,13 +11,13 @@
 
     <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
         <div class="flex-grow-1">
-            <h4 class="fs-18 fw-semibold m-0">Audit Bulanan</h4>
+            <h4 class="fs-18 fw-semibold m-0">Laporan Bulanan</h4>
         </div>
 
         <div class="text-end">
             <ol class="breadcrumb m-0 py-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Tambah Data Detail Audit Bulanan</li>
+                <li class="breadcrumb-item active">Tambah Data Detail Laporan Bulanan</li>
             </ol>
         </div>
     </div>
@@ -26,7 +26,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-3">Detail Audit Bulanan</h5>
+                    <h5 class="card-title mb-3">Detail Laporan Bulanan</h5>
                     <a href="{{ route('user.monthly-audit.index') }}" class="btn btn-danger"> Back</a>
                 </div><!-- end card header -->
 
@@ -111,7 +111,28 @@
                                 </div>
                                 <div class="container my-4">
                                     <h5>BULAN : {{ $monthlyReport->report_date }}<h5>
+
+                                    @if($hasUls ?? false)
+                                    <div class="mb-3 d-flex align-items-center gap-2">
+                                        <label class="form-label m-0 fw-semibold">Tampilan:</label>
+                                        <select id="ulViewSelect" class="form-select" style="max-width:280px;">
+                                            <option value="unit" {{ ($view ?? 'unit') === 'unit' ? 'selected' : '' }}>Data Unit Ini (bisa diisi)</option>
+                                            <option value="total" {{ ($view ?? 'unit') === 'total' ? 'selected' : '' }}>Total Keseluruhan (Unit + UL)</option>
+                                        </select>
+                                        @if(($view ?? 'unit') === 'total')
+                                            <span class="badge bg-info">{{ $ulCount }}/{{ $ulTotal }} UL sudah mengirim</span>
+                                        @endif
+                                    </div>
+                                    <script>
+                                        document.getElementById('ulViewSelect').addEventListener('change', function () {
+                                            const url = new URL(window.location.href);
+                                            url.searchParams.set('view', this.value);
+                                            window.location = url.toString();
+                                        });
+                                    </script>
+                                    @endif
                                             <!-- Section 1 -->
+                                            <fieldset {{ (($view ?? 'unit') === 'total') ? 'disabled' : '' }}>
                                             <form
                                                 action="{{ route('user.monthly-audit.form-formulir.saveFormulir', ['monthlyId' => $monthlyId]) }}"
                                                 method="POST">
@@ -262,6 +283,7 @@
                                                     </div>
                                                 </div>
                                             </form>
+                                            </fieldset>
 
 
                                             <!-- Section 3 -->
@@ -357,6 +379,7 @@
                                             </div>
 
                                             <!-- Section 6 -->
+                                            <fieldset {{ (($view ?? 'unit') === 'total') ? 'disabled' : '' }}>
                                             <form
                                                 action="{{ route('user.monthly-audit.form-formulir.updateGangguan', $monthlyId) }}"
                                                 method="POST">
@@ -422,6 +445,7 @@
                                                     <button type="submit" class="btn btn-primary">Simpan Gangguan</button>
                                                 </div>
                                             </form>
+                                            </fieldset>
 
                                             <!-- Final Total -->
                                             <div class="fw-bold">

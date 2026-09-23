@@ -25,39 +25,20 @@
                     @method('PATCH')
 
                     <div class="form-group mb-3">
-                        <label for="unit_id" class="form-label"><span class="text-danger">*</span> Unit</label>
-                        <select class="form-select select2-unit @error('unit_id') is-invalid @enderror" name="unit_id" id="unit_id" required>
-                            <option value="">Pilih Unit</option>
-                            @foreach ($units_list as $unit)
-                                <option value="{{ $unit['id'] }}"
-                                    {{ old('unit_id', $audit->unit_id) == $unit['id'] ? 'selected' : '' }}>
-                                    {{ $unit['name'] }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('unit_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label class="form-label">Unit</label>
+                        <input type="text" class="form-control" value="{{ $audit->unit->name ?? '-' }}" disabled readonly>
+                        <div class="form-text text-muted">Unit tidak dapat diubah setelah audit dibuat.</div>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="start_audit" class="form-label"><span class="text-danger">*</span> Tanggal Mulai Audit</label>
-                        <input class="form-control @error('start_audit') is-invalid @enderror" type="date"
-                            id="start_audit" name="start_audit" required
-                            value="{{ old('start_audit', $audit->start_audit) }}">
-                        @error('start_audit')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label class="form-label">Tanggal Mulai Audit</label>
+                        <input type="date" class="form-control" value="{{ $audit->start_audit }}" disabled readonly>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="end_audit" class="form-label"><span class="text-danger">*</span> Tanggal Selesai Audit</label>
-                        <input class="form-control @error('end_audit') is-invalid @enderror" type="date"
-                            id="end_audit" name="end_audit" required
-                            value="{{ old('end_audit', $audit->end_audit) }}">
-                        @error('end_audit')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label class="form-label">Tanggal Selesai Audit</label>
+                        <input type="date" class="form-control" value="{{ $audit->end_audit }}" disabled readonly>
+                        <div class="form-text text-muted">Tanggal audit tidak dapat diubah setelah audit dibuat.</div>
                     </div>
 
                     <div class="form-group mb-3">
@@ -140,12 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     $('.select2-multiple').select2({
         placeholder: "Pilih Anggota Auditor",
-        width: '100%'
-    });
-
-    $('.select2-unit').select2({
-        placeholder: "Pilih Unit",
-        allowClear: true,
         width: '100%'
     });
 });

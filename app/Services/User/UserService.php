@@ -611,7 +611,6 @@ class UserService
 
         } catch (Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
             $this->logService->log(
                 'user.update_bujp',
                 'Failed to update bujp',

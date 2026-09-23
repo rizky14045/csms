@@ -28,6 +28,8 @@
     .accordion-button { padding: 0.75rem 1rem; font-weight: 600; color: #343a40; }
     .accordion-button:not(.collapsed) { background-color: #f8faff; box-shadow: none; }
 
+    .sortable-ghost { opacity:.4; }
+    .drag-handle:active { cursor:grabbing; }
     .btn-xs { padding: 3px 10px; font-size: 11px; border-radius: 5px; font-weight: 600; white-space: nowrap; }
     .btn-action-group { display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; }
 
@@ -84,9 +86,9 @@
                     @endcan
                 </div>
 
-                <div class="accordion" id="marturityAccordion">
+                <div class="accordion" id="marturityAccordion" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-type="marturity" data-entity="area" data-item=".area-item">
                     @foreach ($areas as $area)
-                    <div class="accordion-item area-item">
+                    <div class="accordion-item area-item sortable-item" data-id="{{ $area->id }}">
 
                         <h2 class="accordion-header">
                             <div class="d-flex align-items-center w-100 pe-3">
@@ -105,6 +107,7 @@
 
                                 <div class="btn-action-group ms-3">
                                     @can('edit.marturity.area')
+                                    <span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                     <a href="{{route('admin.marturity-area.edit',['area'=>$area->id])}}" class="btn btn-soft-warning btn-xs">Edit</a>
                                     @endcan
                                     @can('delete.marturity.area')
@@ -120,7 +123,7 @@
 
                         @can('view.marturity.subarea')
                         <div id="areaBody{{ $area->id }}" class="accordion-collapse collapse">
-                            <div class="accordion-body bg-white pb-3">
+                            <div class="accordion-body bg-white pb-3" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-type="marturity" data-entity="sub_area" data-item=".subarea-item">
 
                                 @can('create.marturity.subarea')
                                 <div class="mb-3">
@@ -133,7 +136,7 @@
                                 @if(!empty($area->sub_areas))
                                 <span class="label-section">Sub Area</span>
                                 @foreach ($area->sub_areas as $subArea)
-                                <div class="accordion-item subarea-item">
+                                <div class="accordion-item subarea-item sortable-item" data-id="{{ $subArea->id }}">
 
                                     <h2 class="accordion-header">
                                         <div class="d-flex align-items-center w-100 pe-3">
@@ -160,6 +163,7 @@
                                                 <a href="{{route('admin.marturity-level.create',['sub_area'=>$subArea->id])}}" class="btn btn-soft-success btn-xs">+ Level</a>
                                                 @endcan
                                                 @can('edit.marturity.subarea')
+                                    <span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                                 <a href="{{route('admin.marturity-sub-area.edit',['sub_area'=>$subArea->id,'area'=>$area->id])}}" class="btn btn-soft-warning btn-xs">Edit</a>
                                                 @endcan
                                                 @can('delete.marturity.subarea')
@@ -175,11 +179,11 @@
 
                                     @can('view.marturity.level')
                                     <div id="subareaBody{{ $subArea->id }}" class="accordion-collapse collapse">
-                                        <div class="subarea-body">
+                                        <div class="subarea-body" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-type="marturity" data-entity="level" data-item=".level-item">
                                             @if(!empty($subArea->levels))
                                             <span class="label-section">Level</span>
                                             @foreach ($subArea->levels as $level)
-                                            <div class="accordion-item level-item">
+                                            <div class="accordion-item level-item sortable-item" data-id="{{ $level->id }}">
 
                                                 <h2 class="accordion-header">
                                                     <div class="d-flex align-items-center w-100 pe-3">
@@ -202,6 +206,7 @@
                                                             <a href="{{route('admin.marturity-note.create',['level'=>$level->id])}}" class="btn btn-soft-success btn-xs">+ Note</a>
                                                             @endcan
                                                             @can('edit.marturity.level')
+                                    <span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                                             <a href="{{route('admin.marturity-level.edit',['level'=>$level->id,'sub_area'=>$subArea->id])}}" class="btn btn-soft-warning btn-xs">Edit</a>
                                                             @endcan
                                                             @can('delete.marturity.level')
@@ -217,16 +222,17 @@
 
                                                 @can('view.marturity.note')
                                                 <div id="levelBody{{ $level->id }}" class="accordion-collapse collapse">
-                                                    <div class="level-body">
+                                                    <div class="level-body" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-type="marturity" data-entity="note" data-item=".note-item">
                                                         @if(!empty($level->notes))
                                                         <span class="label-section">Note</span>
                                                         @foreach ($level->notes as $note)
-                                                        <div class="note-item d-flex justify-content-between align-items-center">
+                                                        <div class="note-item sortable-item d-flex justify-content-between align-items-center" data-id="{{ $note->id }}">
                                                             <div class="text-dark fs-13">
                                                                 <span class="text-primary fw-bold me-2">{{ $loop->iteration }}.</span>{{ $note->note }}
                                                             </div>
                                                             <div class="btn-action-group">
                                                                 @can('edit.marturity.note')
+                                    <span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                                                 <a href="{{route('admin.marturity-note.edit',['note'=>$note->id,'level'=>$level->id])}}" class="btn btn-soft-warning btn-xs">Edit</a>
                                                                 @endcan
                                                                 @can('delete.marturity.note')

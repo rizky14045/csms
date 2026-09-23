@@ -47,7 +47,7 @@ class CategoryAssesmentService
                 $query->whereDate('created_at', '<=', $end);
             }
 
-            $allowedSort = ['id', 'name', 'created_at'];
+            $allowedSort = ['id', 'name', 'created_at', 'order'];
             if (!in_array($ref, $allowedSort)) {
                 $ref = 'id';
             }
@@ -89,7 +89,7 @@ class CategoryAssesmentService
         DB::beginTransaction();
 
         try {
-             $lastCategory = CategoryAssesment::latest()->first();
+             $lastCategory = CategoryAssesment::orderBy('order','desc')->first();
             $order = $lastCategory ? $lastCategory->order + 1 : 1; 
 
             $category = CategoryAssesment::create([

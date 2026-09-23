@@ -20,6 +20,6 @@ class SignQuestionAssesment extends Model
 
     public function levels()
     {
-        return $this->hasMany(SignLevelAssesment::class, 'sign_question_id', 'id');
+        return $this->hasMany(SignLevelAssesment::class, 'sign_question_id', 'id')->orderBy('level')->orderBy('id');
     }
 }

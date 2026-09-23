@@ -12,7 +12,7 @@ class FetchController extends Controller
 
         $units = [];
         if($typeUnit) {
-            $units = Unit::where('type', $typeUnit)->get();
+            $units = Unit::whereIn('type', array_map('trim', explode(',', $typeUnit)))->orderBy('name')->get();
         }
 
         return response()->json($units);

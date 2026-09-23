@@ -89,8 +89,14 @@ class MarturityController extends Controller
             ])->withInput();
         }
 
-        $this->marturityService->createMarturity($request->all());
-        
+        $result = $this->marturityService->createMarturity($request->all());
+
+        if ($result->getStatusCode() !== 201) {
+            $message = json_decode($result->getContent(), true)['message'] ?? 'Marturity gagal ditambah!';
+            Alert::error('Tambah Gagal', $message);
+            return back()->withInput();
+        }
+
         Alert::success('Tambah Berhasil', 'Marturity berhasil ditambah!');
         if(auth()->user()->roles[0]->name == 'Pusat'){
             return redirect()->route('admin.marturity.index');
@@ -125,10 +131,18 @@ class MarturityController extends Controller
             Alert::warning('Warning', 'Marturity belum dikirm!');
             return redirect()->route('user.marturity.index');
         }
-        $result = $this->marturityService->getAlMarturityArea(['subAreas','subAreas.levels','subAreas.levels.notes'], $marturity->id);
-        $data['areas'] = getData($result);
+        $result = $this->marturityService->getAlMarturityArea(['subAreas','subAreas.levels'], $marturity->id);
+        $areas   = getData($result);
+        $checked = $this->marturityService->getCheckedMap($marturity);
 
-        return view('user.marturity.preview',$data);
+        $data['areas']     = $areas;
+        $data['marturity'] = $marturity;
+        $data['mode']      = 'view';
+        $data['checked']   = $checked;
+        $data['actual']    = \App\Services\Score\MlActualCalculator::marturity($areas, $checked);
+        $data['backUrl']   = route('user.marturity.index');
+
+        return view('admin.marturity.show', $data);
     }
 
     public function send(Marturity $marturity){
@@ -145,9 +159,14 @@ class MarturityController extends Controller
         //     return redirect()->route('user.marturity.index');
         // }
 
-        $this->marturityService->sendMarturity($marturity);
-        
-        Alert::success('Berhasil Dikirim', 'Marturity berhasil dikirim!');
+        $result = $this->marturityService->sendMarturity($marturity);
+        if ($result->getStatusCode() !== 200) {
+            Alert::error('Gagal Dikirim', 'Marturity sudah dikirim atau gagal dikirim!');
+            return redirect()->route(auth()->user()->hasRole('Pusat') ? 'admin.marturity.index' : 'user.marturity.index');
+        }
+
+        $marturity->refresh();
+        Alert::success('Berhasil Dikirim', (int) $marturity->status === 1 ? 'Marturity berhasil dikirim ke MMRK!' : 'Marturity berhasil dikirim!');
         if(auth()->user()->roles[0]->name == 'Pusat'){
             return redirect()->route('admin.marturity.index');
         } else {
@@ -176,6 +195,17 @@ class MarturityController extends Controller
     public function uploadLevel(Request $request, Marturity $marturity, MarturityLevel $level)
     {
         try {
+            if ($marturity->send_status || $level->marturity_id != $marturity->id) {
+                return response()->json(['success' => false, 'message' => 'Data sudah terkunci!'], 403);
+            }
+
+            if (!$this->marturityService->isLevelUnlocked($level)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Selesaikan evidence Level sebelumnya terlebih dahulu!',
+                ], 422);
+            }
+
             $totalEvidence  = $level->total_evidence ?? 999;
             $existingCount  = count(json_decode($level->attachment_files ?? '[]', true) ?: []);
             $remainingSlots = max(0, $totalEvidence - $existingCount);
@@ -224,6 +254,10 @@ class MarturityController extends Controller
     public function deleteLevelFile(Request $request, Marturity $marturity, MarturityLevel $level)
     {
         try {
+            if ($marturity->send_status || $level->marturity_id != $marturity->id) {
+                return response()->json(['success' => false, 'message' => 'Data sudah terkunci!'], 403);
+            }
+
             $filename = $request->input('filename');
             if (!$filename) {
                 return response()->json(['error' => 'Filename tidak ditemukan'], 422);

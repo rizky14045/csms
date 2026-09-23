@@ -11,13 +11,13 @@
 
     <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
         <div class="flex-grow-1">
-            <h4 class="fs-18 fw-semibold m-0">Audit Bulanan</h4>
+            <h4 class="fs-18 fw-semibold m-0">Laporan Bulanan</h4>
         </div>
 
         <div class="text-end">
             <ol class="breadcrumb m-0 py-0">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Detail Audit Bulanan</li>
+                <li class="breadcrumb-item active">Detail Laporan Bulanan</li>
             </ol>
         </div>
     </div>
@@ -26,8 +26,8 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-3">Detail Audit Bulanan</h5>
-                    <a href="{{ route('admin.monthly-audit.index') }}" class="btn btn-danger"> Back</a>
+                    <h5 class="card-title mb-3">Detail Laporan Bulanan</h5>
+                    <a href="{{ $backUrl ?? route('admin.monthly-audit.index') }}" class="btn btn-danger"> Back</a>
                 </div><!-- end card header -->
 
                 <div class="card-body">

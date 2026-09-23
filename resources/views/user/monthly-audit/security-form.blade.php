@@ -11,13 +11,13 @@
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
     <div class="flex-grow-1">
-        <h4 class="fs-18 fw-semibold m-0">Audit Bulanan</h4>
+        <h4 class="fs-18 fw-semibold m-0">Laporan Bulanan</h4>
     </div>
 
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
             <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Tambah Data Detail Audit Bulanan</li>
+            <li class="breadcrumb-item active">Tambah Data Detail Laporan Bulanan</li>
         </ol>
     </div>
 </div>
@@ -26,7 +26,7 @@
         
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-3">Detail Audit Bulanan</h5>
+                <h5 class="card-title mb-3">Detail Laporan Bulanan</h5>
                 <a href="{{route('user.monthly-audit.index')}}" class="btn btn-danger"> Back</a>
             </div><!-- end card header -->
 
@@ -100,12 +100,15 @@
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="title fw-bold">Data Personil Satuan Pengamanan</span>
                                 @can('create.security.unit')
-                                <a href="{{ route('user.security.create') }}?monthly_id={{ $monthlyId }}" class="btn btn-success btn-sm">Tambah</a>
+                                <div class="d-flex gap-2">
+                                    @include('user.monthly-audit.partials.sync-button', ['monthlyId' => $monthlyId, 'section' => 'security', 'rowId' => ''])
+                                    <a href="{{ route('user.security.create') }}?monthly_id={{ $monthlyId }}" class="btn btn-success btn-sm">Tambah</a>
+                                </div>
                                 @endcan
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered text-center align-middle"
-                                    style="table-layout: fixed; width: 100%; min-width: 1600px;">
+                                    style="table-layout: fixed; width: 100%; min-width: 1750px;">
                                     <colgroup>
                                         <col style="width: 45px;">
                                         <col style="width: 140px;">
@@ -122,6 +125,7 @@
                                         <col style="width: 130px;">
                                         <col style="width: 100px;">
                                         <col style="width: 130px;">
+                                        <col style="width: 150px;">
                                     </colgroup>
                                     <thead class="table-light">
                                         <tr>
@@ -138,6 +142,7 @@
                                             <th rowspan="2" class="align-middle">Pendidikan Terakhir</th>
                                             <th rowspan="2" class="align-middle">Keterangan</th>
                                             <th rowspan="2" class="align-middle">File KTA</th>
+                                            <th rowspan="2" class="align-middle">Aksi</th>
                                         </tr>
                                         <tr>
                                             <th>Pratama</th>
@@ -173,6 +178,9 @@
                                                     @else
                                                         <span class="text-muted">-</span>
                                                     @endif
+                                                </td>
+                                                <td class="text-nowrap">
+                                                    @include('user.monthly-audit.partials.row-actions', ['monthlyId' => $monthlyId, 'section' => 'security', 'rowId' => $form->id])
                                                 </td>
                                             </tr>
                                         @endforeach

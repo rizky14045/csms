@@ -15,6 +15,6 @@ class CategoryAssesment extends Model
 
     public function questions()
     {
-        return $this->hasMany(QuestionAssesment::class, 'category_id', 'id');
+        return $this->hasMany(QuestionAssesment::class, 'category_id', 'id')->orderBy('order')->orderBy('id');
     }
 }

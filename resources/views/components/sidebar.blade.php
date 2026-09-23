@@ -87,7 +87,7 @@
                         <span> Home </span>
                     </a>
                 </li>
-                @if (Auth::user()->type == 'user')
+                @if (Auth::user()->type == 'user' && !Auth::user()->hasRole('MMRK'))
                     <li>
                         <a href="{{ route('user.monthly-audit.index') }}" class="tp-link">
                             <i data-feather="user"></i>
@@ -184,6 +184,25 @@
                                 <li>
                                     <a href="{{ route('admin.keamanan.index') }}" class="tp-link">Keamanan KPI</a>
                                 </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endcanany
+                @canany(['view.marturity.mmrk', 'view.kpi.mmrk'])
+                    <li>
+                        <a href="#sidebarMmrk" data-bs-toggle="collapse">
+                            <i data-feather="briefcase"></i>
+                            <span> Sistem Keamanan </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarMmrk">
+                            <ul class="nav-second-level">
+                                @can('view.marturity.mmrk')
+                                    <li><a href="{{ route('mmrk.marturity.index') }}" class="tp-link">Maturity Level</a></li>
+                                @endcan
+                                @can('view.kpi.mmrk')
+                                    <li><a href="{{ route('mmrk.keamanan.index') }}" class="tp-link">Keamanan KPI</a></li>
+                                @endcan
                             </ul>
                         </div>
                     </li>

@@ -57,8 +57,7 @@
                       <tr>
                         <th style="min-width:60px;">No</th>
                         <th style="min-width:250px;">Indikator</th>
-                        <th style="min-width:120px;">Level</th>
-                        <th style="min-width:250px;">Level Penilaian</th>
+                        <th style="min-width:370px;">Level Penilaian</th>
                         <th style="min-width:150px;">Nilai</th>
                         <th style="min-width:200px;">Note</th>
                         <th style="min-width:260px;">File Upload</th>
@@ -97,15 +96,12 @@
                             @endif
                           </td>
 
-                          <td>
+                          <td style="text-align:left;">
                             @foreach ($question->levels as $level)
-                            <div>Level {{$level->level}}</div>
-                            @endforeach
-                          </td>
-
-                          <td>
-                            @foreach ($question->levels as $level)
-                            <div>{{$level->level_description}}</div>
+                            <div class="d-flex align-items-start" style="gap:8px; white-space:normal;">
+                              <span class="fw-semibold flex-shrink-0">Level {{$level->level}}</span>
+                              <span>{{$level->level_description}}</span>
+                            </div>
                             @endforeach
                           </td>
 

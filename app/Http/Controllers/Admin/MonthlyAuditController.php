@@ -40,7 +40,10 @@ class MonthlyAuditController extends Controller
         // ===============================
         // FILTER DEFAULT
         // ===============================
-        $query->where('send_status', true);
+        // laporan terkirim dari semua unit + laporan milik user yang sedang login (termasuk draft)
+        $query->where(function ($q) {
+            $q->where('send_status', true)->orWhere('user_id', auth()->id());
+        });
 
         if ($request->month) {
             $query->where('report_date', $request->month);
@@ -79,12 +82,12 @@ class MonthlyAuditController extends Controller
         $gangguan = MonthlyGangguan::where('monthly_report_id', $monthlyId)->first();
         $data['gangguan'] = $gangguan;
         $data['outsources'] = OutsourceEmployee::where('monthly_report_id', $monthlyId)->latest()->get();
-        $security = SecurityForm::join('securities', 'security_forms.security_id','securities.id')->where('monthly_report_id', $monthlyId);
+        $security = SecurityForm::join('securities', 'security_forms.security_id','securities.id')->whereNull('securities.deleted_at')->where('monthly_report_id', $monthlyId);
         $data['securityKomandan'] = (clone $security)->where('securities.position', 'Komandan')->get()->count();
         $data['securityAnggota'] = (clone $security)->where('securities.position', 'Anggota')->get()->count();
         $data['securityChief'] = (clone $security)->where('securities.position', 'Chief')->get()->count();
         $data['security'] = (clone $security)->get()->count();
-        $securityExternal = MonthlySecurityExternal::join('security_externals','security_externals.id','monthly_security_externals.security_external_id')->where('monthly_report_id', $monthlyId);
+        $securityExternal = MonthlySecurityExternal::join('security_externals','security_externals.id','monthly_security_externals.security_external_id')->whereNull('security_externals.deleted_at')->where('monthly_report_id', $monthlyId);
         $data['securityPolri'] = (clone $securityExternal)->where('note', 'Polri')->get()->count();
         $data['securityTNI'] = (clone $securityExternal)->where('note', 'TNI')->get()->count();
         $data['securityExternal'] = (clone $securityExternal)->get()->count();

@@ -94,7 +94,7 @@
 @section('scripts')
 
     {{-- LEAFLET --}}
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ asset('assets/libs/leaflet/leaflet.js') }}"></script>
 
     <script>
         // ==============================
@@ -107,6 +107,69 @@
        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap'
             }).addTo(map);
+
+        @if($isCentral)
+
+        // ==============================
+        // DATA UNIT DARI LARAVEL (Admin/Pusat)
+        // ==============================
+        let mapUnits = @json($mapUnits);
+
+        // ==============================
+        // RENDER MARKER PER UNIT
+        // ==============================
+        mapUnits.forEach(unit => {
+
+            let lat = parseFloat(unit.latitude);
+            let lng = parseFloat(unit.longitude);
+
+            // skip kalau invalid
+            if (isNaN(lat) || isNaN(lng)) return;
+
+            let marker = L.circleMarker([lat, lng], {
+                radius: 8,
+                color: '#fff',
+                weight: 2,
+                fillColor: '#0d6efd',
+                fillOpacity: 1
+            }).addTo(map);
+
+            let kerawananBadge = unit.total_kerawanan > 0 ?
+                `<span class="badge" style="background:#dc3545;">${unit.total_kerawanan}</span>` :
+                `<span class="badge" style="background:#28a745;">0</span>`;
+
+            let vendorName = unit.active_vendor_names ? unit.active_vendor_names : '-';
+
+            let content = `
+                <b>${unit.name}</b><br>
+                BUJP / Vendor Aktif: ${vendorName}<br>
+                Jumlah Karyawan: ${unit.total_karyawan}<br>
+                Jumlah Satpam: ${unit.total_satpam}<br>
+                Jumlah Kerawanan: ${kerawananBadge}
+            `;
+
+            marker.bindPopup(content);
+        });
+
+        // ==============================
+        // LEGEND (KETERANGAN)
+        // ==============================
+        var legend = L.control({
+            position: 'bottomright'
+        });
+
+        legend.onAdd = function() {
+            var div = L.DomUtil.create('div', 'legend');
+
+            div.innerHTML += '<i style="background:#28a745"></i> Tidak Ada Kerawanan<br>';
+            div.innerHTML += '<i style="background:#dc3545"></i> Ada Kerawanan<br>';
+
+            return div;
+        };
+
+        legend.addTo(map);
+
+        @else
 
         // ==============================
         // DATA DARI LARAVEL
@@ -175,6 +238,8 @@
         };
 
         legend.addTo(map);
+
+        @endif
     </script>
 
 @endsection

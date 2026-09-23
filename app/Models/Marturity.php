@@ -13,7 +13,7 @@ class Marturity extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'send_date' => 'date',
+        'send_date' => 'date:Y-m-d',
     ];
 
     public function unit()

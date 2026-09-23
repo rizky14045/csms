@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('styles')
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" />
 <style>
     .accordion-button::after {
         filter: invert(100%);

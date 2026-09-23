@@ -25,11 +25,13 @@ class LevelService
         DB::beginTransaction();
 
         try {
-            $lastLevel = Level::where('type',$data['type'])->latest()->first();
-            $order = $lastLevel ? $lastLevel->order + 1 : 1; 
+            $lastLevel = Level::where('sub_area_id', $subArea->id)
+                ->where('type', $data['type'])
+                ->orderBy('order', 'desc')
+                ->first();
+            $order = $lastLevel ? $lastLevel->order + 1 : 1;
             Level::create([
                 'sub_area_id'    => $subArea->id,
-                'level'          => $data['level'],
                 'description'    => $data['description'],
                 'total_evidence' => $data['total_evidence'],
                 'order'          => $order,
@@ -45,7 +47,6 @@ class LevelService
                 201,
                 [
                     'sub_area_id' => $subArea->id,
-                    'level'   => $data['level'],
                     'order'    => $order,
                 ]
             );
@@ -66,7 +67,6 @@ class LevelService
                     'error' => $e->getMessage(),
                     'payload' => [
                         'sub_area_id' => $subArea->id,
-                        'level'   => $data['level'],
                         'description' => $data['description'],
                     ],
                 ]
@@ -88,7 +88,6 @@ class LevelService
             $before = $level->toArray();
 
             $updateData = [
-                'level'          => $data['level'],
                 'description'    => $data['description'],
                 'total_evidence' => $data['total_evidence'],
                 'updated_by'     => auth()->id(),
@@ -129,6 +128,42 @@ class LevelService
 
             throw $e;
         }
+    }
+
+    public function moveLevel(Level $level, string $direction)
+    {
+        $siblings = Level::where('sub_area_id', $level->sub_area_id)
+            ->where('type', $level->type)
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get();
+
+        $this->swapOrder($siblings, $level, $direction);
+
+        return JsonResponse::success(null, 'Level order updated', 200);
+    }
+
+    protected function swapOrder($siblings, $item, string $direction)
+    {
+        $index = $siblings->search(function ($sibling) use ($item) {
+            return $sibling->id == $item->id;
+        });
+
+        if ($index === false) {
+            return;
+        }
+
+        if ($direction === 'up' && $index > 0) {
+            $target = $siblings[$index - 1];
+        } elseif ($direction === 'down' && $index < $siblings->count() - 1) {
+            $target = $siblings[$index + 1];
+        } else {
+            return;
+        }
+
+        $currentOrder = $item->order;
+        $item->update(['order' => $target->order]);
+        $target->update(['order' => $currentOrder]);
     }
 
     public function deleteLevel(Level $level)

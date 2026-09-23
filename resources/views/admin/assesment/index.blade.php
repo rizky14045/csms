@@ -132,6 +132,7 @@
                                                     style="min-width:90px;">
                                                     📄 Report
                                                 </a>
+                                                @include('components.assesment-export-button', ['assesment' => $assesment])
                                         </div>
                                         @else
                                         <div style="

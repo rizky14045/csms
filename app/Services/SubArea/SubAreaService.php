@@ -23,8 +23,11 @@ class SubAreaService
         DB::beginTransaction();
 
         try {
-            $lastSubArea = SubArea::where('type',$data['type'])->latest()->first();
-            $order = $lastSubArea ? $lastSubArea->order + 1 : 1; 
+            $lastSubArea = SubArea::where('area_id', $area->id)
+                ->where('type', $data['type'])
+                ->orderBy('order', 'desc')
+                ->first();
+            $order = $lastSubArea ? $lastSubArea->order + 1 : 1;
             $subarea = SubArea::create([
                 'area_id' => $area->id,
                 'name' => $data['name'],
@@ -128,6 +131,42 @@ class SubAreaService
 
             throw $e;
         }
+    }
+
+    public function moveSubArea(SubArea $subArea, string $direction)
+    {
+        $siblings = SubArea::where('area_id', $subArea->area_id)
+            ->where('type', $subArea->type)
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get();
+
+        $this->swapOrder($siblings, $subArea, $direction);
+
+        return JsonResponse::success(null, 'Sub Area order updated', 200);
+    }
+
+    protected function swapOrder($siblings, $item, string $direction)
+    {
+        $index = $siblings->search(function ($sibling) use ($item) {
+            return $sibling->id == $item->id;
+        });
+
+        if ($index === false) {
+            return;
+        }
+
+        if ($direction === 'up' && $index > 0) {
+            $target = $siblings[$index - 1];
+        } elseif ($direction === 'down' && $index < $siblings->count() - 1) {
+            $target = $siblings[$index + 1];
+        } else {
+            return;
+        }
+
+        $currentOrder = $item->order;
+        $item->update(['order' => $target->order]);
+        $target->update(['order' => $currentOrder]);
     }
 
     public function deleteSubArea(SubArea $subArea)

@@ -14,6 +14,6 @@ class KpiArea extends Model
 
     public function subAreas()
     {
-        return $this->hasMany(KpiSubArea::class, 'area_id', 'id')->orderBy('id', 'asc');
+        return $this->hasMany(KpiSubArea::class, 'area_id', 'id')->orderBy('order')->orderBy('id', 'asc');
     }
 }

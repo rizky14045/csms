@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\DB;
 
 class AssesmentService
 {
+    use \App\Services\Concerns\AllocatesIds;
+
     protected $logService;
 
     public function __construct(ActivityLogService $logService)
@@ -133,6 +135,8 @@ class AssesmentService
 
     public function createAssesment(array $data, $encryptedVendorId)
     {
+        set_time_limit(120);
+
         DB::beginTransaction();
 
         try {
@@ -150,46 +154,66 @@ class AssesmentService
                 'created_by' => auth()->id(),
             ]);
 
-            $categories = CategoryAssesment::get();
+            $categories = CategoryAssesment::orderBy('order')->orderBy('id')->get();
+            $questionsByCat = QuestionAssesment::whereIn('category_id', $categories->pluck('id'))
+                ->orderBy('order')->orderBy('id')->get()->groupBy('category_id');
+            $levelsByQuestion = LevelAssesment::whereIn('question_id', $questionsByCat->flatten()->pluck('id'))
+                ->orderBy('order')->orderBy('id')->get()->groupBy('question_id');
 
-            foreach ($categories as $category) {
+            $now = now();
+            $base = [
+                'vendor_id'    => $vendor->id,
+                'assesment_id' => $assesment->id,
+                'created_by'   => auth()->id(),
+                'created_at'   => $now,
+                'updated_at'   => $now,
+            ];
 
-                $signCategory = SignCategoryAssesment::create([
-                    'vendor_id'              => $vendor->id,
-                    'assesment_id'           => $assesment->id,
-                    'category_assesment_id'  => $category->id,
-                    'category_name'          => $category->name,
-                    'created_by'             => auth()->id(),
-                ]);
-
-                $questions = QuestionAssesment::where('category_id', $category->id)->get();
-
-                foreach ($questions as $question) {
-
-                    $signQuestion = SignQuestionAssesment::create([
-                        'vendor_id'              => $vendor->id,
-                        'assesment_id'           => $assesment->id,
-                        'question_assesment_id'  => $question->id,
-                        'sign_category_id'       => $signCategory->id,
-                        'indicator'              => $question->indicator,
-                        'created_by'             => auth()->id(),
-                    ]);
-
-                    $levels = LevelAssesment::where('question_id', $question->id)->get();
-
-                    foreach ($levels as $level) {
-
-                        SignLevelAssesment::create([
-                            'vendor_id'           => $vendor->id,
-                            'assesment_id'        => $assesment->id,
-                            'level_assesment_id'  => $level->id,
-                            'sign_question_id'    => $signQuestion->id,
-                            'level'               => $level->level,
-                            'level_description'   => $level->level_description,
-                            'created_by'          => auth()->id(),
-                        ]);
-                    }
+            $catIds = $this->allocateIds('sign_category_assesments', $categories->count());
+            $catRows = [];
+            $pendingQuestions = [];
+            foreach ($categories as $ci => $category) {
+                $catRows[] = $base + [
+                    'id'                    => $catIds[$ci],
+                    'category_assesment_id' => $category->id,
+                    'category_name'         => $category->name,
+                ];
+                foreach (($questionsByCat[$category->id] ?? collect()) as $question) {
+                    $pendingQuestions[] = [$catIds[$ci], $question];
                 }
+            }
+
+            $questionIds = $this->allocateIds('sign_question_assesments', count($pendingQuestions));
+            $questionRows = [];
+            $levelRows = [];
+            $levelPending = [];
+            foreach ($pendingQuestions as $qi => [$signCatId, $question]) {
+                $questionRows[] = $base + [
+                    'id'                     => $questionIds[$qi],
+                    'question_assesment_id'  => $question->id,
+                    'sign_category_id'       => $signCatId,
+                    'indicator'              => $question->indicator,
+                ];
+                foreach (($levelsByQuestion[$question->id] ?? collect()) as $level) {
+                    $levelPending[] = [$questionIds[$qi], $level];
+                }
+            }
+
+            $levelIds = $this->allocateIds('sign_level_assesments', count($levelPending));
+            foreach ($levelPending as $li => [$signQuestionId, $level]) {
+                $levelRows[] = $base + [
+                    'id'                 => $levelIds[$li],
+                    'level_assesment_id' => $level->id,
+                    'sign_question_id'   => $signQuestionId,
+                    'level'              => $level->level,
+                    'level_description'  => $level->level_description,
+                ];
+            }
+
+            if ($catRows) { SignCategoryAssesment::insert($catRows); }
+            if ($questionRows) { SignQuestionAssesment::insert($questionRows); }
+            foreach (array_chunk($levelRows, 500) as $chunk) {
+                SignLevelAssesment::insert($chunk);
             }
 
             DB::commit();

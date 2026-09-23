@@ -32,6 +32,11 @@ class AuditSMPScoreController extends Controller
         return Validator::make($data, $validation, $messages);
     }
 
+    protected function indexRouteName()
+    {
+        return auth()->user()->roles[0]->name == 'Pusat' ? 'admin.audit-smp-score.index' : 'user.audit-smp-score.index';
+    }
+
     public function index(){
         $result = $this->auditSMPDataService->getAllAuditData(10, true, [
             'unit',
@@ -59,10 +64,7 @@ class AuditSMPScoreController extends Controller
         $this->auditSMPDataService->createAuditData($request->all());
 
         Alert::success('Tambah Berhasil', 'Audit SMP berhasil dibuat!');
-        if(auth()->user()->roles[0]->name == 'Pusat'){
-            return redirect()->route('admin.audit-smp-score.index');
-        }
-        return redirect()->route('user.audit-smp-score.index');
+        return redirect()->route($this->indexRouteName());
     }
 
     public function show(AuditSmpData $audit){
@@ -80,16 +82,14 @@ class AuditSMPScoreController extends Controller
             Alert::error('Akses Ditolak', 'Data audit yang sudah selesai tidak dapat dikirim!');
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat dikirim');
         }
-        $audit->load('getInvalidItemsEvidenceByUnit');
-        if(count($audit->getInvalidItemsEvidenceByUnit) > 0){
-            Alert::error('Akses Ditolak', 'Data audit tidak dapat dikirim karena terdapat item bukti yang belum lengkap!');
-            return redirect()->back()->with('error', 'Data audit tidak dapat dikirim karena terdapat item bukti yang belum lengkap');
-        }
-        
+
+        // Dinonaktifkan sesuai permintaan: Audit SMP boleh dikirim walau belum
+        // semua evidence dan self audit terisi (self audit default 0 jika kosong).
+
         $this->auditSMPDataService->sendAuditData($audit);
-        
+
         Alert::success('Data Terkirim', 'Data audit berhasil dikirim!');
-        return redirect()->route('user.audit-smp-score.index')->with('success', 'Data audit berhasil dikirim');
+        return redirect()->route($this->indexRouteName())->with('success', 'Data audit berhasil dikirim');
     }
 
     public function updateSelfAudit(Request $request, AuditSMPScore $auditScore)

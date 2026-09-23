@@ -41,6 +41,7 @@ class UnitController extends Controller
         $provinces = Province::select('id','name')->get();
 
         $data['provinces']= $provinces;
+        $data['parent_units'] = Unit::where('type', 'Unit')->orderBy('name')->get();
         return view('admin.unit.create',$data);
     }
 
@@ -61,6 +62,7 @@ class UnitController extends Controller
         $data['unit'] = $unit;
         $data['provinces'] = Province::select('id','name')->get();
         $data['cities'] = City::select('id','name')->where('province_id', $unit->province_id)->get();
+        $data['parent_units'] = Unit::where('type', 'Unit')->where('id', '!=', $unit->id)->orderBy('name')->get();
         return view('admin.unit.edit',$data);
     }
 

@@ -12,6 +12,10 @@ use App\Http\Validation\SecurityValidation;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
+use App\Imports\SecurityImport;
+use App\Exports\SecurityTemplateExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class SecurityController extends Controller
 {
@@ -25,6 +29,7 @@ class SecurityController extends Controller
         $this->middleware('can:create.security.unit')->only(['create', 'store']);
         $this->middleware('can:edit.security.unit')->only(['edit', 'update']);
         $this->middleware('can:delete.security.unit')->only(['destroy']);
+        $this->middleware('can:create.security.unit')->only(['importExcel', 'downloadTemplate']);
     }
 
     protected function validator(array $data, $validation, array $messages = [])
@@ -36,7 +41,8 @@ class SecurityController extends Controller
         $result = $this->securityService->getAllSecurity(25, true, auth()->user()->id);
         $data['securities'] = getPaginate($result);
         $data['request'] = request();
-        
+        $data['expiryStats'] = $this->securityService->getExpiryStats(auth()->user()->id);
+
         return view('user.security.index',$data);
 
     }
@@ -183,6 +189,62 @@ class SecurityController extends Controller
         } catch (\Throwable $th) {
             Alert::error('Ubah Gagal', 'Satuan Pengamanan gagal diubah!');
             return redirect()->route('user.security.index');
+        }
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new SecurityTemplateExport(), 'format-import-satpam.xlsx');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $validator = $this->validator(
+            $request->all(),
+            ['file' => 'required|file|mimes:xlsx,xls|max:5120'],
+            ['file.required' => 'File excel harus diunggah!', 'file.mimes' => 'File harus berformat xlsx atau xls!']
+        );
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator);
+        }
+
+        try {
+            $import = new SecurityImport(auth()->id());
+
+            Excel::import($import, $request->file('file'));
+
+            $failures = $import->failures();
+            $errors = $import->errors();
+
+            if ($failures->count() > 0) {
+                $messages = $failures->map(function ($failure) {
+                    return 'Baris ' . $failure->row() . ': ' . implode(', ', $failure->errors());
+                })->all();
+
+                Alert::error('Import Sebagian Gagal', 'Beberapa baris gagal diimpor, silakan periksa kembali data anda.');
+                return redirect()->back()->withErrors($messages);
+            }
+
+            if ($errors->count() > 0) {
+                Alert::error('Import Sebagian Gagal', 'Beberapa baris gagal diimpor karena kesalahan sistem.');
+                return redirect()->back();
+            }
+
+            Alert::success('Import Berhasil', 'Data satuan pengamanan berhasil diimpor dari excel!');
+            return redirect()->route('user.security.index');
+
+        } catch (ValidationException $e) {
+            $failures = $e->failures();
+            $messages = collect($failures)->map(function ($failure) {
+                return 'Baris ' . $failure->row() . ': ' . implode(', ', $failure->errors());
+            })->all();
+
+            return redirect()->back()->withErrors($messages);
+
+        } catch (\Throwable $th) {
+            Alert::error('Import Gagal', 'Terjadi kesalahan saat mengimpor data excel!');
+            return redirect()->back();
         }
     }
 

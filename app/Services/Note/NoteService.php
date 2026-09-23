@@ -23,8 +23,11 @@ class NoteService
         DB::beginTransaction();
 
         try {
-            $lastNote = Note::where('type', $data['type'])->latest()->first();
-            $order = $lastNote ? $lastNote->order + 1 : 1; 
+            $lastNote = Note::where('level_id', $level->id)
+                ->where('type', $data['type'])
+                ->orderBy('order', 'desc')
+                ->first();
+            $order = $lastNote ? $lastNote->order + 1 : 1;
             $note = Note::create([
                 'level_id' => $level->id,
                 'note' => $data['note'],
@@ -122,6 +125,42 @@ class NoteService
 
             throw $e;
         }
+    }
+
+    public function moveNote(Note $note, string $direction)
+    {
+        $siblings = Note::where('level_id', $note->level_id)
+            ->where('type', $note->type)
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get();
+
+        $this->swapOrder($siblings, $note, $direction);
+
+        return JsonResponse::success(null, 'Note order updated', 200);
+    }
+
+    protected function swapOrder($siblings, $item, string $direction)
+    {
+        $index = $siblings->search(function ($sibling) use ($item) {
+            return $sibling->id == $item->id;
+        });
+
+        if ($index === false) {
+            return;
+        }
+
+        if ($direction === 'up' && $index > 0) {
+            $target = $siblings[$index - 1];
+        } elseif ($direction === 'down' && $index < $siblings->count() - 1) {
+            $target = $siblings[$index + 1];
+        } else {
+            return;
+        }
+
+        $currentOrder = $item->order;
+        $item->update(['order' => $target->order]);
+        $target->update(['order' => $currentOrder]);
     }
 
     public function deleteNote(Note $note)

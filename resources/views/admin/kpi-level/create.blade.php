@@ -28,13 +28,6 @@
                 <form action="{{route('admin.kpi-level.store',['sub_area'=>$subArea->id])}}" class="my-4" method="POST" id="form-marturity-level" onsubmit="confirmSave('form-marturity-level', 'Data level akan disimpan')">
                     @csrf
                     <div class="col-xl-12">
-                        <div class="form-group mb-3">
-                            <label for="level" class="form-label">Level</label>
-                            <input class="form-control @error('level') is-invalid @enderror" name="level" type="text" id="level" required="" placeholder="Masukan Level" value="{{old('level')}}">
-                            @error('level')
-                                <div class="error text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
                         <div class="mb-3">
                             <label for="description" class="form-label">Uraian</label>
                             <textarea class="form-control @error('description') is-invalid @enderror" id="description" rows="3" name="description">{{old('description')}}</textarea>

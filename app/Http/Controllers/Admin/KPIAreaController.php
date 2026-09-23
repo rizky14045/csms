@@ -20,7 +20,7 @@ class KPIAreaController extends Controller
 
         $this->middleware('can:view.kpi.area')->only(['index']);
         $this->middleware('can:create.kpi.area')->only(['create', 'store']);
-        $this->middleware('can:edit.kpi.area')->only(['edit', 'update']);
+        $this->middleware('can:edit.kpi.area')->only(['edit', 'update', 'move']);
         $this->middleware('can:delete.kpi.area')->only(['destroy']);
     }
 
@@ -92,9 +92,19 @@ class KPIAreaController extends Controller
 
             Alert::success('Delete Berhasil', 'Area berhasil dihapus!');
             return redirect()->route('admin.kpi-area.index');
-            
+
         } catch (\Throwable $th) {
             Alert::error('Delete Gagal', 'Area gagal dihapus!');
+            return redirect()->route('admin.kpi-area.index');
+        }
+    }
+
+    public function move(Area $area, $direction){
+        try {
+            $this->areaService->moveArea($area, $direction);
+            return redirect()->route('admin.kpi-area.index');
+        } catch (\Throwable $th) {
+            Alert::error('Gagal', 'Urutan Area gagal diubah!');
             return redirect()->route('admin.kpi-area.index');
         }
     }

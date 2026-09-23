@@ -41,7 +41,7 @@ class LevelAssesmentController extends Controller
 
         try {
             // Validation rules
-            $validator = $this->validator($request->all(), LevelAssesmentValidation::rulesForCreate(), LevelAssesmentValidation::messages());
+            $validator = $this->validator($request->all(), LevelAssesmentValidation::rulesForCreate($question_assesment->id), LevelAssesmentValidation::messages());
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
@@ -67,11 +67,11 @@ class LevelAssesmentController extends Controller
 
         try {
             // Validation rules
-            $validator = $this->validator($request->all(), LevelAssesmentValidation::rulesForUpdate(), LevelAssesmentValidation::messages());
+            $validator = $this->validator($request->all(), LevelAssesmentValidation::rulesForUpdate($question_assesment->id, $level_assesment->id), LevelAssesmentValidation::messages());
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
-            
+
             $this->levelAssesmentService->updateLevelAssesment($level_assesment, $request->all());
 
             Alert::success('Update Berhasil', 'Level berhasil diubah!');

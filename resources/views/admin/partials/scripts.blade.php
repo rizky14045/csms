@@ -19,8 +19,8 @@
 <!-- App js-->
 <script src="{{asset('assets/js/app.js')}}"></script>
 
-<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('assets/libs/leaflet/leaflet.js') }}"></script>
+<script src="{{ asset('assets/libs/chartjs/chart.umd.min.js') }}"></script>
 <script>
     // Fungsi untuk mengatur event listener pada semua elemen input picker
     function enablePickerOnFocus() {
