@@ -34,7 +34,7 @@ class UnitService
 
             if (!empty($search)) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
+                    $q->where('name', 'ilike', "%{$search}%");
                 });
             }
 
