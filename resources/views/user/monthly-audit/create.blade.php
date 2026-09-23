@@ -25,7 +25,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{route('user.monthly-audit.store')}}" class="my-4" method="POST">
+                <form action="{{route('user.monthly-audit.store')}}" class="my-4" method="POST" id="form-create-monthly-audit" onsubmit="confirmSave('form-create-monthly-audit', 'Laporan bulanan akan dibuat.')">
                     @csrf
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
