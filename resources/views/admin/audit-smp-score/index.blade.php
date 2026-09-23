@@ -230,6 +230,11 @@
 
                                             @endif
 
+                                            @if($audit->status >= 3)
+                                                <a href="{{ route('export.audit-smp', ['audit' => $audit->id]) }}"
+                                                   class="btn btn-success btn-sm">📥 Export Excel</a>
+                                            @endif
+
                                         @endif
 
                                     </div>
