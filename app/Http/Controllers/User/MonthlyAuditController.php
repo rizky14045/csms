@@ -82,14 +82,21 @@ class MonthlyAuditController extends Controller
         set_time_limit(120);
 
         try {
+            $year = (int) $request->input('report_year');
+            $month = (int) $request->input('report_month');
+
+            if ($year < 2000 || !checkdate($month, 1, $year)) {
+                return back()->withErrors([
+                    'report_month' => 'Bulan dan tahun laporan harus dipilih.'
+                ])->withInput();
+            }
+
+            $reportDate = sprintf('%04d-%02d', $year, $month);
+
             DB::beginTransaction();
 
             $userId = Auth::user()->id;
             $unitId = Auth::user()->unit_id;
-
-            $date = explode("-", $request->report_date);
-            $year = (int)$date[0];
-            $month = (int)$date[1];
 
             $currentYear = now()->year;
             $currentMonth = now()->month;
@@ -99,8 +106,6 @@ class MonthlyAuditController extends Controller
                 Alert::error('Tanggal Laporan Tidak Valid', 'Tanggal laporan tidak boleh di masa depan!');
                 return back()->withErrors(['report_date' => 'Tanggal laporan tidak boleh di masa depan.'])->withInput();
             }
-
-            $reportDate = sprintf('%04d-%02d', $year, $month);
 
             $exists = MonthlyReport::where('user_id', $userId)
                 ->where('report_date', $reportDate)
@@ -141,10 +146,20 @@ class MonthlyAuditController extends Controller
                 }
             }
                         
+            $administrations = Attribute::select('id')->where('type_attribute','Administrasi')->get();
+            $attributes = Attribute::select('id')->where('user_id',$userId)->get();
+            $persons = ResponsiblePerson::select('id')->where('user_id',$userId)->get();
+            $agreements = AgreementExternal::select('id')->where('user_id',$userId)->get();
+            $securityExternals = SecurityExternal::select('id')->where('user_id',$userId)->get();
+            $securities = Security::select('id')->where('user_id',$userId)->get();
+            $externals = Vulnerability::select('id')->where('type','eksternal')->get();
+            $internals = Vulnerability::select('id')->where('type','internal')->get();
+            $programs = SecurityProgram::where('user_id',$userId)->where('year',$year)->get();
+
             $report = MonthlyReport::create([
                 'user_id' => $userId,
                 'unit_id' => $unitId,
-                'report_date' => $request->report_date,
+                'report_date' => $reportDate,
                 'send_status' => false,
             ]);
 
