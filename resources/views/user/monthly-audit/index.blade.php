@@ -62,9 +62,15 @@
                                     <td>{{$form->detailUnit->unit_code ?? ''}}</td>
                                     <td>{{ \Carbon\Carbon::parse($form->report_date)->format('m-Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($form->created_at)->format('d-m-Y') }}</td>
-                                    <td>{{ $form->send_status == true ? \Carbon\Carbon::parse($form->send_date)->format('d-m-Y') : '-' }}</td>
+                                    @php
+                                        $isLocked = $form->send_status == true || $form->sent_to_parent == true;
+                                        $sentDate = $form->send_status == true
+                                            ? $form->send_date
+                                            : ($form->sent_to_parent == true ? $form->sent_to_parent_date : null);
+                                    @endphp
+                                    <td>{{ $sentDate ? \Carbon\Carbon::parse($sentDate)->format('d-m-Y') : '-' }}</td>
                                     <td>
-                                        @if ($form->send_status == false)
+                                        @if (!$isLocked)
                                             <a href="{{route('user.monthly-audit.form-formulir.index',['monthlyId'=>$form->id])}}" class="btn btn-primary btn-sm">Isi Laporan Bulanan</a>
                                             <form action="{{route('user.monthly-audit.send',['monthlyId'=>$form->id])}}" method="post" class="d-inline">
                                                 @csrf
@@ -78,9 +84,8 @@
                                             </form>
                                         @else
                                             <a href="{{route('user.monthly-audit.show',['monthlyId'=>$form->id])}}" class="btn btn-info btn-sm">Show</a>
-
+                                            <a href="{{route('export.monthly.all',['monthlyId'=>$form->id])}}" class="btn btn-success btn-sm">Export Excel</a>
                                         @endif
-                                        <a href="{{route('export.monthly.all',['monthlyId'=>$form->id])}}" class="btn btn-success btn-sm">Export Excel</a>
                                     </td>
                                 </tr>
                             @endforeach
