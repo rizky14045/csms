@@ -78,6 +78,8 @@ Route::get(
 
 Route::get('/export-assesment/{assesment}', [\App\Http\Controllers\AssesmentExportController::class, 'export'])->middleware(['auth'])->name('export.assesment');
 
+Route::get('/export-audit-smp/{audit}', [\App\Http\Controllers\AuditSMPExportController::class, 'export'])->middleware(['auth'])->name('export.audit-smp');
+
 Route::get(
     '/export-all/{monthlyId}',
     [MonthlyAuditExportController::class, 'exportAll']

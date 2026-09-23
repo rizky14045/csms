@@ -187,6 +187,11 @@
                                                 <a href="{{ route('user.audit-smp-score.show', ['audit' => $audit->id]) }}"
                                                    class="btn btn-info btn-sm">👁 Show</a>
                                             @endif
+
+                                            @if($audit->status >= 3)
+                                                <a href="{{ route('export.audit-smp', ['audit' => $audit->id]) }}"
+                                                   class="btn btn-success btn-sm">📥 Export Excel</a>
+                                            @endif
                                         @endif
 
                                     </div>

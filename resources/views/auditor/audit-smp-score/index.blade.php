@@ -66,6 +66,9 @@
                                             </button>
                                         </form>
                                         @endif
+                                        @if($audit->status >= 3)
+                                        <a href="{{route('export.audit-smp',['audit'=>$audit->id])}}" class="btn btn-success btn-sm">📥 Export Excel</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
