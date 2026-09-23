@@ -28,28 +28,28 @@ class AuditSMP extends Model
     public function children()
     {
         return $this->hasMany(AuditSMP::class, 'parent_id')
-            ->orderBy('created_at', 'asc');
+            ->orderBy('order')->orderBy('id');
     }
 
     public function pernyataan()
     {
         return $this->hasMany(AuditSMP::class, 'parent_id')
             ->where('type', 'pernyataan')
-            ->orderBy('created_at', 'asc');
+            ->orderBy('order')->orderBy('id');
     }
 
     public function kriteria()
     {
         return $this->hasMany(AuditSMP::class, 'parent_id')
             ->where('type', 'kriteria')
-            ->orderBy('created_at', 'asc');
+            ->orderBy('order')->orderBy('id');
     }
 
     public function evidence()
     {
         return $this->hasMany(AuditSMP::class, 'parent_id')
             ->where('type', 'evidence')
-            ->orderBy('created_at', 'asc');
+            ->orderBy('order')->orderBy('id');
     }
 
     /*

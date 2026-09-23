@@ -20,7 +20,7 @@ class KPISubAreaController extends Controller
         $this->subareaService = $subareaService;
 
         $this->middleware('can:create.kpi.subarea')->only(['create', 'store']);
-        $this->middleware('can:edit.kpi.subarea')->only(['edit', 'update']);
+        $this->middleware('can:edit.kpi.subarea')->only(['edit', 'update', 'move']);
         $this->middleware('can:delete.kpi.subarea')->only(['destroy']);
     }
 
@@ -88,9 +88,19 @@ class KPISubAreaController extends Controller
 
             Alert::success('Delete Berhasil', 'Sub Area berhasil dihapus!');
             return redirect()->route('admin.kpi-area.index');
-            
+
         } catch (\Throwable $th) {
             Alert::error('Delete Gagal', 'Sub Area gagal dihapus!');
+            return redirect()->route('admin.kpi-area.index');
+        }
+    }
+
+    public function move(SubArea $subArea, Area $area, $direction){
+        try {
+            $this->subareaService->moveSubArea($subArea, $direction);
+            return redirect()->route('admin.kpi-area.index');
+        } catch (\Throwable $th) {
+            Alert::error('Gagal', 'Urutan Sub Area gagal diubah!');
             return redirect()->route('admin.kpi-area.index');
         }
     }

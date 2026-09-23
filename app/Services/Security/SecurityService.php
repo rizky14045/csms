@@ -84,6 +84,34 @@ class SecurityService
         }
     }
 
+    public function getExpiryStats($user_id = null)
+    {
+        $query = Security::query();
+
+        if ($user_id) {
+            $query->where('user_id', $user_id);
+        }
+
+        $today = now()->toDateString();
+        $threshold = now()->addMonths(3)->toDateString();
+
+        $expiringSoon = (clone $query)
+            ->whereNotNull('expired_card_date')
+            ->whereDate('expired_card_date', '>=', $today)
+            ->whereDate('expired_card_date', '<=', $threshold)
+            ->count();
+
+        $expired = (clone $query)
+            ->whereNotNull('expired_card_date')
+            ->whereDate('expired_card_date', '<', $today)
+            ->count();
+
+        return [
+            'expiring_soon' => $expiringSoon,
+            'expired' => $expired,
+        ];
+    }
+
     public function getSecurityById(int $id, $user_id = null)
     {
         try {

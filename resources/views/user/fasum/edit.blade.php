@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet"href="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css" />
+    <link rel="stylesheet" href="{{ asset('assets/libs/leaflet/leaflet.css') }}" />
+    <link rel="stylesheet"href="{{ asset('assets/libs/leaflet.fullscreen/Control.FullScreen.css') }}" />
     <style>
         .accordion-button::after {
             filter: invert(100%);
@@ -169,8 +169,8 @@
         const routeCity = "{{ route('geo.city', ':id') }}";
     </script>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
+    <script src="{{ asset('assets/libs/leaflet/leaflet.js') }}"></script>
+    <script src="{{ asset('assets/libs/leaflet.fullscreen/Control.FullScreen.js') }}"></script>
 
     <script>
         let map;

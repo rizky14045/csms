@@ -2,7 +2,7 @@
 
     <!-- HEADER -->
     <tr>
-        <td colspan="11"></td>
+        <td colspan="12"></td>
 
         <td colspan="4" style="border:1px solid #000; font-weight:bold;">
             No Dokumen : FM-SMP-KP-01-11-02
@@ -11,7 +11,7 @@
 
     <tr>
 
-        <td colspan="11" style="text-align:center; font-size:14pt; font-weight:bold;">
+        <td colspan="12" style="text-align:center; font-size:14pt; font-weight:bold;">
             PT PLN NUSANTARA POWER
         </td>
 
@@ -23,7 +23,7 @@
 
     <tr>
 
-        <td colspan="11" style="text-align:center; font-weight:bold;">
+        <td colspan="12" style="text-align:center; font-weight:bold;">
             FORMULIR DATA PERSONIL SATUAN PENGAMANAN
         </td>
 
@@ -35,7 +35,7 @@
 
     <tr>
 
-        <td colspan="11"></td>
+        <td colspan="12"></td>
 
         <td colspan="4" style="border:1px solid #000;">
             Halaman : 1 dari 1
@@ -45,7 +45,7 @@
 
     <!-- SPACER -->
     <tr>
-        <td colspan="15"></td>
+        <td colspan="16"></td>
     </tr>
 
     <!-- TABLE HEADER -->
@@ -113,6 +113,11 @@
         <th rowspan="2"
             style="border:1px solid #000; background-color:#D9EAD3; text-align:center; vertical-align:center;">
             File Upload
+        </th>
+
+        <th rowspan="2"
+            style="border:1px solid #000; background-color:#D9EAD3; text-align:center; vertical-align:center;">
+            File KTA
         </th>
 
     </tr>
@@ -196,6 +201,14 @@
 
             <td style="border:1px solid #000;">
                 {{ $form->attachment_file ?? '-' }}
+            </td>
+
+            <td style="border:1px solid #000; text-align:center;">
+                @if(!empty($form->security->kta_file))
+                    <a href="{{ asset('uploads/kta_files/' . $form->security->kta_file) }}">Download KTA</a>
+                @else
+                    -
+                @endif
             </td>
 
         </tr>

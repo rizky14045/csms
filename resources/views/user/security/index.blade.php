@@ -18,8 +18,20 @@
 @section('content')
 
 <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-    <div class="flex-grow-1">
+    <div class="flex-grow-1 d-flex align-items-center gap-2 flex-wrap">
         <h4 class="fs-18 fw-semibold m-0">Satuan Pengamanan</h4>
+
+        @if($expiryStats['expiring_soon'] > 0)
+            <span class="badge" style="background:#ffc107;color:#000;" title="Jumlah KTA yang akan expired dalam 3 bulan">
+                {{ $expiryStats['expiring_soon'] }} KTA akan expired
+            </span>
+        @endif
+
+        @if($expiryStats['expired'] > 0)
+            <span class="badge" style="background:#dc3545;" title="Jumlah KTA yang sudah expired">
+                {{ $expiryStats['expired'] }} KTA sudah expired
+            </span>
+        @endif
     </div>
     <div class="text-end">
         <ol class="breadcrumb m-0 py-0">
@@ -44,9 +56,28 @@
                     @endif
                 </form>
                 @can('create.security.unit')
-                    <a href="{{ route('user.security.create') }}" class="btn btn-success text-nowrap">Tambah Data</a>
+                    <div class="d-flex gap-2 text-nowrap">
+                        <a href="{{ route('user.security.import-template') }}" class="btn btn-outline-secondary">
+                            Download Format
+                        </a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importExcelModal">
+                            Import Excel
+                        </button>
+                        <a href="{{ route('user.security.create') }}" class="btn btn-success">Tambah Data</a>
+                    </div>
                 @endcan
             </div>
+
+            @if ($errors->any())
+                <div class="alert alert-danger mx-3 mt-3">
+                    <strong>Import gagal pada beberapa baris:</strong>
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <div class="card-body">
                 <div class="table-responsive">
@@ -146,5 +177,38 @@
         </div>
     </div>
 </div>
+
+@can('create.security.unit')
+<div class="modal fade" id="importExcelModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('user.security.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Import Data dari Excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">
+                        Unduh format excel terlebih dahulu melalui tombol
+                        <strong>Download Format</strong>, isi data sesuai kolom yang tersedia,
+                        lalu unggah kembali file tersebut di sini.
+                        File KTA tidak dapat diimpor melalui excel dan harus diunggah manual
+                        melalui menu Edit setelah data berhasil diimpor.
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label">File Excel (.xlsx / .xls)</label>
+                        <input type="file" name="file" class="form-control" accept=".xlsx,.xls" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endcan
 
 @endsection

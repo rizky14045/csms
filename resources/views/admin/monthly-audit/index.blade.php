@@ -60,6 +60,7 @@
                                 <th scope="col">Nama Unit</th>
                                 <th scope="col">Kode Unit</th>
                                 <th scope="col">Bulan</th>
+                                <th scope="col">Status</th>
                                 <th scope="col">Tanggal Buat</th>
                                 <th scope="col">Tanggal Kirim</th>
                                 <th scope="col">Action</th>
@@ -72,11 +73,32 @@
                                     <td>{{$form->unit->name ?? ''}}</td>
                                     <td>{{$form->detailUnit->unit_code ?? ''}}</td>
                                     <td>{{ \Carbon\Carbon::parse($form->report_date)->format('m-Y') }}</td>
+                                    <td>
+                                        @if($form->send_status)
+                                            <span class="badge bg-success">Terkirim</span>
+                                        @else
+                                            <span class="badge bg-secondary">Draft</span>
+                                        @endif
+                                    </td>
                                     <td>{{ \Carbon\Carbon::parse($form->created_at)->format('d-m-Y') }}</td>
                                     <td>{{ $form->send_status == true ? \Carbon\Carbon::parse($form->send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>
-                                        <a href="{{route('admin.monthly-audit.show',['monthlyId'=>$form->id])}}" class="btn btn-info btn-sm">Show</a>          
-                                        <a href="{{route('export.monthly.all',['monthlyId'=>$form->id])}}" class="btn btn-success btn-sm">Export Excel</a>          
+                                        @if ($form->send_status == false && $form->user_id == auth()->id())
+                                            <a href="{{route('user.monthly-audit.form-formulir.index',['monthlyId'=>$form->id])}}" class="btn btn-primary btn-sm">Isi Laporan Bulanan</a>
+                                            <form action="{{route('user.monthly-audit.send',['monthlyId'=>$form->id])}}" method="post" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="button" class="btn btn-success btn-sm" onclick="sendItem(this)">Kirim Data</button>
+                                            </form>
+                                            <form action="{{route('user.monthly-audit.destroy',['monthlyId'=>$form->id])}}" method="post" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteItem(this)">Hapus</button>
+                                            </form>
+                                        @else
+                                            <a href="{{route('admin.monthly-audit.show',['monthlyId'=>$form->id])}}" class="btn btn-info btn-sm">Show</a>
+                                        @endif
+                                        <a href="{{route('export.monthly.all',['monthlyId'=>$form->id])}}" class="btn btn-success btn-sm">Export Excel</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -89,4 +111,19 @@
     </div><!-- end col -->
 </div> <!-- end row -->
 @endsection
-
+@section('scripts')
+<script>
+    function deleteItem(e){
+        Swal.fire({
+            title: 'Hapus Data', text: "Apakah kamu ingin menghapus data ?", icon: 'warning',
+            showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'Iya !'
+        }).then((result) => { if (result.isConfirmed) { $(e).parent().submit(); } })
+    }
+    function sendItem(e){
+        Swal.fire({
+            title: 'Kirim Data', text: "Data yang sudah dikirim sudah tidak bisa diedit , apakah anda ingin mengirim data?", icon: 'warning',
+            showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'Iya !'
+        }).then((result) => { if (result.isConfirmed) { $(e).parent().submit(); } })
+    }
+</script>
+@endsection

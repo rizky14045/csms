@@ -14,6 +14,6 @@ class KpiSubArea extends Model
 
     public function levels()
     {
-        return $this->hasMany(KpiLevel::class, 'sub_area_id', 'id')->orderBy('id', 'asc');
+        return $this->hasMany(KpiLevel::class, 'sub_area_id', 'id')->orderBy('order')->orderBy('id', 'asc');
     }
 }

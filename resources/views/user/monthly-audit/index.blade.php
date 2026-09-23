@@ -80,7 +80,7 @@
                                             <a href="{{route('user.monthly-audit.show',['monthlyId'=>$form->id])}}" class="btn btn-info btn-sm">Show</a>
 
                                         @endif
-                                        
+                                        <a href="{{route('export.monthly.all',['monthlyId'=>$form->id])}}" class="btn btn-success btn-sm">Export Excel</a>
                                     </td>
                                 </tr>
                             @endforeach

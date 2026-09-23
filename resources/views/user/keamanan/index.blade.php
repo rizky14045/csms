@@ -56,7 +56,9 @@
                                     <th scope="col">No</th>
                                     <th scope="col">Tahun</th>
                                     <th scope="col">Semester</th>
-                                    <th scope="col">Tanggal Kirim</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Tgl Kirim ke MMRK</th>
+                                    <th scope="col">Tgl Kirim ke Pusat</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -66,6 +68,8 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $kpi->year }}</td>
                                         <td>{{ $kpi->semester }}</td>
+                                        <td>@include('components.flow-status', ['status' => $kpi->status ?? 0])</td>
+                                        <td>{{ !empty($kpi->mmrk_send_date) ? \Carbon\Carbon::parse($kpi->mmrk_send_date)->format('d-m-Y') : '-' }}</td>
                                         <td>{{ $kpi->send_date ? \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') : '-' }}
                                         </td>
                                         <td>
@@ -116,6 +120,7 @@
                                                         @endif
                                                         --}}
 
+                                                        @if (($kpi->status ?? 0) == 0)
                                                         <form action="{{ route('user.keamanan.send', ['kpi' => $kpi->id]) }}"
                                                             method="post" style="margin:0;"
                                                             id="send-kpi-{{ $kpi->id }}"
@@ -129,6 +134,7 @@
                                                                 📤 Kirim
                                                             </button>
                                                         </form>
+                                                        @endif
                                                     @endcan
                                                 @else
                                                     {{-- PREVIEW --}}

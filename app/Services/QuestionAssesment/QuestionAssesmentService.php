@@ -25,7 +25,7 @@ class QuestionAssesmentService
              $lastQuestion = QuestionAssesment::latest()->first();
             $order = $lastQuestion ? $lastQuestion->order + 1 : 1; 
 
-            $lastQuestion = QuestionAssesment::where('category_id', $category->id)->latest()->first();
+            $lastQuestion = QuestionAssesment::where('category_id', $category->id)->orderBy('order','desc')->first();
             $order = $lastQuestion ? $lastQuestion->order + 1 : 1; 
 
             $question = QuestionAssesment::create([

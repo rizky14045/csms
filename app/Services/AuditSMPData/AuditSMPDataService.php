@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
 
 class AuditSMPDataService
 {
+    use \App\Services\Concerns\AllocatesIds;
+
     protected $logService;
 
     public function __construct(ActivityLogService $logService)
@@ -182,6 +184,8 @@ class AuditSMPDataService
 
     public function createAuditData(array $data)
     {
+        set_time_limit(120);
+
         DB::beginTransaction();
 
         try {
@@ -195,72 +199,65 @@ class AuditSMPDataService
             $auditData = AuditSMP::with([
                     'pernyataan.kriteria.evidence',
                     'kriteria.evidence'
-                    ])->where('type', 'header')->get();
+                    ])->where('type', 'header')->orderBy('order')->orderBy('id')->get();
+
+            $flat = [];
+            $push = function ($node, $parentIdx) use (&$flat) {
+                $flat[] = [
+                    'name'   => $node->name,
+                    'type'   => $node->type,
+                    'bobot'  => $node->type === 'header' ? $node->bobot : null,
+                    'parent' => $parentIdx,
+                ];
+
+                return count($flat) - 1;
+            };
 
             foreach ($auditData as $auditItem) {
-
-                $headerAudit = AuditSMPScore::create([
-                    'name'              => $auditItem->name,
-                    'bobot'           => $auditItem->bobot,
-                    'type'           => $auditItem->type,
-                    'audit_smp_data_id' => $audit->id,
-                    'created_by'             => auth()->id(),
-                ]);
+                $h = $push($auditItem, null);
 
                 foreach ($auditItem->pernyataan as $pernyataan) {
-
-                    $pernyataanAudit = AuditSMPScore::create([
-                        'name'              => $pernyataan->name,
-                        'type'              => $pernyataan->type,
-                        'parent_id'         => $headerAudit->id,
-                        'audit_smp_data_id' => $audit->id,
-                        'created_by'        => auth()->id(),
-                    ]);
+                    $p = $push($pernyataan, $h);
 
                     foreach ($pernyataan->kriteria as $kriteria) {
-
-                        $kriteriaAudit = AuditSMPScore::create([
-                        'name'              => $kriteria->name,
-                        'type'              => $kriteria->type,
-                        'parent_id'         => $pernyataanAudit->id,
-                        'audit_smp_data_id' => $audit->id,
-                        'created_by'        => auth()->id(),
-                    ]);
+                        $k = $push($kriteria, $p);
 
                         foreach ($kriteria->evidence as $evidence) {
-
-                            AuditSMPScore::create([
-                                'name'              => $evidence->name,
-                                'type'              => $evidence->type,
-                                'parent_id'         => $kriteriaAudit->id,
-                                'audit_smp_data_id' => $audit->id,
-                                'created_by'        => auth()->id(),
-                            ]);
+                            $push($evidence, $k);
                         }
                     }
                 }
 
                 foreach ($auditItem->kriteria as $kriteria) {
-
-                    $kriteriaAudit = AuditSMPScore::create([
-                        'name'              => $kriteria->name,
-                        'type'              => $kriteria->type,
-                        'parent_id'         => $headerAudit->id,
-                        'audit_smp_data_id' => $audit->id,
-                        'created_by'        => auth()->id(),
-                    ]);
+                    $k = $push($kriteria, $h);
 
                     foreach ($kriteria->evidence as $evidence) {
-
-                        AuditSMPScore::create([
-                            'name'              => $evidence->name,
-                            'type'              => $evidence->type,
-                            'parent_id'         => $kriteriaAudit->id,
-                            'audit_smp_data_id' => $audit->id,
-                            'created_by'        => auth()->id(),
-                        ]);
+                        $push($evidence, $k);
                     }
                 }
+            }
+
+            $ids = $this->allocateIds('audit_smp_score', count($flat));
+            $now = now();
+            $rows = [];
+            foreach ($flat as $i => $item) {
+                $rows[] = [
+                    'id'                => $ids[$i],
+                    'name'              => $item['name'],
+                    'bobot'             => $item['bobot'],
+                    'type'              => $item['type'],
+                    'parent_id'         => $item['parent'] === null ? null : $ids[$item['parent']],
+                    'audit_smp_data_id' => $audit->id,
+                    'pencapaian_nilai_kriteria_self' => $item['type'] === 'evidence' ? 0 : null,
+                    'pencapaian_nilai_kriteria' => $item['type'] === 'kriteria' ? 0 : null,
+                    'created_by'        => auth()->id(),
+                    'created_at'        => $now,
+                    'updated_at'        => $now,
+                ];
+            }
+
+            foreach (array_chunk($rows, 500) as $chunk) {
+                AuditSMPScore::insert($chunk);
             }
 
             DB::commit();
@@ -329,11 +326,9 @@ class AuditSMPDataService
                 $status = 2;
             }
 
+            // Unit dan tanggal audit terkunci setelah dibuat, tidak ikut diupdate di sini.
             $updateData = [
-                'unit_id'         => $data['unit_id'],
                 'auditor_lead_id' => $data['auditor_lead_id'],
-                'start_audit'     => $data['start_audit'],
-                'end_audit'       => $data['end_audit'],
                 'sk_file'         => $skFile,
                 'status'          => $status,
                 'updated_by'      => auth()->id(),

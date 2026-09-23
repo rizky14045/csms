@@ -47,7 +47,7 @@ class SecurityFormExport implements FromView, WithStyles, WithColumnWidths, With
             ->setSize(10);
 
         // Wrap text
-        $sheet->getStyle('A1:O300')
+        $sheet->getStyle('A1:P300')
             ->getAlignment()
             ->setWrapText(true);
 
@@ -60,7 +60,7 @@ class SecurityFormExport implements FromView, WithStyles, WithColumnWidths, With
         return [
 
             // Header dokumen
-            'A1:O4' => [
+            'A1:P4' => [
                 'font' => [
                     'bold' => true,
                 ],
@@ -71,7 +71,7 @@ class SecurityFormExport implements FromView, WithStyles, WithColumnWidths, With
             ],
 
             // Header table
-            'A7:O8' => [
+            'A7:P8' => [
                 'font' => [
                     'bold' => true,
                 ],
@@ -102,6 +102,7 @@ class SecurityFormExport implements FromView, WithStyles, WithColumnWidths, With
             'M' => 20,
             'N' => 25,
             'O' => 20,
+            'P' => 20,
         ];
     }
 

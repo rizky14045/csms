@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ asset('assets/libs/leaflet/leaflet.css') }}" />
     <style>
         #map {
             height: 520px;
@@ -116,7 +116,7 @@
 @endsection
 
 @section('scripts')
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ asset('assets/libs/leaflet/leaflet.js') }}"></script>
     <script>
         const fasum       = @json($fasum);
         const selectedUnit = @json($unitId);

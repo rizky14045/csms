@@ -63,7 +63,9 @@
                                 <th scope="col">No</th>
                                 <th scope="col">Tahun</th>
                                 <th scope="col">Semester</th>
-                                <th scope="col">Tanggal Kirim</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Tgl Kirim ke MMRK</th>
+                                <th scope="col">Tgl Kirim ke Pusat</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -74,6 +76,8 @@
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{ $marturity->year }}</td>
                                     <td>{{$marturity->semester}}</td>
+                                    <td>@include('components.flow-status', ['status' => $marturity->status ?? 0])</td>
+                                    <td>{{ !empty($marturity->mmrk_send_date) ? \Carbon\Carbon::parse($marturity->mmrk_send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{ $marturity->send_date ? \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') : "-" }}</td>
                                     <td>
                                         <div style="
@@ -117,6 +121,7 @@
                                                 @endif
                                                 --}}
 
+                                                @if (($marturity->status ?? 0) == 0)
                                                 <form action="{{ route('user.marturity.send',['marturity'=>$marturity->id]) }}"
                                                     method="post"
                                                     style="margin:0;"
@@ -131,6 +136,7 @@
                                                         📤 Kirim
                                                     </button>
                                                 </form>
+                                                @endif
 
                                                 @endcan
                                             @else

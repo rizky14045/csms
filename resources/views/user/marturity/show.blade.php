@@ -96,12 +96,17 @@
                                     $levelCount = count($levels);
 
                                     $levelCalcs = [];
+                                    $chainOk = true;
                                     foreach ($levels as $lvl) {
                                         $files   = json_decode($lvl['attachment_files'] ?? '[]', true) ?: [];
                                         $jumlah  = count($files);
                                         $totalEv = max(1, (int)($lvl['total_evidence'] ?? 1));
                                         $calc    = round($jumlah / $totalEv, 4);
-                                        $levelCalcs[] = compact('lvl', 'files', 'jumlah', 'totalEv', 'calc');
+                                        $isLocked = !$chainOk;
+                                        $levelCalcs[] = compact('lvl', 'files', 'jumlah', 'totalEv', 'calc', 'isLocked');
+                                        if ($jumlah === 0) {
+                                            $chainOk = false;
+                                        }
                                     }
 
                                     $hasil   = round(array_sum(array_column($levelCalcs, 'calc')), 4);
@@ -165,7 +170,11 @@
                                         {{-- Upload section --}}
                                         <div id="upload-section-{{ $lc['lvl']['id'] }}">
                                             @php $remaining = max(0, $lc['totalEv'] - $lc['jumlah']); @endphp
-                                            @if ($remaining > 0)
+                                            @if ($lc['isLocked'])
+                                            <div class="text-muted small fst-italic">
+                                                🔒 Selesaikan evidence Level sebelumnya terlebih dahulu
+                                            </div>
+                                            @elseif ($remaining > 0)
                                             <input type="file"
                                                    id="file-input-{{ $lc['lvl']['id'] }}"
                                                    class="form-control form-control-sm mb-1"
@@ -244,6 +253,82 @@
 <script>
 const CSRF  = '{{ csrf_token() }}';
 const BOBOT = {{ round($bobot, 8) }};
+
+// subAreaId -> [levelId in order] (untuk menentukan rantai kunci level)
+const subAreaLevelsOrder = {
+    @foreach ($areas as $area)
+        @foreach ($area['sub_areas'] as $subArea)
+        {{ $subArea['id'] }}: [{{ implode(',', array_column($subArea['levels'], 'id')) }}],
+        @endforeach
+    @endforeach
+};
+
+// levelId -> totalEvidence (dipakai untuk render ulang upload section)
+const levelTotalEvidence = {
+    @foreach ($areas as $area)
+        @foreach ($area['sub_areas'] as $subArea)
+            @foreach ($subArea['levels'] as $level)
+            {{ $level['id'] }}: {{ max(1, (int)($level['total_evidence'] ?? 1)) }},
+            @endforeach
+        @endforeach
+    @endforeach
+};
+
+function renderUploadSectionHTML(levelId, jumlah, totalEv, locked) {
+    if (locked) {
+        return `<div class="text-muted small fst-italic">🔒 Selesaikan evidence Level sebelumnya terlebih dahulu</div>`;
+    }
+
+    const remaining = Math.max(0, totalEv - jumlah);
+    if (remaining > 0) {
+        return `
+            <input type="file" id="file-input-${levelId}"
+                   class="form-control form-control-sm mb-1" accept=".pdf" multiple>
+            <div class="form-text" style="font-size:10px;">PDF, maks 25MB &middot; Sisa slot: ${remaining}</div>
+            <div id="error-level-${levelId}" class="error-text"></div>
+            <button type="button" class="btn btn-primary btn-sm btn-upload-level mt-1"
+                    data-level="${levelId}">⬆ Upload</button>
+        `;
+    }
+
+    return `<div class="text-muted small">Slot penuh (${totalEv}/${totalEv})</div>`;
+}
+
+function bindUploadButton(levelId) {
+    const sectionEl = document.getElementById('upload-section-' + levelId);
+    const btn = sectionEl ? sectionEl.querySelector('.btn-upload-level') : null;
+    if (btn) btn.addEventListener('click', () => confirmUpload(levelId));
+}
+
+// Cek ulang rantai kunci level pada satu subArea, lalu render ulang
+// upload-section level-level LAIN (selain yang baru saja diubah) yang
+// status kuncinya ikut berubah.
+function refreshLockStates(subAreaId, skipLevelId) {
+    const levelIds = subAreaLevelsOrder[subAreaId] || [];
+    let chainOk = true;
+
+    levelIds.forEach(levelId => {
+        if (levelId == skipLevelId) {
+            const jumlahEl = document.getElementById('jumlah-' + levelId);
+            const jumlah = jumlahEl ? (parseInt(jumlahEl.textContent) || 0) : 0;
+            if (jumlah === 0) chainOk = false;
+            return;
+        }
+
+        const jumlahEl = document.getElementById('jumlah-' + levelId);
+        const jumlah = jumlahEl ? (parseInt(jumlahEl.textContent) || 0) : 0;
+        const totalEv = levelTotalEvidence[levelId] || 1;
+        const locked = !chainOk;
+
+        const sectionEl = document.getElementById('upload-section-' + levelId);
+        if (sectionEl) {
+            sectionEl.innerHTML = renderUploadSectionHTML(levelId, jumlah, totalEv, locked);
+            bindUploadButton(levelId);
+        }
+
+        if (jumlah === 0) chainOk = false;
+    });
+}
 
 // ─── Update hasil + scoreML for one subArea, then grand totals ───────────────
 function updateSubAreaTotals(subAreaId) {
@@ -324,28 +409,17 @@ function renderFileList(levelId, files, totalEv, subAreaId, areaId) {
     const calc = totalEv > 0 ? Math.round((jumlah / totalEv) * 10000) / 10000 : 0;
     if (calcEl) calcEl.textContent = calc;
 
-    // Upload section
-    const remaining = Math.max(0, totalEv - jumlah);
-
     // Badge "X belum diisi" untuk area terkait
     updateAreaInvalidBadge(areaId);
 
+    // Upload section untuk level ini sendiri (tidak pernah terkunci oleh dirinya sendiri)
     if (sectionEl) {
-        if (remaining > 0) {
-            sectionEl.innerHTML = `
-                <input type="file" id="file-input-${levelId}"
-                       class="form-control form-control-sm mb-1" accept=".pdf" multiple>
-                <div class="form-text" style="font-size:10px;">PDF, maks 25MB &middot; Sisa slot: ${remaining}</div>
-                <div id="error-level-${levelId}" class="error-text"></div>
-                <button type="button" class="btn btn-primary btn-sm btn-upload-level mt-1"
-                        data-level="${levelId}">⬆ Upload</button>
-            `;
-            sectionEl.querySelector('.btn-upload-level')
-                     .addEventListener('click', () => confirmUpload(levelId));
-        } else {
-            sectionEl.innerHTML = `<div class="text-muted small">Slot penuh (${totalEv}/${totalEv})</div>`;
-        }
+        sectionEl.innerHTML = renderUploadSectionHTML(levelId, jumlah, totalEv, false);
+        bindUploadButton(levelId);
     }
+
+    // Level-level lain di subArea yang sama mungkin ikut ter-buka/terkunci
+    refreshLockStates(subAreaId, levelId);
 
     bindDeleteButtons();
     updateSubAreaTotals(subAreaId);

@@ -23,8 +23,36 @@ class FormFormulirController extends Controller
         $data['monthlyId'] = $monthlyId;
 
         $data['monthlyReport'] = MonthlyReport::where('id', $monthlyId)
-            ->select('report_date')
+            ->select('report_date', 'unit_id')
             ->first();
+
+        $unit = \App\Models\Unit::find($data['monthlyReport']->unit_id);
+        $ulService = app(\App\Services\MonthlyReport\UlAggregationService::class);
+        $data['hasUls'] = $unit ? $ulService->hasUls($unit) : false;
+        $data['view'] = request('view', 'unit');
+
+        if ($data['hasUls'] && $data['view'] === 'total') {
+            $report = MonthlyReport::find($monthlyId);
+            $agg = $ulService->aggregateFormFormulir($report);
+
+            $data['employee'] = $agg['employee'];
+            $data['outsources'] = $agg['outsources'];
+            $data['securities'] = $agg['securities'];
+            $data['gangguan'] = $agg['gangguan'];
+            $data['securityPolri'] = $agg['securityPolri'];
+            $data['securityTNI'] = $agg['securityTNI'];
+            $data['securityExternal'] = $agg['securityExternal'];
+            $data['foreignAhli'] = $agg['foreignAhli'];
+            $data['foreignStaff'] = $agg['foreignStaff'];
+            $data['foreign'] = $agg['foreign'];
+            $data['totalAll'] = $agg['totalAll'];
+            $data['totalAllMan'] = $agg['totalAllMan'];
+            $data['totalAllWoman'] = $agg['totalAllWoman'];
+            $data['ulCount'] = $agg['ulCount'];
+            $data['ulTotal'] = $agg['ulTotal'];
+
+            return view('user.monthly-audit.form-formulir', $data);
+        }
 
         $data['employee'] = ReportEmployee::where('monthly_report_id', $monthlyId)->first();
 

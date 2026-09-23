@@ -34,10 +34,10 @@
 
 <!-- Widgets Init Js -->
 <script src="{{asset('assets/js/pages/analytics-dashboard.init.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('assets/libs/chartjs/chart.umd.min.js') }}"></script>
 <!-- App js-->
 <script src="{{asset('assets/js/app.js')}}"></script>
 <script type="text/javascript" src="{{asset('assets/swal/sweetalert2.all.min.js')}}"></script>
-<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<script src="{{ asset('assets/libs/leaflet/leaflet.js') }}"></script>
 
 @yield('scripts')

@@ -24,7 +24,12 @@ use App\Http\Controllers\User\MonthlyAudit\MonthlyWorkerSumController;
 use App\Http\Controllers\User\MonthlyAudit\PenyerapanAnggaranController;
 use App\Http\Controllers\User\MonthlyAudit\RealizationProgramController;
 use App\Http\Controllers\User\MonthlyAudit\SecurityFormController;
+use App\Http\Controllers\User\MonthlyAudit\ReportItemController;
 use App\Http\Controllers\User\MonthlyAuditController;
+use App\Http\Controllers\User\NotificationController;
+use App\Http\Controllers\Mmrk\MarturityController as MmrkMarturityController;
+use App\Http\Controllers\Mmrk\KeamananController as MmrkKeamananController;
+use App\Http\Controllers\Mmrk\MonthlyAuditController as MmrkMonthlyAuditController;
 use App\Http\Controllers\User\PraqualificationController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\ResponsiblePersonController;
@@ -103,6 +108,12 @@ Route::prefix('user')->group(function () {
                 Route::get('/security-form/{monthlyId}', [SecurityFormController::class, 'index'])->name('user.monthly-audit.security-form.index');
                 Route::post('/security-form/{monthlyId}/upload/{formId}', [SecurityFormController::class, 'upload'])->name('user.monthly-audit.security-form.upload');
 
+                // Edit/hapus/sinkron data hasil salinan master di laporan
+                Route::get('/{monthlyId}/row/{section}/{rowId}/edit', [ReportItemController::class, 'edit'])->name('user.monthly-audit.row.edit');
+                Route::patch('/{monthlyId}/row/{section}/{rowId}', [ReportItemController::class, 'update'])->name('user.monthly-audit.row.update');
+                Route::delete('/{monthlyId}/row/{section}/{rowId}', [ReportItemController::class, 'destroy'])->name('user.monthly-audit.row.destroy');
+                Route::post('/{monthlyId}/sync/{section}', [ReportItemController::class, 'sync'])->name('user.monthly-audit.sync');
+
                 //AGHT
                 Route::get('/aght/{monthlyId}', [AGHTController::class, 'index'])->name('user.monthly-audit.aght.index');
                 Route::get('/aght/{monthlyId}/create', [AGHTController::class, 'create'])->name('user.monthly-audit.aght.create');
@@ -175,6 +186,21 @@ Route::prefix('user')->group(function () {
             Route::patch('/edit/{id}', [VendorController::class, 'update'])->name('user.vendor.update');
             Route::delete('/delete/{id}', [VendorController::class, 'destroy'])->name('user.vendor.destroy');
         });
+
+        Route::prefix('mmrk')->group(function () {
+            Route::get('/maturity', [MmrkMarturityController::class, 'index'])->name('mmrk.marturity.index');
+            Route::get('/maturity/{marturity}/show', [MmrkMarturityController::class, 'show'])->name('mmrk.marturity.show');
+            Route::patch('/maturity/{marturity}/send', [MmrkMarturityController::class, 'send'])->name('mmrk.marturity.send');
+            Route::get('/keamanan', [MmrkKeamananController::class, 'index'])->name('mmrk.keamanan.index');
+            Route::get('/keamanan/{kpi}/show', [MmrkKeamananController::class, 'show'])->name('mmrk.keamanan.show');
+            Route::patch('/keamanan/{kpi}/send', [MmrkKeamananController::class, 'send'])->name('mmrk.keamanan.send');
+        });
+
+        Route::prefix('notifications')->group(function () {
+            Route::get('/', [NotificationController::class, 'index'])->name('user.notifications.index');
+            Route::patch('/{id}/read', [NotificationController::class, 'markAsRead'])->name('user.notifications.read');
+            Route::patch('/read-all', [NotificationController::class, 'markAllAsRead'])->name('user.notifications.read-all');
+        });
         
 
         
@@ -203,6 +229,8 @@ Route::prefix('user')->group(function () {
             Route::get('/{security}/edit', [SecurityController::class, 'edit'])->name('user.security.edit');
             Route::patch('/{security}/edit', [SecurityController::class, 'update'])->name('user.security.update');
             Route::delete('/{security}/delete', [SecurityController::class, 'destroy'])->name('user.security.destroy');
+            Route::post('/import', [SecurityController::class, 'importExcel'])->name('user.security.import');
+            Route::get('/import/template', [SecurityController::class, 'downloadTemplate'])->name('user.security.import-template');
         });
 
         Route::get('/worker-sum', [WorkerSumController::class, 'index'])->name('user.worker-sum.index');

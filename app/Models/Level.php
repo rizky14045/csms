@@ -14,6 +14,6 @@ class Level extends Model
 
     public function notes()
     {
-        return $this->hasMany(Note::class, 'level_id', 'id');
+        return $this->hasMany(Note::class, 'level_id', 'id')->orderBy('order');
     }
 }

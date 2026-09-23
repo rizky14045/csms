@@ -24,11 +24,34 @@
             <div class="card-body">
 
                 <div class="d-flex gap-2 mb-3">
-                    <a href="{{ route('admin.marturity.index') }}" class="btn btn-danger">Kembali</a>
+                    <a href="{{ $backUrl }}" class="btn btn-danger">Kembali</a>
+                    @if($mode !== 'mmrk' && auth()->user()->can('view.marturity.admin'))
                     <a href="{{ route('admin.marturity.export', $marturity->id) }}" class="btn btn-success">
                         ⬇ Export Excel
                     </a>
+                    @endif
+                    @if($mode === 'pusat')
+                    <form id="form-finish-validasi" action="{{ route('admin.marturity.finish', $marturity->id) }}" method="POST" class="d-inline"
+                          onsubmit="return confirmAction('form-finish-validasi', 'Selesaikan Validasi?', 'Setelah selesai, centang tidak bisa diubah lagi.', 'Ya, Selesaikan')">
+                        @csrf @method('PATCH')
+                        <button type="submit" class="btn btn-primary">✔ Selesaikan Validasi</button>
+                    </form>
+                    @endif
+                    @if($mode === 'mmrk' && (int) $marturity->status === 1)
+                    <form id="form-send-pusat" action="{{ route('mmrk.marturity.send', $marturity->id) }}" method="POST" class="d-inline"
+                          onsubmit="return confirmAction('form-send-pusat', 'Kirim ke Pusat?', 'Setelah dikirim, data tidak bisa diedit lagi oleh Unit maupun MMRK.', 'Ya, Kirim')">
+                        @csrf @method('PATCH')
+                        <button type="submit" class="btn btn-primary">📤 Kirim ke Pusat</button>
+                    </form>
+                    @endif
                 </div>
+
+                @php
+                    $isAdminUser = auth()->user()->can('view.marturity.admin');
+                    $showActual = ($mode === 'pusat') || ($mode === 'view' && ((int) $marturity->status === 3 || ($isAdminUser && (int) $marturity->status >= 2)));
+                    $canCheck   = $mode === 'pusat';
+                    $grandActual = $actual['total'] ?? 0;
+                @endphp
 
                 @php
                     $totalSubAreas  = collect($areas)->sum(fn($a) => count($a['sub_areas']));
@@ -50,7 +73,7 @@
                     </h2>
 
                     <div id="collapse{{ $area['id'] }}"
-                         class="accordion-collapse collapse"
+                         class="accordion-collapse collapse {{ request('areaId') == $area['id'] ? 'show' : '' }}"
                          data-bs-parent="#formAccordion">
                         <div class="accordion-body" style="overflow-x:auto;">
 
@@ -67,6 +90,10 @@
                                         <th style="min-width:80px;"  class="text-center">Bobot</th>
                                         <th style="min-width:80px;"  class="text-center">Hasil</th>
                                         <th style="min-width:90px;"  class="text-center">Score ML</th>
+                                        @if($showActual)
+                                        <th style="min-width:90px;"  class="text-center">Hasil Aktual</th>
+                                        <th style="min-width:100px;" class="text-center">Score ML Aktual</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -113,14 +140,27 @@
 
                                     <td>
                                         @if(count($lc['files']) > 0)
+                                        @php $lvlActual = $actual['subAreas'][$subArea['id']]['levels'][$lc['lvl']['id']] ?? ['canCheck' => false]; @endphp
                                         <div class="d-flex flex-column gap-1">
                                             @foreach ($lc['files'] as $fi => $file)
-                                            <a href="{{ asset('uploads/attachment_file_marturity_file/' . $file) }}"
-                                               target="_blank"
-                                               class="btn btn-success btn-sm"
-                                               style="font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                                               ⬇ File {{ $fi + 1 }}
-                                            </a>
+                                            @php $isChecked = isset($checked[$lc['lvl']['id'] . '|' . $file]); @endphp
+                                            <div class="d-flex align-items-center gap-2">
+                                                @if($showActual)
+                                                <input type="checkbox" class="form-check-input chk-file"
+                                                       data-url="{{ route('admin.marturity.check', ['marturity' => $marturity->id, 'level' => $lc['lvl']['id']]) }}"
+                                                       data-filename="{{ $file }}"
+                                                       data-level-id="{{ $lc['lvl']['id'] }}"
+                                                       data-area="{{ $area['id'] }}"
+                                                       {{ $isChecked ? 'checked' : '' }}
+                                                       {{ ($canCheck && ($isChecked || $lvlActual['canCheck'])) ? '' : 'disabled' }}>
+                                                @endif
+                                                <a href="{{ asset('uploads/attachment_file_marturity_file/' . $file) }}"
+                                                   target="_blank"
+                                                   class="btn btn-success btn-sm"
+                                                   style="font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                                   ⬇ File {{ $fi + 1 }}
+                                                </a>
+                                            </div>
                                             @endforeach
                                         </div>
                                         @else
@@ -132,6 +172,10 @@
                                     <td class="text-center" rowspan="{{ $levelCount }}">{{ round($bobot, 4) }}</td>
                                     <td class="text-center fw-semibold" rowspan="{{ $levelCount }}">{{ $hasil }}</td>
                                     <td class="text-center fw-semibold" rowspan="{{ $levelCount }}">{{ $scoreML }}</td>
+                                    @if($showActual)
+                                    <td class="text-center fw-semibold" rowspan="{{ $levelCount }}" id="aktual-hasil-{{ $subArea['id'] }}">{{ $actual['subAreas'][$subArea['id']]['hasil'] ?? 0 }}</td>
+                                    <td class="text-center fw-semibold text-success" rowspan="{{ $levelCount }}" id="aktual-score-{{ $subArea['id'] }}">{{ $actual['subAreas'][$subArea['id']]['score'] ?? 0 }}</td>
+                                    @endif
                                     @endif
                                 </tr>
                                 @endforeach
@@ -170,6 +214,12 @@
                                     <td>Total Score ML</td>
                                     <td class="text-center fw-bold text-primary">{{ round($grandTotalML, 4) }}</td>
                                 </tr>
+                                @if($showActual)
+                                <tr>
+                                    <td>Total Score ML Aktual (hasil cek Pusat)</td>
+                                    <td class="text-center fw-bold text-success" id="grand-aktual">{{ round($grandActual, 4) }}</td>
+                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -180,4 +230,74 @@
     </div>
 </div>
 
+@endsection
+
+@section('scripts')
+@if($canCheck)
+<script>
+(function () {
+    const boxes = Array.from(document.querySelectorAll('.chk-file'));
+
+    function keyOf(chk) { return chk.dataset.levelId + '|' + chk.dataset.filename; }
+
+    function applyState(state) {
+        // PHP mengirim array kosong ([]) alih-alih object ({}) ketika semua
+        // checklist ter-uncheck (json_encode tidak bisa membedakan array
+        // asosiatif kosong dari array biasa) — normalisasi supaya lookup-nya eksplisit.
+        const checkedMap = (state.checked && !Array.isArray(state.checked)) ? state.checked : {};
+
+        const canMap = {};
+        Object.values(state.actual.subAreas || {}).forEach(sa => {
+            Object.entries(sa.levels || {}).forEach(([lvlId, info]) => { canMap[lvlId] = info.canCheck; });
+        });
+
+        boxes.forEach(chk => {
+            const isChecked = !!checkedMap[keyOf(chk)];
+            chk.checked = isChecked;
+            chk.disabled = !(isChecked || canMap[chk.dataset.levelId]);
+        });
+
+        Object.entries(state.actual.subAreas || {}).forEach(([id, sa]) => {
+            const h = document.getElementById('aktual-hasil-' + id);
+            const s = document.getElementById('aktual-score-' + id);
+            if (h) h.textContent = sa.hasil;
+            if (s) s.textContent = sa.score;
+        });
+
+        const g = document.getElementById('grand-aktual');
+        if (g) g.textContent = Math.round(state.actual.total * 10000) / 10000;
+    }
+
+    boxes.forEach(chk => {
+        chk.addEventListener('change', async () => {
+            const before = boxes.map(b => b.disabled);
+            const intended = chk.checked;
+            boxes.forEach(b => b.disabled = true);
+
+            try {
+                const res = await fetch(chk.dataset.url, {
+                    method: 'POST',
+                    headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json', 'Content-Type': 'application/json'},
+                    body: JSON.stringify({filename: chk.dataset.filename, checked: chk.checked})
+                });
+                const result = await res.json();
+
+                if (!res.ok) {
+                    Swal.fire('Gagal', result.message || 'Gagal menyimpan centang', 'error');
+                    chk.checked = !intended;
+                    boxes.forEach((b, i) => b.disabled = before[i]);
+                    return;
+                }
+
+                applyState(result);
+            } catch (e) {
+                Swal.fire('Error', 'Server error', 'error');
+                chk.checked = !intended;
+                boxes.forEach((b, i) => b.disabled = before[i]);
+            }
+        });
+    });
+})();
+</script>
+@endif
 @endsection

@@ -402,7 +402,7 @@ class AssesmentController extends Controller
     public function report(Assesment $assesment)
     {
         $results = $this->userService->getAllUnitByVendorID(0, false, auth()->user()->id);
-        $response = $this->assesmentService->getReportAssesment($assesment, 'level');
+        $response = $this->assesmentService->getReportAssesment($assesment);
 
          $status = getStatus($response);
 

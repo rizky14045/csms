@@ -20,7 +20,7 @@ class MarturityLevelController extends Controller
         $this->levelService = $levelService;
 
         $this->middleware('can:create.marturity.level')->only(['create', 'store']);
-        $this->middleware('can:edit.marturity.level')->only(['edit', 'update']);
+        $this->middleware('can:edit.marturity.level')->only(['edit', 'update', 'move']);
         $this->middleware('can:delete.marturity.level')->only(['destroy']);
     }
 
@@ -89,6 +89,16 @@ class MarturityLevelController extends Controller
             return redirect()->route('admin.marturity-area.index');
         } catch (\Throwable $th) {
             Alert::error('Delete Gagal', 'Level gagal dihapus!');
+            return redirect()->route('admin.marturity-area.index');
+        }
+    }
+
+    public function move(Level $level, SubArea $subArea, $direction){
+        try {
+            $this->levelService->moveLevel($level, $direction);
+            return redirect()->route('admin.marturity-area.index');
+        } catch (\Throwable $th) {
+            Alert::error('Gagal', 'Urutan Level gagal diubah!');
             return redirect()->route('admin.marturity-area.index');
         }
     }

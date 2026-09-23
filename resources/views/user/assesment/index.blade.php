@@ -197,6 +197,10 @@
                             </a>
                             @endif
 
+                            @if($assesment->send_status == 2)
+                                @include('components.assesment-export-button', ['assesment' => $assesment])
+                            @endif
+
                         @endif
 
                     </div>

@@ -14,6 +14,6 @@ class Area extends Model
 
     public function subAreas()
     {
-        return $this->hasMany(SubArea::class, 'area_id', 'id');
+        return $this->hasMany(SubArea::class, 'area_id', 'id')->orderBy('order');
     }
 }

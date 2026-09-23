@@ -95,6 +95,15 @@
                                     $scoreML    = round($hasil * $bobot, 4);
                                     $grandTotalBobot += $bobot;
                                     $grandTotalML    += $scoreML;
+
+                                    $lockedMap = [];
+                                    $chainOk = true;
+                                    foreach ($levels as $lv) {
+                                        $lockedMap[$lv['id']] = !$chainOk;
+                                        if (empty($lv['attachment_file'])) {
+                                            $chainOk = false;
+                                        }
+                                    }
                                 @endphp
 
                                 @foreach ($levels as $idx => $level)
@@ -132,17 +141,25 @@
                                             @endif
                                         </div>
 
-                                        <input type="file"
-                                               id="file-input-{{ $level['id'] }}"
-                                               class="form-control form-control-sm mb-1"
-                                               accept=".pdf">
-                                        <div class="form-text" style="font-size:10px;">PDF, maks 25MB</div>
-                                        <div id="error-level-{{ $level['id'] }}" class="error-text"></div>
-                                        <button type="button"
-                                                class="btn btn-primary btn-sm btn-upload-level mt-1"
-                                                data-level="{{ $level['id'] }}">
-                                            ⬆ Upload
-                                        </button>
+                                        <div id="upload-section-{{ $level['id'] }}">
+                                            @if ($lockedMap[$level['id']])
+                                            <div class="text-muted small fst-italic">
+                                                🔒 Selesaikan evidence Level sebelumnya terlebih dahulu
+                                            </div>
+                                            @else
+                                            <input type="file"
+                                                   id="file-input-{{ $level['id'] }}"
+                                                   class="form-control form-control-sm mb-1"
+                                                   accept=".pdf">
+                                            <div class="form-text" style="font-size:10px;">PDF, maks 25MB</div>
+                                            <div id="error-level-{{ $level['id'] }}" class="error-text"></div>
+                                            <button type="button"
+                                                    class="btn btn-primary btn-sm btn-upload-level mt-1"
+                                                    data-level="{{ $level['id'] }}">
+                                                ⬆ Upload
+                                            </button>
+                                            @endif
+                                        </div>
                                     </td>
 
                                     @if ($idx === 0)
@@ -234,6 +251,56 @@ const levelAreaMap = {
         @endforeach
     @endforeach
 };
+
+function renderUploadSectionHTML(levelId, locked) {
+    if (locked) {
+        return `<div class="text-muted small fst-italic">🔒 Selesaikan evidence Level sebelumnya terlebih dahulu</div>`;
+    }
+
+    return `
+        <input type="file" id="file-input-${levelId}" class="form-control form-control-sm mb-1" accept=".pdf">
+        <div class="form-text" style="font-size:10px;">PDF, maks 25MB</div>
+        <div id="error-level-${levelId}" class="error-text"></div>
+        <button type="button" class="btn btn-primary btn-sm btn-upload-level mt-1"
+                data-level="${levelId}">⬆ Upload</button>
+    `;
+}
+
+function bindUploadButton(levelId) {
+    const sectionEl = document.getElementById('upload-section-' + levelId);
+    const btn = sectionEl ? sectionEl.querySelector('.btn-upload-level') : null;
+    if (btn) {
+        btn.addEventListener('click', () => {
+            Swal.fire({
+                title: 'Upload file?', icon: 'question',
+                showCancelButton: true, confirmButtonText: 'Upload', cancelButtonText: 'Batal'
+            }).then(r => { if (r.isConfirmed) doUpload(levelId); });
+        });
+    }
+}
+
+// Cek ulang rantai kunci level pada satu subArea, render ulang level LAIN
+// (selain yang baru saja diupload) yang status kuncinya ikut berubah.
+function refreshLockStates(subAreaId, skipLevelId) {
+    const levelIds = subAreaLevels[subAreaId] || [];
+    let chainOk = true;
+
+    levelIds.forEach(levelId => {
+        if (levelId == skipLevelId) {
+            if (!levelHasFile[levelId]) chainOk = false;
+            return;
+        }
+
+        const locked = !chainOk;
+        const sectionEl = document.getElementById('upload-section-' + levelId);
+        if (sectionEl) {
+            sectionEl.innerHTML = renderUploadSectionHTML(levelId, locked);
+            bindUploadButton(levelId);
+        }
+
+        if (!levelHasFile[levelId]) chainOk = false;
+    });
+}
 
 function updateAreaInvalidBadge(areaId) {
     if (!areaId) return;
@@ -327,6 +394,7 @@ async function doUpload(levelId) {
         levelHasFile[levelId] = true;
         updateSubAreaTotals(subAreaId);
         updateAreaInvalidBadge(levelAreaMap[levelId]);
+        refreshLockStates(subAreaId, levelId);
 
     } catch (e) {
         Swal.fire('Error', 'Server error', 'error');

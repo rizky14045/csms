@@ -1,6 +1,8 @@
 @extends('layout.app')
 @section('styles')
 <style>
+    .sortable-ghost { opacity:.4; }
+    .drag-handle:active { cursor:grabbing; }
     .accordion-button::after {
         filter: invert(100%);
     }
@@ -151,9 +153,9 @@
                 </div>
 
                 <!-- Audit accordion -->
-                <div class="accordion" id="auditAccordion">
+                <div class="accordion" id="auditAccordion" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-entity="audit" data-item=".audit-item" data-type="header">
                     @foreach ($audits as $audit)
-                    <div class="accordion-item audit-item">
+                    <div class="accordion-item audit-item sortable-item" data-id="{{ $audit['id'] }}">
 
                         <!-- Audit header -->
                         <h2 class="accordion-header" id="auditHeading{{ $audit['id'] }}">
@@ -178,6 +180,7 @@
                                 @endcan
 
                                 <div class="btn-action-group ms-3">
+<span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                     @can('edit.audit.smp.admin')
                                     <a href="{{route('admin.audit-smp.edit',['audit'=>$audit['id']])}}" class="btn btn-soft-warning btn-xs">Edit</a>
                                     @endcan
@@ -207,9 +210,9 @@
                                 {{-- ── Pernyataan ── --}}
                                 @if(isset($audit['pernyataan']) && !empty($audit['pernyataan']))
                                 <span class="label-section">Pernyataan</span>
-                                <div class="mb-4">
+                                <div class="mb-4" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-entity="audit" data-item=".pernyataan-item" data-type="pernyataan">
                                     @foreach ($audit['pernyataan'] as $pernyataan)
-                                    <div class="accordion-item pernyataan-item">
+                                    <div class="accordion-item pernyataan-item sortable-item" data-id="{{ $pernyataan['id'] }}">
 
                                         <!-- Pernyataan header -->
                                         <h2 class="accordion-header">
@@ -233,6 +236,7 @@
                                                 @endcan
 
                                                 <div class="btn-action-group ms-3">
+<span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                                     @can('create.criteria.audit.smp.admin')
                                                     <a href="{{route('admin.criteria.audit-smp.create',['audit'=>$pernyataan['id']])}}" class="btn btn-soft-success btn-xs">+ Kriteria</a>
                                                     @endcan
@@ -252,12 +256,12 @@
 
                                         @can('view.criteria.audit.smp.admin')
                                         <div id="pernyataanBody{{ $pernyataan['id'] }}" class="accordion-collapse collapse">
-                                            <div class="pernyataan-body">
+                                            <div class="pernyataan-body" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-entity="audit" data-item=".kriteria-item" data-type="kriteria">
 
                                                 @if(isset($pernyataan['kriteria']) && !empty($pernyataan['kriteria']))
                                                 <span class="label-section">Kriteria</span>
                                                 @foreach ($pernyataan['kriteria'] as $kriteria)
-                                                <div class="accordion-item kriteria-item">
+                                                <div class="accordion-item kriteria-item sortable-item" data-id="{{ $kriteria['id'] }}">
 
                                                     <!-- Kriteria header -->
                                                     <h2 class="accordion-header">
@@ -281,6 +285,7 @@
                                                             @endcan
 
                                                             <div class="btn-action-group ms-3">
+<span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                                                 @can('create.evidence.audit.smp.admin')
                                                                 <a href="{{route('admin.evidence.audit-smp.create',['audit'=>$kriteria['id']])}}" class="btn btn-soft-success btn-xs">+ Evidence</a>
                                                                 @endcan
@@ -300,15 +305,16 @@
 
                                                     @can('view.evidence.audit.smp.admin')
                                                     <div id="kriteriaBody{{ $kriteria['id'] }}" class="accordion-collapse collapse">
-                                                        <div class="kriteria-body">
+                                                        <div class="kriteria-body" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-entity="audit" data-item=".evident-item" data-type="evidence">
                                                             @if(isset($kriteria['evidence']) && !empty($kriteria['evidence']))
                                                             <span class="label-section">Evidence</span>
                                                             @foreach ($kriteria['evidence'] as $evidence)
-                                                            <div class="evident-item d-flex justify-content-between align-items-center">
+                                                            <div class="evident-item sortable-item d-flex justify-content-between align-items-center" data-id="{{ $evidence['id'] }}">
                                                                 <div class="text-dark fs-13">
                                                                     <span class="text-primary fw-bold me-2">{{ $loop->iteration }}.</span>{{ $evidence['name'] }}
                                                                 </div>
                                                                 <div class="btn-action-group">
+<span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                                                     @can('edit.evidence.audit.smp.admin')
                                                                     <a href="{{route('admin.evidence.audit-smp.edit',['audit'=>$kriteria['id'],'evidence'=>$evidence['id']])}}" class="btn btn-soft-warning btn-xs">Edit</a>
                                                                     @endcan
@@ -347,9 +353,9 @@
                                 {{-- ── Kriteria langsung di bawah Audit ── --}}
                                 @if(isset($audit['kriteria']) && !empty($audit['kriteria']))
                                 <span class="label-section mt-2">Kriteria</span>
-                                <div>
+                                <div data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-entity="audit" data-item=".kriteria-item" data-type="kriteria">
                                     @foreach ($audit['kriteria'] as $kriteria)
-                                    <div class="accordion-item kriteria-item">
+                                    <div class="accordion-item kriteria-item sortable-item" data-id="{{ $kriteria['id'] }}">
 
                                         <h2 class="accordion-header">
                                             <div class="d-flex align-items-center w-100 pe-3">
@@ -372,6 +378,7 @@
                                                 @endcan
 
                                                 <div class="btn-action-group ms-3">
+<span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                                     @can('create.evidence.audit.smp.admin')
                                                     <a href="{{route('admin.evidence.audit-smp.create',['audit'=>$kriteria['id']])}}" class="btn btn-soft-success btn-xs">+ Evidence</a>
                                                     @endcan
@@ -391,15 +398,16 @@
 
                                         @can('view.evidence.audit.smp.admin')
                                         <div id="kriteriaDirectBody{{ $kriteria['id'] }}" class="accordion-collapse collapse">
-                                            <div class="kriteria-body">
+                                            <div class="kriteria-body" data-reorder-url="{{ route('admin.reorder') }}" data-token="{{ csrf_token() }}" data-entity="audit" data-item=".evident-item" data-type="evidence">
                                                 @if(isset($kriteria['evidence']) && !empty($kriteria['evidence']))
                                                 <span class="label-section">Evidence</span>
                                                 @foreach ($kriteria['evidence'] as $evidence)
-                                                <div class="evident-item d-flex justify-content-between align-items-center">
+                                                <div class="evident-item sortable-item d-flex justify-content-between align-items-center" data-id="{{ $evidence['id'] }}">
                                                     <div class="text-dark fs-13">
                                                         <span class="text-primary fw-bold me-2">{{ $loop->iteration }}.</span>{{ $evidence['name'] }}
                                                     </div>
                                                     <div class="btn-action-group">
+<span class="drag-handle" title="Geser untuk mengubah urutan" style="cursor:grab;font-size:16px;line-height:1;padding:0 4px;color:#6c757d;">&#8942;&#8942;</span>
                                                         @can('edit.evidence.audit.smp.admin')
                                                         <a href="{{route('admin.evidence.audit-smp.edit',['audit'=>$kriteria['id'],'evidence'=>$evidence['id']])}}" class="btn btn-soft-warning btn-xs">Edit</a>
                                                         @endcan

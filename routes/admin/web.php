@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\MarturityNoteController;
 use App\Http\Controllers\Admin\MarturitySubAreaController;
 use App\Http\Controllers\Admin\MonthlyAuditController;
 use App\Http\Controllers\Admin\QuestionAssesmentController;
+use App\Http\Controllers\Admin\ReorderController;
 use App\Http\Controllers\Admin\SecurepediaController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\VulnerabilityController;
@@ -41,6 +42,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('admin')->group(function () {
     Route::middleware(['auth','auth.admin'])->group(function () {
         
+        Route::post('/reorder', [ReorderController::class, 'store'])->name('admin.reorder');
+
         Route::prefix('assesment')->group(function () {
             Route::get('/', [AssesmentController::class, 'index'])->name('admin.assesment.index');
             Route::get('/{assesment}/show', [AssesmentController::class, 'show'])->name('admin.assesment.show');
@@ -56,12 +59,16 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [MarturityController::class, 'index'])->name('admin.marturity.index');
             Route::get('/{marturity}/show', [MarturityController::class, 'show'])->name('admin.marturity.show');
             Route::get('/{marturity}/export', [MarturityController::class, 'export'])->name('admin.marturity.export');
+            Route::post('/{marturity}/check/{level}', [MarturityController::class, 'check'])->name('admin.marturity.check');
+            Route::patch('/{marturity}/finish', [MarturityController::class, 'finish'])->name('admin.marturity.finish');
         });
 
         Route::prefix('keamanan')->group(function () {
             Route::get('/', [KeamananController::class, 'index'])->name('admin.keamanan.index');
             Route::get('/{kpi}/show', [KeamananController::class, 'show'])->name('admin.keamanan.show');
             Route::get('/{kpi}/export', [KeamananController::class, 'export'])->name('admin.keamanan.export');
+            Route::post('/{kpi}/check/{level}', [KeamananController::class, 'check'])->name('admin.keamanan.check');
+            Route::patch('/{kpi}/finish', [KeamananController::class, 'finish'])->name('admin.keamanan.finish');
         });
 
         Route::prefix('vulnerability')->group(function () {
@@ -123,6 +130,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{area}/edit', [MarturityAreaController::class, 'edit'])->name('admin.marturity-area.edit');
             Route::patch('/{area}/edit', [MarturityAreaController::class, 'update'])->name('admin.marturity-area.update');
             Route::delete('/{area}/delete', [MarturityAreaController::class, 'destroy'])->name('admin.marturity-area.destroy');
+            Route::patch('/{area}/move/{direction}', [MarturityAreaController::class, 'move'])->name('admin.marturity-area.move');
         });
 
         Route::prefix('maturity-sub-area')->group(function () {
@@ -131,6 +139,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{sub_area}/edit/{area}', [MarturitySubAreaController::class, 'edit'])->name('admin.marturity-sub-area.edit');
             Route::patch('/{sub_area}/edit/{area}', [MarturitySubAreaController::class, 'update'])->name('admin.marturity-sub-area.update');
             Route::delete('/{sub_area}/delete/{area}', [MarturitySubAreaController::class, 'destroy'])->name('admin.marturity-sub-area.destroy');
+            Route::patch('/{sub_area}/move/{area}/{direction}', [MarturitySubAreaController::class, 'move'])->name('admin.marturity-sub-area.move');
         });
 
         Route::prefix('maturity-level')->group(function () {
@@ -139,6 +148,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{level}/edit/{sub_area}', [MarturityLevelController::class, 'edit'])->name('admin.marturity-level.edit');
             Route::patch('/{level}/edit/{sub_area}', [MarturityLevelController::class, 'update'])->name('admin.marturity-level.update');
             Route::delete('/{level}/delete/{sub_area}', [MarturityLevelController::class, 'destroy'])->name('admin.marturity-level.destroy');
+            Route::patch('/{level}/move/{sub_area}/{direction}', [MarturityLevelController::class, 'move'])->name('admin.marturity-level.move');
         });
 
         Route::prefix('maturity-note')->group(function () {
@@ -147,6 +157,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{note}/edit/{level}', [MarturityNoteController::class, 'edit'])->name('admin.marturity-note.edit');
             Route::patch('/{note}/edit/{level}', [MarturityNoteController::class, 'update'])->name('admin.marturity-note.update');
             Route::delete('/{note}/delete/{level}', [MarturityNoteController::class, 'destroy'])->name('admin.marturity-note.destroy');
+            Route::patch('/{note}/move/{level}/{direction}', [MarturityNoteController::class, 'move'])->name('admin.marturity-note.move');
         });
 
         Route::prefix('kpi-area')->group(function () {
@@ -156,6 +167,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{area}/edit', [KPIAreaController::class, 'edit'])->name('admin.kpi-area.edit');
             Route::patch('/{area}/edit', [KPIAreaController::class, 'update'])->name('admin.kpi-area.update');
             Route::delete('/{area}/delete', [KPIAreaController::class, 'destroy'])->name('admin.kpi-area.destroy');
+            Route::patch('/{area}/move/{direction}', [KPIAreaController::class, 'move'])->name('admin.kpi-area.move');
         });
 
         Route::prefix('kpi-sub-area')->group(function () {
@@ -164,6 +176,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{sub_area}/edit/{area}', [KPISubAreaController::class, 'edit'])->name('admin.kpi-sub-area.edit');
             Route::patch('/{sub_area}/edit/{area}', [KPISubAreaController::class, 'update'])->name('admin.kpi-sub-area.update');
             Route::delete('/{sub_area}/delete/{area}', [KPISubAreaController::class, 'destroy'])->name('admin.kpi-sub-area.destroy');
+            Route::patch('/{sub_area}/move/{area}/{direction}', [KPISubAreaController::class, 'move'])->name('admin.kpi-sub-area.move');
         });
 
         Route::prefix('kpi-level')->group(function () {
@@ -172,6 +185,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{level}/edit/{sub_area}', [KPILevelController::class, 'edit'])->name('admin.kpi-level.edit');
             Route::patch('/{level}/edit/{sub_area}', [KPILevelController::class, 'update'])->name('admin.kpi-level.update');
             Route::delete('/{level}/delete/{sub_area}', [KPILevelController::class, 'destroy'])->name('admin.kpi-level.destroy');
+            Route::patch('/{level}/move/{sub_area}/{direction}', [KPILevelController::class, 'move'])->name('admin.kpi-level.move');
         });
 
         Route::prefix('kpi-note')->group(function () {
@@ -180,6 +194,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{note}/edit/{level}', [KPINoteController::class, 'edit'])->name('admin.kpi-note.edit');
             Route::patch('/{note}/edit/{level}', [KPINoteController::class, 'update'])->name('admin.kpi-note.update');
             Route::delete('/{note}/delete/{level}', [KPINoteController::class, 'destroy'])->name('admin.kpi-note.destroy');
+            Route::patch('/{note}/move/{level}/{direction}', [KPINoteController::class, 'move'])->name('admin.kpi-note.move');
         });
 
         Route::prefix('audit-smp')->group(function () {

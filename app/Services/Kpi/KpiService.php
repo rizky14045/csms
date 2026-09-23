@@ -8,6 +8,8 @@ use App\Models\CategoryAssesment;
 use App\Models\Kpi;
 use App\Models\KpiArea;
 use App\Models\KpiLevel;
+use App\Models\KpiLevelCheck;
+use App\Models\User;
 use App\Models\KpiNote;
 use App\Models\KpiSubArea;
 use App\Models\Level;
@@ -21,6 +23,8 @@ use Illuminate\Support\Facades\DB;
 
 class KpiService
 {
+    use \App\Services\Concerns\AllocatesIds;
+
     protected $logService;
 
     public function __construct(ActivityLogService $logService)
@@ -131,6 +135,8 @@ class KpiService
 
     public function createKpi(array $data)
     {
+        set_time_limit(120);
+
         DB::beginTransaction();
 
         try {
@@ -143,56 +149,85 @@ class KpiService
                 'created_by' => $user->id,
             ]);
             
-            $areas = Area::where('type','kpi')->get();
+            $areas = Area::where('type','kpi')->orderBy('order')->orderBy('id')->get();
 
-            foreach ($areas as $area) {
+            if ($areas->isEmpty()) {
+                DB::rollBack();
 
-                $kpiArea = KpiArea::create([
-                    'unit_id' => $user->unit_id,
-                    'kpi_id' => $kpi->id,
-                    'name' => $area->name,
-                    'created_by' => $user->id,
-                ]);
-                $subAreas = SubArea::where('area_id', $area->id)->get();
-                foreach ($subAreas as $subArea) {
+                return JsonResponse::error(
+                    'Master data KPI belum tersedia',
+                    'Failed to create kpi',
+                    422
+                );
+            }
 
-                    $kpiSubArea = KpiSubArea::create([
-                        'unit_id' => $user->unit_id,
-                        'kpi_id' => $kpi->id,
-                        'area_id' => $kpiArea->id,
-                        'name' => $subArea->name,
-                        'description' => $subArea->description,
-                        'reference' => $subArea->reference,   
-                        'created_by' => $user->id, 
-                    ]);
+            $subAreasByArea = SubArea::whereIn('area_id', $areas->pluck('id'))
+                ->orderBy('order')->orderBy('id')->get()->groupBy('area_id');
+            $levelsBySub = Level::whereIn('sub_area_id', $subAreasByArea->flatten()->pluck('id'))
+                ->orderBy('order')->orderBy('id')->get()->groupBy('sub_area_id');
+            $notesByLevel = Note::whereIn('level_id', $levelsBySub->flatten()->pluck('id'))
+                ->orderBy('order')->orderBy('id')->get()->groupBy('level_id');
 
-                    $levels = Level::where('sub_area_id', $subArea->id)->get();
-                    foreach ($levels as $level){
+            $now = now();
+            $base = ['unit_id' => $user->unit_id, 'kpi_id' => $kpi->id, 'created_by' => $user->id, 'created_at' => $now, 'updated_at' => $now];
 
-                        $kpiLevel = KpiLevel::create([
-                            'unit_id' => $user->unit_id,
-                            'kpi_id' => $kpi->id,
-                            'sub_area_id' => $kpiSubArea->id,
-                            'level' => $level->level,
-                            'description' => $level->description,  
-                            'created_by' => $user->id,     
-                        ]);
+            $areaIds = $this->allocateIds('kpi_areas', $areas->count());
+            $areaRows = [];
+            $subRows = [];
+            $levelRows = [];
+            $noteRows = [];
+            $subCount = 0;
 
-                        $notes = Note::where('level_id', $level->id)->get();
+            foreach ($areas as $ai => $area) {
+                $areaRows[] = $base + ['id' => $areaIds[$ai], 'name' => $area->name, 'order' => $ai + 1];
+                $subCount += ($subAreasByArea[$area->id] ?? collect())->count();
+            }
 
-                        foreach ($notes as $note){
-                            $kpiNote = KpiNote::create([
-                                'unit_id' => $user->unit_id,
-                                'kpi_id' => $kpi->id,
-                                'level_id' => $kpiLevel->id,
-                                'note' => $note->note,
-                                'created_by' => $user->id,
-                            ]);
-                        }
+            $subIds = $this->allocateIds('kpi_sub_areas', $subCount);
+            $si = 0;
+            $pendingLevels = [];
+            foreach ($areas as $ai => $area) {
+                foreach (($subAreasByArea[$area->id] ?? collect())->values() as $sj => $subArea) {
+                    $newSubId = $subIds[$si++];
+                    $subRows[] = $base + [
+                        'id' => $newSubId, 'area_id' => $areaIds[$ai], 'name' => $subArea->name,
+                        'description' => $subArea->description, 'reference' => $subArea->reference, 'order' => $sj + 1,
+                    ];
+                    foreach (($levelsBySub[$subArea->id] ?? collect())->values() as $lk => $level) {
+                        $pendingLevels[] = [$newSubId, $level, $lk + 1];
                     }
                 }
             }
-            
+
+            $levelIds = $this->allocateIds('kpi_levels', count($pendingLevels));
+            foreach ($pendingLevels as $li => [$newSubId, $level, $order]) {
+                $newLevelId = $levelIds[$li];
+                $levelRows[] = $base + [
+                    'id' => $newLevelId, 'sub_area_id' => $newSubId, 'level' => $level->level,
+                    'description' => $level->description, 'order' => $order,
+                ];
+                foreach (($notesByLevel[$level->id] ?? collect())->values() as $nk => $note) {
+                    $noteRows[] = $base + ['level_id' => $newLevelId, 'note' => $note->note, 'order' => $nk + 1];
+                }
+            }
+
+            $totalLevelsCreated = count($levelRows);
+
+            if ($totalLevelsCreated === 0) {
+                DB::rollBack();
+
+                return JsonResponse::error(
+                    'Master data KPI belum lengkap (tidak ada level yang tersedia)',
+                    'Failed to create kpi',
+                    422
+                );
+            }
+
+            KpiArea::insert($areaRows);
+            if ($subRows) { KpiSubArea::insert($subRows); }
+            KpiLevel::insert($levelRows);
+            if ($noteRows) { KpiNote::insert($noteRows); }
+
             DB::commit();
 
             $this->logService->log(
@@ -412,6 +447,26 @@ class KpiService
         }
     }
 
+    public function isLevelUnlocked(KpiLevel $level)
+    {
+        $siblings = KpiLevel::where('sub_area_id', $level->sub_area_id)
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get();
+
+        foreach ($siblings as $sibling) {
+            if ($sibling->id == $level->id) {
+                return true;
+            }
+
+            if (empty($sibling->attachment_file)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function uploadNote(Request $request, Kpi $kpi, $areaId, KpiNote $note)
     {
         DB::beginTransaction();
@@ -484,57 +539,123 @@ class KpiService
         DB::beginTransaction();
 
         try {
-            if($kpi->send_status == true){
+            if($kpi->send_status == true || (int) $kpi->status === 1){
+                DB::rollBack();
                 return JsonResponse::error(
                     'KPI sudah dikirim',
                     'Failed to send kpi',
                     400
                 );
             }
-            
+
+            $user = auth()->user();
+            // Selalu dikirim ke MMRK dulu; MMRK yang meneruskan ke Pusat.
             $kpi->update([
-                'send_status' => true,
-                'send_date' => date('Y-m-d'),
-                'updated_by' => auth()->id(),
+                'status' => 1,
+                'mmrk_send_date' => date('Y-m-d'),
+                'updated_by' => $user->id,
             ]);
 
             DB::commit();
 
-            $this->logService->log(
-                'kpi.send',
-                'Send kpi',
-                200,
-                [
-                    'kpi_id' => $kpi->id,
-                    'date' => $kpi->date,
-                    'triwulan' => $kpi->triwulan,
-                ]
-            );
+            $this->logService->log('kpi.send', 'Send kpi', 200, [
+                'kpi_id' => $kpi->id,
+                'status' => $kpi->status,
+            ]);
 
-            return JsonResponse::success(
-                $kpi,
-                'KPI sent successfully',
-                200
-            );
+            return JsonResponse::success($kpi, 'KPI sent successfully', 200);
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            $this->logService->log(
-                'kpi.send',
-                'Failed to send kpi',
-                500,
-                [
-                    'kpi_id' => $kpi->id,
-                    'error' => $e->getMessage(),
-                ]
+            $this->logService->log('kpi.send', 'Failed to send kpi', 500, [
+                'kpi_id' => $kpi->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return JsonResponse::error($e->getMessage(), 'Failed to send kpi', 500);
+        }
+    }
+
+    public function sendToPusat(Kpi $kpi)
+    {
+        if ((int) $kpi->status !== 1) {
+            return false;
+        }
+
+        $kpi->update([
+            'status' => 2,
+            'send_status' => true,
+            'send_date' => date('Y-m-d'),
+            'updated_by' => auth()->id(),
+        ]);
+
+        return true;
+    }
+
+    public function finishValidation(Kpi $kpi)
+    {
+        if ((int) $kpi->status !== 2) {
+            return false;
+        }
+
+        $kpi->update(['status' => 3, 'updated_by' => auth()->id()]);
+
+        return true;
+    }
+
+    public function getCheckedMap(Kpi $kpi)
+    {
+        return KpiLevelCheck::where('kpi_id', $kpi->id)->pluck('level_id')
+            ->mapWithKeys(fn($id) => [$id => true])->all();
+    }
+
+    public function toggleCheck(Kpi $kpi, KpiLevel $level, $checked)
+    {
+        if ((int) $kpi->status !== 2) {
+            return [false, 'Data tidak dalam tahap validasi Pusat!'];
+        }
+
+        if ($level->kpi_id != $kpi->id) {
+            return [false, 'Level tidak valid!'];
+        }
+
+        $siblings = KpiLevel::where('sub_area_id', $level->sub_area_id)
+            ->orderBy('order')->orderBy('id')->get();
+
+        if ($checked) {
+            if (empty($level->attachment_file)) {
+                return [false, 'Level belum memiliki file!'];
+            }
+
+            foreach ($siblings as $sibling) {
+                if ($sibling->id == $level->id) {
+                    break;
+                }
+
+                if (!KpiLevelCheck::where('level_id', $sibling->id)->exists()) {
+                    return [false, 'Centang level sebelumnya terlebih dahulu!'];
+                }
+            }
+
+            KpiLevelCheck::firstOrCreate(
+                ['level_id' => $level->id],
+                ['kpi_id' => $kpi->id, 'checked_by' => auth()->id()]
             );
 
-            return JsonResponse::error(
-                $e->getMessage(),
-                'Failed to send kpi',
-                500
-            );
+            return [true, 'ok'];
         }
+
+        $after = false;
+        foreach ($siblings as $sibling) {
+            if ($after || $sibling->id == $level->id) {
+                KpiLevelCheck::where('level_id', $sibling->id)->delete();
+            }
+            if ($sibling->id == $level->id) {
+                $after = true;
+            }
+        }
+
+        return [true, 'ok'];
     }
 }

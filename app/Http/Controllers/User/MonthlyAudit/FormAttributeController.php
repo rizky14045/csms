@@ -16,7 +16,7 @@ class FormAttributeController extends Controller
         $data['monthlyId'] = $monthlyId;
 
         $query = FormAttribute::join('attributes', 'attributes.id', 'form_attributes.attribute_id')
-        ->select('form_attributes.*', 'attributes.name', 'attributes.status_ownership', 'attributes.unit', 'attributes.standard_contract')->where('monthly_report_id', $monthlyId);
+        ->select('form_attributes.*', 'attributes.name', 'attributes.status_ownership', 'attributes.unit', 'attributes.standard_contract')->whereNull('attributes.deleted_at')->where('monthly_report_id', $monthlyId);
     
         $data['attributes'] = (clone $query)->where('attributes.type_attribute', 'Attribute')->get();
         $data['administrations'] = (clone $query)->where('attributes.type_attribute', 'Administrasi')->get();

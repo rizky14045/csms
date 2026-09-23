@@ -20,7 +20,7 @@ class MarturityNoteController extends Controller
         $this->noteService = $noteService;
 
         $this->middleware('can:create.marturity.note')->only(['create', 'store']);
-        $this->middleware('can:edit.marturity.note')->only(['edit', 'update']);
+        $this->middleware('can:edit.marturity.note')->only(['edit', 'update', 'move']);
         $this->middleware('can:delete.marturity.note')->only(['destroy']);
     }
 
@@ -89,9 +89,19 @@ class MarturityNoteController extends Controller
             $this->noteService->deleteNote($note);
             Alert::success('Delete Berhasil', 'Note berhasil dihapus!');
             return redirect()->route('admin.marturity-area.index');
-            
+
         } catch (\Throwable $th) {
             Alert::error('Delete Gagal', 'Note gagal dihapus!');
+            return redirect()->route('admin.marturity-area.index');
+        }
+    }
+
+    public function move(Note $note, Level $level, $direction){
+        try {
+            $this->noteService->moveNote($note, $direction);
+            return redirect()->route('admin.marturity-area.index');
+        } catch (\Throwable $th) {
+            Alert::error('Gagal', 'Urutan Note gagal diubah!');
             return redirect()->route('admin.marturity-area.index');
         }
     }

@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Marturity;
 use App\Models\Unit;
+use App\Models\MarturityLevel;
+use App\Services\Score\MlActualCalculator;
+use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Controllers\Controller;
 use App\Services\Marturity\MarturityService;
 use Illuminate\Support\Str;
@@ -17,6 +21,7 @@ class MarturityController extends Controller
         $this->marturityService = $marturityService;
 
         $this->middleware('can:view.marturity.admin')->only(['index', 'show']);
+        $this->middleware('can:validate.marturity.admin')->only(['check', 'finish']);
     }
 
     public function index(){
@@ -35,10 +40,49 @@ class MarturityController extends Controller
         }
 
         $result = $this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels'], $marturity->id);
-        $data['areas']    = getData($result);
+        $areas = getData($result);
+        $checked = $this->marturityService->getCheckedMap($marturity);
+
+        $data['areas']     = $areas;
         $data['marturity'] = $marturity;
+        $data['mode']      = ((int) $marturity->status === 2 && auth()->user()->can('validate.marturity.admin')) ? 'pusat' : 'view';
+        $data['checked']   = $checked;
+        $data['actual']    = MlActualCalculator::marturity($areas, $checked);
+        $data['backUrl']   = route('admin.marturity.index');
 
         return view('admin.marturity.show', $data);
+    }
+
+    public function check(Request $request, Marturity $marturity, MarturityLevel $level){
+        [$ok, $message] = $this->marturityService->toggleCheck(
+            $marturity,
+            $level,
+            (string) $request->input('filename'),
+            filter_var($request->input('checked'), FILTER_VALIDATE_BOOLEAN)
+        );
+
+        if (!$ok) {
+            return response()->json(['success' => false, 'message' => $message], 422);
+        }
+
+        $areas   = getData($this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels'], $marturity->id));
+        $checked = $this->marturityService->getCheckedMap($marturity);
+
+        return response()->json([
+            'success' => true,
+            'checked' => $checked,
+            'actual'  => MlActualCalculator::marturity($areas, $checked),
+        ]);
+    }
+
+    public function finish(Marturity $marturity){
+        if ($this->marturityService->finishValidation($marturity)) {
+            Alert::success('Berhasil', 'Validasi Maturity selesai!');
+        } else {
+            Alert::error('Gagal', 'Data tidak dalam tahap validasi Pusat!');
+        }
+
+        return redirect()->route('admin.marturity.index');
     }
 
     public function export(Marturity $marturity){

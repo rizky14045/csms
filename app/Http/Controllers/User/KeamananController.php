@@ -96,7 +96,13 @@ class KeamananController extends Controller
             ])->withInput();
         }
 
-        $this->kpiService->createKpi($request->all());
+        $result = $this->kpiService->createKpi($request->all());
+
+        if ($result->getStatusCode() !== 201) {
+            $message = json_decode($result->getContent(), true)['message'] ?? 'KPI gagal ditambah!';
+            Alert::error('Tambah Gagal', $message);
+            return back()->withInput();
+        }
 
         Alert::success('Tambah Berhasil', 'KPI berhasil ditambah!');
         if(auth()->user()->roles[0]->name == 'Pusat') {
@@ -135,11 +141,18 @@ class KeamananController extends Controller
             return redirect()->route('user.keamanan.index');
         }
     
-        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels', 'subAreas.levels.notes']);
-        
-        $data['areas'] = getData($result);
-        
-        return view('user.keamanan.preview',$data);
+        $result  = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']);
+        $areas   = getData($result);
+        $checked = $this->kpiService->getCheckedMap($kpi);
+
+        $data['areas']   = $areas;
+        $data['kpi']     = $kpi;
+        $data['mode']    = 'view';
+        $data['checked'] = $checked;
+        $data['actual']  = \App\Services\Score\MlActualCalculator::kpi($areas, $checked);
+        $data['backUrl'] = route('user.keamanan.index');
+
+        return view('admin.keamanan.show', $data);
     }
 
     public function send(Kpi $kpi){
@@ -160,9 +173,14 @@ class KeamananController extends Controller
         //     return redirect()->route('user.keamanan.index');
         // }
 
-        $this->kpiService->sendKpi($kpi);
+        $result = $this->kpiService->sendKpi($kpi);
+        if ($result->getStatusCode() !== 200) {
+            Alert::error('Gagal Dikirim', 'KPI sudah dikirim atau gagal dikirim!');
+            return redirect()->route(auth()->user()->hasRole('Pusat') ? 'admin.keamanan.index' : 'user.keamanan.index');
+        }
 
-        Alert::success('Berhasil Dikirim', 'KPI berhasil dikirim!');
+        $kpi->refresh();
+        Alert::success('Berhasil Dikirim', (int) $kpi->status === 1 ? 'KPI berhasil dikirim ke MMRK!' : 'KPI berhasil dikirim!');
         if(auth()->user()->roles[0]->name == 'Pusat') {
             return redirect()->route('admin.keamanan.index');
         }
@@ -188,6 +206,17 @@ class KeamananController extends Controller
     public function uploadLevel(Request $request, Kpi $kpi, KpiLevel $level)
     {
         try {
+            if ($kpi->send_status || $level->kpi_id != $kpi->id) {
+                return response()->json(['success' => false, 'message' => 'Data sudah terkunci!'], 403);
+            }
+
+            if (!$this->kpiService->isLevelUnlocked($level)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Selesaikan evidence Level sebelumnya terlebih dahulu!',
+                ], 422);
+            }
+
             $validator = Validator::make($request->all(), [
                 'file' => 'required|file|mimes:pdf|max:25600',
             ], [

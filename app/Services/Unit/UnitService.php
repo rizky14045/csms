@@ -98,6 +98,7 @@ class UnitService
                 'longitude' => $data['longitude'],
                 'province_id' => $data['province_id'],
                 'city_id' => $data['city_id'],
+                'parent_unit_id' => ($data['type'] ?? null) === 'UL' ? ($data['parent_unit_id'] ?? null) : null,
                 'created_by' => auth()->id(),
             ]);
             
@@ -166,6 +167,7 @@ class UnitService
                 'longitude' => $data['longitude'],
                 'province_id' => $data['province_id'],
                 'city_id' => $data['city_id'],
+                'parent_unit_id' => ($data['type'] ?? null) === 'UL' ? ($data['parent_unit_id'] ?? null) : null,
                 'updated_by' => auth()->id(),
             ];
 

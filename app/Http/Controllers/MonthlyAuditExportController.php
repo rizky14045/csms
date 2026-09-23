@@ -48,7 +48,7 @@ class MonthlyAuditExportController extends Controller
 
         $data['outsources'] = OutsourceEmployee::where('monthly_report_id', $monthlyId)->get();
 
-        $securities = SecurityForm::join('securities','securities.id','=','security_forms.security_id')
+        $securities = SecurityForm::join('securities','securities.id','=','security_forms.security_id')->whereNull('securities.deleted_at')
             ->where('security_forms.monthly_report_id', $monthlyId)
             ->select('securities.*')
             ->get();
@@ -60,7 +60,7 @@ class MonthlyAuditExportController extends Controller
             'security_externals.id',
             '=',
             'monthly_security_externals.security_external_id'
-        )->where('monthly_security_externals.monthly_report_id', $monthlyId);
+        )->whereNull('security_externals.deleted_at')->where('monthly_security_externals.monthly_report_id', $monthlyId);
 
         $data['securityPolri'] = (clone $securityExternal)->where('note','Polri')->count();
         $data['securityTNI'] = (clone $securityExternal)->where('note','TNI')->count();
@@ -309,7 +309,7 @@ class MonthlyAuditExportController extends Controller
             'securities.id',
             '=',
             'security_forms.security_id'
-        )
+        )->whereNull('securities.deleted_at')
         ->where('security_forms.monthly_report_id', $monthlyId)
         ->select('securities.*')
         ->get();
@@ -321,7 +321,7 @@ class MonthlyAuditExportController extends Controller
             'security_externals.id',
             '=',
             'monthly_security_externals.security_external_id'
-        )->where('monthly_security_externals.monthly_report_id', $monthlyId);
+        )->whereNull('security_externals.deleted_at')->where('monthly_security_externals.monthly_report_id', $monthlyId);
 
         $data['securityPolri'] = (clone $securityExternal)
             ->where('note', 'Polri')

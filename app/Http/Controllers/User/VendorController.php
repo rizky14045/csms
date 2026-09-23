@@ -6,8 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Validation\VendorValidation;
 use App\Services\User\UserService;
+use App\Mail\VendorAccountCreated;
+use App\Mail\VendorContractCreated;
+use App\Models\User;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class VendorController extends Controller
 {
@@ -58,8 +63,27 @@ class VendorController extends Controller
 
             if($request->vendor_exists == 1){
                 $this->userService->updateBujpProfile($request->all(), $request->vendor_id);
+
+                $vendorUser = User::find($request->vendor_id);
+                if($vendorUser && $vendorUser->email){
+                    $this->sendVendorEmail(new VendorContractCreated(
+                        $vendorUser->name,
+                        $request->contract_number,
+                        $request->start_date,
+                        $request->end_date
+                    ), $vendorUser->email);
+                }
             }else{
-            $result = $this->userService->createUser($request->all(), true);
+                $this->userService->createUser($request->all(), true);
+
+                $this->sendVendorEmail(new VendorAccountCreated(
+                    $request->name,
+                    $request->email,
+                    $request->password,
+                    $request->contract_number,
+                    $request->start_date,
+                    $request->end_date
+                ), $request->email);
             }
 
             Alert::success('Tambah Berhasil', 'BUJP / Vendor berhasil dibuat!');
@@ -68,6 +92,15 @@ class VendorController extends Controller
         } catch (\Throwable $th) {
             Alert::error('Tambah Gagal', 'BUJP / Vendor gagal dibuat!');
             return redirect()->route('user.vendor.index');
+        }
+    }
+
+    protected function sendVendorEmail($mailable, $email)
+    {
+        try {
+            Mail::to($email)->send($mailable);
+        } catch (\Throwable $th) {
+            Log::error('Gagal mengirim email vendor: ' . $th->getMessage());
         }
     }
 }

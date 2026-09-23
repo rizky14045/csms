@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css" />
+    <link rel="stylesheet" href="{{ asset('assets/libs/leaflet/leaflet.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/libs/leaflet.fullscreen/Control.FullScreen.css') }}" />
     <style>
         .accordion-button::after { filter: invert(100%); }
         #map { height: 500px; width: 100%; }
@@ -55,8 +55,23 @@
                             <option value="">Pilih Tipe Unit</option>
                             <option value="Pusat" {{ old('type', $unit->type) == 'Pusat' ? 'selected' : '' }}>Pusat</option>
                             <option value="Unit"  {{ old('type', $unit->type) == 'Unit'  ? 'selected' : '' }}>Unit</option>
+                            <option value="UL"    {{ old('type', $unit->type) == 'UL'    ? 'selected' : '' }}>UL</option>
                         </select>
                         @error('type')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group mb-3" id="parentUnitContainer" style="display:none;">
+                        <label for="parent_unit_id" class="form-label"><span class="text-danger">*</span> Unit Induk</label>
+                        <select name="parent_unit_id" id="parent_unit_id" class="form-select @error('parent_unit_id') is-invalid @enderror">
+                            <option value="">Pilih Unit Induk</option>
+                            @foreach ($parent_units as $pu)
+                                <option value="{{ $pu->id }}" {{ old('parent_unit_id', $unit->parent_unit_id) == $pu->id ? 'selected' : '' }}>{{ $pu->name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="form-text">UL akan mengirim laporan bulanan ke unit induk ini terlebih dahulu.</div>
+                        @error('parent_unit_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -130,6 +145,28 @@
 </div>
 @endsection
 @section('scripts')
+<script>
+    (function () {
+        const typeSelect = document.getElementById('type');
+        const container = document.getElementById('parentUnitContainer');
+        const parentSelect = document.getElementById('parent_unit_id');
+
+        function toggle() {
+            if (typeSelect.value === 'UL') {
+                container.style.display = '';
+                parentSelect.setAttribute('required', 'required');
+            } else {
+                container.style.display = 'none';
+                parentSelect.removeAttribute('required');
+                parentSelect.value = '';
+            }
+        }
+
+        typeSelect.addEventListener('change', toggle);
+        toggle();
+    })();
+</script>
+
     <script>
         const defaultLat = "{{ $unit->latitude ?? '' }}";
         const defaultLng = "{{ $unit->longitude ?? '' }}";
@@ -137,8 +174,8 @@
         const routeCities   = "{{ route('geo.cities', ':id') }}";
         const routeCity     = "{{ route('geo.city', ':id') }}";
     </script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
+    <script src="{{ asset('assets/libs/leaflet/leaflet.js') }}"></script>
+    <script src="{{ asset('assets/libs/leaflet.fullscreen/Control.FullScreen.js') }}"></script>
     <script>
         let map, marker = null, provinceLayer = null, cityLayer = null;
 

@@ -16,8 +16,7 @@ class AuditSMPDataValidation
     public static function rulesForUpdate()
     {
         return [
-            'unit_id' => ['required', 'exists:units,id'],
-
+            // Unit dan tanggal audit terkunci setelah dibuat (view only di halaman edit).
             'auditor_lead_id' => [
                 'required',
                 Rule::exists('users', 'id')->where(function ($query) {
@@ -32,9 +31,6 @@ class AuditSMPDataValidation
                     $query->whereIn('type', ['user', 'pusat']);
                 }),
             ],
-
-            'start_audit' => ['required', 'date'],
-            'end_audit'   => ['required', 'date', 'after_or_equal:start_audit'],
 
             'sk_file' => ['nullable', 'file', 'mimes:pdf', 'max:15360'],
         ];

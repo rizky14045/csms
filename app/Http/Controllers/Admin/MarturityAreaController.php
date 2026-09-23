@@ -20,7 +20,7 @@ class MarturityAreaController extends Controller
 
         $this->middleware('can:view.marturity.area')->only(['index']);
         $this->middleware('can:create.marturity.area')->only(['create', 'store']);
-        $this->middleware('can:edit.marturity.area')->only(['edit', 'update']);
+        $this->middleware('can:edit.marturity.area')->only(['edit', 'update', 'move']);
         $this->middleware('can:delete.marturity.area')->only(['destroy']);
     }
 
@@ -91,9 +91,19 @@ class MarturityAreaController extends Controller
             $this->areaService->deleteArea($area);
             Alert::success('Delete Berhasil', 'Area berhasil dihapus!');
             return redirect()->route('admin.marturity-area.index');
-            
+
         } catch (\Throwable $th) {
             Alert::error('Delete Gagal', 'Area gagal dihapus!');
+            return redirect()->route('admin.marturity-area.index');
+        }
+    }
+
+    public function move(Area $area, $direction){
+        try {
+            $this->areaService->moveArea($area, $direction);
+            return redirect()->route('admin.marturity-area.index');
+        } catch (\Throwable $th) {
+            Alert::error('Gagal', 'Urutan Area gagal diubah!');
             return redirect()->route('admin.marturity-area.index');
         }
     }

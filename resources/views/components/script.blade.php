@@ -19,8 +19,8 @@
 <!-- App js-->
 <script src="{{asset('assets/js/app.js')}}"></script>
 
-<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('assets/libs/leaflet/leaflet.js') }}"></script>
+<script src="{{ asset('assets/libs/chartjs/chart.umd.min.js') }}"></script>
 
 {{-- Sweet Alert FE --}}
 <script src="{{ asset('assets/swal/sweetalert2.all.min.js') }}"></script>
@@ -52,6 +52,92 @@
         });
 
         return false; // extra safety
+    }
+
+    function confirmAction(formId, title, message, confirmText = 'Ya, Lanjutkan') {
+        Swal.fire({
+            title: title,
+            text: message,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
+        });
+
+        return false;
+    }
+
+    function postAction(url, fields) {
+        const f = document.createElement('form');
+        f.method = 'POST';
+        f.action = url;
+        let html = '<input type="hidden" name="_token" value="{{ csrf_token() }}">';
+        Object.entries(fields || {}).forEach(([k, v]) => {
+            html += '<input type="hidden" name="' + k + '" value="' + v + '">';
+        });
+        f.innerHTML = html;
+        document.body.appendChild(f);
+        f.submit();
+    }
+
+    function confirmPostAction(url, title, message) {
+        Swal.fire({
+            title: title, text: message, icon: 'question',
+            showCancelButton: true, confirmButtonText: 'Ya, Lanjutkan', cancelButtonText: 'Batal', reverseButtons: true
+        }).then((r) => { if (r.isConfirmed) postAction(url); });
+    }
+
+    function exportAssesment(url) {
+        Swal.fire({
+            title: 'Export Excel Assesment',
+            html:
+                '<div class="text-start">' +
+                '<label class="form-label mb-1">Penanda Tangan 1</label>' +
+                '<input id="swal-signer1" class="swal2-input mt-0 mb-3" style="width:100%;margin:0 0 12px 0;" maxlength="100" placeholder="Nama penanda tangan 1">' +
+                '<label class="form-label mb-1">Penanda Tangan 2</label>' +
+                '<input id="swal-signer2" class="swal2-input mt-0" style="width:100%;margin:0;" maxlength="100" placeholder="Nama penanda tangan 2">' +
+                '</div>',
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Export',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            preConfirm: () => {
+                const s1 = document.getElementById('swal-signer1').value.trim();
+                const s2 = document.getElementById('swal-signer2').value.trim();
+                if (!s1 || !s2) {
+                    Swal.showValidationMessage('Nama penanda tangan 1 dan 2 wajib diisi');
+                    return false;
+                }
+                return { s1, s2 };
+            }
+        }).then((r) => {
+            if (r.isConfirmed) {
+                window.location = url + '?signer1=' + encodeURIComponent(r.value.s1) + '&signer2=' + encodeURIComponent(r.value.s2);
+            }
+        });
+    }
+
+    function confirmRowDelete(url) {
+        Swal.fire({
+            title: 'Hapus dari laporan?',
+            text: 'Data akan dihapus dari laporan bulanan ini.',
+            icon: 'warning',
+            input: 'checkbox',
+            inputValue: 0,
+            inputPlaceholder: 'Hapus juga dari master data',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((r) => {
+            if (r.isConfirmed) postAction(url, { _method: 'DELETE', delete_master: r.value ? 1 : 0 });
+        });
     }
 
     function confirmSaveAjax(form, message, callback) {
@@ -130,9 +216,9 @@
     window.addEventListener('DOMContentLoaded', enablePickerOnFocus);
 </script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('assets/libs/jquery/jquery-3.6.0.min.js') }}"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
 
 <script>
     $('#togglePassword').on('click', function() {
@@ -244,4 +330,7 @@
         </div>`;
     }
 </script>
+<script src="{{ asset('assets/libs/sortablejs/Sortable.min.js') }}"></script>
+<script src="{{ asset('assets/js/reorder.js') }}"></script>
+
 @yield('scripts')
