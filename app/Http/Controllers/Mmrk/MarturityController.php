@@ -44,7 +44,7 @@ class MarturityController extends Controller
     {
         $this->ownedOrFail($marturity);
 
-        $result = $this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels'], $marturity->id);
+        $result = $this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels', 'subAreas.levels.notes'], $marturity->id);
 
         $data['areas']     = getData($result);
         $data['marturity'] = $marturity;

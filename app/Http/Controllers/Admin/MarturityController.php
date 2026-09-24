@@ -39,7 +39,7 @@ class MarturityController extends Controller
             abort(404);
         }
 
-        $result = $this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels'], $marturity->id);
+        $result = $this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels', 'subAreas.levels.notes'], $marturity->id);
         $areas = getData($result);
         $checked = $this->marturityService->getCheckedMap($marturity);
 
