@@ -2,7 +2,7 @@
     $isFa = $mode === 'fa';
     $totalSubAreas = collect($areas)->sum(fn($a) => count($a['sub_areas']));
     $bobot = $totalSubAreas > 0 ? 1 / $totalSubAreas : 0;
-    $cols = $isFa ? 11 : 8;
+    $cols = $isFa ? 12 : 9;
     $grandSa = 0;
     $th = 'border:1px solid #000; background-color:#D9EAD3; text-align:center; font-weight:bold;';
     $td = 'border:1px solid #000;';
@@ -30,6 +30,7 @@
             <th style="{{ $th }}">Sub Area</th>
             <th style="{{ $th }}">Level</th>
             <th style="{{ $th }}">Uraian</th>
+            <th style="{{ $th }}">Note / Evidence</th>
             <th style="{{ $th }}">File Evidence (SA)</th>
             <th style="{{ $th }}">Bobot</th>
             <th style="{{ $th }}">Hasil SA</th>
@@ -60,6 +61,11 @@
                     @endif
                     <td style="{{ $tdc }}">{{ $lvl['level'] }}</td>
                     <td style="{{ $td }}">{{ $lvl['description'] }}</td>
+                    <td style="{{ $td }}">
+                        @foreach (($lvl['notes'] ?? []) as $noteRow)
+                            {{ $noteRow['note'] ?? '' }}@if(!$loop->last)<br><br>@endif
+                        @endforeach
+                    </td>
                     <td style="{{ $tdc }}">{{ !empty($lvl['attachment_file']) ? 'Ada' : '-' }}</td>
                     @if ($idx === 0)
                         <td rowspan="{{ $levelCount }}" style="{{ $tdc }}">{{ round($bobot, 4) }}</td>

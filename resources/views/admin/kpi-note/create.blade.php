@@ -31,7 +31,7 @@
                     <div class="col-xl-12">
                         <div class="form-group mb-3">
                             <label for="note" class="form-label">Note</label>
-                            <input class="form-control @error('note') is-invalid @enderror" name="note" type="text" id="note" required="" placeholder="Masukan note" value="{{old('note')}}">
+                            <textarea class="form-control @error('note') is-invalid @enderror" name="note" id="note" rows="6" required placeholder="Masukan note">{{old('note')}}</textarea>
                             @error('note')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

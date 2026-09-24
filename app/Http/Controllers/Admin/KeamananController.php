@@ -38,7 +38,7 @@ class KeamananController extends Controller
             abort(404);
         }
 
-        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']);
+        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels', 'subAreas.levels.notes']);
 
         $areas   = getData($result);
         $checked = $this->kpiService->getCheckedMap($kpi);
@@ -64,7 +64,7 @@ class KeamananController extends Controller
             return response()->json(['success' => false, 'message' => $message], 422);
         }
 
-        $areas   = getData($this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']));
+        $areas   = getData($this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels', 'subAreas.levels.notes']));
         $checked = $this->kpiService->getCheckedMap($kpi);
 
         return response()->json([
@@ -89,7 +89,7 @@ class KeamananController extends Controller
             abort(404);
         }
 
-        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']);
+        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels', 'subAreas.levels.notes']);
         $areas  = getData($result);
 
         $totalSubAreas = collect($areas)->sum(fn($a) => count($a['sub_areas']));

@@ -96,7 +96,7 @@ class KeamananController extends Controller
             return redirect()->route('user.keamanan.index');
         }
 
-        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']);
+        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels', 'subAreas.levels.notes']);
 
         $data['areas'] = getData($result);
         $data['kpi']   = $kpi;
@@ -114,7 +114,7 @@ class KeamananController extends Controller
             return redirect()->route('user.keamanan.index');
         }
     
-        $result  = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']);
+        $result  = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels', 'subAreas.levels.notes']);
         $areas   = getData($result);
         $checked = $this->kpiService->getCheckedMap($kpi);
 

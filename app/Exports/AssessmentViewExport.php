@@ -5,9 +5,10 @@ namespace App\Exports;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class AssessmentViewExport implements FromView, WithTitle, WithColumnWidths
+class AssessmentViewExport implements FromView, WithTitle, WithColumnWidths, WithStyles
 {
     protected $view;
     protected $data;
@@ -28,6 +29,17 @@ class AssessmentViewExport implements FromView, WithTitle, WithColumnWidths
     public function title(): string
     {
         return $this->title;
+    }
+
+    /** Teks panjang dibungkus ke bawah (wrap) dan rata atas agar tidak terpotong. */
+    public function styles(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet)
+    {
+        $range = 'A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow();
+        $sheet->getStyle($range)->getAlignment()
+            ->setWrapText(true)
+            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+
+        return [];
     }
 
     public function columnWidths(): array
