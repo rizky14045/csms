@@ -38,11 +38,6 @@
                     @endcan
                 </div>
 
-                <div class="alert alert-info py-2">
-                    Data ini disalin ke laporan bulanan baru milik unitnya. Mengubah atau menghapus data di sini
-                    <strong>tidak mengubah laporan bulanan yang sudah ada</strong>.
-                </div>
-
                 <div class="table-responsive">
                     <table class="table table-bordered text-center align-middle">
                         <thead class="table-light">
