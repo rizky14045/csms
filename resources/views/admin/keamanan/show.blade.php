@@ -73,13 +73,14 @@
                          data-bs-parent="#formAccordion">
                         <div class="accordion-body" style="overflow-x:auto;">
 
-                            <table class="table table-bordered align-middle" style="min-width:900px;">
+                            <table class="table table-bordered align-middle" style="min-width:1100px;">
                                 <thead class="table-light">
                                     <tr>
                                         <th style="min-width:45px;"  class="text-center">No</th>
                                         <th style="min-width:200px;" class="text-center">Sub Area</th>
                                         <th style="min-width:55px;"  class="text-center">Level</th>
                                         <th style="min-width:220px;" class="text-center">Uraian</th>
+                                        <th style="min-width:220px;" class="text-center">Note / Evidence</th>
                                         <th style="min-width:160px;" class="text-center">File Evidence</th>
                                         <th style="min-width:80px;"  class="text-center">Bobot</th>
                                         <th style="min-width:90px;"  class="text-center">Hasil Assesment</th>
@@ -120,6 +121,13 @@
 
                                     <td class="text-center">{{ $level['level'] }}</td>
                                     <td style="white-space:normal;">{{ $level['description'] }}</td>
+                                    <td style="white-space:normal; text-align:left;">
+                                        @forelse (($level['notes'] ?? []) as $noteRow)
+                                            <div class="{{ !$loop->last ? 'mb-2 pb-2 border-bottom' : '' }}">{!! nl2br(e($noteRow['note'] ?? '')) !!}</div>
+                                        @empty
+                                            <span class="text-muted">-</span>
+                                        @endforelse
+                                    </td>
 
                                     <td class="text-center">
                                         @if(!empty($level['attachment_file']))

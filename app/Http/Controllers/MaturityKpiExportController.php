@@ -55,7 +55,7 @@ class MaturityKpiExportController extends Controller
     {
         $this->authorizeExport($kpi, $type);
 
-        $areas = getData($service->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']));
+        $areas = getData($service->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels', 'subAreas.levels.notes']));
         $checked = $service->getCheckedMap($kpi);
         $kpi->loadMissing('unit');
 

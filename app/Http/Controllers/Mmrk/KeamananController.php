@@ -44,7 +44,7 @@ class KeamananController extends Controller
     {
         $this->ownedOrFail($kpi);
 
-        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels']);
+        $result = $this->kpiService->getAllKpiArea(0, false, $kpi->id, ['subAreas', 'subAreas.levels', 'subAreas.levels.notes']);
 
         $data['areas']   = getData($result);
         $data['kpi']     = $kpi;
