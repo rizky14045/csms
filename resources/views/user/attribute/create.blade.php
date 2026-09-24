@@ -27,14 +27,7 @@
                     <input type="hidden" name="monthly_id" value="{{ $monthlyId }}">
                     @endif
 
-                    <div class="form-group mb-3">
-                        <label for="name" class="form-label">Nama</label>
-                        <input class="form-control @error('name') is-invalid @enderror" type="text" id="name"
-                            required placeholder="Masukan nama" name="name" value="{{ old('name') }}">
-                        @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                    @include('user.attribute._name-select', ['presets' => $presets ?? [], 'current' => null])
 
                     <div class="form-group mb-3">
                         <label for="status_ownership" class="form-label">Status Kepemilikan</label>
@@ -111,5 +104,26 @@
 @section('scripts')
 <script>
     feather.replace();
+
+    $(function () {
+        const existing = () => $('#name option').map((i, o) => o.value.toLowerCase()).get();
+
+        $('#name').select2({
+            width: '100%',
+            placeholder: 'Pilih atau ketik nama attribute',
+            allowClear: true,
+            tags: true,
+            createTag: function (params) {
+                const term = $.trim(params.term);
+                if (term === '' || existing().includes(term.toLowerCase())) {
+                    return null; // sudah ada di daftar: pilih yang ada
+                }
+                return { id: term, text: term + ' (baru)', newTag: true };
+            },
+            templateSelection: function (item) {
+                return (item.text || '').replace(/ \(baru\)$/, '');
+            }
+        });
+    });
 </script>
 @endsection

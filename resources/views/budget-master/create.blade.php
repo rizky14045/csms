@@ -20,7 +20,7 @@
                     @csrf
                     
                     <div class="col-xl-9">
-                        @include('budget-master._form', ['units' => $units])
+                        @include('budget-master._form')
                         <div class="d-flex gap-3 justify-content-end">
                             <a href="{{ route('budget-master.index') }}" class="btn btn-danger">Kembali</a>
                             <button class="btn btn-primary" type="submit">Simpan</button>

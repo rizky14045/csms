@@ -1,18 +1,5 @@
 @php $v = fn($k) => old($k, isset($item) ? $item->{$k} : null); @endphp
 
-@if (!empty($units) && $units->isNotEmpty())
-    <div class="form-group mb-3">
-        <label class="form-label">Unit</label>
-        <select name="unit_id" class="form-select" required>
-            <option value="">-- Pilih Unit --</option>
-            @foreach ($units as $unit)
-                <option value="{{ $unit->id }}" {{ old('unit_id') == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
-            @endforeach
-        </select>
-        @error('unit_id') <div class="text-danger small">{{ $message }}</div> @enderror
-    </div>
-@endif
-
 <div class="form-group mb-3">
     <label class="form-label">Jenis Anggaran</label>
     <select name="type" class="form-select">

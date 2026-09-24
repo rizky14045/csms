@@ -16,26 +16,15 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
-                    @if ($isGlobal)
-                        <form method="GET" class="d-flex gap-2 align-items-end">
-                            <div>
-                                <label class="form-label">Unit</label>
-                                <select name="unit_id" class="form-select">
-                                    <option value="">Semua Unit</option>
-                                    @foreach ($units as $unit)
-                                        <option value="{{ $unit->id }}" {{ request('unit_id') == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Cari</button>
-                        </form>
-                    @else
-                        <div></div>
-                    @endif
-                    @can('create.budget.master')
+                @can('create.budget.master')
+                    <div class="d-flex justify-content-end mb-3">
                         <a href="{{ route('budget-master.create') }}" class="btn btn-success">Tambah Data</a>
-                    @endcan
+                    </div>
+                @endcan
+
+                <div class="alert alert-info py-2">
+                    Data ini diisi oleh unit Anda dan disalin ke laporan bulanan baru unit Anda. Mengubah atau menghapus
+                    data di sini <strong>tidak mengubah laporan bulanan yang sudah ada</strong>.
                 </div>
 
                 <div class="table-responsive">
@@ -43,7 +32,6 @@
                         <thead class="table-light">
                             <tr>
                                 <th>No</th>
-                                @if ($isGlobal) <th>Unit</th> @endif
                                 <th>Jenis</th>
                                 <th>Kode Aktifitas</th>
                                 <th>Kode PRK</th>
@@ -58,7 +46,6 @@
                             @forelse ($items as $item)
                                 <tr>
                                     <td>{{ $items->firstItem() + $loop->index }}</td>
-                                    @if ($isGlobal) <td class="text-start">{{ $item->unit->name ?? '-' }}</td> @endif
                                     <td>{{ ucfirst($item->type) }}</td>
                                     <td>{{ $item->kode_aktifitas }}</td>
                                     <td>{{ $item->kode_prk }}</td>
@@ -83,7 +70,7 @@
                                     @endcanany
                                 </tr>
                             @empty
-                                <tr><td colspan="10" class="text-muted">Belum ada data.</td></tr>
+                                <tr><td colspan="9" class="text-muted">Belum ada data.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
