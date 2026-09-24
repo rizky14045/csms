@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Security;
+use App\Rules\UniqueKtaNumber;
 use App\Models\SecurityForm;
 use App\Services\Unit\UnitScope;
 use Illuminate\Http\Request;
@@ -63,6 +64,11 @@ class SecurityController extends Controller
             $rules = $monthlyId
                 ? SecurityValidation::rulesForUpdate()
                 : SecurityValidation::rulesForCreate();
+
+            // salinan khusus laporan (tanpa simpan ke master) boleh memakai nomor yang sama
+            if (!$monthlyId || $request->boolean('save_to_master')) {
+                $rules['registration_number'] = ['required', new UniqueKtaNumber()];
+            }
 
             $validator = $this->validator(
                 array_merge($request->all(), ['kta_file' => $request->file('kta_file')]),
@@ -154,7 +160,7 @@ class SecurityController extends Controller
         try {
             $validator = $this->validator(
                 array_merge($request->all(), ['kta_file' => $request->file('kta_file')]),
-                SecurityValidation::rulesForUpdate(),
+                array_merge(SecurityValidation::rulesForUpdate(), ['registration_number' => ['required', new UniqueKtaNumber($security)]]),
                 SecurityValidation::messages()
             );
             if ($validator->fails()) {
@@ -229,13 +235,16 @@ class SecurityController extends Controller
 
             $failures = $import->failures();
             $errors = $import->errors();
+            $skipNote = $import->skippedCount() > 0
+                ? ' ' . $import->skippedCount() . ' baris dilewati karena No REG KTA sudah terdaftar (' . implode(', ', array_slice($import->skippedNumbers(), 0, 10)) . ($import->skippedCount() > 10 ? ', ...' : '') . ').'
+                : '';
 
             if ($failures->count() > 0) {
                 $messages = $failures->map(function ($failure) {
                     return 'Baris ' . $failure->row() . ': ' . implode(', ', $failure->errors());
                 })->all();
 
-                Alert::error('Import Sebagian Gagal', 'Beberapa baris gagal diimpor, silakan periksa kembali data anda.');
+                Alert::error('Import Sebagian Gagal', 'Beberapa baris gagal diimpor, silakan periksa kembali data anda.' . $skipNote);
                 return redirect()->back()->withErrors($messages);
             }
 
@@ -244,7 +253,12 @@ class SecurityController extends Controller
                 return redirect()->back();
             }
 
-            Alert::success('Import Berhasil', 'Data satuan pengamanan berhasil diimpor dari excel!');
+            if ($import->importedCount() === 0 && $import->skippedCount() > 0) {
+                Alert::warning('Tidak Ada Data Baru', 'Tidak ada data yang diimpor.' . $skipNote);
+                return redirect()->route('user.security.index');
+            }
+
+            Alert::success('Import Berhasil', 'Data satuan pengamanan berhasil diimpor dari excel!' . $skipNote);
             return redirect()->route('user.security.index');
 
         } catch (ValidationException $e) {

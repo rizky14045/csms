@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Security;
+use App\Rules\UniqueKtaNumber;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
@@ -22,6 +23,9 @@ class SecurityImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
     protected $unitId;
     protected $isGroup = false;
     protected $unitCodes = [];
+    protected $seenNumbers = [];
+    protected $skipped = [];
+    protected $imported = 0;
 
     public function __construct($userId)
     {
@@ -40,8 +44,33 @@ class SecurityImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
         }
     }
 
+    public function skippedCount(): int
+    {
+        return count($this->skipped);
+    }
+
+    public function skippedNumbers(): array
+    {
+        return $this->skipped;
+    }
+
+    public function importedCount(): int
+    {
+        return $this->imported;
+    }
+
     public function model(array $row)
     {
+        // No REG KTA harus unik: yang sudah ada di master atau sudah muncul di file ini dilewati.
+        $number = UniqueKtaNumber::normalize($row['nomor_registrasi_kta'] ?? '');
+        if (isset($this->seenNumbers[$number]) || UniqueKtaNumber::exists($number)) {
+            $this->skipped[] = trim((string) $row['nomor_registrasi_kta']);
+
+            return null;
+        }
+        $this->seenNumbers[$number] = true;
+        $this->imported++;
+
         $unitId = $this->unitId;
         if ($this->isGroup) {
             $unitId = $this->unitCodes[strtolower(trim($row['kode_unit'] ?? ''))]['id'] ?? $this->unitId;
