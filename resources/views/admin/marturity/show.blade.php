@@ -83,8 +83,8 @@
                                         <th style="min-width:50px;"  class="text-center">No</th>
                                         <th style="min-width:200px;" class="text-center">Sub Area</th>
                                         <th style="min-width:55px;"  class="text-center">Level</th>
-                                        <th style="min-width:220px;" class="text-center">Note</th>
                                         <th style="min-width:230px;" class="text-center">Uraian</th>
+                                        <th style="min-width:220px;" class="text-center">Note / Evidence</th>
                                         <th style="min-width:95px;"  class="text-center">Total Evidence</th>
                                         <th style="min-width:95px;"  class="text-center">Jumlah Evidence</th>
                                         <th style="min-width:220px;" class="text-center">File Evidence</th>
@@ -135,6 +135,7 @@
                                     @endif
 
                                     <td class="text-center">{{ $lc['lvl']['level'] }}</td>
+                                    <td style="white-space:normal;">{{ $lc['lvl']['description'] }}</td>
                                     <td style="white-space:normal; text-align:left;">
                                         @forelse (($lc['lvl']['notes'] ?? []) as $noteRow)
                                             <div class="{{ !$loop->last ? 'mb-2 pb-2 border-bottom' : '' }}">{!! nl2br(e($noteRow['note'] ?? '')) !!}</div>
@@ -142,7 +143,6 @@
                                             <span class="text-muted">-</span>
                                         @endforelse
                                     </td>
-                                    <td style="white-space:normal;">{{ $lc['lvl']['description'] }}</td>
                                     <td class="text-center">{{ $lc['totalEv'] }}</td>
                                     <td class="text-center">{{ $lc['jumlah'] }}</td>
 
