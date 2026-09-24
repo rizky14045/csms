@@ -62,7 +62,7 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Tahun</th>
-                                <th scope="col">Semester</th>
+                                <th scope="col">Triwulan</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Tgl Kirim ke MMRK</th>
                                 <th scope="col">Tgl Kirim ke Pusat</th>
@@ -75,7 +75,7 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{ $marturity->year }}</td>
-                                    <td>{{$marturity->semester}}</td>
+                                    <td>{{$marturity->period_label}}</td>
                                     <td>@include('components.flow-status', ['status' => $marturity->status ?? 0])</td>
                                     <td>{{ !empty($marturity->mmrk_send_date) ? \Carbon\Carbon::parse($marturity->mmrk_send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{ $marturity->send_date ? \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') : "-" }}</td>
@@ -94,6 +94,7 @@
                                                     style="min-width:80px;">
                                                     👁 Show
                                                 </a>
+                    @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
                                                 @endcan
                                                 @can('send.marturity.unit')
                                                 {{--
@@ -146,6 +147,7 @@
                                                     style="min-width:80px;">
                                                     👁 Show
                                                 </a>
+                    @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
                                                 @endcan
                                             @endif
                                         </div>

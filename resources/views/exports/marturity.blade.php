@@ -84,7 +84,7 @@
     {{-- Title --}}
     <tr style="height: 28pt;">
         <td colspan="9" class="title">
-            LAPORAN MATURITY — TAHUN {{ $marturity->year }} SEMESTER {{ $marturity->semester }}
+            LAPORAN MATURITY — TAHUN {{ $marturity->year }} - {{ strtoupper($marturity->period_label) }}
         </td>
     </tr>
     <tr style="height: 14pt;">

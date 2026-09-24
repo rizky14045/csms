@@ -73,7 +73,7 @@
                                 <th scope="col">Tgl Kirim ke MMRK</th>
                                 <th scope="col">Tgl Kirim ke Pusat</th>
                                 <th scope="col">Tahun</th>
-                                <th scope="col">Semester</th>
+                                <th scope="col">Triwulan</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -87,7 +87,7 @@
                                     <td>{{ !empty($kpi->mmrk_send_date) ? \Carbon\Carbon::parse($kpi->mmrk_send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{ $kpi->send_date ? \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{$kpi->year}}</td>
-                                    <td>{{$kpi->semester}}</td>
+                                    <td>{{$kpi->period_label}}</td>
                                     <td>
                                         @if($kpi->send_status == true)
                                         <div style="
@@ -104,6 +104,7 @@
                                                 style="min-width:80px;">
                                                     👁 Show
                                                 </a>
+                    @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
                                         </div>
                                         @else
                                         <div style="
@@ -119,6 +120,7 @@
                                                 style="min-width:80px;">
                                                     👁 Show
                                                 </a>
+                    @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
 
                                                 {{-- SEND --}}
                                                 {{--

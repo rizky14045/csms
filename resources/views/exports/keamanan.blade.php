@@ -35,7 +35,7 @@
     </colgroup>
 
     <tr style="height:28pt;">
-        <td colspan="8" class="title">LAPORAN KPI KEAMANAN — TAHUN {{ $kpi->year }} SEMESTER {{ $kpi->semester }}</td>
+        <td colspan="8" class="title">LAPORAN KPI KEAMANAN — TAHUN {{ $kpi->year }} - {{ strtoupper($kpi->period_label) }}</td>
     </tr>
     <tr style="height:14pt;">
         <td colspan="8" class="subtitle">{{ optional($kpi->unit)->name ?? '' }}</td>

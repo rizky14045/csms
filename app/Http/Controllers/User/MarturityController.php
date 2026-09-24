@@ -53,40 +53,14 @@ class MarturityController extends Controller
         }
 
         $year = (int)$request->year;
-        $semester = (int)$request->semester;
-        $unit_id = auth()->user()->unit_id;
+        $triwulan = (int)$request->triwulan;
+        $unitId = auth()->user()->unit_id;
 
-        // ===============================
-        // ✅ 1. CEK DUPLICATE
-        // ===============================
-        $exists = Marturity::where('year', $year)
-            ->where('semester', $semester)
-            ->where('unit_id', $unit_id)
-            ->exists();
-
-        if ($exists) {
-            Alert::error('Gagal', 'Semester tersebut sudah diisi untuk tahun ini!');
-            return back()->withErrors([
-                'semester' => 'Semester sudah ada'
-            ])->withInput();
-        }
-
-        // ===============================
-        // ✅ 2. CEK BELUM WAKTUNYA
-        // ===============================
-        $currentMonth = now()->month;
-
-        if ($currentMonth <= 6) {
-            $currentSemester = 1;
-        } else {
-            $currentSemester = 2;
-        }
-
-        if ($year == now()->year && $semester > $currentSemester) {
-            Alert::error('Gagal', 'Belum waktunya mengisi semester tersebut!');
-            return back()->withErrors([
-                'semester' => 'Belum waktunya mengisi semester tersebut'
-            ])->withInput();
+        // Validasi periode: tidak duplikat, tidak melewati triwulan berjalan, dan berurutan (T1 -> T4 per tahun).
+        $error = \App\Services\Score\TriwulanRule::validate(\App\Models\Marturity::class, $unitId, $year, $triwulan);
+        if ($error) {
+            Alert::error('Gagal', $error);
+            return back()->withErrors(['triwulan' => $error])->withInput();
         }
 
         $result = $this->marturityService->createMarturity($request->all());

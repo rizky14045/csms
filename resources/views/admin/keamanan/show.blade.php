@@ -25,9 +25,7 @@
 
                 <div class="d-flex gap-2 mb-3">
                     <a href="{{ $backUrl }}" class="btn btn-danger">Kembali</a>
-                    @if($mode !== 'mmrk' && auth()->user()->can('view.security.kpi.admin'))
-                    <a href="{{ route('admin.keamanan.export', $kpi->id) }}" class="btn btn-success">⬇ Export Excel</a>
-                    @endif
+                    @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
                     @if($mode === 'pusat')
                     <form id="form-finish-validasi" action="{{ route('admin.keamanan.finish', $kpi->id) }}" method="POST" class="d-inline"
                           onsubmit="return confirmAction('form-finish-validasi', 'Selesaikan Validasi?', 'Setelah selesai, centang tidak bisa diubah lagi.', 'Ya, Selesaikan')">
@@ -186,10 +184,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Total Bobot</td>
-                                    <td class="text-center fw-bold">{{ round($grandTotalBobot, 4) }}</td>
-                                </tr>
                                 <tr>
                                     <td>Total Score ML</td>
                                     <td class="text-center fw-bold text-primary">{{ round($grandTotalML, 4) }}</td>

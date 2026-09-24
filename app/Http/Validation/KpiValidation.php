@@ -8,7 +8,7 @@ class KpiValidation
     {
         return [
             'year' => 'required|integer',
-            'semester' => 'required|in:1,2',
+            'triwulan' => 'required|integer|between:1,4',
         ];
     }
 
@@ -17,7 +17,7 @@ class KpiValidation
     {
         return [
             'year' => 'required|integer',
-            'semester' => 'required|in:1,2',
+            'triwulan' => 'required|integer|between:1,4',
         ];
     }
 
@@ -33,8 +33,8 @@ class KpiValidation
         $messages = [
             'year.required' => 'Tahun harus diisi!',
             'year.integer' => 'Format tahun tidak valid!',
-            'semester.required' => 'Semester harus diisi!',
-            'semester.in' => 'Semester harus salah satu dari 1 atau 2!',
+            'triwulan.required' => 'Triwulan harus diisi!',
+            'triwulan.between' => 'Triwulan hanya boleh antara 1 sampai 4!',
         ];
 
         if ($noteId) {

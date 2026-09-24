@@ -80,7 +80,7 @@
                                 <th scope="col">Tgl Kirim ke MMRK</th>
                                 <th scope="col">Tgl Kirim ke Pusat</th>
                                 <th scope="col">Tahun</th>
-                                <th scope="col">Semester</th>
+                                <th scope="col">Triwulan</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -94,7 +94,7 @@
                                     <td>{{ !empty($marturity->mmrk_send_date) ? \Carbon\Carbon::parse($marturity->mmrk_send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{ $marturity->send_date ? \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') : "-" }}</td>
                                     <td>{{$marturity->year}}</td>
-                                    <td>{{$marturity->semester}}</td>
+                                    <td>{{$marturity->period_label}}</td>
                                     <td>
                                         @if($marturity->send_status == false)
                                             <div style="
@@ -109,6 +109,7 @@
                                                     style="min-width:80px;">
                                                     👁 Show
                                                 </a>
+                    @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
                                                 @can('send.marturity.unit')
                                                 {{--
                                                 Dinonaktifkan sesuai permintaan: Marturity boleh dikirim
@@ -166,6 +167,7 @@
                                                     style="min-width:80px;">
                                                     👁 Show
                                                 </a>
+                    @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
                                         </div>
                                         @endif
                                     </td>

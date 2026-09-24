@@ -30,6 +30,7 @@
                 <a href="{{ route('admin.marturity.index') }}" class="btn btn-danger mb-3">Kembali</a>
                 @else
                 <a href="{{ route('user.marturity.index') }}" class="btn btn-danger mb-3">Kembali</a>
+                @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
                 @endif
 
                 @php
@@ -237,10 +238,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Total Bobot</td>
-                                    <td class="text-center fw-bold" id="grand-bobot">{{ round($grandTotalBobot, 4) }}</td>
-                                </tr>
                                 <tr>
                                     <td>Total Score ML</td>
                                     <td class="text-center fw-bold text-primary" id="grand-scoreml">{{ round($grandTotalML, 4) }}</td>
