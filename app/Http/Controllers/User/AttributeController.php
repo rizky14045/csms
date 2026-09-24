@@ -63,6 +63,7 @@ class AttributeController extends Controller
     protected function allocationView(array $data, ?Attribute $attribute = null)
     {
         $user = auth()->user();
+        $data['presets'] = \App\Models\AttributePreset::orderBy('name')->pluck('name')->all();
         $data['canAllocate'] = $this->alloc()->canAllocate($user);
         $data['groupUnits'] = \App\Services\Unit\UnitScope::assignableUnits($user);
         $data['allocations'] = ($attribute && $data['canAllocate']) ? $this->alloc()->allocationsFor($attribute->load('children')) : [];

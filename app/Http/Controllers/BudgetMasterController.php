@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\BudgetMaster;
-use App\Models\Unit;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
 /**
- * Master data penyerapan anggaran, terpisah per unit.
- * Unit/UL hanya untuk unitnya sendiri; Admin & Pusat memilih unit.
+ * Master data penyerapan anggaran, terpisah per unit: diisi oleh unit masing-masing
+ * (termasuk Pusat untuk kantor pusat) dan hanya untuk unit akun yang login.
  * Mengubah/menghapus master tidak memengaruhi laporan bulanan yang sudah ada
  * (baris laporan adalah salinan mandiri).
  */
@@ -23,14 +22,17 @@ class BudgetMasterController extends Controller
         $this->middleware('can:delete.budget.master')->only(['destroy']);
     }
 
-    protected function isGlobal(): bool
+    protected function unitId(): int
     {
-        return auth()->user()->hasAnyRole(['Admin', 'Pusat']);
+        $unitId = auth()->user()->unit_id;
+        abort_if(!$unitId, 403, 'Akun Anda belum terhubung ke unit.');
+
+        return (int) $unitId;
     }
 
     protected function authorizeItem(BudgetMaster $item): void
     {
-        if (!$this->isGlobal() && (int) $item->unit_id !== (int) auth()->user()->unit_id) {
+        if ((int) $item->unit_id !== $this->unitId()) {
             abort(404);
         }
     }
@@ -58,51 +60,29 @@ class BudgetMasterController extends Controller
             'deskripsi_kegiatan.required' => 'Deskripsi Kegiatan harus diisi!',
             'jumlah_anggaran.required'    => 'Jumlah Anggaran harus diisi!',
             'jumlah_anggaran.numeric'     => 'Jumlah Anggaran harus berupa angka!',
-            'unit_id.required'            => 'Unit harus dipilih!',
-            'unit_id.exists'              => 'Unit tidak valid!',
         ];
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $query = BudgetMaster::with('unit')->orderBy('unit_id')->orderBy('type')->orderBy('id');
+        $items = BudgetMaster::where('unit_id', $this->unitId())
+            ->orderBy('type')->orderBy('id')
+            ->paginate(25);
 
-        if ($this->isGlobal()) {
-            if ($request->filled('unit_id')) {
-                $query->where('unit_id', (int) $request->unit_id);
-            }
-        } else {
-            $query->where('unit_id', auth()->user()->unit_id);
-        }
-
-        return view('budget-master.index', [
-            'items'    => $query->paginate(25)->withQueryString(),
-            'isGlobal' => $this->isGlobal(),
-            'units'    => $this->isGlobal() ? Unit::orderBy('name')->get() : collect(),
-        ]);
+        return view('budget-master.index', ['items' => $items]);
     }
 
     public function create()
     {
-        abort_if(!$this->isGlobal() && !auth()->user()->unit_id, 403);
+        $this->unitId();
 
-        return view('budget-master.create', [
-            'isGlobal' => $this->isGlobal(),
-            'units'    => $this->isGlobal() ? Unit::orderBy('name')->get() : collect(),
-        ]);
+        return view('budget-master.create');
     }
 
     public function store(Request $request)
     {
-        $rules = $this->rules();
-        if ($this->isGlobal()) {
-            $rules['unit_id'] = 'required|exists:units,id';
-        }
-        $data = $request->validate($rules, $this->messages());
-
-        $unitId = $this->isGlobal() ? (int) $data['unit_id'] : auth()->user()->unit_id;
-        abort_if(!$unitId, 403);
-        unset($data['unit_id']);
+        $unitId = $this->unitId();
+        $data = $request->validate($this->rules(), $this->messages());
 
         BudgetMaster::create($data + [
             'unit_id'    => $unitId,
