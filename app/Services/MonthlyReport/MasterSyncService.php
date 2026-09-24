@@ -3,6 +3,8 @@
 namespace App\Services\MonthlyReport;
 
 use App\Models\AgreementExternal;
+use App\Models\BudgetMaster;
+use App\Models\LaporanBulananBiaya;
 use App\Models\Attribute;
 use App\Models\ExternalVulnerability;
 use App\Models\FormAttribute;
@@ -210,6 +212,39 @@ class MasterSyncService
                 $this->attach($cfg, $report, $masters);
             }
         }
+
+        $this->syncBudgets($report);
+    }
+
+    /**
+     * Salin master penyerapan anggaran unit laporan ke laporan ini. Baris laporan adalah
+     * salinan mandiri (source_id hanya jejak asal), jadi perubahan/penghapusan master
+     * tidak pernah memengaruhi laporan yang sudah dibuat. Mengembalikan jumlah baris baru.
+     */
+    public function syncBudgets(MonthlyReport $report)
+    {
+        $covered = LaporanBulananBiaya::where('monthly_report_id', $report->id)->whereNotNull('source_id')->pluck('source_id')->all();
+        $covered = array_merge($covered, $this->excludedIds($report, 'budget'));
+
+        $masters = BudgetMaster::where('unit_id', $report->unit_id)
+            ->when($covered, fn($q) => $q->whereNotIn('id', $covered))
+            ->orderBy('id')->get();
+
+        $now = now();
+        $rows = [];
+        foreach ($masters as $m) {
+            $row = ['monthly_report_id' => $report->id, 'user_id' => $report->user_id, 'source_id' => $m->id, 'created_at' => $now, 'updated_at' => $now];
+            foreach (BudgetMaster::FIELDS as $f) {
+                $row[$f] = $m->{$f};
+            }
+            $rows[] = $row;
+        }
+
+        foreach (array_chunk($rows, 500) as $chunk) {
+            LaporanBulananBiaya::insert($chunk);
+        }
+
+        return count($rows);
     }
 
     public function syncPrograms(MonthlyReport $report)
@@ -233,11 +268,7 @@ class MasterSyncService
                 $added++;
             }
 
-            $mainsQuery = MainSecurityProgram::where('program_id', $program->id);
-            if (!\App\Services\Unit\UnitScope::isGroupUnit($report->unit_id)) {
-                $mainsQuery->where('user_id', $report->user_id);
-            }
-            $mains = $mainsQuery->get();
+            $mains = MainSecurityProgram::where('program_id', $program->id)->get();
             foreach ($mains as $item) {
                 if (in_array($item->id, $existingMains)) {
                     continue;

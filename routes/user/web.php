@@ -124,6 +124,7 @@ Route::prefix('user')->group(function () {
 
 
                 Route::get('/penyerapan-anggaran/{monthlyId}', [PenyerapanAnggaranController::class, 'index'])->name('user.monthly-audit.penyerapan-anggaran.index');
+                Route::post('/penyerapan-anggaran/{monthlyId}/sync', [PenyerapanAnggaranController::class, 'sync'])->name('user.monthly-audit.penyerapan-anggaran.sync');
                 Route::get('/penyerapan-anggaran/{monthlyId}/create', [PenyerapanAnggaranController::class, 'create'])->name('user.monthly-audit.penyerapan-anggaran.create');
                 Route::post('/penyerapan-anggaran/{monthlyId}/create', [PenyerapanAnggaranController::class, 'store'])->name('user.monthly-audit.penyerapan-anggaran.store');
                 Route::get('/penyerapan-anggaran/{monthlyId}/edit/{anggaranId}', [PenyerapanAnggaranController::class, 'edit'])->name('user.monthly-audit.penyerapan-anggaran.edit');

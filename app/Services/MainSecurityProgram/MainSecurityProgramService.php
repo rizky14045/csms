@@ -32,10 +32,7 @@ class MainSecurityProgramService
                 $query->with($with);
             }
 
-            if ($user_id && !\App\Services\Unit\UnitScope::isGroup(\App\Models\User::find($user_id))) {
-                $query->where('user_id', $user_id);
-            }
-
+            // Akses dibatasi lewat program induknya (milik unit); tidak per akun pembuat.
             if ($program_id) {
                 $query->where('program_id', $program_id);
             }

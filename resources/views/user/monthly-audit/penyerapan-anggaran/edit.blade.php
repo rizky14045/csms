@@ -87,6 +87,14 @@
                             @endif
                         </div>
         
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" name="save_to_master" value="1" id="save_to_master" {{ old('save_to_master') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="save_to_master">
+                                Simpan juga ke master data
+                                @if(!$anggaran->source_id)<span class="text-muted">(data ini khusus laporan, akan dibuat sebagai master data baru)</span>@endif
+                            </label>
+                        </div>
+
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="d-flex gap-3 justify-content-end">

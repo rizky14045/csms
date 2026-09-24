@@ -48,19 +48,12 @@ class AttributeController extends Controller
     {
         $user = auth()->user();
 
-        if (\App\Services\Unit\UnitScope::isGroup($user)) {
-            if ($attribute->parent_attribute_id) {
-                $attribute = Attribute::findOrFail($attribute->parent_attribute_id);
-            }
-            if (!\App\Services\Unit\UnitScope::canAccess($attribute, $user)) {
-                abort(404);
-            }
-
-            return $attribute;
+        if (\App\Services\Unit\UnitScope::isGroup($user) && $attribute->parent_attribute_id) {
+            $attribute = Attribute::findOrFail($attribute->parent_attribute_id);
         }
 
-        $result = $this->attributeService->getAttributeById($attribute->id, $user->id);
-        if (!getStatus($result)) {
+        // Master data milik unit, bukan akun pembuatnya.
+        if (!\App\Services\Unit\UnitScope::canAccess($attribute, $user)) {
             abort(404);
         }
 
