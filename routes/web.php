@@ -76,6 +76,16 @@ Route::get(
     [MonthlyAuditExportController::class, 'exportBudgetAbsorption']
 )->middleware(['auth'])->name('export.monthly.penyerapan-anggaran');
 
+Route::middleware(['auth', 'force.change.password'])->prefix('master/budget-absorption')->group(function () {
+    $c = \App\Http\Controllers\BudgetMasterController::class;
+    Route::get('/', [$c, 'index'])->name('budget-master.index');
+    Route::get('/create', [$c, 'create'])->name('budget-master.create');
+    Route::post('/store', [$c, 'store'])->name('budget-master.store');
+    Route::get('/{item}/edit', [$c, 'edit'])->name('budget-master.edit');
+    Route::patch('/{item}/edit', [$c, 'update'])->name('budget-master.update');
+    Route::delete('/{item}/delete', [$c, 'destroy'])->name('budget-master.destroy');
+});
+
 Route::get('/status-history/{type}/{id}', [\App\Http\Controllers\StatusHistoryController::class, 'show'])
     ->where('id', '[0-9]+')->middleware(['auth'])->name('status-history.show');
 

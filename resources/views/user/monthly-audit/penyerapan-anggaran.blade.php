@@ -106,7 +106,12 @@
                     </ul>
 
 
-                    <div class="d-flex justify-content-end pt-5 px-3">
+                    <div class="d-flex justify-content-end gap-2 pt-5 px-3">
+                        <button type="button" class="btn btn-outline-primary btn-sm"
+                            title="Ambil data baru dari master data (data yang dibuat khusus di laporan ini tidak hilang)"
+                            onclick="confirmPostAction('{{ route('user.monthly-audit.penyerapan-anggaran.sync', ['monthlyId' => $monthlyId]) }}', 'Sinkron dengan master data?', 'Data baru dari master data akan ditambahkan ke laporan ini. Data yang sudah ada tidak berubah.')">
+                            &#8635; Sinkron Master
+                        </button>
                         <a href="{{ route('user.monthly-audit.penyerapan-anggaran.create', ['monthlyId' => $monthlyId]) }}"
                             class="btn btn-success btn-sm">
                             Tambah Data
@@ -148,14 +153,13 @@
                                                     <td>
                                                         <a href="{{ route('user.monthly-audit.penyerapan-anggaran.edit', ['monthlyId' => $monthlyId, 'anggaranId' => $item->id]) }}"
                                                             class="btn btn-sm btn-warning">edit</a>
-                                                        <form
-                                                            action="{{ route('user.monthly-audit.penyerapan-anggaran.destroy', ['monthlyId' => $monthlyId, 'anggaranId' => $item->id]) }}"
-                                                            method="post" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-danger btn-sm">Hapus</button>
-                                                        </form>
+                                                        <button type="button" class="btn btn-danger btn-sm"
+                                                            @if ($item->source_id)
+                                                                onclick="confirmRowDelete('{{ route('user.monthly-audit.penyerapan-anggaran.destroy', ['monthlyId' => $monthlyId, 'anggaranId' => $item->id]) }}')"
+                                                            @else
+                                                                onclick="confirmDeleteOnly('{{ route('user.monthly-audit.penyerapan-anggaran.destroy', ['monthlyId' => $monthlyId, 'anggaranId' => $item->id]) }}')"
+                                                            @endif
+                                                        >Hapus</button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -196,14 +200,13 @@
                                                     <td>
                                                         <a href="{{ route('user.monthly-audit.penyerapan-anggaran.edit', ['monthlyId' => $monthlyId, 'anggaranId' => $item->id]) }}"
                                                             class="btn btn-sm btn-warning">edit</a>
-                                                        <form
-                                                            action="{{ route('user.monthly-audit.penyerapan-anggaran.destroy', ['monthlyId' => $monthlyId, 'anggaranId' => $item->id]) }}"
-                                                            method="post" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-danger btn-sm">Hapus</button>
-                                                        </form>
+                                                        <button type="button" class="btn btn-danger btn-sm"
+                                                            @if ($item->source_id)
+                                                                onclick="confirmRowDelete('{{ route('user.monthly-audit.penyerapan-anggaran.destroy', ['monthlyId' => $monthlyId, 'anggaranId' => $item->id]) }}')"
+                                                            @else
+                                                                onclick="confirmDeleteOnly('{{ route('user.monthly-audit.penyerapan-anggaran.destroy', ['monthlyId' => $monthlyId, 'anggaranId' => $item->id]) }}')"
+                                                            @endif
+                                                        >Hapus</button>
                                                     </td>
                                                 </tr>
                                             @endforeach

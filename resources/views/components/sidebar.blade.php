@@ -231,7 +231,7 @@
                 @endcanany
                 @canany(['view.vulnerability', 'view.attribute', 'view.category.assesment', 'view.marturity.area',
                     'view.kpi.area', 'view.audit.smp.admin', 'view.attribute.unit', 'view.security.unit',
-                    'view.workersum.unit', 'view.security.program.unit', 'view.fasum.user', 'view.fasumtype.admin'])
+                    'view.workersum.unit', 'view.security.program.unit', 'view.fasum.user', 'view.fasumtype.admin', 'view.budget.master'])
                     <li>
                         <a href="#sidebarMasterData" data-bs-toggle="collapse">
                             <i data-feather="database"></i>
@@ -299,6 +299,11 @@
                                     <li>
                                         <a href="{{ route('user.security-program.index') }}" class="tp-link">Program
                                             Keamanan</a>
+                                    </li>
+                                @endcan
+                                @can('view.budget.master')
+                                    <li>
+                                        <a href="{{ route('budget-master.index') }}" class="tp-link">Penyerapan Anggaran</a>
                                     </li>
                                 @endcan
                                 @can('view.fasum.user')

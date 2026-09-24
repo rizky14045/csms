@@ -140,6 +140,20 @@
         });
     }
 
+    function confirmDeleteOnly(url) {
+        Swal.fire({
+            title: 'Hapus dari laporan?',
+            text: 'Data akan dihapus dari laporan bulanan ini.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((r) => {
+            if (r.isConfirmed) postAction(url, { _method: 'DELETE' });
+        });
+    }
+
     function confirmSaveAjax(form, message, callback) {
         Swal.fire({
             title: 'Simpan Data?',
