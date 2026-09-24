@@ -188,6 +188,17 @@ class ReportItemController extends Controller
         [$report, $cfg, $meta, $row, $target] = $this->resolve($monthlyId, $section, $rowId);
 
         $validator = Validator::make($request->all(), $meta['rules'], $meta['messages']);
+
+        // Menyimpan ke master: No REG KTA tidak boleh kembar dengan satpam master lain.
+        if ($section === 'security' && $request->boolean('save_to_master')) {
+            $ownMasterId = $target->user_id !== null ? $target->id : $target->source_id;
+            $validator->after(function ($v) use ($request, $ownMasterId) {
+                if (\App\Rules\UniqueKtaNumber::exists($request->registration_number, $ownMasterId)) {
+                    $v->errors()->add('registration_number', 'Nomor registrasi KTA sudah terdaftar pada satuan pengamanan lain!');
+                }
+            });
+        }
+
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
