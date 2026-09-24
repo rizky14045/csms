@@ -25,12 +25,12 @@
 </div>
 <div class="form-group mb-3">
     <label class="form-label">Jumlah Anggaran</label>
-    <input class="form-control" type="number" step="any" min="0" name="jumlah_anggaran" required placeholder="Masukan Jumlah Anggaran" value="{{ $v('jumlah_anggaran') }}">
+    @include('components.rupiah-input', ['name' => 'jumlah_anggaran', 'value' => isset($item) ? $item->jumlah_anggaran : null, 'required' => true, 'placeholder' => 'Masukan Jumlah Anggaran'])
     @error('jumlah_anggaran') <div class="text-danger small">{{ $message }}</div> @enderror
 </div>
 <div class="form-group mb-3">
     <label class="form-label">Penyerapan Anggaran <span class="text-muted">(opsional)</span></label>
-    <input class="form-control" type="number" step="any" min="0" name="penyerapan_anggaran" placeholder="Masukan Penyerapan Anggaran" value="{{ $v('penyerapan_anggaran') }}">
+    @include('components.rupiah-input', ['name' => 'penyerapan_anggaran', 'value' => isset($item) ? $item->penyerapan_anggaran : null, 'placeholder' => 'Masukan Penyerapan Anggaran'])
     @error('penyerapan_anggaran') <div class="text-danger small">{{ $message }}</div> @enderror
 </div>
 <div class="form-group mb-3">

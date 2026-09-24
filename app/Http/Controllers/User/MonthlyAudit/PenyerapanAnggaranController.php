@@ -25,7 +25,7 @@ class PenyerapanAnggaranController extends Controller
             'deskripsi_kegiatan' => 'required',
             'jumlah_anggaran' => 'required',
             'penyerapan_anggaran' => 'required',
-            'keterangan' => 'required',
+            'keterangan' => 'nullable|string|max:255',
         ];
     }
 
@@ -39,7 +39,6 @@ class PenyerapanAnggaranController extends Controller
             'deskripsi_kegiatan.required' => 'Deskripsi Kegiatan harus diisi!',
             'jumlah_anggaran.required' => 'Jumlah Anggaran harus diisi!',
             'penyerapan_anggaran.required' => 'Penyerapan Anggaran harus diisi!',
-            'keterangan.required' => 'Keterangan harus diisi!',
         ];
     }
 
