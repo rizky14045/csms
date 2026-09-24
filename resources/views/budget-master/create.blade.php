@@ -16,7 +16,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('budget-master.store') }}" class="my-4" method="POST">
+                <form action="{{ route('budget-master.store') }}" class="my-4" method="POST" id="form-budget-master" onsubmit="return confirmSave('form-budget-master', 'Data master penyerapan anggaran akan disimpan.')">
                     @csrf
                     
                     <div class="col-xl-9">
