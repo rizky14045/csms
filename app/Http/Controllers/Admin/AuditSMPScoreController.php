@@ -57,7 +57,7 @@ class AuditSMPScoreController extends Controller
         if($audit->status < 1 || $audit->status > 2){
             return redirect()->back()->with('error', 'Data audit yang sudah selesai tidak dapat diedit');
         }
-        $result = $this->userService->getAllUser(0, false, ['user', 'pusat']);
+        $result = $this->userService->getAllUser(0, false, ['user', 'pusat'], false, null, false); // false terakhir: akun sendiri tetap boleh dipilih
         $data['auditors'] = getData($result);
         $audit->load('auditors', 'unit');
         $data['audit'] = $audit;
