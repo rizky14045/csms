@@ -116,7 +116,7 @@ class MarturityController extends Controller
             abort(404);
         }
 
-        $result = $this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels'], $marturity->id);
+        $result = $this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels', 'subAreas.levels.notes'], $marturity->id);
         $data['areas'] = getData($result);
         $data['marturity'] = $marturity;
         return view('user.marturity.show', $data);
@@ -131,7 +131,7 @@ class MarturityController extends Controller
             Alert::warning('Warning', 'Marturity belum dikirm!');
             return redirect()->route('user.marturity.index');
         }
-        $result = $this->marturityService->getAlMarturityArea(['subAreas','subAreas.levels'], $marturity->id);
+        $result = $this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels', 'subAreas.levels.notes'], $marturity->id);
         $areas   = getData($result);
         $checked = $this->marturityService->getCheckedMap($marturity);
 
