@@ -66,22 +66,22 @@
                         </div>
                         <div class="form-group mb-3">
                             <label for="jumlah_anggaran" class="form-label">Jumlah Anggaran</label>
-                            <input class="form-control" type="number" id="jumlah_anggaran" required="" placeholder="Masukan Jumlah Anggaran" name="jumlah_anggaran" value="{{$anggaran->jumlah_anggaran}}">
+                            @include('components.rupiah-input', ['name' => 'jumlah_anggaran', 'value' => $anggaran->jumlah_anggaran, 'required' => true, 'placeholder' => 'Masukan Jumlah Anggaran'])
                             @if($errors->has('jumlah_anggaran'))
                                 <div class="error text-danger">{{ $errors->first('jumlah_anggaran') }}</div>
                             @endif
                         </div>
                         <div class="form-group mb-3">
                             <label for="penyerapan_anggaran" class="form-label">Penyerapan Anggaran</label>
-                            <input class="form-control" type="number" id="penyerapan_anggaran" required="" placeholder="Masukan Penyerapan Anggaran" name="penyerapan_anggaran" value="{{$anggaran->penyerapan_anggaran}}">
+                            @include('components.rupiah-input', ['name' => 'penyerapan_anggaran', 'value' => $anggaran->penyerapan_anggaran, 'required' => true, 'placeholder' => 'Masukan Penyerapan Anggaran'])
                             @if($errors->has('penyerapan_anggaran'))
                                 <div class="error text-danger">{{ $errors->first('penyerapan_anggaran') }}</div>
                             @endif
                         </div>
                         
                         <div class="form-group mb-3">
-                            <label for="emailaddress" class="form-label">Keterangan</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan keterangan" name="keterangan" value="{{$anggaran->keterangan}}">
+                            <label for="emailaddress" class="form-label">Keterangan <span class="text-muted">(opsional)</span></label>
+                            <input class="form-control" type="text" id="emailaddress" placeholder="Masukan keterangan" name="keterangan" value="{{$anggaran->keterangan}}">
                             @if($errors->has('keterangan'))
                                 <div class="error text-danger">{{ $errors->first('keterangan') }}</div>
                             @endif
