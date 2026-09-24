@@ -130,7 +130,7 @@ class ReportItemController extends Controller
         abort_unless($meta, 404);
 
         $report = MonthlyReport::findOrFail($monthlyId);
-        abort_unless($report->user_id === auth()->id(), 404);
+        abort_unless($report->unit_id == auth()->user()->unit_id, 404);
         if ($report->send_status) {
             abort(403, 'Laporan sudah dikirim');
         }
@@ -276,7 +276,7 @@ class ReportItemController extends Controller
         abort_unless($cfg, 404);
 
         $report = MonthlyReport::findOrFail($monthlyId);
-        abort_unless($report->user_id === auth()->id(), 404);
+        abort_unless($report->unit_id == auth()->user()->unit_id, 404);
         if ($report->send_status) {
             abort(403, 'Laporan sudah dikirim');
         }
