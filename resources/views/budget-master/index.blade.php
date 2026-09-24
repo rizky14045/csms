@@ -21,12 +21,7 @@
                         <a href="{{ route('budget-master.create') }}" class="btn btn-success">Tambah Data</a>
                     </div>
                 @endcan
-
-                <div class="alert alert-info py-2">
-                    Data ini diisi oleh unit Anda dan disalin ke laporan bulanan baru unit Anda. Mengubah atau menghapus
-                    data di sini <strong>tidak mengubah laporan bulanan yang sudah ada</strong>.
-                </div>
-
+                
                 <div class="table-responsive">
                     <table class="table table-bordered text-center align-middle">
                         <thead class="table-light">
