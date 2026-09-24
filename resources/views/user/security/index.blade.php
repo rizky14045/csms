@@ -51,7 +51,15 @@
                             placeholder="Cari nama..." value="{{ request('search') }}">
                         <button class="btn btn-outline-primary" type="submit">Cari</button>
                     </div>
-                    @if(request('search'))
+                    @if($isGroup)
+                        <select name="unit_id" class="form-select" style="min-width:200px;" onchange="this.form.submit()">
+                            <option value="">Semua Unit (Induk + UL)</option>
+                            @foreach($assignableUnits as $u)
+                                <option value="{{ $u->id }}" {{ (string) request('unit_id') === (string) $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
+                            @endforeach
+                        </select>
+                    @endif
+                    @if(request('search') || request('unit_id'))
                         <a href="{{ route('user.security.index') }}" class="btn btn-outline-danger">Reset</a>
                     @endif
                 </form>
@@ -88,6 +96,7 @@
                             <col style="width: 160px;">
                             <col style="width: 80px;">
                             <col style="width: 130px;">
+                            @if($isGroup)<col style="width: 150px;">@endif
                             <col style="width: 110px;">
                             <col style="width: 130px;">
                             <col style="width: 110px;">
@@ -108,6 +117,7 @@
                                 <th scope="col">Nama</th>
                                 <th scope="col">JK</th>
                                 <th scope="col">Unit Kerja</th>
+                                @if($isGroup)<th scope="col">Unit Penugasan</th>@endif
                                 <th scope="col">NID</th>
                                 <th scope="col">Nomor REG KTA</th>
                                 <th scope="col">Expired KTA</th>
@@ -141,6 +151,7 @@
                                     <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $security->name }}</td>
                                     <td>{{ $security->gender }}</td>
                                     <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $security->unit_work }}</td>
+                                    @if($isGroup)<td>{{ $assignableUnits->firstWhere('id', $security->unit_id)->name ?? '-' }}</td>@endif
                                     <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $security->nid }}</td>
                                     <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $security->registration_number }}</td>
                                     <td style="{{ $ktaStyle }}">@if($security->expired_card_date) {{ \Carbon\Carbon::parse($security->expired_card_date)->format('d-m-Y') }} @else - @endif</td>
@@ -204,6 +215,10 @@
                         Unduh format excel terlebih dahulu melalui tombol
                         <strong>Download Format</strong>, isi data sesuai kolom yang tersedia,
                         lalu unggah kembali file tersebut di sini.
+                        @if($isGroup)
+                        Kolom <strong>Kode Unit</strong> wajib diisi dengan kode unit induk atau UL tempat satpam bertugas
+                        ({{ $assignableUnits->pluck('unit_code')->filter()->implode(', ') }}).
+                        @endif
                         File KTA tidak dapat diimpor melalui excel dan harus diunggah manual
                         melalui menu Edit setelah data berhasil diimpor.
                     </p>

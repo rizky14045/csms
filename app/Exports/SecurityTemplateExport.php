@@ -10,9 +10,17 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SecurityTemplateExport implements FromArray, WithStyles, WithColumnWidths, WithTitle
 {
+    protected $unitCode;
+
+    /** $unitCode diisi hanya untuk unit yang punya UL / UL: menambahkan kolom Kode Unit. */
+    public function __construct($unitCode = null)
+    {
+        $this->unitCode = $unitCode;
+    }
+
     public function array(): array
     {
-        return [
+        $rows = [
             [
                 'Nama',
                 'Jenis Kelamin',
@@ -42,6 +50,13 @@ class SecurityTemplateExport implements FromArray, WithStyles, WithColumnWidths,
                 'Opsional',
             ],
         ];
+
+        if ($this->unitCode !== null) {
+            $rows[0][] = 'Kode Unit';
+            $rows[1][] = $this->unitCode;
+        }
+
+        return $rows;
     }
 
     public function title(): string
@@ -51,9 +66,10 @@ class SecurityTemplateExport implements FromArray, WithStyles, WithColumnWidths,
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:L1')->getFont()->setBold(true);
-        $sheet->getStyle('A2:L2')->getFont()->setItalic(true);
-        $sheet->getStyle('A2:L2')->getFont()->getColor()->setRGB('999999');
+        $lastCol = $this->unitCode !== null ? 'M' : 'L';
+        $sheet->getStyle("A1:{$lastCol}1")->getFont()->setBold(true);
+        $sheet->getStyle("A2:{$lastCol}2")->getFont()->setItalic(true);
+        $sheet->getStyle("A2:{$lastCol}2")->getFont()->getColor()->setRGB('999999');
 
         return [];
     }
@@ -73,6 +89,7 @@ class SecurityTemplateExport implements FromArray, WithStyles, WithColumnWidths,
             'J' => 14,
             'K' => 20,
             'L' => 25,
+            'M' => 18,
         ];
     }
 }

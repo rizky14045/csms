@@ -265,7 +265,6 @@ Route::prefix('user')->group(function () {
 
         Route::prefix('main-security-program')->group(function () {
             Route::get('/{program}', [MainSecurityProgramController::class, 'index'])->name('user.main-security-program.index');
-            Route::get('/visual/{program}', [MainSecurityProgramController::class, 'visual'])->name('user.main-security-program.visual');
             Route::get('/create/{program}', [MainSecurityProgramController::class, 'create'])->name('user.main-security-program.create');
             Route::post('/store/{program}', [MainSecurityProgramController::class, 'store'])->name('user.main-security-program.store');
             Route::get('/{program}/{main}/edit', [MainSecurityProgramController::class, 'edit'])->name('user.main-security-program.edit');

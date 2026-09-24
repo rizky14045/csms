@@ -35,7 +35,14 @@ class SecurityService
             }
 
             if($user_id){
-                $query->where('user_id', $user_id);
+                $scopeUser = \App\Models\User::find($user_id);
+                \App\Services\Unit\UnitScope::applyMaster($query, $scopeUser);
+
+                $filterUnit = request('unit_id');
+                if ($filterUnit && \App\Services\Unit\UnitScope::isGroup($scopeUser)
+                    && in_array((int) $filterUnit, \App\Services\Unit\UnitScope::visibleUnitIds($scopeUser), true)) {
+                    $query->where('unit_id', (int) $filterUnit);
+                }
             }
 
             if ($start && $end) {
@@ -89,7 +96,7 @@ class SecurityService
         $query = Security::query();
 
         if ($user_id) {
-            $query->where('user_id', $user_id);
+            \App\Services\Unit\UnitScope::applyMaster($query, \App\Models\User::find($user_id));
         }
 
         $today = now()->toDateString();
@@ -119,7 +126,7 @@ class SecurityService
             $query = Security::where('id', $id);
 
             if (!empty($user_id)) {
-                $query->where('user_id', $user_id);
+                \App\Services\Unit\UnitScope::applyMaster($query, \App\Models\User::find($user_id));
             }
 
             $security = $query->first();
@@ -182,6 +189,7 @@ class SecurityService
 
             $security = Security::create([
                 'user_id' => $user_id,
+                'unit_id' => $data['unit_id'] ?? null,
                 'name' => $data['name'] ?? null,
                 'gender' => $data['gender'] ?? null,
                 'unit_work' => $data['unit_work'] ?? null,
@@ -285,6 +293,10 @@ class SecurityService
 
             if (isset($data['kta_file'])) {
                 $updateData['kta_file'] = $data['kta_file'];
+            }
+
+            if (!empty($data['unit_id'])) {
+                $updateData['unit_id'] = $data['unit_id'];
             }
 
             $security->update($updateData);

@@ -32,7 +32,7 @@ class SecurityExternalController extends Controller
 
     public function create(){
 
-        return view('user.security-external.create');
+        return view('user.security-external.create', ['assignableUnits' => \App\Services\Unit\UnitScope::assignableUnits(auth()->user())]);
 
     }
     public function store(Request $request){
@@ -48,6 +48,7 @@ class SecurityExternalController extends Controller
             try {
                 $security = SecurityExternal::create([
                     'user_id'       => $request->boolean('save_to_master') ? auth()->id() : null,
+                    'unit_id' => auth()->user()->unit_id,
                     'name'          => $request->name ?? '',
                     'gender'        => $request->gender ?? '',
                     'instansi'      => $request->instansi ?? '',
@@ -73,34 +74,41 @@ class SecurityExternalController extends Controller
             return redirect()->route('user.monthly-audit.worker-sum.index', ['monthlyId' => $monthlyId]);
         }
 
-        $this->securityExternalService->createSecurityExternal($request->all());
+        $this->securityExternalService->createSecurityExternal(array_merge($request->all(), ['unit_id' => \App\Services\Unit\UnitScope::assignedUnitFor(auth()->user(), $request->input('assigned_unit_id'))]));
 
         Alert::success('Tambah Berhasil', 'Data Keamanan external berhasil dibuat!');
         return redirect()->route('user.worker-sum.index');
     }
     public function edit(SecurityExternal $security){
-        if($security->user_id !== auth()->id()){
+        if(!\App\Services\Unit\UnitScope::canAccess($security, auth()->user())){
             Alert::error('Akses Ditolak', 'Anda tidak memiliki akses untuk mengedit data ini!');
             return redirect()->route('user.worker-sum.index');
         }
         $data['security'] = $security;
+        $data['assignableUnits'] = \App\Services\Unit\UnitScope::assignableUnits(auth()->user());
         return view('user.security-external.edit',$data);
     }
 
     public function update(Request $request, SecurityExternal $security){
+        if(!\App\Services\Unit\UnitScope::canAccess($security, auth()->user())){
+            abort(404);
+        }
         // Validation rules
         $validator = $this->validator($request->all(), SecurityExternalValidation::rulesForUpdate(), SecurityExternalValidation::messages());
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $this->securityExternalService->updateSecurityExternal($security, $request->all());
+        $this->securityExternalService->updateSecurityExternal($security, array_merge($request->all(), ['unit_id' => \App\Services\Unit\UnitScope::assignedUnitFor(auth()->user(), $request->input('assigned_unit_id'))]));
 
         Alert::success('Update Berhasil', 'Data Keamanan external berhasil diubah!');
         return redirect()->route('user.worker-sum.index');
 
     }
     public function destroy(SecurityExternal $security){
+        if(!\App\Services\Unit\UnitScope::canAccess($security, auth()->user())){
+            abort(404);
+        }
         $this->securityExternalService->deleteSecurityExternal($security);
 
         Alert::success('Delete Berhasil', 'Data Keamanan external berhasil dihapus!');

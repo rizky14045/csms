@@ -32,14 +32,22 @@ class MainSecurityProgramController extends Controller
     }
 
     public function index(SecurityProgram $program){
-        if($program->user_id != auth()->id()){
+        if(!\App\Services\Unit\UnitScope::canAccess($program, auth()->user())){
             abort(404);
         }
 
         $userId = Auth::user()->id;
+        $result = $this->mainSecurityProgramService->getAllMainSecurityProgram(0, false, [], $userId, $program->id);
+
         $data['programId'] = $program->id;
-        $result = $this->mainSecurityProgramService->getAllMainSecurityProgram(25, true, [], $userId, $program->id);
-        $data['mains'] = getPaginate($result);
+        $data['securityProgram'] = $program;
+        $data['months'] = MainSecurityProgram::MONTHS;
+        $data['weeks'] = MainSecurityProgram::WEEKS;
+        $data['rows'] = collect(getData($result) ?? [])->map(fn($row) => [
+            'id'    => $row['id'],
+            'name'  => $row['program_name'],
+            'cells' => MainSecurityProgram::cellsFor($row),
+        ])->values();
 
         return view('user.main-security-program.index',$data);
 
@@ -52,6 +60,10 @@ class MainSecurityProgramController extends Controller
     }
 
     public function store(Request $request, SecurityProgram $program){
+        if ($request->expectsJson()) {
+            return $this->saveTimelineRow($request, $program, null);
+        }
+
         // Validation rules
         $validator = $this->validator($request->all(), MainSecurityProgramValidation::rulesForCreate(), MainSecurityProgramValidation::messages());
         if ($validator->fails()) {
@@ -68,11 +80,11 @@ class MainSecurityProgramController extends Controller
 
         $userId = Auth::user()->id;
 
-        if($program->user_id != $userId){
+        if(!\App\Services\Unit\UnitScope::canAccess($program, auth()->user())){
             abort(404);
         }
 
-        if($main->user_id != $userId || $main->program_id != $program->id){
+        if((!\App\Services\Unit\UnitScope::isGroup(auth()->user()) && $main->user_id != $userId) || $main->program_id != $program->id){
             abort(404);
         }
         
@@ -82,6 +94,10 @@ class MainSecurityProgramController extends Controller
     }
 
     public function update(Request $request, SecurityProgram $program, MainSecurityProgram $main){
+        if ($request->expectsJson()) {
+            return $this->saveTimelineRow($request, $program, $main);
+        }
+
         // Validation rules
         $validator = $this->validator($request->all(), MainSecurityProgramValidation::rulesForUpdate(), MainSecurityProgramValidation::messages());
         if ($validator->fails()) {
@@ -97,32 +113,60 @@ class MainSecurityProgramController extends Controller
 
     public function destroy(SecurityProgram $program, MainSecurityProgram $main){
         $userId = Auth::user()->id;
+        $json = request()->expectsJson();
 
-        if($program->user_id != $userId){
+        if(!\App\Services\Unit\UnitScope::canAccess($program, auth()->user())){
             abort(404);
         }
 
-        if($main->user_id != $userId || $main->program_id != $program->id){
+        if((!\App\Services\Unit\UnitScope::isGroup(auth()->user()) && $main->user_id != $userId) || $main->program_id != $program->id){
             abort(404);
         }
 
         $this->mainSecurityProgramService->deleteMainSecurityProgram($main);
 
+        if ($json) {
+            return response()->json(['success' => true, 'message' => 'Program berhasil dihapus.']);
+        }
+
         Alert::success('Delete Berhasil', 'Program Keamanan berhasil dihapus!');
         return redirect()->route('user.main-security-program.index',['program'=>$program->id]);
     }
 
-    public function visual(SecurityProgram $program){
-        if($program->user_id != auth()->id()){
+    /** Simpan satu baris timeline (AJAX). $main null = baris baru. */
+    protected function saveTimelineRow(Request $request, SecurityProgram $program, ?MainSecurityProgram $main)
+    {
+        if(!\App\Services\Unit\UnitScope::canAccess($program, auth()->user())){
             abort(404);
         }
 
-        $userId = Auth::user()->id;
-        $data['programId'] = $program->id;
-        $data['securityProgram'] = $program;
-        $result = $this->mainSecurityProgramService->getAllMainSecurityProgram(0, false, [], $userId, $program->id);
-        $data['programs'] = getData($result);
+        if ($main && ((!\App\Services\Unit\UnitScope::isGroup(auth()->user()) && $main->user_id != auth()->id()) || $main->program_id != $program->id)) {
+            abort(404);
+        }
 
-        return view('user.main-security-program.visual',$data);
+        $validator = $this->validator($request->all(), MainSecurityProgramValidation::rulesForTimeline(), MainSecurityProgramValidation::timelineMessages());
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first(), 'errors' => $validator->errors()], 422);
+        }
+
+        $payload = ['program_name' => $request->program_name, 'cells' => $request->cells];
+
+        if ($main) {
+            $this->mainSecurityProgramService->updateMainSecurityProgram($main, $payload);
+            $saved = $main->fresh();
+        } else {
+            $created = getData($this->mainSecurityProgramService->createMainSecurityProgram($payload, $program->id));
+            $saved = MainSecurityProgram::findOrFail($created['id']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Program berhasil disimpan.',
+            'id'      => $saved->id,
+            'name'    => $saved->program_name,
+            'cells'   => MainSecurityProgram::cellsFor($saved),
+            'update_url' => route('user.main-security-program.update', ['program' => $program->id, 'main' => $saved->id]),
+            'destroy_url' => route('user.main-security-program.destroy', ['program' => $program->id, 'main' => $saved->id]),
+        ]);
     }
 }

@@ -332,5 +332,3 @@
 </script>
 <script src="{{ asset('assets/libs/sortablejs/Sortable.min.js') }}"></script>
 <script src="{{ asset('assets/js/reorder.js') }}"></script>
-
-@yield('scripts')

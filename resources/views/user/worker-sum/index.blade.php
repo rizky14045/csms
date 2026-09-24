@@ -27,6 +27,26 @@
     </div>
 </div>
 
+@php $isGroup = $assignableUnits->isNotEmpty(); @endphp
+@if($isGroup)
+<div class="row mb-3">
+    <div class="col-xl-12">
+        <form method="GET" action="{{ route('user.worker-sum.index') }}" class="d-flex gap-2 align-items-center">
+            <input type="hidden" name="q_person" value="{{ request('q_person') }}">
+            <input type="hidden" name="q_security" value="{{ request('q_security') }}">
+            <input type="hidden" name="q_agreement" value="{{ request('q_agreement') }}">
+            <label class="fw-semibold mb-0">Unit</label>
+            <select name="unit_id" class="form-select" style="max-width:280px;" onchange="this.form.submit()">
+                <option value="">Semua Unit (Induk + UL)</option>
+                @foreach($assignableUnits as $u)
+                    <option value="{{ $u->id }}" {{ (string) request('unit_id') === (string) $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
+                @endforeach
+            </select>
+        </form>
+    </div>
+</div>
+@endif
+
 {{-- Table 1: Penanggung Jawab Keamanan --}}
 <div class="row mb-3">
     <div class="col-xl-12">
@@ -63,6 +83,7 @@
                                 <th rowspan="3" style="min-width:120px;">Unit Kerja</th>
                                 <th colspan="7">Pelatihan Unit Pengamanan</th>
                                 <th rowspan="3" style="min-width:120px;">Keterangan</th>
+                                @if($isGroup)<th rowspan="3" style="min-width:140px;">Unit Penugasan</th>@endif
                                 <th rowspan="3" style="width:130px;">Action</th>
                             </tr>
                             <tr>
@@ -93,6 +114,7 @@
                                 <td>{{ $person->stackholder_management }}</td>
                                 <td>{{ $person->last_education }}</td>
                                 <td>{{ $person->note }}</td>
+                                @if($isGroup)<td>{{ $assignableUnits->firstWhere('id', $person->unit_id)->name ?? '-' }}</td>@endif
                                 <td>
                                     @can('edit.responsible.person.unit')
                                     <a href="{{ route('user.responsible-person.edit', ['person' => $person->id]) }}" class="btn btn-warning btn-sm mb-1">Edit</a>
@@ -108,7 +130,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="13" class="text-center text-muted py-4">Tidak ada data.</td>
+                                <td colspan="14" class="text-center text-muted py-4">Tidak ada data.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -155,6 +177,7 @@
                             <col style="width: 150px;">
                             <col style="width: 170px;">
                             <col style="width: 120px;">
+                            @if($isGroup)<col style="width: 150px;">@endif
                             <col style="width: 130px;">
                         </colgroup>
                         <thead class="table-light">
@@ -165,6 +188,7 @@
                                 <th>Satuan Wilayah</th>
                                 <th>Nomor Surat Perintah</th>
                                 <th>Keterangan</th>
+                                @if($isGroup)<th>Unit Penugasan</th>@endif
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -177,6 +201,7 @@
                                 <td>{{ $security->regional_unit }}</td>
                                 <td>{{ $security->warrant_number }}</td>
                                 <td>{{ $security->note }}</td>
+                                @if($isGroup)<td>{{ $assignableUnits->firstWhere('id', $security->unit_id)->name ?? '-' }}</td>@endif
                                 <td>
                                     @can('edit.security.external.unit')
                                     <a href="{{ route('user.security-external.edit', ['security' => $security->id]) }}" class="btn btn-warning btn-sm mb-1">Edit</a>
@@ -192,7 +217,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">Tidak ada data.</td>
+                                <td colspan="8" class="text-center text-muted py-4">Tidak ada data.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -241,6 +266,7 @@
                             <col style="width: 180px;">
                             <col style="width: 120px;">
                             <col style="width: 120px;">
+                            @if($isGroup)<col style="width: 150px;">@endif
                             <col style="width: 130px;">
                         </colgroup>
                         <thead class="table-light">
@@ -253,6 +279,7 @@
                                 <th>Judul PKT</th>
                                 <th>Masa Berlaku</th>
                                 <th>Keterangan</th>
+                                @if($isGroup)<th>Unit Penugasan</th>@endif
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -267,6 +294,7 @@
                                 <td class="text-start">{{ $agreement->pkt_title }}</td>
                                 <td>{{ \Carbon\Carbon::parse($agreement->expired_date)->format('d/m/Y') }}</td>
                                 <td>{{ $agreement->note }}</td>
+                                @if($isGroup)<td>{{ $assignableUnits->firstWhere('id', $agreement->unit_id)->name ?? '-' }}</td>@endif
                                 <td>
                                     @can('edit.agreement.external.unit')
                                     <a href="{{ route('user.agreement-external.edit', ['agreement' => $agreement->id]) }}" class="btn btn-warning btn-sm mb-1">Edit</a>

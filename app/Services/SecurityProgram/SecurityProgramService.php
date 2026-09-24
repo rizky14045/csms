@@ -32,7 +32,7 @@ class SecurityProgramService
             }
 
             if ($user_id) {
-                $query->where('user_id', $user_id);
+                \App\Services\Unit\UnitScope::applyMaster($query, \App\Models\User::find($user_id));
             }
 
             if ($send_status !== null) {
@@ -92,8 +92,9 @@ class SecurityProgramService
         try {
             $securityProgram = SecurityProgram::create([
                 'user_id' => auth()->id(),
+                'unit_id' => $data['unit_id'] ?? null,
                 'program_name' => $data['program_name'],
-                'description' => $data['description'],
+                'description' => $data['description'] ?? null,
                 'year' => $data['year'],
                 'created_by' => auth()->id(),
             ]);
@@ -147,10 +148,13 @@ class SecurityProgramService
 
             $updateData = [
                 'program_name' => $data['program_name'] ?? "",
-                'description' => $data['description'] ?? "",
                 'year' => $data['year'] ?? "",
                 'updated_by' => auth()->id(),
             ];
+
+            if (!empty($data['unit_id'])) {
+                $updateData['unit_id'] = $data['unit_id'];
+            }
 
             $program->update($updateData);
 

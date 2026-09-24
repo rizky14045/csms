@@ -25,6 +25,7 @@ class ResponsiblePersonService
         try {
             $responsiblePerson = ResponsiblePerson::create([
                 'user_id' => auth()->id(),
+                'unit_id' => $data['unit_id'] ?? null,
                 'name' => $data['name'] ?? "",
                 'position' => $data['position'] ?? "",
                 'work_unit' => $data['work_unit'] ?? "",
@@ -100,6 +101,10 @@ class ResponsiblePersonService
                 'note' => $data['note'] ?? "",
                 'updated_by' => auth()->id(),
             ];
+
+            if (!empty($data['unit_id'])) {
+                $updateData['unit_id'] = $data['unit_id'];
+            }
 
             $person->update($updateData);
 

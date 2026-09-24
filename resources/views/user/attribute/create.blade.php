@@ -75,6 +75,8 @@
                         @enderror
                     </div>
 
+                    @include('user.attribute._allocation')
+
                     <div class="form-group mb-3">
                         <label for="type_attribute" class="form-label">Tipe Atribut</label>
                         <select class="form-select @error('type_attribute') is-invalid @enderror"

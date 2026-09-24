@@ -19,16 +19,37 @@ class SecurityImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
     use Importable, SkipsErrors, SkipsFailures;
 
     protected $userId;
+    protected $unitId;
+    protected $isGroup = false;
+    protected $unitCodes = [];
 
     public function __construct($userId)
     {
         $this->userId = $userId;
+
+        $user = \App\Models\User::find($userId);
+        $this->unitId = $user->unit_id ?? null;
+        $this->isGroup = $user ? \App\Services\Unit\UnitScope::isGroup($user) : false;
+
+        if ($this->isGroup) {
+            \App\Services\Unit\UnitScope::assignableUnits($user)->each(function ($unit) {
+                if ($unit->unit_code) {
+                    $this->unitCodes[strtolower(trim($unit->unit_code))] = ['id' => (int) $unit->id, 'code' => $unit->unit_code];
+                }
+            });
+        }
     }
 
     public function model(array $row)
     {
+        $unitId = $this->unitId;
+        if ($this->isGroup) {
+            $unitId = $this->unitCodes[strtolower(trim($row['kode_unit'] ?? ''))]['id'] ?? $this->unitId;
+        }
+
         return new Security([
             'user_id'             => $this->userId,
+            'unit_id'             => $unitId,
             'name'                => $row['nama'] ?? null,
             'gender'              => $row['jenis_kelamin'] ?? null,
             'unit_work'           => $row['unit_kerja'] ?? null,
@@ -50,6 +71,11 @@ class SecurityImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
     {
         $data['tanggal_kadaluarsa_kta'] = $this->normalizeDate($data['tanggal_kadaluarsa_kta'] ?? null);
         $data['tanggal_lahir'] = $this->normalizeDate($data['tanggal_lahir'] ?? null);
+
+        if ($this->isGroup) {
+            $key = strtolower(trim((string) ($data['kode_unit'] ?? '')));
+            $data['kode_unit'] = $this->unitCodes[$key]['code'] ?? trim((string) ($data['kode_unit'] ?? ''));
+        }
 
         return $data;
     }
@@ -88,7 +114,7 @@ class SecurityImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'nama'                    => 'required|string',
             'jenis_kelamin'           => 'required|in:Pria,Wanita',
             'unit_kerja'              => 'required|string',
@@ -102,11 +128,19 @@ class SecurityImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
             'pendidikan_terakhir'     => 'required|string',
             'catatan'                 => 'nullable|string',
         ];
+
+        if ($this->isGroup) {
+            $rules['kode_unit'] = ['required', \Illuminate\Validation\Rule::in(array_column($this->unitCodes, 'code'))];
+        }
+
+        return $rules;
     }
 
     public function customValidationMessages()
     {
         return [
+            'kode_unit.required'              => 'Kode unit harus diisi!',
+            'kode_unit.in'                    => 'Kode unit tidak sesuai dengan unit induk / UL yang terdaftar (' . implode(', ', array_column($this->unitCodes, 'code')) . ')!',
             'nama.required'                   => 'Nama harus diisi!',
             'jenis_kelamin.required'          => 'Jenis kelamin harus diisi!',
             'jenis_kelamin.in'                => 'Jenis kelamin harus berupa Pria atau Wanita!',

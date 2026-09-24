@@ -32,9 +32,9 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Nama Program</th>
-                                <th scope="col">Deskripsi</th>
                                 <th scope="col">Tahun</th>
                                 <th scope="col">Jumlah Program</th>
+                                @if($assignableUnits->isNotEmpty())<th scope="col">Ditugaskan ke</th>@endif
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -43,9 +43,9 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$program->program_name}}</td>
-                                    <td>{{$program->description}}</td>
                                     <td>{{$program->year}}</td>
                                     <td>{{ count($program->programs ?? []) }}</td>
+                                    @if($assignableUnits->isNotEmpty())<td>{{ $assignableUnits->firstWhere('id', $program->unit_id)->name ?? '-' }}</td>@endif
                                     <td class="text-center">
                                         @can('create.main.security.program.unit')
                                         <a href="{{route('user.main-security-program.index',['program'=>$program->id])}}" class="btn btn-info btn-sm">Tambah Program</a>
