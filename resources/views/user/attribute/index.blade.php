@@ -49,6 +49,9 @@
             </div>
 
             <div class="card-body">
+                @if($isUl)
+                    <div class="alert alert-info mb-3">Data attribute UL dikelola oleh unit induk dan hanya dapat dilihat di halaman ini.</div>
+                @endif
                 <div class="table-responsive">
                     <table class="table table-bordered text-center align-middle"
                         style="table-layout: fixed; width: 100%;">
@@ -59,6 +62,7 @@
                             <col style="width: 100px;">
                             <col style="width: 180px;">
                             <col style="width: 130px;">
+                            @if($canAllocate)<col style="width: 240px;">@endif
                             @canany(['edit.attribute.unit', 'delete.attribute.unit'])
                             <col style="width: 140px;">
                             @endcanany
@@ -71,6 +75,7 @@
                                 <th scope="col">Satuan</th>
                                 <th scope="col">Jml Standar Kontrak</th>
                                 <th scope="col">Tipe</th>
+                                @if($canAllocate)<th scope="col">Pembagian</th>@endif
                                 @canany(['edit.attribute.unit', 'delete.attribute.unit'])
                                 <th scope="col">Action</th>
                                 @endcanany
@@ -85,6 +90,15 @@
                                     <td>{{ $attribute->unit }}</td>
                                     <td>{{ $attribute->standard_contract }}</td>
                                     <td>{{ $attribute->type_attribute }}</td>
+                                    @if($canAllocate)
+                                    <td class="text-start small">
+                                        <div>Total: <strong>{{ $attribute->contract_total ?? $attribute->standard_contract }}</strong></div>
+                                        <div>Induk: {{ $attribute->standard_contract }}</div>
+                                        @foreach($childrenByParent->get($attribute->id, collect()) as $child)
+                                            <div>{{ $groupUnits->firstWhere('id', $child->unit_id)->name ?? 'UL' }}: {{ $child->standard_contract }}</div>
+                                        @endforeach
+                                    </td>
+                                    @endif
                                     @canany(['edit.attribute.unit', 'delete.attribute.unit'])
                                     <td class="text-center">
                                         @can('edit.attribute.unit')

@@ -10,4 +10,9 @@ class Attribute extends Model
 {
     use HasFactory,SoftDeletes;
     protected $guarded = ['id'];
+
+    public function children()
+    {
+        return $this->hasMany(Attribute::class, 'parent_attribute_id');
+    }
 }

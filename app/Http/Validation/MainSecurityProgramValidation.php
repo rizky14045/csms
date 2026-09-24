@@ -26,6 +26,27 @@ class MainSecurityProgramValidation
         ];
     }
 
+    public static function rulesForTimeline()
+    {
+        return [
+            'program_name' => 'required|string|max:255',
+            'cells' => 'required|array|min:1',
+            'cells.*' => 'array|size:2',
+            'cells.*.0' => 'integer|between:1,12',
+            'cells.*.1' => 'integer|between:1,4',
+        ];
+    }
+
+    public static function timelineMessages()
+    {
+        return [
+            'program_name.required' => 'Nama program wajib diisi.',
+            'cells.required' => 'Pilih minimal satu minggu pada timeline.',
+            'cells.min' => 'Pilih minimal satu minggu pada timeline.',
+            'cells.*.between' => 'Bulan/minggu tidak valid.',
+        ];
+    }
+
     public static function messages()
     {
         $messages = [

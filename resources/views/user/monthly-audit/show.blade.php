@@ -1080,83 +1080,10 @@
                                                                     <td class="text-nowrap my-auto text-center align-middle"
                                                                         rowspan="2">
                                                                         {{ $program->mainProgram->program_name }}</td>
-                                                                    <td>Planning</td>
+                                                                    <td>Rencana</td>
                                                                     @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $monthIndex => $month)
                                                                         @for ($week = 1; $week <= 4; $week++)
-                                                                            @php
-                                                                                // Hitung index bulan awal dan akhir
-                                                                                $startMonthIndex = array_search(
-                                                                                    $program->mainProgram->start_month,
-                                                                                    [
-                                                                                        'Januari',
-                                                                                        'Februari',
-                                                                                        'Maret',
-                                                                                        'April',
-                                                                                        'Mei',
-                                                                                        'Juni',
-                                                                                        'Juli',
-                                                                                        'Agustus',
-                                                                                        'September',
-                                                                                        'Oktober',
-                                                                                        'November',
-                                                                                        'Desember',
-                                                                                    ],
-                                                                                );
-                                                                                $endMonthIndex = array_search(
-                                                                                    $program->mainProgram->end_month,
-                                                                                    [
-                                                                                        'Januari',
-                                                                                        'Februari',
-                                                                                        'Maret',
-                                                                                        'April',
-                                                                                        'Mei',
-                                                                                        'Juni',
-                                                                                        'Juli',
-                                                                                        'Agustus',
-                                                                                        'September',
-                                                                                        'Oktober',
-                                                                                        'November',
-                                                                                        'Desember',
-                                                                                    ],
-                                                                                );
-
-                                                                                $isActive = false;
-
-                                                                                // Logika untuk menentukan sel aktif
-                                                                                if (
-                                                                                    $monthIndex > $startMonthIndex &&
-                                                                                    $monthIndex < $endMonthIndex
-                                                                                ) {
-                                                                                    $isActive = true; // Bulan berada di antara start_month dan end_month
-                                                                                } elseif (
-                                                                                    $monthIndex == $startMonthIndex &&
-                                                                                    $monthIndex == $endMonthIndex
-                                                                                ) {
-                                                                                    // Bulan awal dan akhir sama
-                                                                                    $isActive =
-                                                                                        $week >=
-                                                                                            $program->mainProgram
-                                                                                                ->start_week &&
-                                                                                        $week <=
-                                                                                            $program->mainProgram
-                                                                                                ->end_week;
-                                                                                } elseif (
-                                                                                    $monthIndex == $startMonthIndex
-                                                                                ) {
-                                                                                    // Bulan adalah bulan awal
-                                                                                    $isActive =
-                                                                                        $week >=
-                                                                                        $program->mainProgram
-                                                                                            ->start_week;
-                                                                                } elseif (
-                                                                                    $monthIndex == $endMonthIndex
-                                                                                ) {
-                                                                                    // Bulan adalah bulan akhir
-                                                                                    $isActive =
-                                                                                        $week <=
-                                                                                        $program->mainProgram->end_week;
-                                                                                }
-                                                                            @endphp
+                                                                            @php $isActive = in_array([$monthIndex + 1, $week], $program->planCells()); @endphp
                                                                             <td
                                                                                 class="{{ $isActive ? 'bg-danger text-white' : '' }}">
                                                                             </td>
@@ -1168,73 +1095,7 @@
                                                                     <td>Realisasi</td>
                                                                     @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $monthIndex => $month)
                                                                         @for ($week = 1; $week <= 4; $week++)
-                                                                            @php
-                                                                                // Hitung index bulan awal dan akhir
-                                                                                $startMonthIndex = array_search(
-                                                                                    $program->start_month,
-                                                                                    [
-                                                                                        'Januari',
-                                                                                        'Februari',
-                                                                                        'Maret',
-                                                                                        'April',
-                                                                                        'Mei',
-                                                                                        'Juni',
-                                                                                        'Juli',
-                                                                                        'Agustus',
-                                                                                        'September',
-                                                                                        'Oktober',
-                                                                                        'November',
-                                                                                        'Desember',
-                                                                                    ],
-                                                                                );
-                                                                                $endMonthIndex = array_search(
-                                                                                    $program->end_month,
-                                                                                    [
-                                                                                        'Januari',
-                                                                                        'Februari',
-                                                                                        'Maret',
-                                                                                        'April',
-                                                                                        'Mei',
-                                                                                        'Juni',
-                                                                                        'Juli',
-                                                                                        'Agustus',
-                                                                                        'September',
-                                                                                        'Oktober',
-                                                                                        'November',
-                                                                                        'Desember',
-                                                                                    ],
-                                                                                );
-
-                                                                                $isActive = false;
-
-                                                                                // Logika untuk menentukan sel aktif
-                                                                                if (
-                                                                                    $monthIndex > $startMonthIndex &&
-                                                                                    $monthIndex < $endMonthIndex
-                                                                                ) {
-                                                                                    $isActive = true; // Bulan berada di antara start_month dan end_month
-                                                                                } elseif (
-                                                                                    $monthIndex == $startMonthIndex &&
-                                                                                    $monthIndex == $endMonthIndex
-                                                                                ) {
-                                                                                    // Bulan awal dan akhir sama
-                                                                                    $isActive =
-                                                                                        $week >= $program->start_week &&
-                                                                                        $week <= $program->end_week;
-                                                                                } elseif (
-                                                                                    $monthIndex == $startMonthIndex
-                                                                                ) {
-                                                                                    // Bulan adalah bulan awal
-                                                                                    $isActive =
-                                                                                        $week >= $program->start_week;
-                                                                                } elseif (
-                                                                                    $monthIndex == $endMonthIndex
-                                                                                ) {
-                                                                                    // Bulan adalah bulan akhir
-                                                                                    $isActive =
-                                                                                        $week <= $program->end_week;
-                                                                                }
-                                                                            @endphp
+                                                                            @php $isActive = in_array([$monthIndex + 1, $week], $program->actualCells()); @endphp
                                                                             <td
                                                                                 class="{{ $isActive ? 'bg-info text-white' : '' }}">
                                                                             </td>

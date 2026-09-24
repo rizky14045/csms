@@ -61,7 +61,7 @@
                                 <tr>
                                     <td class="text-center align-middle" rowspan="2">{{ $index + 1 }}</td>
                                     <td class="text-nowrap my-auto text-center align-middle" rowspan="2">{{ $program->mainProgram->program_name }}</td>
-                                    <td>Planning</td>
+                                    <td>Rencana</td>
                                     @foreach(['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $monthIndex => $month)
                                         @for($week = 1; $week <= 4; $week++)
                                             @php

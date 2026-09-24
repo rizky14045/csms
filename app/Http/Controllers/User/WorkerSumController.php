@@ -13,13 +13,16 @@ class WorkerSumController extends Controller
 {
     public function index(Request $request){
 
-        $userId = Auth::guard('web')->user()->id;
+        $user = Auth::guard('web')->user();
+        $userId = $user->id;
+        $assignableUnits = \App\Services\Unit\UnitScope::assignableUnits($user);
+        $filterUnit = $request->get('unit_id');
 
         $qPerson    = $request->get('q_person', '');
         $qSecurity  = $request->get('q_security', '');
         $qAgreement = $request->get('q_agreement', '');
 
-        $personsQuery = ResponsiblePerson::where('user_id', $userId);
+        $personsQuery = \App\Services\Unit\UnitScope::applyMaster(ResponsiblePerson::query(), $user);
         if ($qPerson) {
             $personsQuery->where(function ($q) use ($qPerson) {
                 $q->where('name', 'ILIKE', "%{$qPerson}%")
@@ -28,7 +31,7 @@ class WorkerSumController extends Controller
             });
         }
 
-        $securitiesQuery = SecurityExternal::where('user_id', $userId);
+        $securitiesQuery = \App\Services\Unit\UnitScope::applyMaster(SecurityExternal::query(), $user);
         if ($qSecurity) {
             $securitiesQuery->where(function ($q) use ($qSecurity) {
                 $q->where('name', 'ILIKE', "%{$qSecurity}%")
@@ -37,7 +40,7 @@ class WorkerSumController extends Controller
             });
         }
 
-        $agreementsQuery = AgreementExternal::where('user_id', $userId);
+        $agreementsQuery = \App\Services\Unit\UnitScope::applyMaster(AgreementExternal::query(), $user);
         if ($qAgreement) {
             $agreementsQuery->where(function ($q) use ($qAgreement) {
                 $q->where('name', 'ILIKE', "%{$qAgreement}%")
@@ -46,6 +49,13 @@ class WorkerSumController extends Controller
             });
         }
 
+        if ($filterUnit && $assignableUnits->contains('id', (int) $filterUnit)) {
+            foreach ([$personsQuery, $securitiesQuery, $agreementsQuery] as $q) {
+                $q->where('unit_id', (int) $filterUnit);
+            }
+        }
+
+        $data['assignableUnits'] = $assignableUnits;
         $data['persons']    = $personsQuery->get();
         $data['securities'] = $securitiesQuery->get();
         $data['agreements'] = $agreementsQuery->get();

@@ -64,6 +64,17 @@
                         @enderror
                     </div>
 
+                    @if(isset($assignableUnits) && $assignableUnits->isNotEmpty())
+                    <div class="form-group mb-3">
+                        <label for="assigned_unit_id" class="form-label"><span class="text-danger">*</span> Unit Penugasan (Induk / UL)</label>
+                        <select class="form-select" id="assigned_unit_id" name="assigned_unit_id" required>
+                            @foreach($assignableUnits as $u)
+                                <option value="{{ $u->id }}" {{ (string) old('assigned_unit_id', $security->unit_id) === (string) $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+
                     <div class="form-group mb-3">
                         <label for="nid" class="form-label"><span class="text-danger">*</span> NID</label>
                         <input class="form-control @error('nid') is-invalid @enderror" id="nid" type="text"

@@ -24,6 +24,7 @@ class AgreementExternalService
         try {
             $agreementExternal = AgreementExternal::create([
                 'user_id' => auth()->id(),
+                'unit_id' => $data['unit_id'] ?? null,
                 'regional_unit' => $data['regional_unit'] ?? "",
                 'instansi' => $data['instansi'] ?? "",
                 'name' => $data['name'] ?? "",
@@ -91,6 +92,10 @@ class AgreementExternalService
                 'note' => $data['note'] ?? "",
                 'updated_by' => auth()->id(),
             ];
+
+            if (!empty($data['unit_id'])) {
+                $updateData['unit_id'] = $data['unit_id'];
+            }
 
             
             $agreement->update($updateData);

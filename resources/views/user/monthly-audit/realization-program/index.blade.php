@@ -31,7 +31,7 @@
                             <tr>
                                 <th scope="col">No</th>
                                 <th scope="col">Nama Program</th>
-                                <th scope="col">Planning Program</th>
+                                <th scope="col">Rencana Program</th>
                                 <th scope="col">Realiasasi Program</th>
                                 <th scope="col">Keterangan</th>
                                 <th scope="col">Action</th>

@@ -22,7 +22,7 @@ $months = [
     <!-- HEADER -->
     <tr>
 
-        <td colspan="40"></td>
+        <td colspan="42"></td>
 
         <td colspan="10"
             style="border:1px solid #000; font-weight:bold;">
@@ -33,7 +33,7 @@ $months = [
 
     <tr>
 
-        <td colspan="40"
+        <td colspan="42"
             style="
                 text-align:center;
                 font-size:14pt;
@@ -51,7 +51,7 @@ $months = [
 
     <tr>
 
-        <td colspan="40"
+        <td colspan="42"
             style="
                 text-align:center;
                 font-weight:bold;
@@ -68,7 +68,7 @@ $months = [
 
     <tr>
 
-        <td colspan="40"></td>
+        <td colspan="42"></td>
 
         <td colspan="10"
             style="border:1px solid #000;">
@@ -88,7 +88,7 @@ $months = [
     <!-- PROGRAM TITLE -->
     <tr>
 
-        <td colspan="51"
+        <td colspan="52"
             style="
                 border:1px solid #000;
                 background:#D9EAD3;
@@ -134,6 +134,15 @@ $months = [
             </th>
 
         @endforeach
+
+        <th rowspan="2"
+            style="
+                border:1px solid #000;
+                text-align:center;
+                background:#D9EAD3;
+            ">
+            Keterangan
+        </th>
 
     </tr>
 
@@ -197,7 +206,6 @@ $months = [
         </td>
 
         <td rowspan="2"
-            colspan="2"
             style="
                 border:1px solid #000;
                 text-align:center;
@@ -205,41 +213,18 @@ $months = [
             {{ $program->mainProgram->program_name }}
         </td>
 
+        <td style="
+                border:1px solid #000;
+                text-align:center;
+            ">
+            Rencana
+        </td>
+
         @foreach($months as $monthIndex => $month)
 
             @for($week=1; $week<=4; $week++)
 
-                @php
-
-                    $active = false;
-
-                    if(
-                        $monthIndex > $planningStartMonth &&
-                        $monthIndex < $planningEndMonth
-                    ){
-                        $active = true;
-                    }
-
-                    elseif(
-                        $monthIndex == $planningStartMonth &&
-                        $monthIndex == $planningEndMonth
-                    ){
-                        $active =
-                            $week >= $program->mainProgram->start_week &&
-                            $week <= $program->mainProgram->end_week;
-                    }
-
-                    elseif($monthIndex == $planningStartMonth){
-                        $active =
-                            $week >= $program->mainProgram->start_week;
-                    }
-
-                    elseif($monthIndex == $planningEndMonth){
-                        $active =
-                            $week <= $program->mainProgram->end_week;
-                    }
-
-                @endphp
+                @php $active = in_array([$monthIndex + 1, $week], $program->planCells()); @endphp
 
                 <td style="
                     border:1px solid #000;
@@ -252,50 +237,36 @@ $months = [
 
         @endforeach
 
+        <td rowspan="2"
+            style="
+                border:1px solid #000;
+                text-align:left;
+                vertical-align:top;
+            ">
+            {{ $program->note }}
+        </td>
+
     </tr>
 
     <!-- REALISASI -->
     <tr>
 
+        <td style="
+                border:1px solid #000;
+                text-align:center;
+            ">
+            Realisasi
+        </td>
+
         @foreach($months as $monthIndex => $month)
 
             @for($week=1; $week<=4; $week++)
 
-                @php
-
-                    $active = false;
-
-                    if(
-                        $monthIndex > $realisasiStartMonth &&
-                        $monthIndex < $realisasiEndMonth
-                    ){
-                        $active = true;
-                    }
-
-                    elseif(
-                        $monthIndex == $realisasiStartMonth &&
-                        $monthIndex == $realisasiEndMonth
-                    ){
-                        $active =
-                            $week >= $program->start_week &&
-                            $week <= $program->end_week;
-                    }
-
-                    elseif($monthIndex == $realisasiStartMonth){
-                        $active =
-                            $week >= $program->start_week;
-                    }
-
-                    elseif($monthIndex == $realisasiEndMonth){
-                        $active =
-                            $week <= $program->end_week;
-                    }
-
-                @endphp
+                @php $active = in_array([$monthIndex + 1, $week], $program->actualCells()); @endphp
 
                 <td style="
                     border:1px solid #000;
-                    {{ $active ? 'background:#0dcaf0;' : '' }}
+                    {{ $active ? 'background:#0d6efd;' : '' }}
                 ">
 
                 </td>

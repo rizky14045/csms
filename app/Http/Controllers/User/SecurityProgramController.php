@@ -34,12 +34,13 @@ class SecurityProgramController extends Controller
         $userId = Auth::user()->id;
         $result = $this->securityProgramService->getAllSecurityProgram(25, true, ['programs'], $userId);
         $data['programs'] = getPaginate($result);
+        $data['assignableUnits'] = \App\Services\Unit\UnitScope::assignableUnits(Auth::user());
         return view('user.security-program.index',$data);
 
     }
 
     public function create(){
-        return view('user.security-program.create');
+        return view('user.security-program.create', ['assignableUnits' => \App\Services\Unit\UnitScope::assignableUnits(Auth::user())]);
     }
 
     public function store(Request $request){
@@ -49,7 +50,7 @@ class SecurityProgramController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $this->securityProgramService->createSecurityProgram($request->all());
+        $this->securityProgramService->createSecurityProgram(array_merge($request->all(), ['unit_id' => \App\Services\Unit\UnitScope::assignedUnitFor(Auth::user(), $request->input('assigned_unit_id'))]));
             
         Alert::success('Tambah Berhasil', 'Program Keamanan berhasil dibuat!');
         return redirect()->route('user.security-program.index');
@@ -57,16 +58,17 @@ class SecurityProgramController extends Controller
 
     public function edit(SecurityProgram $program){
         $userId = Auth::user()->id;
-        if ($program->user_id !== $userId) {
+        if (!\App\Services\Unit\UnitScope::canAccess($program, Auth::user())) {
             abort(403);
         }
         $data['program'] = $program;
+        $data['assignableUnits'] = \App\Services\Unit\UnitScope::assignableUnits(Auth::user());
         return view('user.security-program.edit',$data);
     }
 
     public function update(Request $request, SecurityProgram $program){
         $userId = Auth::user()->id;
-        if ($program->user_id !== $userId) {
+        if (!\App\Services\Unit\UnitScope::canAccess($program, Auth::user())) {
             abort(403);
         }
         // Validation rules
@@ -75,7 +77,7 @@ class SecurityProgramController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $this->securityProgramService->updateSecurityProgram($program, $request->all());
+        $this->securityProgramService->updateSecurityProgram($program, array_merge($request->all(), ['unit_id' => \App\Services\Unit\UnitScope::assignedUnitFor(Auth::user(), $request->input('assigned_unit_id'))]));
         
         Alert::success('Update Berhasil', 'Program Keamanan berhasil diubah!');
         return redirect()->route('user.security-program.index');
@@ -83,7 +85,7 @@ class SecurityProgramController extends Controller
 
     public function destroy(SecurityProgram $program){
         $userId = Auth::user()->id;
-        if ($program->user_id !== $userId) {
+        if (!\App\Services\Unit\UnitScope::canAccess($program, Auth::user())) {
             abort(403);
         }
 

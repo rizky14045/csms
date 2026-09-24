@@ -32,7 +32,7 @@ class ResponsiblePersonController extends Controller
 
     public function create(){
 
-        return view('user.responsible-person.create');
+        return view('user.responsible-person.create', ['assignableUnits' => \App\Services\Unit\UnitScope::assignableUnits(auth()->user())]);
 
     }
     public function store(Request $request){
@@ -48,6 +48,7 @@ class ResponsiblePersonController extends Controller
             try {
                 $person = ResponsiblePerson::create([
                     'user_id'                => $request->boolean('save_to_master') ? auth()->id() : null,
+                    'unit_id' => auth()->user()->unit_id,
                     'name'                   => $request->name ?? '',
                     'position'               => $request->position ?? '',
                     'work_unit'              => $request->work_unit ?? '',
@@ -78,22 +79,23 @@ class ResponsiblePersonController extends Controller
             return redirect()->route('user.monthly-audit.worker-sum.index', ['monthlyId' => $monthlyId]);
         }
 
-        $this->responsiblePersonService->createResponsiblePerson($request->all());
+        $this->responsiblePersonService->createResponsiblePerson(array_merge($request->all(), ['unit_id' => \App\Services\Unit\UnitScope::assignedUnitFor(auth()->user(), $request->input('assigned_unit_id'))]));
 
         Alert::success('Tambah Berhasil', 'Data penanggung jawab keamanan berhasil dibuat!');
         return redirect()->route('user.worker-sum.index');
     }
 
     public function edit(ResponsiblePerson $person){
-        if($person->user_id !== auth()->id()){
+        if(!\App\Services\Unit\UnitScope::canAccess($person, auth()->user())){
             abort(404);
         }
         $data['person'] = $person;
+        $data['assignableUnits'] = \App\Services\Unit\UnitScope::assignableUnits(auth()->user());
         return view('user.responsible-person.edit',$data);
     }
 
     public function update(Request $request, ResponsiblePerson $person){
-        if($person->user_id !== auth()->id()){
+        if(!\App\Services\Unit\UnitScope::canAccess($person, auth()->user())){
             abort(404);
         }
         // Validation rules
@@ -102,14 +104,14 @@ class ResponsiblePersonController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $this->responsiblePersonService->updateResponsiblePerson($person, $request->all());
+        $this->responsiblePersonService->updateResponsiblePerson($person, array_merge($request->all(), ['unit_id' => \App\Services\Unit\UnitScope::assignedUnitFor(auth()->user(), $request->input('assigned_unit_id'))]));
         
         Alert::success('Update Berhasil', 'Data penanggung jawab keamanan berhasil diubah!');
         return redirect()->route('user.worker-sum.index');
     }
 
     public function destroy(ResponsiblePerson $person){
-        if($person->user_id !== auth()->id()){
+        if(!\App\Services\Unit\UnitScope::canAccess($person, auth()->user())){
             abort(404);
         }
         $this->responsiblePersonService->deleteResponsiblePerson($person);

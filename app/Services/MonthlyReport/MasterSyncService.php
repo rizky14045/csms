@@ -40,12 +40,12 @@ class MasterSyncService
             'security' => [
                 'label' => 'Personil Satpam', 'mode' => 'duplicate',
                 'master' => Security::class, 'row' => SecurityForm::class, 'fk' => 'security_id',
-                'scope' => fn($q, $uid) => $q->where('user_id', $uid),
+                'scope' => fn($q, $r) => \App\Services\Unit\UnitScope::applyReportMaster($q, $r),
             ],
             'attribute' => [
                 'label' => 'Atribut/Sarana', 'mode' => 'duplicate',
                 'master' => Attribute::class, 'row' => FormAttribute::class, 'fk' => 'attribute_id',
-                'scope' => fn($q, $uid) => $q->where('user_id', $uid)->where(function ($w) {
+                'scope' => fn($q, $r) => \App\Services\Unit\UnitScope::applyReportMaster($q, $r)->where(function ($w) {
                     $w->whereNull('type_attribute')->orWhere('type_attribute', '!=', 'Administrasi');
                 }),
                 'nullify' => ['unit_id'],
@@ -53,22 +53,22 @@ class MasterSyncService
             'administration' => [
                 'label' => 'Administrasi', 'mode' => 'reference',
                 'master' => Attribute::class, 'row' => FormAttribute::class, 'fk' => 'attribute_id',
-                'scope' => fn($q, $uid) => $q->where('type_attribute', 'Administrasi'),
+                'scope' => fn($q, $r) => \App\Services\Unit\UnitScope::applyReportAdministration($q->where('type_attribute', 'Administrasi'), $r),
             ],
             'person' => [
                 'label' => 'Penanggung Jawab', 'mode' => 'duplicate',
                 'master' => ResponsiblePerson::class, 'row' => MonthlyResponsiblePerson::class, 'fk' => 'responsible_person_id',
-                'scope' => fn($q, $uid) => $q->where('user_id', $uid),
+                'scope' => fn($q, $r) => \App\Services\Unit\UnitScope::applyReportMaster($q, $r),
             ],
             'agreement' => [
                 'label' => 'Perjanjian Eksternal', 'mode' => 'duplicate',
                 'master' => AgreementExternal::class, 'row' => MonthlyAgreementExternal::class, 'fk' => 'agreement_external_id',
-                'scope' => fn($q, $uid) => $q->where('user_id', $uid),
+                'scope' => fn($q, $r) => \App\Services\Unit\UnitScope::applyReportMaster($q, $r),
             ],
             'security_external' => [
                 'label' => 'Pengamanan Eksternal', 'mode' => 'duplicate',
                 'master' => SecurityExternal::class, 'row' => MonthlySecurityExternal::class, 'fk' => 'security_external_id',
-                'scope' => fn($q, $uid) => $q->where('user_id', $uid),
+                'scope' => fn($q, $r) => \App\Services\Unit\UnitScope::applyReportMaster($q, $r),
             ],
             'vulnerability_internal' => [
                 'label' => 'Kerawanan Internal', 'mode' => 'reference',
@@ -121,7 +121,7 @@ class MasterSyncService
         $covered = array_merge($this->coveredMasterIds($cfg, $report), $this->excludedIds($report, $section));
 
         $query = $cfg['master']::query();
-        ($cfg['scope'])($query, $report->user_id);
+        ($cfg['scope'])($query, $report);
         if ($covered) {
             $query->whereNotIn('id', $covered);
         }
@@ -217,7 +217,7 @@ class MasterSyncService
         $year = explode('-', $report->report_date)[0];
         $added = 0;
 
-        $programs = SecurityProgram::where('user_id', $report->user_id)->where('year', $year)->get();
+        $programs = \App\Services\Unit\UnitScope::applyReportMaster(SecurityProgram::query(), $report)->where('year', $year)->get();
         $existingPrograms = MonthlySecurityProgram::where('monthly_report_id', $report->id)->get()->keyBy('program_id');
         $existingMains = MonthlyMainSecurityProgram::where('monthly_report_id', $report->id)->pluck('main_program_id')->all();
 
@@ -233,7 +233,11 @@ class MasterSyncService
                 $added++;
             }
 
-            $mains = MainSecurityProgram::where('program_id', $program->id)->where('user_id', $report->user_id)->get();
+            $mainsQuery = MainSecurityProgram::where('program_id', $program->id);
+            if (!\App\Services\Unit\UnitScope::isGroupUnit($report->unit_id)) {
+                $mainsQuery->where('user_id', $report->user_id);
+            }
+            $mains = $mainsQuery->get();
             foreach ($mains as $item) {
                 if (in_array($item->id, $existingMains)) {
                     continue;
@@ -249,6 +253,8 @@ class MasterSyncService
                     'start_week'         => $item->start_week,
                     'end_month'          => $item->end_month,
                     'end_week'           => $item->end_week,
+                    // Realisasi mulai kosong; rencana selalu dibaca dari master program.
+                    'schedule'           => '[]',
                 ]);
                 $added++;
             }

@@ -40,34 +40,6 @@
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-group mb-3">
-                            <label for="description" class="form-label">Deskripsi</label>
-                            <input class="form-control" type="text" id="description" required="" placeholder="Masukan deskripsi" name="description" value="{{ old('description', $program->description) }}">
-                            @error('description')
-                                <div class="error text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="year" class="form-label">Tahun</label>
-                            <input class="form-control" type="number" id="year" required="" name="year" value="{{ old('year', $program->year) }}">
-                            @error('year')
-                                <div class="error text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-12">
-                                <div class="d-flex gap-3 justify-content-end">
-
-                                    <a href="{{route('user.security-program.index')}}" class="btn btn-danger"> Kembali</a>
-                                    <button
-                                        type="submit"
-                                        class="btn btn-success"
-                                    >
-                                        Simpan
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                 </form>

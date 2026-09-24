@@ -16,7 +16,9 @@ class FormSecurityProgramController extends Controller
     public function index($monthlyId){
 
         $data['monthlyId'] = $monthlyId;
-        $data['programs'] = MonthlySecurityProgram::with('securityProgram','programs')->where('monthly_report_id',$monthlyId)->get();
+        $data['programs'] = MonthlySecurityProgram::with('securityProgram','programs.mainProgram')->where('monthly_report_id',$monthlyId)->get();
+        $data['months'] = \App\Models\MainSecurityProgram::MONTHS;
+        $data['weeks'] = \App\Models\MainSecurityProgram::WEEKS;
         return view('user.monthly-audit.form-security-program',$data);
 
     }

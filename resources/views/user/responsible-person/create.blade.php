@@ -113,6 +113,17 @@
                     </div>
                     @endif
 
+                    @if(isset($assignableUnits) && $assignableUnits->isNotEmpty() && empty($monthlyId ?? null))
+                    <div class="form-group mb-3">
+                        <label for="assigned_unit_id" class="form-label"><span class="text-danger">*</span> Unit Penugasan (Induk / UL)</label>
+                        <select class="form-select" id="assigned_unit_id" name="assigned_unit_id" required>
+                            @foreach($assignableUnits as $u)
+                                <option value="{{ $u->id }}" {{ (string) old('assigned_unit_id', auth()->user()->unit_id) === (string) $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+
                     <div class="d-flex gap-3 justify-content-end">
                         <a href="{{ $monthlyId ? route('user.monthly-audit.worker-sum.index', ['monthlyId' => $monthlyId]) : route('user.worker-sum.index') }}" class="btn btn-danger">Kembali</a>
                         <button type="submit" class="btn btn-success">Simpan</button>

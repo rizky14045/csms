@@ -32,7 +32,7 @@ class MainSecurityProgramService
                 $query->with($with);
             }
 
-            if ($user_id) {
+            if ($user_id && !\App\Services\Unit\UnitScope::isGroup(\App\Models\User::find($user_id))) {
                 $query->where('user_id', $user_id);
             }
 
@@ -86,6 +86,24 @@ class MainSecurityProgramService
         }
     }
 
+    /** Jadwal per-minggu (cells) jika ada; kalau tidak, pakai rentang start-end lama. start/end selalu terisi agar fitur lama tetap jalan. */
+    protected function scheduleFields(array $data): array
+    {
+        if (!empty($data['cells']) && is_array($data['cells'])) {
+            $cells = MainSecurityProgram::normalizeCells($data['cells']);
+
+            return MainSecurityProgram::rangeFromCells($cells) + ['schedule' => json_encode($cells)];
+        }
+
+        return [
+            'start_month' => $data['start_month'],
+            'start_week' => $data['start_week'],
+            'end_month' => $data['end_month'],
+            'end_week' => $data['end_week'],
+            'schedule' => null,
+        ];
+    }
+
     public function createMainSecurityProgram(array $data, $program_id)
     {
         DB::beginTransaction();
@@ -95,12 +113,8 @@ class MainSecurityProgramService
                 'user_id' => auth()->id(),
                 'program_id' => $program_id,
                 'program_name' => $data['program_name'],
-                'start_month' => $data['start_month'],
-                'start_week' => $data['start_week'],
-                'end_month' => $data['end_month'],
-                'end_week' => $data['end_week'],
                 'created_by' => auth()->id(),
-            ]);
+            ] + $this->scheduleFields($data));
             
             DB::commit();
 
@@ -151,12 +165,8 @@ class MainSecurityProgramService
 
             $updateData = [
                 'program_name' => $data['program_name'],
-                'start_month' => $data['start_month'],
-                'start_week' => $data['start_week'],
-                'end_month' => $data['end_month'],
-                'end_week' => $data['end_week'],
                 'updated_by' => auth()->id(),
-            ];
+            ] + $this->scheduleFields($data);
 
             $program->update($updateData);
 

@@ -77,11 +77,13 @@
                         <input class="form-control @error('standard_contract') is-invalid @enderror" type="text"
                             id="standard_contract" required placeholder="Masukan jumlah standar kontrak"
                             name="standard_contract"
-                            value="{{ old('standard_contract', $attribute->standard_contract) }}">
+                            value="{{ old('standard_contract', $contractTotal ?? $attribute->standard_contract) }}">
                         @error('standard_contract')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    @include('user.attribute._allocation')
 
                     <div class="form-group mb-3">
                         <label for="type_attribute" class="form-label">Tipe Atribut</label>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Models\Security;
 use App\Models\SecurityForm;
+use App\Services\Unit\UnitScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -42,13 +43,16 @@ class SecurityController extends Controller
         $data['securities'] = getPaginate($result);
         $data['request'] = request();
         $data['expiryStats'] = $this->securityService->getExpiryStats(auth()->user()->id);
+        $data['assignableUnits'] = UnitScope::assignableUnits(auth()->user());
+        $data['isGroup'] = $data['assignableUnits']->isNotEmpty();
 
         return view('user.security.index',$data);
 
     }
 
     public function create(){
-        return view('user.security.create');
+        $data['assignableUnits'] = UnitScope::assignableUnits(auth()->user());
+        return view('user.security.create', $data);
     }
 
     public function store(Request $request){
@@ -86,6 +90,7 @@ class SecurityController extends Controller
 
                 $security = Security::create([
                     'user_id'             => $request->boolean('save_to_master') ? auth()->id() : null,
+                    'unit_id'             => auth()->user()->unit_id,
                     'name'                => $request->name ?? '',
                     'gender'              => $request->gender ?? '',
                     'unit_work'           => $request->unit_work ?? '',
@@ -116,6 +121,7 @@ class SecurityController extends Controller
 
             $data = $request->all();
             $data['user_id'] = auth()->id();
+            $data['unit_id'] = UnitScope::assignedUnitFor(auth()->user(), $request->input('assigned_unit_id'));
             $data['kta_file'] = $ktaFile;
 
             $this->securityService->createSecurity($data);
@@ -138,6 +144,7 @@ class SecurityController extends Controller
         }
         
         $data['security'] = $security;
+        $data['assignableUnits'] = UnitScope::assignableUnits(auth()->user());
 
         return view('user.security.edit',$data);
     }
@@ -161,6 +168,9 @@ class SecurityController extends Controller
             }
 
             $data = $request->all();
+            $data['unit_id'] = UnitScope::isGroup(auth()->user())
+                ? UnitScope::assignedUnitFor(auth()->user(), $request->input('assigned_unit_id'))
+                : null;
 
             $ktaFile = null;
             if ($request->hasFile('kta_file')) {
@@ -194,7 +204,10 @@ class SecurityController extends Controller
 
     public function downloadTemplate()
     {
-        return Excel::download(new SecurityTemplateExport(), 'format-import-satpam.xlsx');
+        $user = auth()->user();
+        $unitCode = UnitScope::isGroup($user) ? (\App\Models\Unit::find($user->unit_id)->unit_code ?? '') : null;
+
+        return Excel::download(new SecurityTemplateExport($unitCode), 'format-import-satpam.xlsx');
     }
 
     public function importExcel(Request $request)

@@ -110,7 +110,7 @@
                         </div>
                         <div class="form-group mb-3">
                             <label for="emailaddress" class="form-label">Keterangan</label>
-                            <input class="form-control" type="text" id="emailaddress" required="" placeholder="Masukan Keterangan" name="note" value="{{$main->note}}">
+                            <input class="form-control" type="text" id="emailaddress" placeholder="Masukan Keterangan" name="note" value="{{$main->note}}">
                             @if($errors->has('note'))
                                 <div class="error text-danger">{{ $errors->first('note') }}</div>
                             @endif

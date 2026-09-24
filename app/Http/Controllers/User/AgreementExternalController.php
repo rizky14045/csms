@@ -33,7 +33,7 @@ class AgreementExternalController extends Controller
 
     public function create(){
 
-        return view('user.agreement-external.create');
+        return view('user.agreement-external.create', ['assignableUnits' => \App\Services\Unit\UnitScope::assignableUnits(auth()->user())]);
 
     }
     public function store(Request $request){
@@ -49,6 +49,7 @@ class AgreementExternalController extends Controller
             try {
                 $agreement = AgreementExternal::create([
                     'user_id'       => $request->boolean('save_to_master') ? auth()->id() : null,
+                    'unit_id' => auth()->user()->unit_id,
                     'instansi'      => $request->instansi ?? '',
                     'name'          => $request->name ?? '',
                     'regional_unit' => $request->regional_unit ?? '',
@@ -75,21 +76,22 @@ class AgreementExternalController extends Controller
             return redirect()->route('user.monthly-audit.worker-sum.index', ['monthlyId' => $monthlyId]);
         }
 
-        $this->agreementExternalService->createAgreementExternal($request->all());
+        $this->agreementExternalService->createAgreementExternal(array_merge($request->all(), ['unit_id' => \App\Services\Unit\UnitScope::assignedUnitFor(auth()->user(), $request->input('assigned_unit_id'))]));
 
         Alert::success('Tambah Berhasil', 'Data kerja sama external berhasil dibuat!');
         return redirect()->route('user.worker-sum.index');
     }
     public function edit(AgreementExternal $agreement){
-        if($agreement->user_id !== auth()->id()){
+        if(!\App\Services\Unit\UnitScope::canAccess($agreement, auth()->user())){
             abort(404);
         }
         $data['agreement'] = $agreement;
+        $data['assignableUnits'] = \App\Services\Unit\UnitScope::assignableUnits(auth()->user());
         return view('user.agreement-external.edit',$data);
     }
 
     public function update(Request $request, AgreementExternal $agreement){
-        if($agreement->user_id !== auth()->id()){
+        if(!\App\Services\Unit\UnitScope::canAccess($agreement, auth()->user())){
             abort(404);
         }
         // Validation rules
@@ -98,13 +100,13 @@ class AgreementExternalController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $this->agreementExternalService->updateAgreementExternal($agreement, $request->all());
+        $this->agreementExternalService->updateAgreementExternal($agreement, array_merge($request->all(), ['unit_id' => \App\Services\Unit\UnitScope::assignedUnitFor(auth()->user(), $request->input('assigned_unit_id'))]));
         
         Alert::success('Update Berhasil', 'Data kerja sama external berhasil diubah!');
         return redirect()->route('user.worker-sum.index');
     }
     public function destroy(AgreementExternal $agreement){
-        if($agreement->user_id !== auth()->id()){
+        if(!\App\Services\Unit\UnitScope::canAccess($agreement, auth()->user())){
             abort(404);
         }
         $this->agreementExternalService->deleteAgreementExternal($agreement);

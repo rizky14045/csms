@@ -33,7 +33,42 @@ class RealizationProgramController extends Controller
 
     }
 
+    /** Simpan realisasi per-minggu satu baris (AJAX dari halaman Program Keamanan laporan bulanan). */
+    protected function updateTimeline(Request $request, $monthlyId, $programId, $mainId)
+    {
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'cells' => 'present|array',
+            'cells.*' => 'array|size:2',
+            'cells.*.0' => 'integer|between:1,12',
+            'cells.*.1' => 'integer|between:1,4',
+            'note' => 'nullable|string|max:1000',
+        ], ['cells.*.between' => 'Bulan/minggu tidak valid.']);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $program = MonthlyMainSecurityProgram::where('monthly_report_id', $monthlyId)
+            ->where('monthly_program_id', $programId)->where('id', $mainId)->firstOrFail();
+
+        $cells = \App\Models\MainSecurityProgram::normalizeCells($request->input('cells', []));
+        $program->schedule = json_encode($cells);
+        if ($cells) {
+            foreach (\App\Models\MainSecurityProgram::rangeFromCells($cells) as $k => $v) {
+                $program->$k = $v;
+            }
+        }
+        $program->note = $request->input('note');
+        $program->save();
+
+        return response()->json(['success' => true, 'message' => 'Realisasi tersimpan.', 'cells' => $program->actualCells()]);
+    }
+
     public function update(Request $request,$monthlyId,$programId,$mainId){
+
+        if ($request->expectsJson()) {
+            return $this->updateTimeline($request, $monthlyId, $programId, $mainId);
+        }
 
         try {
 

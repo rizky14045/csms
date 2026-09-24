@@ -24,6 +24,7 @@ class SecurityExternalService
         try {
             $securityExternal = SecurityExternal::create([
                 'user_id' => auth()->id(),
+                'unit_id' => $data['unit_id'] ?? null,
                 'name' => $data['name'] ?? "",
                 'gender' => $data['gender'] ?? "",
                 'instansi' => $data['instansi'] ?? "",
@@ -89,6 +90,10 @@ class SecurityExternalService
                 'note' => $data['note'] ?? "",
                 'updated_by' => auth()->id(),
             ];
+
+            if (!empty($data['unit_id'])) {
+                $updateData['unit_id'] = $data['unit_id'];
+            }
 
             
             $security->update($updateData);

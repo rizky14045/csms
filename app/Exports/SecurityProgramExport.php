@@ -62,7 +62,7 @@ class SecurityProgramExport implements
 
             'A' => 5,
             'B' => 25,
-            'C' => 15,
+            'C' => 12,
 
             'D' => 4,
             'E' => 4,
@@ -113,6 +113,7 @@ class SecurityProgramExport implements
             'AW' => 4,
             'AX' => 4,
             'AY' => 4,
+            'AZ' => 30,
 
         ];
     }
