@@ -126,24 +126,24 @@
                         <tbody>
                             @foreach ($securities as $security)
                                 @php
-                                    $rowClass = '';
+                                    $ktaStyle = '';
                                     if ($security->expired_card_date) {
                                         $exp = \Carbon\Carbon::parse($security->expired_card_date)->startOfDay();
                                         if ($exp->lt(now()->startOfDay())) {
-                                            $rowClass = 'table-danger';
+                                            $ktaStyle = 'background:#dc3545;color:#fff;font-weight:600;';
                                         } elseif ($exp->lte(now()->addMonths(3)->startOfDay())) {
-                                            $rowClass = 'table-warning';
+                                            $ktaStyle = 'background:#ffc107;color:#000;font-weight:600;';
                                         }
                                     }
                                 @endphp
-                                <tr class="{{ $rowClass }}">
+                                <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $security->name }}</td>
                                     <td>{{ $security->gender }}</td>
                                     <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $security->unit_work }}</td>
                                     <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $security->nid }}</td>
                                     <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $security->registration_number }}</td>
-                                    <td>@if($security->expired_card_date) {{ \Carbon\Carbon::parse($security->expired_card_date)->format('d-m-Y') }} @else - @endif</td>
+                                    <td style="{{ $ktaStyle }}">@if($security->expired_card_date) {{ \Carbon\Carbon::parse($security->expired_card_date)->format('d-m-Y') }} @else - @endif</td>
                                     <td>{{ $security->position }}</td>
                                     <td>{{ $security->birth_place }}</td>
                                     <td>@if($security->birth_date) {{ \Carbon\Carbon::parse($security->birth_date)->format('d-m-Y') }} @else - @endif</td>
