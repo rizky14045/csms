@@ -125,7 +125,18 @@
                         </thead>
                         <tbody>
                             @foreach ($securities as $security)
-                                <tr>
+                                @php
+                                    $rowClass = '';
+                                    if ($security->expired_card_date) {
+                                        $exp = \Carbon\Carbon::parse($security->expired_card_date)->startOfDay();
+                                        if ($exp->lt(now()->startOfDay())) {
+                                            $rowClass = 'table-danger';
+                                        } elseif ($exp->lte(now()->addMonths(3)->startOfDay())) {
+                                            $rowClass = 'table-warning';
+                                        }
+                                    }
+                                @endphp
+                                <tr class="{{ $rowClass }}">
                                     <td>{{ $loop->iteration }}</td>
                                     <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $security->name }}</td>
                                     <td>{{ $security->gender }}</td>
