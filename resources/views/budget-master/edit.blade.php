@@ -16,7 +16,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('budget-master.update', ['item' => $item->id]) }}" class="my-4" method="POST">
+                <form action="{{ route('budget-master.update', ['item' => $item->id]) }}" class="my-4" method="POST" id="form-budget-master" onsubmit="return confirmSave('form-budget-master', 'Perubahan disimpan ke master data. Laporan bulanan yang sudah ada tidak berubah.')">
                     @csrf
                     @method('PATCH')
                     <div class="col-xl-9">
