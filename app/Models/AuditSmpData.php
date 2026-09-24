@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class AuditSmpData extends Model
 {
     use HasFactory, SoftDeletes;
+    use \App\Models\Concerns\HasStatusHistory;
 
     protected $guarded = ['id'];
 
@@ -70,5 +71,28 @@ class AuditSmpData extends Model
         )->where(function ($q) {
             $q->whereNull('pencapaian_nilai_kriteria');
         })->where('type', '=', 'kriteria');
+    }
+
+    public function statusHistoryCreatedLabel(): string
+    {
+        return 'Audit SMP dibuat';
+    }
+
+    public function statusHistoryChanges(): array
+    {
+        if (!$this->wasChanged('status')) {
+            return [];
+        }
+
+        $from = $this->getOriginal('status');
+        $to   = (int) $this->status;
+        $labels = [
+            0 => 'Dikembalikan ke draft',
+            1 => 'Dikirim oleh Unit',
+            2 => 'Auditor ditetapkan (proses audit)',
+            3 => 'Audit selesai (dikirim Auditor)',
+        ];
+
+        return [['status', $labels[$to] ?? 'Status berubah menjadi ' . $to, $from === null ? null : (int) $from, $to]];
     }
 }

@@ -183,6 +183,7 @@
 
                                         </div>
                                         @endif
+                                        <div class="mt-1">@include('components.status-history-button', ['type' => 'assesment', 'id' => $assesment->id])</div>
                                     </td>
                                 </tr>
                             @endforeach

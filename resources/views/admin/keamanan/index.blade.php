@@ -105,6 +105,7 @@
                                                     👁 Show
                                                 </a>
                     @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
+                    @include('components.status-history-button', ['type' => 'kpi', 'id' => $kpi->id])
                                         </div>
                                         @else
                                         <div style="
@@ -121,6 +122,7 @@
                                                     👁 Show
                                                 </a>
                     @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
+                    @include('components.status-history-button', ['type' => 'kpi', 'id' => $kpi->id])
 
                                                 {{-- SEND --}}
                                                 {{--

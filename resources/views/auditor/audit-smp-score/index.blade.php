@@ -69,6 +69,7 @@
                                         @if($audit->status >= 3)
                                         <a href="{{route('export.audit-smp',['audit'=>$audit->id])}}" class="btn btn-success btn-sm">📥 Export Excel</a>
                                         @endif
+                                        @include('components.status-history-button', ['type' => 'audit-smp', 'id' => $audit->id])
                                     </td>
                                 </tr>
                             @endforeach

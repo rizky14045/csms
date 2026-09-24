@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Assesment extends Model
 {
     use HasFactory, SoftDeletes;
+    use \App\Models\Concerns\HasStatusHistory;
     protected $guarded = ['id'];
 
     public function vendor()
@@ -46,5 +47,28 @@ class Assesment extends Model
             $q->whereNull('evaluation_unit')
             ->orWhere('evaluation_unit', 0);
         });
+    }
+
+    public function statusHistoryCreatedLabel(): string
+    {
+        return 'Assessment dibuat (Input BUJP)';
+    }
+
+    public function statusHistoryChanges(): array
+    {
+        if (!$this->wasChanged('send_status')) {
+            return [];
+        }
+
+        $from = $this->getOriginal('send_status');
+        $to   = (int) $this->send_status;
+        $labels = [
+            0 => 'Dikembalikan ke Input BUJP',
+            1 => 'Dikirim BUJP ke Unit (pengecekan Unit)',
+            2 => 'Diterima Unit dan dikirim ke Pusat',
+            3 => 'Revisi diminta Unit (kembali ke BUJP)',
+        ];
+
+        return [['send_status', $labels[$to] ?? 'Status berubah menjadi ' . $to, $from === null ? null : (int) $from, $to]];
     }
 }

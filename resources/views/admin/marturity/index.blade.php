@@ -110,6 +110,7 @@
                                                     👁 Show
                                                 </a>
                     @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
+                    @include('components.status-history-button', ['type' => 'marturity', 'id' => $marturity->id])
                                                 @can('send.marturity.unit')
                                                 {{--
                                                 Dinonaktifkan sesuai permintaan: Marturity boleh dikirim
@@ -168,6 +169,7 @@
                                                     👁 Show
                                                 </a>
                     @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
+                    @include('components.status-history-button', ['type' => 'marturity', 'id' => $marturity->id])
                                         </div>
                                         @endif
                                     </td>
