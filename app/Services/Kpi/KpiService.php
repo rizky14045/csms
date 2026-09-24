@@ -145,7 +145,7 @@ class KpiService
             $kpi = Kpi::create([
                 'unit_id' => $user->unit_id,
                 'year' => $data['year'],
-                'semester' => $data['semester'],
+                'triwulan' => $data['triwulan'],
                 'created_by' => $user->id,
             ]);
             
@@ -255,7 +255,7 @@ class KpiService
                     'error' => $e->getMessage(),
                     'payload' => [
                         'year' => $data['year'],
-                        'semester' => $data['semester'],
+                        'triwulan' => $data['triwulan'],
                     ],
                 ]
             );
@@ -277,7 +277,7 @@ class KpiService
 
             $updateData = [
                 'year' => $data['year'],
-                'semester' => $data['semester'],
+                'triwulan' => $data['triwulan'],
                 'updated_by' => auth()->id(),
             ];
 

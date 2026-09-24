@@ -25,11 +25,7 @@
 
                 <div class="d-flex gap-2 mb-3">
                     <a href="{{ $backUrl }}" class="btn btn-danger">Kembali</a>
-                    @if($mode !== 'mmrk' && auth()->user()->can('view.marturity.admin'))
-                    <a href="{{ route('admin.marturity.export', $marturity->id) }}" class="btn btn-success">
-                        ⬇ Export Excel
-                    </a>
-                    @endif
+                    @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
                     @if($mode === 'pusat')
                     <form id="form-finish-validasi" action="{{ route('admin.marturity.finish', $marturity->id) }}" method="POST" class="d-inline"
                           onsubmit="return confirmAction('form-finish-validasi', 'Selesaikan Validasi?', 'Setelah selesai, centang tidak bisa diubah lagi.', 'Ya, Selesaikan')">
@@ -214,10 +210,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Total Bobot</td>
-                                    <td class="text-center fw-bold">{{ round($grandTotalBobot, 4) }}</td>
-                                </tr>
                                 <tr>
                                     <td>Total Score ML</td>
                                     <td class="text-center fw-bold text-primary">{{ round($grandTotalML, 4) }}</td>

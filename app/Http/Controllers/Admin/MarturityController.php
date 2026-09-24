@@ -97,7 +97,7 @@ class MarturityController extends Controller
         $bobot         = $totalSubAreas > 0 ? 1 / $totalSubAreas : 0;
 
         $unitName = Str::slug($marturity->unit->name ?? 'unit');
-        $filename = 'maturity-' . $unitName . '-' . $marturity->year . '-s' . $marturity->semester . '.xls';
+        $filename = 'maturity-' . $unitName . '-' . $marturity->year . '-' . $marturity->period_slug . '.xls';
 
         $html = view('exports.marturity', [
             'areas'        => $areas,

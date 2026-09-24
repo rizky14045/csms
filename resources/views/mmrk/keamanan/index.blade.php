@@ -22,7 +22,7 @@
                         <th>No</th>
                         <th>Unit</th>
                         <th>Tahun</th>
-                        <th>Semester</th>
+                        <th>Triwulan</th>
                         <th>Status</th>
                         <th>Tgl Kirim ke MMRK</th>
                         <th>Tgl Kirim ke Pusat</th>
@@ -35,7 +35,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $kpi->unit->name ?? '-' }}</td>
                         <td>{{ $kpi->year }}</td>
-                        <td>{{ $kpi->semester }}</td>
+                        <td>{{ $kpi->period_label }}</td>
                         <td>
                             @if($kpi->status == 1)
                                 <span class="badge bg-warning text-dark">Menunggu dikirim MMRK</span>
@@ -49,6 +49,7 @@
                         <td>{{ $kpi->send_date ? \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') : '-' }}</td>
                         <td>
                             <a href="{{ route('mmrk.keamanan.show', ['kpi' => $kpi->id]) }}" class="btn btn-info btn-sm">👁 Show</a>
+                    @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
                             @if($kpi->status == 1)
                                 @can('send.kpi.mmrk')
                                 <form id="form-send-{{ $kpi->id }}" action="{{ route('mmrk.keamanan.send', ['kpi' => $kpi->id]) }}" method="POST" class="d-inline"

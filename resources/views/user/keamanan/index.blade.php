@@ -55,7 +55,7 @@
                                 <tr>
                                     <th scope="col">No</th>
                                     <th scope="col">Tahun</th>
-                                    <th scope="col">Semester</th>
+                                    <th scope="col">Triwulan</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Tgl Kirim ke MMRK</th>
                                     <th scope="col">Tgl Kirim ke Pusat</th>
@@ -67,7 +67,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $kpi->year }}</td>
-                                        <td>{{ $kpi->semester }}</td>
+                                        <td>{{ $kpi->period_label }}</td>
                                         <td>@include('components.flow-status', ['status' => $kpi->status ?? 0])</td>
                                         <td>{{ !empty($kpi->mmrk_send_date) ? \Carbon\Carbon::parse($kpi->mmrk_send_date)->format('d-m-Y') : '-' }}</td>
                                         <td>{{ $kpi->send_date ? \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') : '-' }}
@@ -88,6 +88,7 @@
                                                         class="btn btn-info btn-sm" style="min-width:80px;">
                                                         👁 Show
                                                     </a>
+                    @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
 
                                                     {{-- SEND --}}
                                                     @can('send.security.kpi.unit')
@@ -142,6 +143,7 @@
                                                         class="btn btn-info btn-sm" style="min-width:80px;">
                                                         👁 Show
                                                     </a>
+                    @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
                                                 @endif
 
                                             </div>

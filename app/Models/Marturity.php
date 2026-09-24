@@ -11,6 +11,18 @@ class Marturity extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = ['id'];
+    protected $appends = ['period_label'];
+
+    public function getPeriodLabelAttribute()
+    {
+        return \App\Services\Score\TriwulanRule::label($this->triwulan, $this->semester);
+    }
+
+    /** Potongan nama file: tw1 / s1 (data lama). */
+    public function getPeriodSlugAttribute()
+    {
+        return $this->triwulan ? 'tw' . $this->triwulan : 's' . $this->semester;
+    }
 
     protected $casts = [
         'send_date' => 'date:Y-m-d',

@@ -141,7 +141,7 @@ class MarturityService
             $marturity = Marturity::create([
                 'unit_id'   => $unit_id,
                 'year'  => $data['year'],
-                'semester'  => $data['semester'],
+                'triwulan'  => $data['triwulan'],
                 'created_by'=> $userId,
             ]);
 
@@ -235,7 +235,7 @@ class MarturityService
                 [
                     'marturity_id' => $marturity->id,
                     'year' => $marturity->year,
-                    'semester' => $marturity->semester,
+                    'triwulan' => $marturity->triwulan,
                 ]
             );
 
@@ -276,7 +276,7 @@ class MarturityService
 
             $updateData = [
                 'year'  => $data['year'],
-                'semester'  => $data['semester'],
+                'triwulan'  => $data['triwulan'],
                 'updated_by' => auth()->id(),
             ];
 

@@ -22,7 +22,7 @@
                         <th>No</th>
                         <th>Unit</th>
                         <th>Tahun</th>
-                        <th>Semester</th>
+                        <th>Triwulan</th>
                         <th>Status</th>
                         <th>Tgl Kirim ke MMRK</th>
                         <th>Tgl Kirim ke Pusat</th>
@@ -35,7 +35,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $marturity->unit->name ?? '-' }}</td>
                         <td>{{ $marturity->year }}</td>
-                        <td>{{ $marturity->semester }}</td>
+                        <td>{{ $marturity->period_label }}</td>
                         <td>
                             @if($marturity->status == 1)
                                 <span class="badge bg-warning text-dark">Menunggu dikirim MMRK</span>
@@ -49,6 +49,7 @@
                         <td>{{ $marturity->send_date ? \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') : '-' }}</td>
                         <td>
                             <a href="{{ route('mmrk.marturity.show', ['marturity' => $marturity->id]) }}" class="btn btn-info btn-sm">👁 Show</a>
+                    @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
                             @if($marturity->status == 1)
                                 @can('send.marturity.mmrk')
                                 <form id="form-send-{{ $marturity->id }}" action="{{ route('mmrk.marturity.send', ['marturity' => $marturity->id]) }}" method="POST" class="d-inline"

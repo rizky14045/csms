@@ -95,7 +95,7 @@ class KeamananController extends Controller
         $totalSubAreas = collect($areas)->sum(fn($a) => count($a['sub_areas']));
         $bobot         = $totalSubAreas > 0 ? 1 / $totalSubAreas : 0;
 
-        $filename = 'kpi-keamanan-' . $kpi->year . '-s' . $kpi->semester . '.xls';
+        $filename = 'kpi-keamanan-' . $kpi->year . '-' . $kpi->period_slug . '.xls';
 
         $html = view('exports.keamanan', [
             'areas'         => $areas,

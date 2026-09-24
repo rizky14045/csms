@@ -8,7 +8,7 @@ class MarturityValidation
     {
         return [
             'year' => ['required', 'integer'],
-            'semester' => ['required', 'integer', 'between:1,2'],
+            'triwulan' => ['required', 'integer', 'between:1,4'],
         ];
     }
 
@@ -16,7 +16,7 @@ class MarturityValidation
     {
         return [
             'year' => ['required', 'integer'],
-            'semester' => ['required', 'integer', 'between:1,2'],
+            'triwulan' => ['required', 'integer', 'between:1,4'],
         ];
     }
 
@@ -33,9 +33,9 @@ class MarturityValidation
             'year.required' => 'Tahun wajib diisi!',
             'year.integer' => 'Tahun harus berupa angka!',
 
-            'semester.required' => 'semester wajib diisi!',
-            'semester.integer' => 'semester harus berupa angka!',
-            'semester.between' => 'semester hanya boleh antara 1 sampai 2!',
+            'triwulan.required' => 'Triwulan wajib diisi!',
+            'triwulan.integer' => 'Triwulan harus berupa angka!',
+            'triwulan.between' => 'Triwulan hanya boleh antara 1 sampai 4!',
         ];
 
         if ($noteId) {

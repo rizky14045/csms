@@ -27,6 +27,6 @@ class MarturityExport implements FromView, WithTitle
 
     public function title(): string
     {
-        return 'Maturity ' . $this->marturity->year . ' S' . $this->marturity->semester;
+        return 'Maturity ' . $this->marturity->year . ' ' . $this->marturity->period_label;
     }
 }

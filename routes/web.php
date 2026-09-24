@@ -80,6 +80,12 @@ Route::get('/export-assesment/{assesment}', [\App\Http\Controllers\AssesmentExpo
 
 Route::get('/export-audit-smp/{audit}', [\App\Http\Controllers\AuditSMPExportController::class, 'export'])->middleware(['auth'])->name('export.audit-smp');
 
+Route::get('/export-marturity/{marturity}/{type}', [\App\Http\Controllers\MaturityKpiExportController::class, 'marturity'])
+    ->where('type', 'sa|fa')->middleware(['auth'])->name('export.marturity');
+
+Route::get('/export-kpi/{kpi}/{type}', [\App\Http\Controllers\MaturityKpiExportController::class, 'kpi'])
+    ->where('type', 'sa|fa')->middleware(['auth'])->name('export.kpi');
+
 Route::get(
     '/export-all/{monthlyId}',
     [MonthlyAuditExportController::class, 'exportAll']

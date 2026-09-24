@@ -58,17 +58,19 @@
                         @enderror
                     </div>
 
-                    {{-- Semester --}}
+                    {{-- Triwulan --}}
                     <div class="mb-4">
-                        <label class="form-label">Semester</label>
+                        <label class="form-label">Triwulan</label>
 
-                        <select name="semester" class="form-select select2" required>
-                            <option value="">Pilih Semester</option>
-                            <option value="1" {{old('semester') == '1' ? 'selected' : ''}}>Semester 1</option>
-                            <option value="2" {{old('semester') == '2' ? 'selected' : ''}}>Semester 2</option>
+                        <select name="triwulan" class="form-select select2" required>
+                            <option value="">Pilih Triwulan</option>
+                            <option value="1" {{old('triwulan') == '1' ? 'selected' : ''}}>Triwulan 1</option>
+                            <option value="2" {{old('triwulan') == '2' ? 'selected' : ''}}>Triwulan 2</option>
+                            <option value="3" {{old('triwulan') == '3' ? 'selected' : ''}}>Triwulan 3</option>
+                            <option value="4" {{old('triwulan') == '4' ? 'selected' : ''}}>Triwulan 4</option>
                         </select>
 
-                        @error('semester')
+                        @error('triwulan')
                             <div class="error-text">{{ $message }}</div>
                         @enderror
                     </div>
