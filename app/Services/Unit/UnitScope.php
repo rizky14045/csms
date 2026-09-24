@@ -68,23 +68,50 @@ class UnitScope
         return $user->unit_id ? (int) $user->unit_id : null;
     }
 
-    /** Batasi query master data: grup = berdasarkan unit, selain itu per user seperti semula. */
+    /**
+     * Master data dimiliki unit, bukan akun: semua akun di unit yang sama berbagi data.
+     * user_id tetap wajib terisi sebagai penanda baris master (baris salinan laporan bulanan user_id-nya null).
+     * Baris lama tanpa unit_id dianggap milik unit dari akun pembuatnya.
+     */
+    protected static function unitMaster($query, array $unitIds)
+    {
+        return $query->whereNotNull('user_id')->where(function ($w) use ($unitIds) {
+            $w->whereIn('unit_id', $unitIds)
+                ->orWhere(function ($legacy) use ($unitIds) {
+                    $legacy->whereNull('unit_id')
+                        ->whereIn('user_id', User::whereIn('unit_id', $unitIds)->select('id'));
+                });
+        });
+    }
+
+    /** Batasi query master data ke unit user (grup = unit + UL-nya); user tanpa unit hanya melihat miliknya. */
     public static function applyMaster($query, User $user)
     {
-        if (self::isGroup($user)) {
-            return $query->whereNotNull('user_id')->whereIn('unit_id', self::visibleUnitIds($user));
+        if (!$user->unit_id) {
+            return $query->where('user_id', $user->id);
         }
 
-        return $query->where('user_id', $user->id);
+        return self::unitMaster($query, self::visibleUnitIds($user));
     }
 
     public static function canAccess($model, User $user): bool
     {
-        if (self::isGroup($user)) {
-            return $model->user_id !== null && in_array((int) $model->unit_id, self::visibleUnitIds($user), true);
+        if ($model->user_id === null) {
+            return false;
         }
 
-        return $model->user_id === $user->id;
+        if (!$user->unit_id) {
+            return $model->user_id === $user->id;
+        }
+
+        if ($model->unit_id !== null) {
+            return in_array((int) $model->unit_id, self::visibleUnitIds($user), true);
+        }
+
+        // baris lama tanpa unit_id: ikut unit pembuatnya
+        $ownerUnit = User::where('id', $model->user_id)->value('unit_id');
+
+        return $ownerUnit !== null && in_array((int) $ownerUnit, self::visibleUnitIds($user), true);
     }
 
     public static function isGroupUnit($unitId): bool
@@ -97,14 +124,14 @@ class UnitScope
             || Unit::where('parent_unit_id', $unitId)->where('type', 'UL')->exists();
     }
 
-    /** Master data yang disalin ke laporan bulanan: grup = master unit laporan itu, selain itu master milik pembuat laporan. */
+    /** Master data yang disalin ke laporan bulanan: master unit laporan itu (bukan hanya milik pembuat laporan). */
     public static function applyReportMaster($query, $report)
     {
-        if (self::isGroupUnit($report->unit_id)) {
-            return $query->whereNotNull('user_id')->where('unit_id', $report->unit_id);
+        if (!$report->unit_id) {
+            return $query->where('user_id', $report->user_id);
         }
 
-        return $query->where('user_id', $report->user_id);
+        return self::unitMaster($query, [(int) $report->unit_id]);
     }
 
     /** Master Administrasi: data global buatan admin (tanpa pemilik) + milik unit/user laporan itu sendiri, bukan milik unit lain. */

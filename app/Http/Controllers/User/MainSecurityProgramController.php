@@ -84,7 +84,7 @@ class MainSecurityProgramController extends Controller
             abort(404);
         }
 
-        if((!\App\Services\Unit\UnitScope::isGroup(auth()->user()) && $main->user_id != $userId) || $main->program_id != $program->id){
+        if($main->program_id != $program->id){
             abort(404);
         }
         
@@ -119,7 +119,7 @@ class MainSecurityProgramController extends Controller
             abort(404);
         }
 
-        if((!\App\Services\Unit\UnitScope::isGroup(auth()->user()) && $main->user_id != $userId) || $main->program_id != $program->id){
+        if($main->program_id != $program->id){
             abort(404);
         }
 
@@ -140,7 +140,7 @@ class MainSecurityProgramController extends Controller
             abort(404);
         }
 
-        if ($main && ((!\App\Services\Unit\UnitScope::isGroup(auth()->user()) && $main->user_id != auth()->id()) || $main->program_id != $program->id)) {
+        if ($main && ($main->program_id != $program->id)) {
             abort(404);
         }
 

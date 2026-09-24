@@ -38,7 +38,12 @@ class AttributeService
                 $query->where('type_attribute', $type_attribute);
             }
 
-            if ($unit_id) {
+            $scopeUser = $user_id ? \App\Models\User::find($user_id) : null;
+
+            if ($scopeUser && !\App\Services\Unit\UnitScope::isGroup($scopeUser)) {
+                // sama dengan aturan akses edit/hapus: master milik unit, bukan salinan laporan
+                \App\Services\Unit\UnitScope::applyMaster($query, $scopeUser);
+            } elseif ($unit_id) {
                 $query->where('unit_id', $unit_id);
             } elseif ($user_id) {
                 $query->where('user_id', $user_id);

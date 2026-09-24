@@ -233,11 +233,7 @@ class MasterSyncService
                 $added++;
             }
 
-            $mainsQuery = MainSecurityProgram::where('program_id', $program->id);
-            if (!\App\Services\Unit\UnitScope::isGroupUnit($report->unit_id)) {
-                $mainsQuery->where('user_id', $report->user_id);
-            }
-            $mains = $mainsQuery->get();
+            $mains = MainSecurityProgram::where('program_id', $program->id)->get();
             foreach ($mains as $item) {
                 if (in_array($item->id, $existingMains)) {
                     continue;
