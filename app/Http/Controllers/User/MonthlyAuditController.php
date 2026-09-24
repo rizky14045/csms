@@ -41,7 +41,7 @@ class MonthlyAuditController extends Controller
 
         $query = MonthlyReport::query();
 
-        $query->where('user_id', $userId);
+        $query->where('unit_id', Auth::user()->unit_id);
 
         // ===============================
         // FILTER DEFAULT
@@ -107,7 +107,7 @@ class MonthlyAuditController extends Controller
                 return back()->withErrors(['report_date' => 'Tanggal laporan tidak boleh di masa depan.'])->withInput();
             }
 
-            $exists = MonthlyReport::where('user_id', $userId)
+            $exists = MonthlyReport::where('unit_id', $unitId)
                 ->where('report_date', $reportDate)
                 ->exists();
 
@@ -118,7 +118,7 @@ class MonthlyAuditController extends Controller
             }
 
             // Ambil data terakhir
-            $lastReport = MonthlyReport::where('user_id', $userId)
+            $lastReport = MonthlyReport::where('unit_id', $unitId)
                 ->orderBy('report_date', 'desc')
                 ->first();
 
@@ -237,7 +237,7 @@ class MonthlyAuditController extends Controller
 
             $report = MonthlyReport::where('id', $monthlyId)->first();
 
-            if (!$report || $report->user_id !== Auth::id()) {
+            if (!$report || $report->unit_id != Auth::user()->unit_id) {
                 abort(404);
             }
 

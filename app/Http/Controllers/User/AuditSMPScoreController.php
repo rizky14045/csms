@@ -60,7 +60,24 @@ class AuditSMPScoreController extends Controller
         // Validation rules
         $validator = $this->validator($request->all(), AuditSMPDataValidation::rulesForCreate(), AuditSMPDataValidation::messages());
 
-        $request->merge(['unit_id' => auth()->user()->unit_id]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $unitId = auth()->user()->unit_id;
+
+        // Unik per unit (bukan per user): user lain di unit yang sama tidak bisa membuat periode yang sama.
+        $exists = AuditSmpData::where('unit_id', $unitId)
+            ->whereDate('start_audit', $request->start_audit)
+            ->whereDate('end_audit', $request->end_audit)
+            ->exists();
+
+        if ($exists) {
+            Alert::error('Gagal', 'Audit SMP dengan periode tersebut sudah ada untuk unit ini!');
+            return redirect()->back()->withErrors(['start_audit' => 'Periode audit sudah ada'])->withInput();
+        }
+
+        $request->merge(['unit_id' => $unitId]);
         $this->auditSMPDataService->createAuditData($request->all());
 
         Alert::success('Tambah Berhasil', 'Audit SMP berhasil dibuat!');

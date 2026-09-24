@@ -181,7 +181,7 @@ class MarturityController extends Controller
         }
         $user = Auth::guard('web')->user();
         
-        $marturity = Marturity::where('unit_id',$user->id)->where('id',$marturity->id)->first();
+        $marturity = Marturity::where('unit_id',$user->unit_id)->where('id',$marturity->id)->first();
 
         if(!$marturity){
             abort(404);

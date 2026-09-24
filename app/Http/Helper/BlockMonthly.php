@@ -10,8 +10,8 @@ class BlockMonthly
 
     public static function accountTakeOver($monthlyId){
 
-        $userId = Auth::guard('web')->user()->id;
-        $report = MonthlyReport::where('user_id', $userId)->where('id',$monthlyId)
+        $unitId = Auth::guard('web')->user()->unit_id;
+        $report = MonthlyReport::where('unit_id', $unitId)->where('id',$monthlyId)
             ->where('send_status', 0)
             ->where('sent_to_parent', false)
             ->first();
