@@ -50,6 +50,7 @@
                         <td>
                             <a href="{{ route('mmrk.marturity.show', ['marturity' => $marturity->id]) }}" class="btn btn-info btn-sm">👁 Show</a>
                     @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
+                    @include('components.status-history-button', ['type' => 'marturity', 'id' => $marturity->id])
                             @if($marturity->status == 1)
                                 @can('send.marturity.mmrk')
                                 <form id="form-send-{{ $marturity->id }}" action="{{ route('mmrk.marturity.send', ['marturity' => $marturity->id]) }}" method="POST" class="d-inline"

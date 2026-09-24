@@ -95,6 +95,7 @@
                                                     👁 Show
                                                 </a>
                     @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
+                    @include('components.status-history-button', ['type' => 'marturity', 'id' => $marturity->id])
                                                 @endcan
                                                 @can('send.marturity.unit')
                                                 {{--
@@ -148,6 +149,7 @@
                                                     👁 Show
                                                 </a>
                     @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
+                    @include('components.status-history-button', ['type' => 'marturity', 'id' => $marturity->id])
                                                 @endcan
                                             @endif
                                         </div>

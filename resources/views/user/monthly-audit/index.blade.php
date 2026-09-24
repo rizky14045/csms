@@ -86,6 +86,7 @@
                                             <a href="{{route('user.monthly-audit.show',['monthlyId'=>$form->id])}}" class="btn btn-info btn-sm">Show</a>
                                             <a href="{{route('export.monthly.all',['monthlyId'=>$form->id])}}" class="btn btn-success btn-sm">Export Excel</a>
                                         @endif
+                                        @include('components.status-history-button', ['type' => 'monthly-report', 'id' => $form->id])
                                     </td>
                                 </tr>
                             @endforeach

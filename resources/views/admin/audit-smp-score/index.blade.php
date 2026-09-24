@@ -237,6 +237,8 @@
 
                                         @endif
 
+                                        @include('components.status-history-button', ['type' => 'audit-smp', 'id' => $audit->id])
+
                                     </div>
                                 </td>
                                 @endcanany

@@ -76,6 +76,9 @@ Route::get(
     [MonthlyAuditExportController::class, 'exportBudgetAbsorption']
 )->middleware(['auth'])->name('export.monthly.penyerapan-anggaran');
 
+Route::get('/status-history/{type}/{id}', [\App\Http\Controllers\StatusHistoryController::class, 'show'])
+    ->where('id', '[0-9]+')->middleware(['auth'])->name('status-history.show');
+
 Route::get('/export-assesment/{assesment}', [\App\Http\Controllers\AssesmentExportController::class, 'export'])->middleware(['auth'])->name('export.assesment');
 
 Route::get('/export-audit-smp/{audit}', [\App\Http\Controllers\AuditSMPExportController::class, 'export'])->middleware(['auth'])->name('export.audit-smp');

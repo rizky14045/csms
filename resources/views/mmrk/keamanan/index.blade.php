@@ -50,6 +50,7 @@
                         <td>
                             <a href="{{ route('mmrk.keamanan.show', ['kpi' => $kpi->id]) }}" class="btn btn-info btn-sm">👁 Show</a>
                     @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
+                    @include('components.status-history-button', ['type' => 'kpi', 'id' => $kpi->id])
                             @if($kpi->status == 1)
                                 @can('send.kpi.mmrk')
                                 <form id="form-send-{{ $kpi->id }}" action="{{ route('mmrk.keamanan.send', ['kpi' => $kpi->id]) }}" method="POST" class="d-inline"

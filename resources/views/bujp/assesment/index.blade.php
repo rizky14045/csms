@@ -182,6 +182,8 @@
 
                     @endif
 
+                    @include('components.status-history-button', ['type' => 'assesment', 'id' => $assesment->id])
+
                   </div>
                 </td>
 

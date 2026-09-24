@@ -89,6 +89,7 @@
                                                         👁 Show
                                                     </a>
                     @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
+                    @include('components.status-history-button', ['type' => 'kpi', 'id' => $kpi->id])
 
                                                     {{-- SEND --}}
                                                     @can('send.security.kpi.unit')
@@ -144,6 +145,7 @@
                                                         👁 Show
                                                     </a>
                     @include('components.assessment-export-buttons', ['kind' => 'kpi', 'item' => $kpi])
+                    @include('components.status-history-button', ['type' => 'kpi', 'id' => $kpi->id])
                                                 @endif
 
                                             </div>
