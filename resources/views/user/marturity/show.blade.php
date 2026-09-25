@@ -82,6 +82,9 @@
                                         <th style="min-width:55px;"  class="text-center">Level</th>
                                         <th style="min-width:230px;" class="text-center">Uraian</th>
                                         <th style="min-width:220px;" class="text-center">Note / Evidence</th>
+                                        @if(($marturity->rebuttal_state ?? 0) > 0)
+                                        <th style="min-width:220px;" class="text-center">Catatan Validasi Pusat</th>
+                                        @endif
                                         <th style="min-width:95px;"  class="text-center">Total Evidence</th>
                                         <th style="min-width:95px;"  class="text-center">Jumlah Evidence</th>
                                         <th style="min-width:260px;" class="text-center">File Evidence</th>
@@ -141,6 +144,15 @@
                                             <span class="text-muted">-</span>
                                         @endforelse
                                     </td>
+                                    @if(($marturity->rebuttal_state ?? 0) > 0)
+                                    <td style="white-space:normal; text-align:left;">
+                                        @if(!empty($lc['lvl']['validation_note']))
+                                            {!! nl2br(e($lc['lvl']['validation_note'])) !!}
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    @endif
                                     <td class="text-center">{{ $lc['totalEv'] }}</td>
                                     <td class="text-center" id="jumlah-{{ $lc['lvl']['id'] }}">{{ $lc['jumlah'] }}</td>
 

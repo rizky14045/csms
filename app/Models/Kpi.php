@@ -42,6 +42,15 @@ class Kpi extends Model
         });
     }
 
+    /** Total Score ML aktual (hasil cek Pusat) saat ini. */
+    public function computeActualTotal(): float
+    {
+        $service = app(\App\Services\Kpi\KpiService::class);
+        $areas = getData($service->getAllKpiArea(0, false, $this->id, ['subAreas', 'subAreas.levels']));
+
+        return round((float) (\App\Services\Score\MlActualCalculator::kpi($areas, $service->getCheckedMap($this))['total'] ?? 0), 4);
+    }
+
     public function statusHistoryCreatedLabel(): string
     {
         return 'KPI dibuat';

@@ -92,8 +92,15 @@
         <td style="{{ $tdc }} font-weight:bold; background-color:#DDEBF7;">{{ round($grandSa, 4) }}</td>
     </tr>
     @if ($isFa)
+        @php $rebuttalDone = (int) ($kpi->rebuttal_state ?? 0) === 4; @endphp
+        @if ($rebuttalDone)
+            <tr>
+                <td colspan="{{ $cols - 1 }}" style="{{ $td }} font-weight:bold; background-color:#DDEBF7;">Total Score ML sebelum sanggah</td>
+                <td style="{{ $tdc }} font-weight:bold; background-color:#DDEBF7;">{{ $kpi->score_before_rebuttal !== null ? round((float) $kpi->score_before_rebuttal, 4) : '-' }}</td>
+            </tr>
+        @endif
         <tr>
-            <td colspan="{{ $cols - 1 }}" style="{{ $td }} font-weight:bold; background-color:#DDEBF7;">Total Score ML Final Assessment (FA, hasil validasi Pusat)</td>
+            <td colspan="{{ $cols - 1 }}" style="{{ $td }} font-weight:bold; background-color:#DDEBF7;">{{ $rebuttalDone ? 'Total Score ML setelah sanggah (FA, hasil validasi Pusat)' : 'Total Score ML Final Assessment (FA, hasil validasi Pusat)' }}</td>
             <td style="{{ $tdc }} font-weight:bold; background-color:#DDEBF7;">{{ round($actual['total'] ?? 0, 4) }}</td>
         </tr>
     @endif

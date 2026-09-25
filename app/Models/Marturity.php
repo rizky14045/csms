@@ -45,6 +45,15 @@ class Marturity extends Model
         });
     }
 
+    /** Total Score ML aktual (hasil cek Pusat) saat ini. */
+    public function computeActualTotal(): float
+    {
+        $service = app(\App\Services\Marturity\MarturityService::class);
+        $areas = getData($service->getAlMarturityArea(['subAreas', 'subAreas.levels'], $this->id));
+
+        return round((float) (\App\Services\Score\MlActualCalculator::marturity($areas, $service->getCheckedMap($this))['total'] ?? 0), 4);
+    }
+
     public function statusHistoryCreatedLabel(): string
     {
         return 'Maturity dibuat';
