@@ -9,7 +9,7 @@
 
     <p>
         Selamat, akun BUJP / Vendor Anda telah berhasil dibuat pada sistem
-        Compliance Security Management System (CSMS) PLN Nusantara Power.
+        SIdak PLN Nusantara Power.
         Berikut adalah detail akun dan kontrak Anda:
     </p>
 

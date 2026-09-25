@@ -15,8 +15,7 @@ class AuditSMPExportController extends Controller
         $user = auth()->user();
         $isCentral = in_array($user->type, ['admin', 'pusat'], true);
         $isOwnUnit = $audit->unit_id == $user->unit_id;
-        $isAuditor = $audit->auditor_lead_id == $user->id
-            || Auditor::where('audit_smp_data_id', $audit->id)->where('user_id', $user->id)->exists();
+        $isAuditor = $audit->hasAuditor($user);
 
         if (!$isCentral && !$isOwnUnit && !$isAuditor) {
             abort(404);

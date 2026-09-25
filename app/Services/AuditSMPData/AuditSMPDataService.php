@@ -97,6 +97,9 @@ class AuditSMPDataService
                         $q->where('auditor_lead_id', $lead_id)
                         ->orWhereHas('auditors', function ($q2) use ($lead_id) {
                             $q2->where('users.id', $lead_id);
+                        })
+                        ->orWhereHas('externalAuditors', function ($q2) use ($lead_id) {
+                            $q2->where('users.id', $lead_id);
                         });
 
                     });

@@ -60,6 +60,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{marturity}/show', [MarturityController::class, 'show'])->name('admin.marturity.show');
             Route::get('/{marturity}/export', [MarturityController::class, 'export'])->name('admin.marturity.export');
             Route::post('/{marturity}/check/{level}', [MarturityController::class, 'check'])->name('admin.marturity.check');
+            Route::post('/{marturity}/note/{level}', [MarturityController::class, 'saveNote'])->name('admin.marturity.note');
             Route::patch('/{marturity}/finish', [MarturityController::class, 'finish'])->name('admin.marturity.finish');
         });
 
@@ -68,6 +69,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{kpi}/show', [KeamananController::class, 'show'])->name('admin.keamanan.show');
             Route::get('/{kpi}/export', [KeamananController::class, 'export'])->name('admin.keamanan.export');
             Route::post('/{kpi}/check/{level}', [KeamananController::class, 'check'])->name('admin.keamanan.check');
+            Route::post('/{kpi}/note/{level}', [KeamananController::class, 'saveNote'])->name('admin.keamanan.note');
             Route::patch('/{kpi}/finish', [KeamananController::class, 'finish'])->name('admin.keamanan.finish');
         });
 

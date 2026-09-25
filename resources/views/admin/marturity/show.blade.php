@@ -48,6 +48,11 @@
                     $canCheck   = $mode === 'pusat';
                     $grandActual = $actual['total'] ?? 0;
                 @endphp
+                @php
+                    $isUnitViewer = auth()->user()->hasAnyRole(['Unit', 'UL']) && !auth()->user()->hasAnyRole(['Admin', 'Pusat', 'MMRK']);
+                    $showValNote  = $mode === 'pusat' || (int) $marturity->status === 3 || (!$isUnitViewer && (int) $marturity->status >= 2);
+                @endphp
+
 
                 @php
                     $totalSubAreas  = collect($areas)->sum(fn($a) => count($a['sub_areas']));
@@ -84,6 +89,9 @@
                                         <th style="min-width:95px;"  class="text-center">Total Evidence</th>
                                         <th style="min-width:95px;"  class="text-center">Jumlah Evidence</th>
                                         <th style="min-width:220px;" class="text-center">File Evidence</th>
+                                        @if($showValNote)
+                                        <th style="min-width:220px;" class="text-center">Catatan Validasi Pusat</th>
+                                        @endif
                                         <th style="min-width:80px;"  class="text-center">Bobot</th>
                                         <th style="min-width:80px;"  class="text-center">Hasil</th>
                                         <th style="min-width:90px;"  class="text-center">Score ML</th>
@@ -172,6 +180,21 @@
                                         @endif
                                     </td>
 
+                                    @if($showValNote)
+                                    <td style="white-space:normal; min-width:220px;">
+                                        @if($canCheck)
+                                        <textarea class="form-control form-control-sm val-note" rows="3" maxlength="5000"
+                                                  placeholder="Catatan validasi Pusat"
+                                                  data-url="{{ route('admin.marturity.note', ['marturity' => $marturity->id, 'level' => $lc['lvl']['id']]) }}">{{ $lc['lvl']['validation_note'] ?? '' }}</textarea>
+                                        <div class="small text-muted val-note-status" style="min-height:16px;"></div>
+                                        @elseif(!empty($lc['lvl']['validation_note']))
+                                        {!! nl2br(e($lc['lvl']['validation_note'])) !!}
+                                        @else
+                                        <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    @endif
+
                                     @if ($idx === 0)
                                     <td class="text-center" rowspan="{{ $levelCount }}">{{ round($bobot, 4) }}</td>
                                     <td class="text-center fw-semibold" rowspan="{{ $levelCount }}">{{ $hasil }}</td>
@@ -237,6 +260,29 @@
 <script>
 (function () {
     const boxes = Array.from(document.querySelectorAll('.chk-file'));
+
+    document.querySelectorAll('.val-note').forEach(area => {
+        area.addEventListener('change', async () => {
+            const status = area.parentElement.querySelector('.val-note-status');
+            status.className = 'small text-muted val-note-status';
+            status.textContent = 'Menyimpan...';
+            try {
+                const res = await fetch(area.dataset.url, {
+                    method: 'POST',
+                    headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json', 'Content-Type': 'application/json'},
+                    body: JSON.stringify({note: area.value})
+                });
+                const result = await res.json().catch(() => ({}));
+                if (!res.ok || !result.success) throw new Error(result.message || 'Gagal menyimpan');
+                status.className = 'small text-success val-note-status';
+                status.textContent = 'Tersimpan';
+            } catch (e) {
+                status.className = 'small text-danger val-note-status';
+                status.textContent = e.message || 'Gagal menyimpan catatan';
+            }
+        });
+    });
+
 
     function keyOf(chk) { return chk.dataset.levelId + '|' + chk.dataset.filename; }
 

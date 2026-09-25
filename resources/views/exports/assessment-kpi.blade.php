@@ -2,7 +2,7 @@
     $isFa = $mode === 'fa';
     $totalSubAreas = collect($areas)->sum(fn($a) => count($a['sub_areas']));
     $bobot = $totalSubAreas > 0 ? 1 / $totalSubAreas : 0;
-    $cols = $isFa ? 12 : 9;
+    $cols = $isFa ? 13 : 9;
     $grandSa = 0;
     $th = 'border:1px solid #000; background-color:#D9EAD3; text-align:center; font-weight:bold;';
     $td = 'border:1px solid #000;';
@@ -37,6 +37,7 @@
             <th style="{{ $th }}">Score ML SA</th>
             @if ($isFa)
                 <th style="{{ $th }}">Evidence Tervalidasi Pusat</th>
+                <th style="{{ $th }}">Catatan Validasi Pusat</th>
                 <th style="{{ $th }}">Hasil FA</th>
                 <th style="{{ $th }}">Score ML FA</th>
             @endif
@@ -74,6 +75,7 @@
                     @endif
                     @if ($isFa)
                         <td style="{{ $tdc }}">{{ !empty($subActual['levels'][$lvl['id']]['checked']) ? 'Ya' : 'Tidak' }}</td>
+                        <td style="{{ $td }}">{{ $lvl['validation_note'] ?? '' }}</td>
                         @if ($idx === 0)
                             <td rowspan="{{ $levelCount }}" style="{{ $tdc }}">{{ $subActual['hasil'] ?? 0 }}</td>
                             <td rowspan="{{ $levelCount }}" style="{{ $tdc }}">{{ $subActual['score'] ?? 0 }}</td>

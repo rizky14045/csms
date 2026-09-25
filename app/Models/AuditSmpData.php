@@ -53,6 +53,24 @@ class AuditSmpData extends Model
         )->where('auditors.deleted_at', null); // Exclude soft-deleted auditors
     }
 
+    /** Auditor external yang diberi akses ke data audit ini. */
+    public function externalAuditors()
+    {
+        return $this->belongsToMany(User::class, 'external_auditor_audits', 'audit_smp_data_id', 'user_id');
+    }
+
+    /** Ketua, anggota, atau auditor external yang ditugaskan pada audit ini. */
+    public function hasAuditor($user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        return $this->auditor_lead_id == $user->id
+            || Auditor::where('audit_smp_data_id', $this->id)->where('user_id', $user->id)->exists()
+            || \Illuminate\Support\Facades\DB::table('external_auditor_audits')->where('audit_smp_data_id', $this->id)->where('user_id', $user->id)->exists();
+    }
+
     public function getInvalidItemsEvidenceByUnit()
     {
         return $this->hasMany(

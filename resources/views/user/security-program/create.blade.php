@@ -39,6 +39,31 @@
                                 <div class="error text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="form-group mb-3">
+                            <label for="year" class="form-label">Tahun</label>
+                            <input class="form-control" type="number" id="year" required="" placeholder="Masukan tahun" name="year" value="{{old('year')}}">
+                            @error('year')
+                                <div class="error text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        @if(isset($assignableUnits) && $assignableUnits->isNotEmpty())
+                        <div class="form-group mb-3">
+                            <label for="assigned_unit_id" class="form-label">Unit Penugasan (Induk / UL)</label>
+                            <select class="form-select" id="assigned_unit_id" name="assigned_unit_id" required>
+                                @foreach($assignableUnits as $u)
+                                    <option value="{{ $u->id }}" {{ (string) old('assigned_unit_id', auth()->user()->unit_id) === (string) $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+                        <div class="form-group row">
+                            <div class="col-12">
+                                <div class="d-flex gap-3 justify-content-end">
+                                    <a href="{{route('user.security-program.index')}}" class="btn btn-danger"> Kembali</a>
+                                    <button type="submit" class="btn btn-success">Simpan</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </form>

@@ -74,6 +74,22 @@ class KeamananController extends Controller
         ]);
     }
 
+    public function saveNote(Request $request, Kpi $kpi, KpiLevel $level){
+        if ((int) $kpi->status !== 2 || !auth()->user()->can('validate.kpi.admin')) {
+            return response()->json(['success' => false, 'message' => 'Data tidak dalam tahap validasi Pusat!'], 422);
+        }
+        if ($level->kpi_id != $kpi->id) {
+            return response()->json(['success' => false, 'message' => 'Level tidak valid!'], 422);
+        }
+
+        $request->validate(['note' => 'nullable|string|max:5000']);
+        $note = trim((string) $request->input('note'));
+
+        $level->forceFill(['validation_note' => $note === '' ? null : $note, 'updated_by' => auth()->id()])->save();
+
+        return response()->json(['success' => true]);
+    }
+
     public function finish(Kpi $kpi){
         if ($this->kpiService->finishValidation($kpi)) {
             Alert::success('Berhasil', 'Validasi KPI selesai!');

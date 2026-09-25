@@ -75,6 +75,22 @@ class MarturityController extends Controller
         ]);
     }
 
+    public function saveNote(Request $request, Marturity $marturity, MarturityLevel $level){
+        if ((int) $marturity->status !== 2 || !auth()->user()->can('validate.marturity.admin')) {
+            return response()->json(['success' => false, 'message' => 'Data tidak dalam tahap validasi Pusat!'], 422);
+        }
+        if ($level->marturity_id != $marturity->id) {
+            return response()->json(['success' => false, 'message' => 'Level tidak valid!'], 422);
+        }
+
+        $request->validate(['note' => 'nullable|string|max:5000']);
+        $note = trim((string) $request->input('note'));
+
+        $level->forceFill(['validation_note' => $note === '' ? null : $note, 'updated_by' => auth()->id()])->save();
+
+        return response()->json(['success' => true]);
+    }
+
     public function finish(Marturity $marturity){
         if ($this->marturityService->finishValidation($marturity)) {
             Alert::success('Berhasil', 'Validasi Maturity selesai!');

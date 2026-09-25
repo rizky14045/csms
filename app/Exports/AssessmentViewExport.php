@@ -44,9 +44,20 @@ class AssessmentViewExport implements FromView, WithTitle, WithColumnWidths, Wit
 
     public function columnWidths(): array
     {
-        return [
+        $widths = [
             'A' => 6, 'B' => 32, 'C' => 8, 'D' => 45, 'E' => 40,
             'F' => 14, 'G' => 14, 'H' => 14, 'I' => 14, 'J' => 14, 'K' => 14, 'L' => 14, 'M' => 14,
         ];
+        return array_replace($widths, $this->noteColumnWidth());
+    }
+
+    /** Kolom "Catatan Validasi Pusat" (hanya FA): K pada KPI, L pada Maturity. */
+    protected function noteColumnWidth(): array
+    {
+        if (($this->data['mode'] ?? null) !== 'fa') {
+            return [];
+        }
+
+        return str_contains($this->view, 'kpi') ? ['K' => 40] : ['L' => 40];
     }
 }
