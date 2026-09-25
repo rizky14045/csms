@@ -71,4 +71,26 @@ class User extends Authenticatable
         // All contract rows for this vendor/BUJP user, newest first.
         return $this->hasMany(Vendor::class, 'user_id', 'id')->orderByDesc('created_at');
     }
+
+    /**
+     * Alamat email untuk pengiriman: user LDAP memakai `ldap_email` (kolom `email`-nya berisi
+     * username/NID); user biasa memakai `email`.
+     */
+    public function getMailAddressAttribute()
+    {
+        if ((int) $this->login_type === 1) {
+            if ($this->ldap_email) {
+                return $this->ldap_email;
+            }
+
+            return filter_var($this->email, FILTER_VALIDATE_EMAIL) ? $this->email : null;
+        }
+
+        return $this->email;
+    }
+
+    public function routeNotificationForMail($notification = null)
+    {
+        return $this->mail_address;
+    }
 }
