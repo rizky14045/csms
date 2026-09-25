@@ -81,12 +81,14 @@
             </div>
 
             <ul id="side-menu">
+                @unless (Auth::user()->hasRole('Auditor External'))
                 <li>
                     <a href="{{ route('dashboard') }}" class="tp-link">
                         <i data-feather="home"></i>
                         <span> Home </span>
                     </a>
                 </li>
+                @endunless
                 @if (Auth::user()->type == 'user' && !Auth::user()->hasRole('MMRK'))
                     <li>
                         <a href="{{ route('user.monthly-audit.index') }}" class="tp-link">
