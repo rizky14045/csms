@@ -16,7 +16,6 @@ class RestrictExternalAuditor
     /** Nama route (atau awalan) yang boleh diakses auditor external. */
     protected $allowed = [
         'auditor.audit-smp-score.',
-        'export.audit-smp',
         'profile.edit',
         'profile.update',
         'logout',
