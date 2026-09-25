@@ -90,7 +90,7 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$marturity->unit->name}}</td>
-                                    <td>@include('components.flow-status', ['status' => $marturity->status ?? 0])</td>
+                                    <td>@include('components.flow-status', ['status' => $marturity->status ?? 0, 'rebuttal' => $marturity->rebuttal_state ?? 0])</td>
                                     <td>{{ !empty($marturity->mmrk_send_date) ? \Carbon\Carbon::parse($marturity->mmrk_send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{ $marturity->send_date ? \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') : "-" }}</td>
                                     <td>{{$marturity->year}}</td>

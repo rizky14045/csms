@@ -554,7 +554,7 @@ class KpiService
                 'status' => 1,
                 'mmrk_send_date' => date('Y-m-d'),
                 'updated_by' => $user->id,
-            ]);
+            ] + ((int) $kpi->rebuttal_state === 1 ? ['rebuttal_state' => 2] : []));
 
             DB::commit();
 
@@ -588,7 +588,7 @@ class KpiService
             'send_status' => true,
             'send_date' => date('Y-m-d'),
             'updated_by' => auth()->id(),
-        ]);
+        ] + ((int) $kpi->rebuttal_state === 2 ? ['rebuttal_state' => 3] : []));
 
         return true;
     }
@@ -599,7 +599,16 @@ class KpiService
             return false;
         }
 
-        $kpi->update(['status' => 3, 'updated_by' => auth()->id()]);
+        // Selesai validasi sanggahan: cukup tandai selesai sanggah (sanggahan hanya sekali).
+        if ((int) $kpi->rebuttal_state === 3) {
+            $kpi->update(['status' => 3, 'rebuttal_state' => 4, 'rebuttal_finished_at' => now(), 'updated_by' => auth()->id()]);
+
+            return true;
+        }
+
+        // Validasi pertama selesai: mulai masa sanggah 7 hari dan beri tahu Unit/Pusat lewat email.
+        $kpi->update(['status' => 3, 'validated_at' => now(), 'updated_by' => auth()->id()]);
+        $kpi->notifyValidationFinished('KPI');
 
         return true;
     }

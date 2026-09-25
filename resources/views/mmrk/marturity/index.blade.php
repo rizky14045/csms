@@ -37,7 +37,9 @@
                         <td>{{ $marturity->year }}</td>
                         <td>{{ $marturity->period_label }}</td>
                         <td>
-                            @if($marturity->status == 1)
+                            @if(($marturity->rebuttal_state ?? 0) > 0)
+                                @include('components.flow-status', ['status' => $marturity->status, 'rebuttal' => $marturity->rebuttal_state])
+                            @elseif($marturity->status == 1)
                                 <span class="badge bg-warning text-dark">Menunggu dikirim MMRK</span>
                             @elseif($marturity->status == 2)
                                 <span class="badge bg-info">Menunggu validasi Pusat</span>

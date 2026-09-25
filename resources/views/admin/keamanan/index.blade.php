@@ -83,7 +83,7 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$kpi->unit->name}}</td>
-                                    <td>@include('components.flow-status', ['status' => $kpi->status ?? 0])</td>
+                                    <td>@include('components.flow-status', ['status' => $kpi->status ?? 0, 'rebuttal' => $kpi->rebuttal_state ?? 0])</td>
                                     <td>{{ !empty($kpi->mmrk_send_date) ? \Carbon\Carbon::parse($kpi->mmrk_send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{ $kpi->send_date ? \Carbon\Carbon::parse($kpi->send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{$kpi->year}}</td>

@@ -608,7 +608,7 @@ class MarturityService
                 'status' => 1,
                 'mmrk_send_date' => date('Y-m-d'),
                 'updated_by' => $user->id,
-            ]);
+            ] + ((int) $marturity->rebuttal_state === 1 ? ['rebuttal_state' => 2] : []));
 
             DB::commit();
 
@@ -642,7 +642,7 @@ class MarturityService
             'send_status' => true,
             'send_date' => date('Y-m-d'),
             'updated_by' => auth()->id(),
-        ]);
+        ] + ((int) $marturity->rebuttal_state === 2 ? ['rebuttal_state' => 3] : []));
 
         return true;
     }
@@ -653,7 +653,16 @@ class MarturityService
             return false;
         }
 
-        $marturity->update(['status' => 3, 'updated_by' => auth()->id()]);
+        // Selesai validasi sanggahan: cukup tandai selesai sanggah (sanggahan hanya sekali).
+        if ((int) $marturity->rebuttal_state === 3) {
+            $marturity->update(['status' => 3, 'rebuttal_state' => 4, 'rebuttal_finished_at' => now(), 'updated_by' => auth()->id()]);
+
+            return true;
+        }
+
+        // Validasi pertama selesai: mulai masa sanggah 7 hari dan beri tahu Unit/Pusat lewat email.
+        $marturity->update(['status' => 3, 'validated_at' => now(), 'updated_by' => auth()->id()]);
+        $marturity->notifyValidationFinished('Maturity');
 
         return true;
     }

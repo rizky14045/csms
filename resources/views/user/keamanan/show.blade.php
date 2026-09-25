@@ -146,12 +146,18 @@
                                                style="font-size:11px;">
                                                ⬇ Download File
                                             </a>
+                                            @unless(isset($checked[$level['id']]))
                                             <span class="text-muted" style="font-size:10px;">Ganti file:</span>
+                                            @endunless
                                             @endif
                                         </div>
 
                                         <div id="upload-section-{{ $level['id'] }}">
-                                            @if ($lockedMap[$level['id']])
+                                            @if (isset($checked[$level['id']]))
+                                            <div class="small fst-italic text-success">
+                                                ✔ Sudah divalidasi Pusat (terkunci, tidak dapat diubah)
+                                            </div>
+                                            @elseif ($lockedMap[$level['id']])
                                             <div class="text-muted small fst-italic">
                                                 🔒 Selesaikan evidence Level sebelumnya terlebih dahulu
                                             </div>

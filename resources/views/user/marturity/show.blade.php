@@ -167,11 +167,15 @@
                                                    style="flex:1; font-size:11px; overflow:hidden; text-overflow:ellipsis; max-width:185px; white-space:nowrap;">
                                                    ⬇ File {{ $fi + 1 }}
                                                 </a>
+                                                @if(isset($checked[$lc['lvl']['id'] . '|' . $file]))
+                                                <span class="btn btn-outline-success btn-sm disabled" title="Sudah divalidasi Pusat (terkunci)">✔</span>
+                                                @else
                                                 <button type="button"
                                                         class="btn btn-danger btn-sm btn-delete-file"
                                                         data-level="{{ $lc['lvl']['id'] }}"
                                                         data-filename="{{ $file }}"
                                                         title="Hapus">✕</button>
+                                                @endif
                                             </div>
                                             @endforeach
                                         </div>
@@ -382,6 +386,9 @@ function updateAreaInvalidBadge(areaId) {
 }
 
 // ─── Re-render the file list + upload section for a level ────────────────────
+// file yang sudah divalidasi Pusat (level|nama file): terkunci, tidak ada tombol hapus
+const VALIDATED_FILES = new Set(@json(array_keys($checked ?? [])));
+
 function renderFileList(levelId, files, totalEv, subAreaId, areaId) {
     const td        = document.querySelector(`td[data-level-id="${levelId}"]`);
     const listEl    = document.getElementById('file-list-'     + levelId);
@@ -400,11 +407,13 @@ function renderFileList(levelId, files, totalEv, subAreaId, areaId) {
                style="flex:1;font-size:11px;overflow:hidden;text-overflow:ellipsis;max-width:185px;white-space:nowrap;">
                ⬇ File ${i + 1}
             </a>
-            <button type="button"
+            ${VALIDATED_FILES.has(levelId + '|' + f)
+                ? '<span class="btn btn-outline-success btn-sm disabled" title="Sudah divalidasi Pusat (terkunci)">✔</span>'
+                : `<button type="button"
                     class="btn btn-danger btn-sm btn-delete-file"
                     data-level="${levelId}"
                     data-filename="${f}"
-                    title="Hapus">✕</button>
+                    title="Hapus">✕</button>`}
         </div>
     `).join('');
 

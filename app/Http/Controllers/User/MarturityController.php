@@ -93,7 +93,25 @@ class MarturityController extends Controller
         $result = $this->marturityService->getAlMarturityArea(['subAreas', 'subAreas.levels', 'subAreas.levels.notes'], $marturity->id);
         $data['areas'] = getData($result);
         $data['marturity'] = $marturity;
+        // file yang sudah dicentang Pusat terkunci pada tahap sanggahan
+        $data['checked'] = $this->marturityService->getCheckedMap($marturity);
         return view('user.marturity.show', $data);
+    }
+
+    /** Mulai sanggahan (sekali, maksimal 7 hari setelah validasi Pusat selesai). */
+    public function rebuttal(Marturity $marturity){
+        if($marturity->unit_id != Auth::guard('web')->user()->unit_id){
+            abort(404);
+        }
+        abort_unless(auth()->user()->can('send.marturity.unit'), 403);
+
+        if ($marturity->startRebuttal()) {
+            Alert::success('Sanggahan Dimulai', 'Silakan ubah data yang belum divalidasi Pusat, lalu kirim ke MMRK.');
+            return redirect()->route('user.marturity.show', ['marturity' => $marturity->id]);
+        }
+
+        Alert::warning('Sanggah Tidak Tersedia', 'Sanggahan hanya dapat diajukan satu kali dan maksimal 7 hari setelah validasi Pusat selesai.');
+        return redirect()->route('user.marturity.index');
     }
 
     public function preview(Marturity $marturity){
@@ -235,6 +253,11 @@ class MarturityController extends Controller
             $filename = $request->input('filename');
             if (!$filename) {
                 return response()->json(['error' => 'Filename tidak ditemukan'], 422);
+            }
+
+            // File yang sudah dicentang (divalidasi) Pusat tidak dapat dihapus.
+            if (\App\Models\MarturityFileCheck::where('marturity_id', $marturity->id)->where('level_id', $level->id)->where('filename', $filename)->exists()) {
+                return response()->json(['success' => false, 'message' => 'File sudah divalidasi Pusat dan tidak dapat dihapus!'], 403);
             }
 
             $result     = $this->marturityService->deleteLevelFile($level, $filename);
