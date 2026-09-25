@@ -131,20 +131,30 @@ class AuthController extends Controller
     }
 
     /**
-     * Sync the local user record with the latest data returned by LDAP.
-     * "jabatan" is intentionally not touched here: the LDAP API response
-     * doesn't include any job-title/jabatan field, so there is nothing
-     * to sync it from.
+     * Sync the local user record with the latest data returned by LDAP:
+     * NID, name, jabatan (kolom `jabatan`) and the real email (kolom `ldap_email`,
+     * karena kolom `email` untuk user LDAP dipakai sebagai username).
+     * Empty values from LDAP never overwrite what is already stored.
      */
     private function syncUserFromLdap(User $user, array $ldapData): void
     {
         $detail = $ldapData['userdetail'] ?? [];
+        $ellipse = $ldapData['userdetail_ellipse'] ?? [];
+
+        // Jabatan: POSISI dari Ellipse (spasi berlebih dirapikan), cadangan atribut `title` LDAP.
+        $jabatan = preg_replace('/\s+/', ' ', trim((string) ($ellipse['POSISI'] ?? '')));
+        if ($jabatan === '') {
+            $jabatan = preg_replace('/\s+/', ' ', trim((string) ($detail['title']['0'] ?? '')));
+        }
+
+        $email = trim((string) ($detail['emailaddress']['0'] ?? $detail['mail']['0'] ?? $ellipse['EMAIL'] ?? ''));
 
         try {
             $user->update([
                 'nid' => $ldapData['nid'] ?? $user->nid,
-                'unit_code' => $detail['unit']['0'] ?? $user->unit_code,
                 'name' => $detail['displayname']['0'] ?? $user->name,
+                'jabatan' => $jabatan !== '' ? mb_substr($jabatan, 0, 255) : $user->jabatan,
+                'ldap_email' => filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : $user->ldap_email,
             ]);
         } catch (\Throwable $e) {
             // Sync is best-effort; never block login because of it.

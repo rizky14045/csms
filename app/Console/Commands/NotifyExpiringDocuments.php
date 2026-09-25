@@ -55,19 +55,19 @@ class NotifyExpiringDocuments extends Command
                 ]);
             }
 
-            if (!$recipient->email) {
+            if (!$recipient->mail_address) {
                 continue;
             }
 
             try {
-                Mail::to($recipient->email)->send(new SecurityCardExpiringSoon(
+                Mail::to($recipient->mail_address)->send(new SecurityCardExpiringSoon(
                     $security->name,
                     $security->unit_work,
                     $security->registration_number,
                     $security->expired_card_date
                 ));
 
-                $this->info("Notifikasi email KTA expiring terkirim ke {$recipient->email} (security_id: {$security->id})");
+                $this->info("Notifikasi email KTA expiring terkirim ke {$recipient->mail_address} (security_id: {$security->id})");
             } catch (\Throwable $th) {
                 Log::error('Gagal mengirim notifikasi KTA expiring: ' . $th->getMessage(), [
                     'security_id' => $security->id,
@@ -122,18 +122,18 @@ class NotifyExpiringDocuments extends Command
                     ]);
                 }
 
-                if (!$recipient->email) {
+                if (!$recipient->mail_address) {
                     continue;
                 }
 
                 try {
-                    Mail::to($recipient->email)->send(new VendorContractExpiringSoon(
+                    Mail::to($recipient->mail_address)->send(new VendorContractExpiringSoon(
                         $vendor->name,
                         $vendor->contract_number,
                         $vendor->end_date
                     ));
 
-                    $this->info("Notifikasi email kontrak vendor expiring terkirim ke {$recipient->email} (vendor_id: {$vendor->id})");
+                    $this->info("Notifikasi email kontrak vendor expiring terkirim ke {$recipient->mail_address} (vendor_id: {$vendor->id})");
                 } catch (\Throwable $th) {
                     Log::error('Gagal mengirim notifikasi kontrak vendor expiring: ' . $th->getMessage(), [
                         'vendor_id' => $vendor->id,
