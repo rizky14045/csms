@@ -281,7 +281,7 @@ class ReportItemController extends Controller
         return redirect()->route($meta['back'], ['monthlyId' => $monthlyId]);
     }
 
-    public function sync($monthlyId, $section)
+    public function sync(Request $request, $monthlyId, $section)
     {
         $cfg = MasterSyncService::config($section);
         abort_unless($cfg, 404);
@@ -292,12 +292,20 @@ class ReportItemController extends Controller
             abort(403, 'Laporan sudah dikirim');
         }
 
+        // Pulihkan program/detail yang pernah dihapus dari laporan ini, lalu salin ulang dari master.
+        if ($section === 'program' && $request->boolean('restore')) {
+            $this->sync->restoreExcludedPrograms($report);
+        }
+
         $added = $this->sync->sync($section, $report);
 
         if ($added > 0) {
             Alert::success('Sinkron Berhasil', "{$added} data baru dari master data ditambahkan ke {$cfg['label']}.");
         } else {
-            Alert::info('Sudah Terbaru', "Tidak ada data baru dari master data untuk {$cfg['label']}.");
+            $reason = $section === 'program'
+                ? $this->sync->programSyncDiagnosis($report)
+                : "Tidak ada data baru dari master data untuk {$cfg['label']}.";
+            Alert::info('Tidak Ada Data Baru', $reason);
         }
 
         return redirect()->back();

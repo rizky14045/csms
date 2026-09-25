@@ -322,6 +322,44 @@ class MasterSyncService
         return $added;
     }
 
+    /**
+     * Alasan tidak ada program yang tersalin saat sinkron (program hanya disalin bila master milik unit
+     * laporan ini dan tahunnya sama dengan tahun laporan).
+     */
+    public function programSyncDiagnosis(MonthlyReport $report): string
+    {
+        $year = (int) explode('-', $report->report_date)[0];
+
+        $all = \App\Services\Unit\UnitScope::applyReportMaster(SecurityProgram::query(), $report)->get();
+        if ($all->isEmpty()) {
+            return 'Belum ada Program Keamanan di master data unit ini. Tambahkan dulu di menu Master Data > Program Keamanan.';
+        }
+
+        $thisYear = $all->where('year', $year);
+        if ($thisYear->isEmpty()) {
+            $years = $all->pluck('year')->unique()->sort()->implode(', ');
+
+            return "Program master unit ini ada untuk tahun {$years}, tetapi tidak ada untuk tahun laporan ({$year}). "
+                . 'Sinkron hanya menyalin program yang tahunnya sama dengan tahun laporan; ubah tahun program di master data atau buat program tahun ' . $year . '.';
+        }
+
+        $excluded = array_intersect($thisYear->pluck('id')->all(), $this->excludedIds($report, 'program'));
+        if ($excluded || $this->excludedIds($report, 'main_program')) {
+            return 'Program master tahun ' . $year . ' sudah pernah dihapus dari laporan ini, jadi tidak disalin lagi. Gunakan tombol "Pulihkan Program Terhapus" untuk menyalinnya kembali.';
+        }
+
+        return 'Semua program master tahun ' . $year . ' beserta detailnya sudah ada di laporan ini. Detail program yang sengaja dihapus dari laporan ini tidak disalin lagi.';
+    }
+
+    /** Batalkan penghapusan program/detail dari laporan ini agar bisa disalin lagi dari master. */
+    public function restoreExcludedPrograms(MonthlyReport $report): int
+    {
+        return DB::table('monthly_report_exclusions')
+            ->where('monthly_report_id', $report->id)
+            ->whereIn('section', ['program', 'main_program'])
+            ->delete();
+    }
+
     public function exclude($report, $section, $masterId)
     {
         DB::table('monthly_report_exclusions')->updateOrInsert(

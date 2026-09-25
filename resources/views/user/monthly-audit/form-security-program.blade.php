@@ -49,6 +49,11 @@
                 <h5 class="card-title mb-3">Detail Laporan Bulanan</h5>
                 <a href="{{route('user.monthly-audit.index')}}" class="btn btn-danger"> Back</a>
                 @include('user.monthly-audit.partials.sync-button', ['monthlyId' => $monthlyId, 'section' => 'program'])
+                <button type="button" class="btn btn-outline-secondary btn-sm"
+                        title="Salin kembali program/detail master yang pernah dihapus dari laporan ini"
+                        onclick="confirmPostAction('{{ route('user.monthly-audit.sync', ['monthlyId' => $monthlyId, 'section' => 'program']) }}?restore=1', 'Pulihkan program terhapus?', 'Program dan detail dari master yang pernah dihapus dari laporan ini akan disalin kembali. Data yang sudah ada tidak berubah.')">
+                    &#8630; Pulihkan Program Terhapus
+                </button>
             </div><!-- end card header -->
 
             <div class="card-body">
