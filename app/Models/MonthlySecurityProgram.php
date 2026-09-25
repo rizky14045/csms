@@ -18,6 +18,6 @@ class MonthlySecurityProgram extends Model
 
     public function programs()
     {
-        return $this->hasMany(MonthlyMainSecurityProgram::class, 'monthly_program_id', 'id');
+        return $this->hasMany(MonthlyMainSecurityProgram::class, 'monthly_program_id', 'id')->orderBy('id');
     }
 }

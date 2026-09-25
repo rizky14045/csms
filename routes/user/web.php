@@ -133,6 +133,12 @@ Route::prefix('user')->group(function () {
 
                 //Form Security Program
                 Route::get('/security-program/{monthlyId}', [FormSecurityProgramController::class, 'index'])->name('user.monthly-audit.security-program.index');
+                Route::get('/security-program/{monthlyId}/program/{programId}/edit', [FormSecurityProgramController::class, 'editProgram'])->name('user.monthly-audit.security-program.program.edit');
+                Route::patch('/security-program/{monthlyId}/program/{programId}/update', [FormSecurityProgramController::class, 'updateProgram'])->name('user.monthly-audit.security-program.program.update');
+                Route::delete('/security-program/{monthlyId}/program/{programId}/destroy', [FormSecurityProgramController::class, 'destroyProgram'])->name('user.monthly-audit.security-program.program.destroy');
+                Route::get('/security-program/{monthlyId}/detail/{rowId}/edit', [FormSecurityProgramController::class, 'editDetail'])->name('user.monthly-audit.security-program.detail.edit');
+                Route::patch('/security-program/{monthlyId}/detail/{rowId}/update', [FormSecurityProgramController::class, 'updateDetail'])->name('user.monthly-audit.security-program.detail.update');
+                Route::delete('/security-program/{monthlyId}/detail/{rowId}/destroy', [FormSecurityProgramController::class, 'destroyDetail'])->name('user.monthly-audit.security-program.detail.destroy');
                 Route::get('/security-program-visual/{monthlyId}', [FormSecurityProgramController::class, 'visual'])->name('user.monthly-audit.security-program.visual');
                 Route::get('/realization-program/{monthlyId}/realization/{programId}', [RealizationProgramController::class, 'index'])->name('user.monthly-audit.realization-program.index');
                 Route::get('/realization-program/{monthlyId}/realization/{programId}/edit/{mainId}', [RealizationProgramController::class, 'edit'])->name('user.monthly-audit.realization-program.edit');
