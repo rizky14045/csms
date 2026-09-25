@@ -140,7 +140,8 @@
                             </td>
 
                             {{-- ACHIEVEMENT --}}
-                            @if ($auditData->status != 2)
+                            @php $canEditAudit = $auditData->status == 2 && !auth()->user()->hasRole('Auditor External'); @endphp
+                            @if (!$canEditAudit)
 
                             <td rowspan="{{ count($evidences) }}"
                                 style="background-color: {{ $bgAudit }}; color: {{ $bgAudit=='#ffc107'?'#000':'#fff' }};">
@@ -214,7 +215,7 @@
                         </td>
 
                         {{-- TEMUAN / REKOMENDASI / DUE DATE / PIC (form tetap seperti existing) --}}
-                        @if($auditData->status == 2)
+                        @if($canEditAudit)
 
                         <td style="min-width:220px;">
                             <form class="ajax-evidence-form"

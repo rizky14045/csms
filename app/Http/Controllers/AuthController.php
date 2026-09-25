@@ -77,6 +77,16 @@ class AuthController extends Controller
             $this->syncUserFromLdap($user, $ldapData);
         }
 
+        // Auditor external: akses berakhir setelah tanggal kedaluwarsa.
+        $isExternalAuditor = $user->hasRole(\App\Models\ExternalAuditor::ROLE);
+        if ($isExternalAuditor) {
+            $external = \App\Models\ExternalAuditor::forUser($user);
+            if (!$external || $external->isExpired()) {
+                Alert::error('Login gagal', 'Akses auditor external Anda sudah berakhir.');
+                return redirect()->route('login');
+            }
+        }
+
         Auth::login($user, true);
 
         $request->session()->regenerate();
@@ -88,7 +98,9 @@ class AuthController extends Controller
 
         Alert::success('Login Berhasil', 'User berhasil login!');
 
-        return redirect()->route('dashboard');
+        return $isExternalAuditor
+            ? redirect()->route('auditor.audit-smp-score.index')
+            : redirect()->route('dashboard');
     }
 
     /**

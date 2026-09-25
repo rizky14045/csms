@@ -30,7 +30,7 @@ class VendorAccountCreated extends Mailable
     public function build()
     {
         return $this
-            ->subject('Akun BUJP / Vendor CSMS Anda')
+            ->subject('Akun BUJP / Vendor SIdak Anda')
             ->view('emails.vendor.account-created');
     }
 }

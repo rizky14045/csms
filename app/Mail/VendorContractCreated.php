@@ -26,7 +26,7 @@ class VendorContractCreated extends Mailable
     public function build()
     {
         return $this
-            ->subject('Kontrak Baru BUJP / Vendor CSMS')
+            ->subject('Kontrak Baru BUJP / Vendor SIdak')
             ->view('emails.vendor.contract-created');
     }
 }

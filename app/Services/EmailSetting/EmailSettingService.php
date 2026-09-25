@@ -162,9 +162,9 @@ class EmailSettingService
 
         try {
             Mail::raw(
-                "Ini adalah email test dari pengaturan Email Setting CSMS.\nJika Anda menerima email ini, konfigurasi SMTP sudah benar.",
+                "Ini adalah email test dari pengaturan Email Setting SIdak.\nJika Anda menerima email ini, konfigurasi SMTP sudah benar.",
                 function ($message) use ($data) {
-                    $message->to($data['email_test'])->subject('Test Email - CSMS');
+                    $message->to($data['email_test'])->subject('Test Email - SIdak');
                 }
             );
 

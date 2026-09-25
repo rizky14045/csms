@@ -24,7 +24,7 @@ class VendorContractExpiringSoon extends Mailable
     public function build()
     {
         return $this
-            ->subject('Peringatan: Kontrak BUJP / Vendor Akan Berakhir - CSMS')
+            ->subject('Peringatan: Kontrak BUJP / Vendor Akan Berakhir - SIdak')
             ->view('emails.vendor.contract-expiring-soon');
     }
 }

@@ -26,7 +26,7 @@ class SecurityCardExpiringSoon extends Mailable
     public function build()
     {
         return $this
-            ->subject('Peringatan: KTA Satpam Akan Berakhir - CSMS')
+            ->subject('Peringatan: KTA Satpam Akan Berakhir - SIdak')
             ->view('emails.security.card-expiring-soon');
     }
 }

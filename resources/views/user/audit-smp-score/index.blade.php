@@ -31,9 +31,14 @@
     <div class="col-xl-12">
         <div class="card card-scrollable">
             <div class="d-flex justify-content-end pe-3 ps-3 pt-3">
-                @can('create.audit.smp.score.unit')
-                <a href="{{ route('user.audit-smp-score.create') }}" class="btn btn-success text-nowrap">Tambah Data</a>
-                @endcan
+                <div class="d-flex gap-2">
+                    @can('view.external.auditor')
+                    <a href="{{ route('external-auditor.index') }}" class="btn btn-outline-primary text-nowrap">Auditor External</a>
+                    @endcan
+                    @can('create.audit.smp.score.unit')
+                    <a href="{{ route('user.audit-smp-score.create') }}" class="btn btn-success text-nowrap">Tambah Data</a>
+                    @endcan
+                </div>
             </div>
 
             <div class="card-body">

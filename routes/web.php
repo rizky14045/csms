@@ -86,6 +86,17 @@ Route::middleware(['auth', 'force.change.password'])->prefix('master/budget-abso
     Route::delete('/{item}/delete', [$c, 'destroy'])->name('budget-master.destroy');
 });
 
+Route::middleware(['auth', 'force.change.password'])->prefix('audit-smp/external-auditor')->group(function () {
+    $c = \App\Http\Controllers\ExternalAuditorController::class;
+    Route::get('/', [$c, 'index'])->name('external-auditor.index');
+    Route::get('/create', [$c, 'create'])->name('external-auditor.create');
+    Route::post('/store', [$c, 'store'])->name('external-auditor.store');
+    Route::get('/{item}/edit', [$c, 'edit'])->name('external-auditor.edit');
+    Route::patch('/{item}/edit', [$c, 'update'])->name('external-auditor.update');
+    Route::post('/{item}/resend', [$c, 'resend'])->name('external-auditor.resend');
+    Route::delete('/{item}/delete', [$c, 'destroy'])->name('external-auditor.destroy');
+});
+
 Route::get('/status-history/{type}/{id}', [\App\Http\Controllers\StatusHistoryController::class, 'show'])
     ->where('id', '[0-9]+')->middleware(['auth'])->name('status-history.show');
 

@@ -44,16 +44,8 @@ class AuditSMPScoreController extends Controller
 
         $user = auth()->user();
 
-        // cek apakah user adalah lead auditor
-        $isLead = $audit->auditor_lead_id == $user->id;
-
-        // cek apakah user ada di auditors
-        $isAuditor = $audit->auditors
-            ->pluck('id')
-            ->contains($user->id);
-
-        // jika bukan lead dan bukan auditor
-        if (!$isLead && !$isAuditor) {
+        // ketua, anggota, atau auditor external yang ditugaskan pada audit ini
+        if (!$audit->hasAuditor($user)) {
 
             Alert::error(
                 'Akses Ditolak',
@@ -76,6 +68,14 @@ class AuditSMPScoreController extends Controller
     {
         try {
 
+            // Auditor external hanya boleh melihat.
+            if (auth()->user()->hasRole(\App\Models\ExternalAuditor::ROLE)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Auditor external hanya dapat melihat data audit.'
+                ], 403);
+            }
+
             // =========================
             // VALIDASI TYPE
             // =========================
@@ -96,19 +96,7 @@ class AuditSMPScoreController extends Controller
             // =========================
             // VALIDASI AUDITOR
             // =========================
-            $checkAuditor = true;
-
-            if ($audit_score->auditData->auditor_lead_id != auth()->id()) {
-
-                $checkDataAuditor = Auditor::where([
-                    ['audit_smp_data_id', $audit_score->auditData->id],
-                    ['user_id', auth()->id()]
-                ])->first();
-
-                if (!$checkDataAuditor) {
-                    $checkAuditor = false;
-                }
-            }
+            $checkAuditor = $audit_score->auditData->hasAuditor(auth()->user());
 
             if (!$checkAuditor) {
 
@@ -188,6 +176,14 @@ class AuditSMPScoreController extends Controller
     {
         try {
 
+            // Auditor external hanya boleh melihat.
+            if (auth()->user()->hasRole(\App\Models\ExternalAuditor::ROLE)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Auditor external hanya dapat melihat data audit.'
+                ], 403);
+            }
+
             // =========================
             // VALIDASI TYPE
             // =========================
@@ -208,20 +204,7 @@ class AuditSMPScoreController extends Controller
             // =========================
             // VALIDASI AUDITOR
             // =========================
-            $checkAuditor = true;
-
-            if ($audit_score->auditData->auditor_lead_id != auth()->id()) {
-
-                $checkDataAuditor = Auditor::where([
-                    ['audit_smp_data_id', $audit_score->auditData->id],
-                    ['user_id', auth()->id()]
-                ])->first();
-
-                if (!$checkDataAuditor) {
-                    $checkAuditor = false;
-                }
-
-            }
+            $checkAuditor = $audit_score->auditData->hasAuditor(auth()->user());
 
             if (!$checkAuditor) {
 
@@ -295,6 +278,11 @@ class AuditSMPScoreController extends Controller
     }
 
     public function send(AuditSmpData $audit){
+        if (auth()->user()->hasRole(\App\Models\ExternalAuditor::ROLE)) {
+            Alert::error('Akses Ditolak', 'Auditor external hanya dapat melihat data audit!');
+            return redirect()->route('auditor.audit-smp-score.index');
+        }
+
         if($audit->auditor_lead_id != auth()->id()){
             Alert::error('Akses Ditolak', 'Hanya ketua auditor yang dapat mengirim data audit!');
             return redirect()->back()->with('error', 'Hanya ketua auditor yang dapat mengirim data audit');

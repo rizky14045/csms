@@ -9,7 +9,7 @@
 
     <p>
         Kontrak baru untuk BUJP / Vendor Anda telah berhasil ditambahkan pada sistem
-        Compliance Security Management System (CSMS) PLN Nusantara Power.
+        SIdak PLN Nusantara Power.
         Berikut adalah detail kontrak Anda:
     </p>
 
