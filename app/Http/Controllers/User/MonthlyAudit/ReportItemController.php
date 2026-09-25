@@ -298,14 +298,22 @@ class ReportItemController extends Controller
         }
 
         $added = $this->sync->sync($section, $report);
+        $updated = $this->sync->refreshFromMaster($section, $report);
 
-        if ($added > 0) {
-            Alert::success('Sinkron Berhasil', "{$added} data baru dari master data ditambahkan ke {$cfg['label']}.");
+        if ($added > 0 || $updated > 0) {
+            $parts = [];
+            if ($added > 0) {
+                $parts[] = "{$added} data baru ditambahkan";
+            }
+            if ($updated > 0) {
+                $parts[] = "{$updated} data diperbarui sesuai perubahan terbaru di master data";
+            }
+            Alert::success('Sinkron Berhasil', ucfirst(implode(' dan ', $parts)) . " pada {$cfg['label']}.");
         } else {
             $reason = $section === 'program'
                 ? $this->sync->programSyncDiagnosis($report)
-                : "Tidak ada data baru dari master data untuk {$cfg['label']}.";
-            Alert::info('Tidak Ada Data Baru', $reason);
+                : "Tidak ada data baru maupun pembaruan dari master data untuk {$cfg['label']}.";
+            Alert::info('Tidak Ada Perubahan', $reason);
         }
 
         return redirect()->back();

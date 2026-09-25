@@ -351,6 +351,107 @@ class MasterSyncService
         return 'Semua program master tahun ' . $year . ' beserta detailnya sudah ada di laporan ini. Detail program yang sengaja dihapus dari laporan ini tidak disalin lagi.';
     }
 
+    /**
+     * Perbarui salinan di laporan bila master-nya berubah SETELAH salinan terakhir disentuh
+     * (updated_at master > updated_at salinan). Perubahan yang dibuat di laporan setelah perubahan master
+     * dipertahankan. Bagian yang menunjuk langsung ke master (mode reference) selalu terbaru.
+     * Mengembalikan jumlah baris yang diperbarui.
+     */
+    public function refreshFromMaster($section, MonthlyReport $report): int
+    {
+        $cfg = self::config($section);
+        if (!$cfg) {
+            return 0;
+        }
+
+        if ($cfg['mode'] === 'program') {
+            $programIds = MonthlySecurityProgram::where('monthly_report_id', $report->id)->pluck('program_id')->all();
+            $mainIds = MonthlyMainSecurityProgram::where('monthly_report_id', $report->id)->pluck('main_program_id')->all();
+
+            return $this->refreshCopies(SecurityProgram::class, $programIds)
+                + $this->refreshCopies(MainSecurityProgram::class, $mainIds, ['program_id']);
+        }
+
+        if ($cfg['mode'] !== 'duplicate') {
+            return 0;
+        }
+
+        $copyIds = $cfg['row']::where('monthly_report_id', $report->id)->pluck($cfg['fk'])->all();
+
+        return $this->refreshCopies($cfg['master'], $copyIds, $cfg['nullify'] ?? []);
+    }
+
+    /** Penyerapan anggaran: hanya data pokok yang diperbarui; penyerapan & keterangan bulanan tidak ditimpa. */
+    public function refreshBudgets(MonthlyReport $report): int
+    {
+        $fields = ['type', 'kode_aktifitas', 'kode_prk', 'deskripsi_kegiatan', 'jumlah_anggaran'];
+        $updated = 0;
+
+        $rows = LaporanBulananBiaya::where('monthly_report_id', $report->id)->whereNotNull('source_id')->get();
+        $masters = BudgetMaster::whereIn('id', $rows->pluck('source_id'))->get()->keyBy('id');
+
+        foreach ($rows as $row) {
+            $master = $masters[$row->source_id] ?? null;
+            if (!$master || !$master->updated_at || ($row->updated_at && $master->updated_at->lte($row->updated_at))) {
+                continue;
+            }
+
+            $changes = [];
+            foreach ($fields as $f) {
+                if ((string) $master->getRawOriginal($f) !== (string) $row->getRawOriginal($f)) {
+                    $changes[$f] = $master->getRawOriginal($f);
+                }
+            }
+
+            if ($changes) {
+                DB::table('laporan_bulanan_biaya')->where('id', $row->id)->update($changes + ['updated_at' => $master->updated_at]);
+                $updated++;
+            }
+        }
+
+        return $updated;
+    }
+
+    /** @param array $skip kolom yang tidak ikut disalin selain kolom pembukuan */
+    protected function refreshCopies($modelClass, array $copyIds, array $skip = []): int
+    {
+        if (!$copyIds) {
+            return 0;
+        }
+
+        $bookkeeping = ['id', 'user_id', 'source_id', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by', 'deleted_by'];
+        $skip = array_merge($bookkeeping, $skip);
+        $table = (new $modelClass)->getTable();
+
+        $copies = $modelClass::whereIn('id', $copyIds)->whereNotNull('source_id')->get();
+        $masters = $modelClass::whereIn('id', $copies->pluck('source_id'))->get()->keyBy('id'); // master terhapus tidak ikut
+        $updated = 0;
+
+        foreach ($copies as $copy) {
+            $master = $masters[$copy->source_id] ?? null;
+            if (!$master || !$master->updated_at || ($copy->updated_at && $master->updated_at->lte($copy->updated_at))) {
+                continue;
+            }
+
+            $changes = [];
+            foreach ($master->getAttributes() as $column => $value) {
+                if (in_array($column, $skip, true)) {
+                    continue;
+                }
+                if ((string) $value !== (string) $copy->getRawOriginal($column)) {
+                    $changes[$column] = $value;
+                }
+            }
+
+            if ($changes) {
+                DB::table($table)->where('id', $copy->id)->update($changes + ['updated_at' => $master->updated_at]);
+                $updated++;
+            }
+        }
+
+        return $updated;
+    }
+
     /** Batalkan penghapusan program/detail dari laporan ini agar bisa disalin lagi dari master. */
     public function restoreExcludedPrograms(MonthlyReport $report): int
     {

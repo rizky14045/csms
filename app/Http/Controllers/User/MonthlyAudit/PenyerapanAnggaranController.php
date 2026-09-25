@@ -55,12 +55,21 @@ class PenyerapanAnggaranController extends Controller
     public function sync($monthlyId)
     {
         $report = $this->ownedReport($monthlyId);
-        $added = app(MasterSyncService::class)->syncBudgets($report);
+        $sync = app(MasterSyncService::class);
+        $added = $sync->syncBudgets($report);
+        $updated = $sync->refreshBudgets($report);
 
-        if ($added > 0) {
-            Alert::success('Sinkron Berhasil', "{$added} data baru dari master data ditambahkan ke Penyerapan Anggaran.");
+        if ($added > 0 || $updated > 0) {
+            $parts = [];
+            if ($added > 0) {
+                $parts[] = "{$added} data baru ditambahkan";
+            }
+            if ($updated > 0) {
+                $parts[] = "{$updated} data diperbarui sesuai perubahan terbaru di master data";
+            }
+            Alert::success('Sinkron Berhasil', ucfirst(implode(' dan ', $parts)) . ' pada Penyerapan Anggaran.');
         } else {
-            Alert::info('Sudah Terbaru', 'Tidak ada data baru dari master data untuk Penyerapan Anggaran.');
+            Alert::info('Sudah Terbaru', 'Tidak ada data baru maupun pembaruan dari master data untuk Penyerapan Anggaran.');
         }
 
         return redirect()->route('user.monthly-audit.penyerapan-anggaran.index', ['monthlyId' => $monthlyId]);
