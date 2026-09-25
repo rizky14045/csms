@@ -45,6 +45,8 @@ trait HasRebuttal
         }
 
         $this->update([
+            // hasil validasi Pusat sebelum sanggah (dibandingkan dengan hasil setelah sanggah)
+            'score_before_rebuttal' => $this->computeActualTotal(),
             'status'              => 0,
             'send_status'         => false,
             'rebuttal_state'      => 1,

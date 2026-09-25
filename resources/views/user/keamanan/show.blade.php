@@ -80,6 +80,9 @@
                                         <th style="min-width:55px;"  class="text-center">Level</th>
                                         <th style="min-width:220px;" class="text-center">Uraian</th>
                                         <th style="min-width:220px;" class="text-center">Note / Evidence</th>
+                                        @if(($kpi->rebuttal_state ?? 0) > 0)
+                                        <th style="min-width:220px;" class="text-center">Catatan Validasi Pusat</th>
+                                        @endif
                                         <th style="min-width:240px;" class="text-center">File Evidence</th>
                                         <th style="min-width:80px;"  class="text-center">Bobot</th>
                                         <th style="min-width:90px;"  class="text-center">Hasil Assesment</th>
@@ -132,6 +135,15 @@
                                             <span class="text-muted">-</span>
                                         @endforelse
                                     </td>
+                                    @if(($kpi->rebuttal_state ?? 0) > 0)
+                                    <td style="white-space:normal; text-align:left;">
+                                        @if(!empty($level['validation_note']))
+                                            {!! nl2br(e($level['validation_note'])) !!}
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    @endif
 
                                     {{-- FILE CELL --}}
                                     <td data-level-id="{{ $level['id'] }}"

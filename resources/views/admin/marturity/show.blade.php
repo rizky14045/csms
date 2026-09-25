@@ -237,10 +237,22 @@
                                     <td>Total Score ML</td>
                                     <td class="text-center fw-bold text-primary">{{ round($grandTotalML, 4) }}</td>
                                 </tr>
-                                @if($showActual)
+                                @php
+                                    $rebuttalDone = (int) ($marturity->rebuttal_state ?? 0) === 4;
+                                    // MMRK biasanya tidak melihat skor aktual, tapi hasil sebelum/setelah sanggah ikut ditampilkan
+                                    $showRebuttalTotals = $rebuttalDone && ($showActual || $mode === 'mmrk');
+                                    $totalAfter = $showActual ? $grandActual : ($showRebuttalTotals ? $marturity->computeActualTotal() : 0);
+                                @endphp
+                                @if($showRebuttalTotals)
                                 <tr>
-                                    <td>Total Score ML Aktual (hasil cek Pusat)</td>
-                                    <td class="text-center fw-bold text-success" id="grand-aktual">{{ round($grandActual, 4) }}</td>
+                                    <td>Total Score ML sebelum sanggah</td>
+                                    <td class="text-center fw-bold text-secondary">{{ $marturity->score_before_rebuttal !== null ? round((float) $marturity->score_before_rebuttal, 4) : '-' }}</td>
+                                </tr>
+                                @endif
+                                @if($showActual || $showRebuttalTotals)
+                                <tr>
+                                    <td>{{ $rebuttalDone ? 'Total Score ML setelah sanggah' : 'Total Score ML Aktual (hasil cek Pusat)' }}</td>
+                                    <td class="text-center fw-bold text-success" id="grand-aktual">{{ round($totalAfter, 4) }}</td>
                                 </tr>
                                 @endif
                             </tbody>
