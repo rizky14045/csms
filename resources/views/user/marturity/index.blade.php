@@ -76,7 +76,7 @@
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{ $marturity->year }}</td>
                                     <td>{{$marturity->period_label}}</td>
-                                    <td>@include('components.flow-status', ['status' => $marturity->status ?? 0])</td>
+                                    <td>@include('components.flow-status', ['status' => $marturity->status ?? 0, 'rebuttal' => $marturity->rebuttal_state ?? 0])</td>
                                     <td>{{ !empty($marturity->mmrk_send_date) ? \Carbon\Carbon::parse($marturity->mmrk_send_date)->format('d-m-Y') : '-' }}</td>
                                     <td>{{ $marturity->send_date ? \Carbon\Carbon::parse($marturity->send_date)->format('d-m-Y') : "-" }}</td>
                                     <td>
@@ -96,6 +96,7 @@
                                                 </a>
                     @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
                     @include('components.status-history-button', ['type' => 'marturity', 'id' => $marturity->id])
+                    @include('components.rebuttal-button', ['kind' => 'marturity', 'item' => $marturity])
                                                 @endcan
                                                 @can('send.marturity.unit')
                                                 {{--
@@ -150,6 +151,7 @@
                                                 </a>
                     @include('components.assessment-export-buttons', ['kind' => 'marturity', 'item' => $marturity])
                     @include('components.status-history-button', ['type' => 'marturity', 'id' => $marturity->id])
+                    @include('components.rebuttal-button', ['kind' => 'marturity', 'item' => $marturity])
                                                 @endcan
                                             @endif
                                         </div>

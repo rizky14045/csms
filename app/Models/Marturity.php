@@ -11,6 +11,7 @@ class Marturity extends Model
 {
     use HasFactory, SoftDeletes;
     use \App\Models\Concerns\HasStatusHistory;
+    use \App\Models\Concerns\HasRebuttal;
     protected $guarded = ['id'];
     protected $appends = ['period_label'];
 
@@ -51,6 +52,19 @@ class Marturity extends Model
 
     public function statusHistoryChanges(): array
     {
+        // Tahap sanggahan: satu peristiwa dengan label sanggahan (status ikut berubah bersamaan).
+        if ($this->wasChanged('rebuttal_state')) {
+            $rebuttalLabels = [
+                1 => 'Sanggahan dimulai oleh Unit (data dapat diubah)',
+                2 => 'Sanggahan dikirim ke MMRK',
+                3 => 'Sanggahan dikirim ke Pusat (menunggu validasi)',
+                4 => 'Validasi sanggahan selesai (Selesai sanggah)',
+            ];
+            $state = (int) $this->rebuttal_state;
+
+            return [['rebuttal', $rebuttalLabels[$state] ?? 'Tahap sanggahan ' . $state, (int) $this->getOriginal('status'), (int) $this->status]];
+        }
+
         if (!$this->wasChanged('status')) {
             return [];
         }

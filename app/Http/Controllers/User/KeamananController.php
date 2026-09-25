@@ -100,8 +100,26 @@ class KeamananController extends Controller
 
         $data['areas'] = getData($result);
         $data['kpi']   = $kpi;
+        // level yang sudah dicentang Pusat terkunci pada tahap sanggahan
+        $data['checked'] = $this->kpiService->getCheckedMap($kpi);
 
         return view('user.keamanan.show', $data);
+    }
+
+    /** Mulai sanggahan (sekali, maksimal 7 hari setelah validasi Pusat selesai). */
+    public function rebuttal(Kpi $kpi){
+        if($kpi->unit_id != Auth::guard('web')->user()->unit_id){
+            abort(404);
+        }
+        abort_unless(auth()->user()->can('send.security.kpi.unit'), 403);
+
+        if ($kpi->startRebuttal()) {
+            Alert::success('Sanggahan Dimulai', 'Silakan ubah data yang belum divalidasi Pusat, lalu kirim ke MMRK.');
+            return redirect()->route('user.keamanan.show', ['kpi' => $kpi->id]);
+        }
+
+        Alert::warning('Sanggah Tidak Tersedia', 'Sanggahan hanya dapat diajukan satu kali dan maksimal 7 hari setelah validasi Pusat selesai.');
+        return redirect()->route('user.keamanan.index');
     }
 
     public function preview(Kpi $kpi){
@@ -181,6 +199,11 @@ class KeamananController extends Controller
         try {
             if ($kpi->send_status || $level->kpi_id != $kpi->id) {
                 return response()->json(['success' => false, 'message' => 'Data sudah terkunci!'], 403);
+            }
+
+            // Level yang sudah dicentang (divalidasi) Pusat tidak dapat diubah lagi.
+            if (\App\Models\KpiLevelCheck::where('level_id', $level->id)->exists()) {
+                return response()->json(['success' => false, 'message' => 'Level sudah divalidasi Pusat dan tidak dapat diubah!'], 403);
             }
 
             if (!$this->kpiService->isLevelUnlocked($level)) {

@@ -37,7 +37,9 @@
                         <td>{{ $kpi->year }}</td>
                         <td>{{ $kpi->period_label }}</td>
                         <td>
-                            @if($kpi->status == 1)
+                            @if(($kpi->rebuttal_state ?? 0) > 0)
+                                @include('components.flow-status', ['status' => $kpi->status, 'rebuttal' => $kpi->rebuttal_state])
+                            @elseif($kpi->status == 1)
                                 <span class="badge bg-warning text-dark">Menunggu dikirim MMRK</span>
                             @elseif($kpi->status == 2)
                                 <span class="badge bg-info">Menunggu validasi Pusat</span>
