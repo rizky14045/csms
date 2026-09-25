@@ -121,7 +121,12 @@
                         </div>
 
                         @forelse ($programs as $program)
-                            <h6 class="mt-3 mb-2 text-dark">{{ $program->securityProgram->program_name ?? '-' }} ({{ $program->securityProgram->year ?? '-' }})</h6>
+                            <div class="d-flex align-items-center gap-2 mt-3 mb-2">
+                                <h6 class="m-0 text-dark">{{ $program->securityProgram->program_name ?? '-' }} ({{ $program->securityProgram->year ?? '-' }})</h6>
+                                <a href="{{ route('user.monthly-audit.security-program.program.edit', ['monthlyId' => $monthlyId, 'programId' => $program->id]) }}" class="btn btn-sm btn-warning">Edit Program</a>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                    onclick="confirmRowDelete('{{ route('user.monthly-audit.security-program.program.destroy', ['monthlyId' => $monthlyId, 'programId' => $program->id]) }}')">Hapus Program</button>
+                            </div>
                             <div class="tl-wrap">
                                 <table class="tl-table">
                                     <thead>
@@ -160,6 +165,11 @@
                                                 <td class="tl-action align-middle" rowspan="2">
                                                     <input type="text" class="form-control form-control-sm mb-1 act-note" placeholder="Keterangan" value="{{ $main->note }}" data-for="{{ $main->id }}">
                                                     <button type="button" class="btn btn-sm btn-success act-save" data-for="{{ $main->id }}">Simpan</button>
+                                                    <div class="mt-1 d-flex gap-1 justify-content-center">
+                                                        <a href="{{ route('user.monthly-audit.security-program.detail.edit', ['monthlyId' => $monthlyId, 'rowId' => $main->id]) }}" class="btn btn-sm btn-warning">Edit</a>
+                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                            onclick="confirmRowDelete('{{ route('user.monthly-audit.security-program.detail.destroy', ['monthlyId' => $monthlyId, 'rowId' => $main->id]) }}')">Hapus</button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr class="tl-actual" data-id="{{ $main->id }}"

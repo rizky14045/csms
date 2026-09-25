@@ -11,6 +11,22 @@ class MainSecurityProgram extends Model
     use HasFactory, SoftDeletes;
     protected $guarded = ['id'];
 
+    protected static function booted()
+    {
+        // Master (user_id terisi) berubah/dihapus: laporan lama yang menunjuk langsung ke master dibekukan dulu.
+        static::updating(function ($model) {
+            if ($model->user_id !== null && $model->isDirty(['program_name', 'schedule', 'start_month', 'start_week', 'end_month', 'end_week'])) {
+                \App\Services\MonthlyReport\ProgramReportSnapshot::detachMainRows($model, $model->getOriginal());
+            }
+        });
+
+        static::deleting(function ($model) {
+            if ($model->user_id !== null) {
+                \App\Services\MonthlyReport\ProgramReportSnapshot::detachMainRows($model, $model->getOriginal());
+            }
+        });
+    }
+
     const MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     const WEEKS = 4;
 

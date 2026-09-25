@@ -247,44 +247,72 @@ class MasterSyncService
         return count($rows);
     }
 
+    /**
+     * Salin program keamanan master (tahun laporan) ke laporan. Header program dan detailnya disalin
+     * (user_id null, source_id = master) sehingga bisa diedit/dihapus di laporan tanpa memengaruhi
+     * master maupun laporan lain. Program/detail yang sudah ada (langsung atau lewat salinan) atau yang
+     * sengaja dihapus dari laporan ini tidak ditambahkan lagi.
+     */
     public function syncPrograms(MonthlyReport $report)
     {
         $year = explode('-', $report->report_date)[0];
         $added = 0;
 
-        $programs = \App\Services\Unit\UnitScope::applyReportMaster(SecurityProgram::query(), $report)->where('year', $year)->get();
-        $existingPrograms = MonthlySecurityProgram::where('monthly_report_id', $report->id)->get()->keyBy('program_id');
-        $existingMains = MonthlyMainSecurityProgram::where('monthly_report_id', $report->id)->pluck('main_program_id')->all();
+        $masters = \App\Services\Unit\UnitScope::applyReportMaster(SecurityProgram::query(), $report)->where('year', $year)->get();
 
-        foreach ($programs as $program) {
-            $monthlyProgram = $existingPrograms[$program->id] ?? null;
+        $rows = MonthlySecurityProgram::where('monthly_report_id', $report->id)->get();
+        $programCopies = SecurityProgram::withTrashed()->whereIn('id', $rows->pluck('program_id'))->get()->keyBy('id');
+        $rowByMaster = [];
+        foreach ($rows as $row) {
+            $p = $programCopies[$row->program_id] ?? null;
+            $rowByMaster[($p && $p->source_id) ? $p->source_id : $row->program_id] = $row;
+        }
+        $excludedPrograms = $this->excludedIds($report, 'program');
+
+        $mainRows = MonthlyMainSecurityProgram::where('monthly_report_id', $report->id)->pluck('main_program_id');
+        $mainCopies = MainSecurityProgram::withTrashed()->whereIn('id', $mainRows)->get()->keyBy('id');
+        $coveredMains = [];
+        foreach ($mainRows as $mid) {
+            $m = $mainCopies[$mid] ?? null;
+            $coveredMains[($m && $m->source_id) ? $m->source_id : $mid] = true;
+        }
+        $excludedMains = array_flip($this->excludedIds($report, 'main_program'));
+
+        foreach ($masters as $master) {
+            $monthlyProgram = $rowByMaster[$master->id] ?? null;
 
             if (!$monthlyProgram) {
+                if (in_array($master->id, $excludedPrograms)) {
+                    continue;
+                }
+
+                $copy = ProgramReportSnapshot::copyProgram($master->getAttributes(), $master->id);
                 $monthlyProgram = MonthlySecurityProgram::create([
                     'monthly_report_id' => $report->id,
                     'user_id'           => $report->user_id,
-                    'program_id'        => $program->id,
+                    'program_id'        => $copy->id,
                 ]);
                 $added++;
             }
 
-            $mains = MainSecurityProgram::where('program_id', $program->id)->get();
-            foreach ($mains as $item) {
-                if (in_array($item->id, $existingMains)) {
+            foreach (MainSecurityProgram::where('program_id', $master->id)->get() as $item) {
+                if (isset($coveredMains[$item->id]) || isset($excludedMains[$item->id])) {
                     continue;
                 }
+
+                $mainCopy = ProgramReportSnapshot::copyMain($item->getAttributes(), $item->id, $monthlyProgram->program_id);
 
                 MonthlyMainSecurityProgram::create([
                     'monthly_report_id'  => $report->id,
                     'user_id'            => $report->user_id,
                     'monthly_program_id' => $monthlyProgram->id,
-                    'program_id'         => $program->id,
-                    'main_program_id'    => $item->id,
+                    'program_id'         => $monthlyProgram->program_id,
+                    'main_program_id'    => $mainCopy->id,
                     'start_month'        => $item->start_month,
                     'start_week'         => $item->start_week,
                     'end_month'          => $item->end_month,
                     'end_week'           => $item->end_week,
-                    // Realisasi mulai kosong; rencana selalu dibaca dari master program.
+                    // Realisasi mulai kosong; rencana dibaca dari salinan detail program milik laporan ini.
                     'schedule'           => '[]',
                 ]);
                 $added++;
