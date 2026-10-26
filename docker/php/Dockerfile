@@ -1,47 +1,58 @@
-FROM php:8.2-fpm
+FROM php:8.4-fpm
 
-# Dependency
-RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libonig-dev libxml2-dev \
-    libzip-dev libpq-dev
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    zip \
+    unzip \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libwebp-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    libpq-dev \
+    libicu-dev \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
 
-# PHP extensions
-RUN docker-php-ext-install \
-    pdo_pgsql pgsql \
-    mbstring exif pcntl bcmath gd zip
+# Configure & Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) \
+        pdo_pgsql \
+        pgsql \
+        mbstring \
+        exif \
+        pcntl \
+        bcmath \
+        gd \
+        zip \
+        intl \
+        opcache
 
-RUN docker-php-ext-enable opcache
-
-# Raise upload limits to match the app's largest allowed upload (25MB)
+# Copy custom PHP configuration
 COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 
-# Composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set working directory
 WORKDIR /var/www
 
-# Copy semua project Laravel
-COPY . .
+# Copy application source code
+COPY . /var/www
 
-# Install dependency
-RUN composer install --no-dev --optimize-autoloader
+# Copy & set permissions for entrypoint
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Migration Database
-RUN php artisan migrate
+# Set directory permissions
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true \
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
 
-# Generate optimized autoload files
-RUN php artisan optimize
+EXPOSE 9000
 
-# clear cache and config
-RUN php artisan config:cache 
-
-# clear cache and route
-RUN php artisan route:cache 
-
-# clear cache and route
-RUN php artisan route:clear 
-
-# Permission
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 775 storage bootstrap/cache
-    
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["php-fpm"]
