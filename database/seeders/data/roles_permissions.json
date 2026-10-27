@@ -1,0 +1,1737 @@
+{
+    "roles": [
+        "Admin",
+        "Pusat",
+        "Unit",
+        "BUJP",
+        "MMRK",
+        "UL",
+        "Auditor External"
+    ],
+    "permissions": [
+        "view.role",
+        "create.role",
+        "edit.role",
+        "delete.role",
+        "view.permission",
+        "create.permission",
+        "edit.permission",
+        "delete.permission",
+        "view.user",
+        "create.user",
+        "edit.user",
+        "delete.user",
+        "view.vulnerability",
+        "create.vulnerability",
+        "edit.vulnerability",
+        "delete.vulnerability",
+        "view.attribute",
+        "create.attribute",
+        "edit.attribute",
+        "delete.attribute",
+        "view.category.assesment",
+        "create.category.assesment",
+        "edit.category.assesment",
+        "delete.category.assesment",
+        "view.question.assesment",
+        "create.question.assesment",
+        "edit.question.assesment",
+        "delete.question.assesment",
+        "view.level.assesment",
+        "create.level.assesment",
+        "edit.level.assesment",
+        "delete.level.assesment",
+        "view.marturity.area",
+        "create.marturity.area",
+        "edit.marturity.area",
+        "delete.marturity.area",
+        "view.marturity.subarea",
+        "create.marturity.subarea",
+        "edit.marturity.subarea",
+        "delete.marturity.subarea",
+        "view.marturity.level",
+        "create.marturity.level",
+        "edit.marturity.level",
+        "delete.marturity.level",
+        "view.marturity.note",
+        "create.marturity.note",
+        "edit.marturity.note",
+        "delete.marturity.note",
+        "view.kpi.area",
+        "create.kpi.area",
+        "edit.kpi.area",
+        "delete.kpi.area",
+        "view.kpi.subarea",
+        "create.kpi.subarea",
+        "edit.kpi.subarea",
+        "delete.kpi.subarea",
+        "view.kpi.level",
+        "create.kpi.level",
+        "edit.kpi.level",
+        "delete.kpi.level",
+        "view.kpi.note",
+        "create.kpi.note",
+        "edit.kpi.note",
+        "delete.kpi.note",
+        "view.attribute.unit",
+        "create.attribute.unit",
+        "edit.attribute.unit",
+        "delete.attribute.unit",
+        "view.security.unit",
+        "create.security.unit",
+        "edit.security.unit",
+        "delete.security.unit",
+        "view.user.vendor",
+        "create.user.vendor",
+        "edit.user.vendor",
+        "delete.user.vendor",
+        "view.marturity.unit",
+        "create.marturity.unit",
+        "edit.marturity.unit",
+        "delete.marturity.unit",
+        "send.marturity.unit",
+        "view.marturity.admin",
+        "create.marturity.admin",
+        "edit.marturity.admin",
+        "delete.marturity.admin",
+        "view.workersum.unit",
+        "create.workersum.unit",
+        "edit.workersum.unit",
+        "delete.workersum.unit",
+        "view.security.program.unit",
+        "create.security.program.unit",
+        "edit.security.program.unit",
+        "delete.security.program.unit",
+        "view.responsible.person.unit",
+        "create.responsible.person.unit",
+        "edit.responsible.person.unit",
+        "delete.responsible.person.unit",
+        "view.security.external.unit",
+        "create.security.external.unit",
+        "edit.security.external.unit",
+        "delete.security.external.unit",
+        "view.agreement.external.unit",
+        "create.agreement.external.unit",
+        "edit.agreement.external.unit",
+        "delete.agreement.external.unit",
+        "view.main.security.program.unit",
+        "create.main.security.program.unit",
+        "edit.main.security.program.unit",
+        "delete.main.security.program.unit",
+        "view.security.kpi.unit",
+        "create.security.kpi.unit",
+        "edit.security.kpi.unit",
+        "delete.security.kpi.unit",
+        "send.security.kpi.unit",
+        "view.security.kpi.admin",
+        "view.audit.smp.admin",
+        "create.audit.smp.admin",
+        "edit.audit.smp.admin",
+        "delete.audit.smp.admin",
+        "view.element.audit.smp.admin",
+        "create.element.audit.smp.admin",
+        "edit.element.audit.smp.admin",
+        "delete.element.audit.smp.admin",
+        "view.criteria.audit.smp.admin",
+        "create.criteria.audit.smp.admin",
+        "edit.criteria.audit.smp.admin",
+        "delete.criteria.audit.smp.admin",
+        "view.evidence.audit.smp.admin",
+        "create.evidence.audit.smp.admin",
+        "edit.evidence.audit.smp.admin",
+        "delete.evidence.audit.smp.admin",
+        "view.assesment.bujp",
+        "create.assesment.bujp",
+        "edit.assesment.bujp",
+        "delete.assesment.bujp",
+        "send.assesment.bujp",
+        "view.assesment.bujp.unit",
+        "create.assesment.bujp.unit",
+        "edit.assesment.bujp.unit",
+        "delete.assesment.bujp.unit",
+        "send.assesment.bujp.unit",
+        "view.assesment.bujp.admin",
+        "create.assesment.bujp.admin",
+        "edit.assesment.bujp.admin",
+        "delete.assesment.bujp.admin",
+        "view.unit.admin",
+        "create.unit.admin",
+        "edit.unit.admin",
+        "delete.unit.admin",
+        "view.audit.smp.score.admin",
+        "create.audit.smp.score.admin",
+        "edit.audit.smp.score.admin",
+        "delete.audit.smp.score.admin",
+        "view.audit.smp.score.auditor",
+        "view.audit.smp.score.unit",
+        "create.audit.smp.score.unit",
+        "edit.audit.smp.score.unit",
+        "view.securepedia.admin",
+        "create.securepedia.admin",
+        "edit.securepedia.admin",
+        "delete.securepedia.admin",
+        "view.fasum.dashboard",
+        "view.fasum.user",
+        "create.fasum.user",
+        "edit.fasum.user",
+        "delete.fasum.user",
+        "view.fasumtype.admin",
+        "create.fasumtype.admin",
+        "edit.fasumtype.admin",
+        "delete.fasumtype.admin",
+        "send.audit.smp.score.unit",
+        "view.email.setting",
+        "create.email.setting",
+        "edit.email.setting",
+        "view.securepedia.user",
+        "view.marturity.mmrk",
+        "send.marturity.mmrk",
+        "view.kpi.mmrk",
+        "send.kpi.mmrk",
+        "validate.marturity.admin",
+        "validate.kpi.admin",
+        "view.monthly.audit.mmrk",
+        "view.monthly.audit.unit",
+        "create.monthly.audit.unit",
+        "edit.monthly.audit.unit",
+        "delete.monthly.audit.unit",
+        "view.budget.master",
+        "create.budget.master",
+        "edit.budget.master",
+        "delete.budget.master",
+        "view.external.auditor",
+        "create.external.auditor",
+        "edit.external.auditor",
+        "delete.external.auditor"
+    ],
+    "role_permissions": [
+        {
+            "role": "Admin",
+            "permission": "create.assesment.bujp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.attribute"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.audit.smp.score.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.budget.master"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.category.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.criteria.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.element.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.email.setting"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.evidence.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.external.auditor"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.fasumtype.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.kpi.area"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.kpi.level"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.kpi.note"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.kpi.subarea"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.level.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.marturity.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.marturity.area"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.marturity.level"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.marturity.note"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.marturity.subarea"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.permission"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.question.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.role"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.securepedia.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.unit.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.user"
+        },
+        {
+            "role": "Admin",
+            "permission": "create.vulnerability"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.assesment.bujp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.attribute"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.audit.smp.score.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.budget.master"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.category.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.criteria.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.element.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.evidence.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.external.auditor"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.fasumtype.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.kpi.area"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.kpi.level"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.kpi.note"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.kpi.subarea"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.level.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.marturity.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.marturity.area"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.marturity.level"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.marturity.note"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.marturity.subarea"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.permission"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.question.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.role"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.securepedia.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.unit.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.user"
+        },
+        {
+            "role": "Admin",
+            "permission": "delete.vulnerability"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.assesment.bujp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.attribute"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.audit.smp.score.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.budget.master"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.category.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.criteria.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.element.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.email.setting"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.evidence.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.external.auditor"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.fasumtype.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.kpi.area"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.kpi.level"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.kpi.note"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.kpi.subarea"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.level.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.marturity.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.marturity.area"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.marturity.level"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.marturity.note"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.marturity.subarea"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.permission"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.question.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.role"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.securepedia.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.unit.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.user"
+        },
+        {
+            "role": "Admin",
+            "permission": "edit.vulnerability"
+        },
+        {
+            "role": "Admin",
+            "permission": "validate.kpi.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "validate.marturity.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.assesment.bujp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.attribute"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.audit.smp.score.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.budget.master"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.category.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.criteria.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.element.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.email.setting"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.evidence.audit.smp.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.external.auditor"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.fasum.dashboard"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.fasumtype.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.kpi.area"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.kpi.level"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.kpi.note"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.kpi.subarea"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.level.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.marturity.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.marturity.area"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.marturity.level"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.marturity.note"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.marturity.subarea"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.permission"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.question.assesment"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.role"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.securepedia.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.securepedia.user"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.security.kpi.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.unit.admin"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.user"
+        },
+        {
+            "role": "Admin",
+            "permission": "view.vulnerability"
+        },
+        {
+            "role": "Auditor External",
+            "permission": "view.audit.smp.score.auditor"
+        },
+        {
+            "role": "BUJP",
+            "permission": "create.assesment.bujp"
+        },
+        {
+            "role": "BUJP",
+            "permission": "delete.assesment.bujp"
+        },
+        {
+            "role": "BUJP",
+            "permission": "edit.assesment.bujp"
+        },
+        {
+            "role": "BUJP",
+            "permission": "send.assesment.bujp"
+        },
+        {
+            "role": "BUJP",
+            "permission": "view.assesment.bujp"
+        },
+        {
+            "role": "BUJP",
+            "permission": "view.securepedia.user"
+        },
+        {
+            "role": "MMRK",
+            "permission": "send.kpi.mmrk"
+        },
+        {
+            "role": "MMRK",
+            "permission": "send.marturity.mmrk"
+        },
+        {
+            "role": "MMRK",
+            "permission": "view.kpi.mmrk"
+        },
+        {
+            "role": "MMRK",
+            "permission": "view.marturity.mmrk"
+        },
+        {
+            "role": "MMRK",
+            "permission": "view.monthly.audit.mmrk"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.agreement.external.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.assesment.bujp"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.assesment.bujp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.attribute.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.audit.smp.score.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.audit.smp.score.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.budget.master"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.category.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.criteria.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.element.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.evidence.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.external.auditor"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.fasum.user"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.kpi.area"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.kpi.level"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.kpi.note"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.kpi.subarea"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.level.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.marturity.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.marturity.area"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.marturity.level"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.marturity.note"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.marturity.subarea"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.marturity.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.question.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.responsible.person.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.securepedia.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.security.external.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.security.kpi.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.security.program.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.security.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.unit.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.user.vendor"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.vulnerability"
+        },
+        {
+            "role": "Pusat",
+            "permission": "create.workersum.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.agreement.external.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.assesment.bujp"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.assesment.bujp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.attribute.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.audit.smp.score.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.budget.master"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.category.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.criteria.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.element.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.evidence.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.external.auditor"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.fasum.user"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.kpi.area"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.kpi.level"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.kpi.note"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.kpi.subarea"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.level.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.marturity.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.marturity.area"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.marturity.level"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.marturity.note"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.marturity.subarea"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.question.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.responsible.person.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.securepedia.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.security.external.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.security.program.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.security.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.unit.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.user.vendor"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.vulnerability"
+        },
+        {
+            "role": "Pusat",
+            "permission": "delete.workersum.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.agreement.external.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.assesment.bujp"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.assesment.bujp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.assesment.bujp.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.attribute.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.audit.smp.score.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.audit.smp.score.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.budget.master"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.category.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.criteria.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.element.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.evidence.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.external.auditor"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.fasum.user"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.kpi.area"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.kpi.level"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.kpi.note"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.kpi.subarea"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.level.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.marturity.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.marturity.area"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.marturity.level"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.marturity.note"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.marturity.subarea"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.marturity.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.question.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.responsible.person.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.securepedia.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.security.external.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.security.kpi.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.security.program.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.security.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.unit.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.user.vendor"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.vulnerability"
+        },
+        {
+            "role": "Pusat",
+            "permission": "edit.workersum.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "send.assesment.bujp"
+        },
+        {
+            "role": "Pusat",
+            "permission": "send.assesment.bujp.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "send.audit.smp.score.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "send.marturity.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "send.security.kpi.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "validate.kpi.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "validate.marturity.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.agreement.external.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.assesment.bujp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.attribute.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.audit.smp.score.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.budget.master"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.category.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.criteria.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.element.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.evidence.audit.smp.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.external.auditor"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.fasum.dashboard"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.fasum.user"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.kpi.area"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.kpi.level"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.kpi.note"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.kpi.subarea"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.level.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.marturity.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.marturity.area"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.marturity.level"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.marturity.note"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.marturity.subarea"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.question.assesment"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.responsible.person.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.securepedia.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.securepedia.user"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.security.external.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.security.kpi.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.security.program.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.security.unit"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.unit.admin"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.user.vendor"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.vulnerability"
+        },
+        {
+            "role": "Pusat",
+            "permission": "view.workersum.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "create.agreement.external.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "create.budget.master"
+        },
+        {
+            "role": "UL",
+            "permission": "create.main.security.program.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "create.responsible.person.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "create.security.external.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "create.security.program.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "create.security.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "create.workersum.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "delete.agreement.external.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "delete.budget.master"
+        },
+        {
+            "role": "UL",
+            "permission": "delete.main.security.program.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "delete.responsible.person.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "delete.security.external.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "delete.security.program.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "delete.security.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "delete.workersum.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "edit.agreement.external.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "edit.budget.master"
+        },
+        {
+            "role": "UL",
+            "permission": "edit.main.security.program.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "edit.responsible.person.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "edit.security.external.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "edit.security.program.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "edit.security.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "edit.workersum.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "view.agreement.external.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "view.attribute.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "view.budget.master"
+        },
+        {
+            "role": "UL",
+            "permission": "view.main.security.program.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "view.responsible.person.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "view.security.external.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "view.security.program.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "view.security.unit"
+        },
+        {
+            "role": "UL",
+            "permission": "view.workersum.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.agreement.external.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.assesment.bujp.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.attribute.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.audit.smp.score.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.budget.master"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.external.auditor"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.fasum.user"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.main.security.program.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.marturity.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.responsible.person.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.security.external.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.security.kpi.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.security.program.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.security.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.user.vendor"
+        },
+        {
+            "role": "Unit",
+            "permission": "create.workersum.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.agreement.external.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.assesment.bujp.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.attribute.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.budget.master"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.external.auditor"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.fasum.user"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.main.security.program.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.marturity.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.responsible.person.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.security.external.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.security.kpi.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.security.program.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.security.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.user.vendor"
+        },
+        {
+            "role": "Unit",
+            "permission": "delete.workersum.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.agreement.external.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.assesment.bujp.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.attribute.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.audit.smp.score.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.budget.master"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.external.auditor"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.fasum.user"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.main.security.program.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.marturity.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.responsible.person.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.security.external.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.security.kpi.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.security.program.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.security.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.user.vendor"
+        },
+        {
+            "role": "Unit",
+            "permission": "edit.workersum.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "send.assesment.bujp.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "send.audit.smp.score.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "send.marturity.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "send.security.kpi.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.agreement.external.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.assesment.bujp.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.attribute.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.audit.smp.score.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.budget.master"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.external.auditor"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.fasum.dashboard"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.fasum.user"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.main.security.program.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.marturity.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.responsible.person.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.securepedia.user"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.security.external.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.security.kpi.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.security.program.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.security.unit"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.user.vendor"
+        },
+        {
+            "role": "Unit",
+            "permission": "view.workersum.unit"
+        }
+    ]
+}

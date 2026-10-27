@@ -28,8 +28,10 @@ services:
     ports:
       - "${FORWARD_NGINX_PORT:-8080}:80"
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ../:/var/www:ro
+      - ./nginx:/etc/nginx/conf.d
+      - public_data:/var/www/public:ro
+      - uploads_data:/var/www/public/uploads:ro
+
     depends_on:
       - app
     networks:
