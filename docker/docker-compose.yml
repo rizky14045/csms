@@ -1,11 +1,20 @@
 services:
   app:
-    image: rizky14045/app-sidak:1.2
+    build:
+      context: ..
+      dockerfile: docker/php/Dockerfile
+    image: sidak-app:local
     container_name: sidak_app
     restart: unless-stopped
 
+    # .env di-mount langsung (bukan dibangun ke dalam image) supaya kredensial tidak
+    # pernah tersimpan permanen di layer image, dan supaya Laravel memuatnya persis
+    # seperti biasa (termasuk sintaks "${APP_NAME}" di dalamnya).
     volumes:
-      - laravel_data:/var/www
+      - ../.env:/var/www/.env:ro
+      - storage_data:/var/www/storage
+      - public_data:/var/www/public
+      - uploads_data:/var/www/public/uploads
 
     networks:
       - sidak
@@ -20,7 +29,8 @@ services:
 
     volumes:
       - ./nginx:/etc/nginx/conf.d
-      - laravel_data:/var/www
+      - public_data:/var/www/public:ro
+      - uploads_data:/var/www/public/uploads:ro
 
     depends_on:
       - app
@@ -33,4 +43,10 @@ networks:
     driver: bridge
 
 volumes:
-  laravel_data:
+  # Aset di public/ disegarkan dari image setiap container start (lihat entrypoint.sh),
+  # jadi volume ini boleh dianggap sementara/bisa dibuat ulang kapan saja.
+  public_data:
+  # Dua volume berikut BENAR-BENAR persisten: jangan dihapus (docker compose down -v)
+  # tanpa backup, karena isinya berkas upload pengguna dan cache/log runtime aplikasi.
+  uploads_data:
+  storage_data:

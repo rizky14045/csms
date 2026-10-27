@@ -1,0 +1,12 @@
+[
+    {
+        "id": 5,
+        "incident": "Pencurian",
+        "type": "internal"
+    },
+    {
+        "id": 8,
+        "incident": "Kerusuhan",
+        "type": "eksternal"
+    }
+]

@@ -1,0 +1,2408 @@
+{
+    "areas": [
+        {
+            "id": 12,
+            "name": "PENGENDALIAN KOMITMEN MANAJEMEN",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 13,
+            "name": "POLA PENGAMANAN",
+            "order": 2,
+            "type": "kpi"
+        },
+        {
+            "id": 14,
+            "name": "KONFIGURASI PENGAMANAN",
+            "order": 3,
+            "type": "kpi"
+        },
+        {
+            "id": 15,
+            "name": "PENGENDALIAN STANDAR KEMAMPUAN PELAKSANA PENGAMANAN",
+            "order": 5,
+            "type": "kpi"
+        },
+        {
+            "id": 16,
+            "name": "MONITORING DAN EVALUASI",
+            "order": 6,
+            "type": "kpi"
+        },
+        {
+            "id": 23,
+            "name": "testing",
+            "order": 4,
+            "type": "kpi"
+        },
+        {
+            "id": 17,
+            "name": "PENGENDALIAN KOMITMEN DAN KEBIJAKAN",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 18,
+            "name": "POLA PENGAMANAN",
+            "order": 2,
+            "type": "marturity"
+        },
+        {
+            "id": 19,
+            "name": "KONFIGURASI PENGAMANAN",
+            "order": 3,
+            "type": "marturity"
+        },
+        {
+            "id": 20,
+            "name": "PENGENDALIAN STANDAR KEMAMPUAN PELAKSANA PENGAMANAN",
+            "order": 4,
+            "type": "marturity"
+        },
+        {
+            "id": 21,
+            "name": "MONITORING DAN EVALUASI",
+            "order": 5,
+            "type": "marturity"
+        }
+    ],
+    "sub_areas": [
+        {
+            "id": 8,
+            "area_id": 12,
+            "name": "Anggaran dan Program Kerja Keamanan",
+            "description": "Program kerja dan anggaran bidang keamanan di Unit Induk dan Unit Pelaksana tertuang dalam RKAP dan ditetapkan melalui SKKO.",
+            "reference": "Perpol 07 Tahun 2019;",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 9,
+            "area_id": 12,
+            "name": "Pelatihan Sertifikasi Kompetensi Auditor SMP.",
+            "description": "Tim Implementasi dan Tim Audit Internal SMP telah memiliki sertifikasi pelatihan atau kompetensi Auditor.",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 2,
+            "type": "kpi"
+        },
+        {
+            "id": 10,
+            "area_id": 12,
+            "name": "Melakukan Sosialisasi dan Peningkatan pemahaman Sistem Pengamanan",
+            "description": "Melakukan sosialisasi internal dan eksternal serta peningkatan pemahaman sistem pengamanan di Unit *Untuk UP yang memiliki wilayah tersebar eviden adalah kantor UP dan salah satu unit (diutamakan unit obvitnas)",
+            "reference": "Perpol 07 Tahun 2019.",
+            "order": 3,
+            "type": "kpi"
+        },
+        {
+            "id": 11,
+            "area_id": 12,
+            "name": "Inspeksi Keamanan",
+            "description": "Sebagai upaya keterlibatan Manajemen Puncak dalam monitoring penerapan SMP",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 4,
+            "type": "kpi"
+        },
+        {
+            "id": 12,
+            "area_id": 13,
+            "name": "Penerapan Sistem Manajemen Pengamanan berbasis IT",
+            "description": "Peningkatan pemantauan pengamanan dengan infrastruktur pengamanan berbasis IT di Unit Tahap 1 : CCTV dan Outdoor Access Control (portal). Tahap 2 : Tahap 1 + Indoor Access Control (akses masuk pada ruangan yang berzonasi Merah dan prioritas zonasi Kuning sesuai matriks resiko keamanan). Tahap 3: Tahap 2 yang sudah terintegrasi (Lokal Centralized control & monitoring Peta zonasi keamanan Unit  berdasarkan Analisa Risiko Pengamanan (ARP) *Untuk UP yang memiliki wilayah tersebar eviden adalah kantor UP dan salah satu unit (diutamakan unit obvitnas)",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 13,
+            "area_id": 13,
+            "name": "Organisasi pengamanan dan rencana pengamanan (Renpam)",
+            "description": "Organisasi Pengamanan Unit dan Kawasan Terpadu (yang telah ditetapkan oleh Kementrian ESDM) serta dokumen Rencana Pengamanan (Renpam) Organisasi dalam satu tahun",
+            "reference": "Perpol 07 Tahun 2019;",
+            "order": 2,
+            "type": "kpi"
+        },
+        {
+            "id": 14,
+            "area_id": 14,
+            "name": "Asessment Badan Usaha Jasa Pengamanan (BUJP)",
+            "description": "Pemeriksaaan Kesesuaian Kontrak BUJP dengan kondisi di lapangan",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 15,
+            "area_id": 14,
+            "name": "Penyusunan Rencana Kontijensi Pengamanan (Renkon)",
+            "description": "Unit memiliki Rencana Kontijensi Pengamanan (Renkon) *Untuk UP yang memiliki wilayah tersebar eviden adalah kantor UP dan salah satu unit (diutamakan unit obvitnas)",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 2,
+            "type": "kpi"
+        },
+        {
+            "id": 16,
+            "area_id": 14,
+            "name": "Pencegahan Tindak Pidana Terorisme",
+            "description": "Memiliki prosedur tetap dan program kerja Pencegahan Tindak Pidana Terorisme",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 3,
+            "type": "kpi"
+        },
+        {
+            "id": 17,
+            "area_id": 14,
+            "name": "Pelaksanaan Pembinaan Teknis  (Supervisi, Asistensi, Verifikasi) Sistem Manajemen Pengamanan",
+            "description": "Terbentuknya Tim Sistem Manajemen Pengamanan (SMP) yang strukturnya memuat Tim Implementasi, Tim Auditor dan penunjukan Management Representative (MR) SMP",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 4,
+            "type": "kpi"
+        },
+        {
+            "id": 18,
+            "area_id": 15,
+            "name": "Pelatihan, Sertifikasi Gada Utama dan Pembinaan Teknis Satpam.",
+            "description": "Pengelola Keamanan Unit memiliki Kompetensi dan sertifikasi Gada Utama *Untuk UP yang memiliki wilayah tersebar eviden adalah kantor UP dan salah satu unit (diutamakan unit obvitnas)",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 19,
+            "area_id": 15,
+            "name": "Koordinasi dan kerjasama dengan stakeholder pengamanan",
+            "description": "Koordinasi, kerjasama dan atau Pedoman Kerja Teknis Pengamanan dengan stakeholder pengamanan",
+            "reference": "Perpol 07 Tahun 2019.",
+            "order": 2,
+            "type": "kpi"
+        },
+        {
+            "id": 20,
+            "area_id": 16,
+            "name": "Pelaporan bidang keamanan  ke Divisi HSE",
+            "description": "Pelaporan bidang keamanan Unit Induk setiap bulan.",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 2,
+            "type": "kpi"
+        },
+        {
+            "id": 21,
+            "area_id": 16,
+            "name": "Audit Internal Sistem Manajemen Pengamanan (SMP)",
+            "description": "Pelaksanaan Audit Internal SMP mengacu pada Perpol 07 Tahun 2019 minimal dilaksanakan 1 kali setahun",
+            "reference": "Perpol 07 Tahun 2019.",
+            "order": 3,
+            "type": "kpi"
+        },
+        {
+            "id": 22,
+            "area_id": 17,
+            "name": "Komitmen dan Kebijakan Keamanan",
+            "description": "Bentuk dukungan pimpinan puncak dengan jajarannya untuk menerapkan seluruh elemen SMP, yang dibuktikan dengan pernyataan kebijakan yang diikuti seluruh jajarannya mengenai strategi implementasi penerapan SMP terkait dengan alokasi, sumber daya, mekanisme evaluasi, dan perbaikan berkesinambungan untuk mencapai tujuan organisasi.",
+            "reference": "Perpol 07 Tahun 2019;",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 23,
+            "area_id": 18,
+            "name": "Bentuk Pengamanan",
+            "description": "Bentuk dari segala usaha, pekerjaan dan kegiatan dalam rangka pencegahan, penangkalan dan penanggulangan, serta penegakan hukum terhadap setiap ancaman dan gangguan kemanan di kawasan Obvitnas dan Objek Tertentu",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 24,
+            "area_id": 18,
+            "name": "Sifat Pengamanan",
+            "description": "Sifat dari segala usaha, pekerjaan dan kegiatan dalam rangka pencegahan, penangkalan dan penanggulangan, serta penegakan hukum terhadap setiap ancaman dan gangguan kemanan di kawasan Obvitnas dan Objek Tertentu",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 2,
+            "type": "marturity"
+        },
+        {
+            "id": 25,
+            "area_id": 18,
+            "name": "Sasaran Pengamanan",
+            "description": "Sasaran dari segala usaha, pekerjaan dan kegiatan dalam rangka pencegahan, penangkalan dan penanggulangan, serta penegakan hukum terhadap setiap ancaman dan gangguan kemanan di kawasan Obvitnas dan Objek Tertentu",
+            "reference": "Perpol 07 Tahun 2019;",
+            "order": 3,
+            "type": "marturity"
+        },
+        {
+            "id": 26,
+            "area_id": 18,
+            "name": "Area pengamanan",
+            "description": "Area dari segala usaha, pekerjaan dan kegiatan dalam rangka pencegahan, penangkalan dan penanggulangan, serta penegakan hukum terhadap setiap ancaman dan gangguan kemanan di kawasan Obvitnas dan Objek Tertentu",
+            "reference": "Perpol 07 Tahun 2019.",
+            "order": 4,
+            "type": "marturity"
+        },
+        {
+            "id": 27,
+            "area_id": 18,
+            "name": "Kodal",
+            "description": "Komando pengendalian dari segala usaha, pekerjaan dan kegiatan dalam rangka pencegahan, penangkalan dan penanggulangan, serta penegakan hukum terhadap setiap ancaman dan gangguan kemanan di kawasan Obvitnas dan Objek Tertentu",
+            "reference": "Perpol 07 Tahun 2019.",
+            "order": 5,
+            "type": "marturity"
+        },
+        {
+            "id": 28,
+            "area_id": 19,
+            "name": "Komponen Standar Pengamanan (Manusia dan Infrastruktur)",
+            "description": "Gambaran atau sketsa yang menjelaskan tentang komponen standar pengamanan dalam SMP Obvitnas dan Objek Tertentu",
+            "reference": "Perpol 07 Tahun 2019.",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 29,
+            "area_id": 19,
+            "name": "Penetapan Pembinaan Area Pengamanan",
+            "description": "Gambaran atau sketsa yang menjelaskan tentang penetapan pembinaan area pengamanan dalam SMP Obvitnas dan Objek Tertentu",
+            "reference": "Perpol 07 Tahun 2019.",
+            "order": 2,
+            "type": "marturity"
+        },
+        {
+            "id": 30,
+            "area_id": 19,
+            "name": "Konsep Umum Pengamanan",
+            "description": "Gambaran atau sketsa yang menjelaskan tentang konsep umum pengamanan dalam SMP Obvitnas dan Objek Tertentu",
+            "reference": "Perpol 07 Tahun 2019.",
+            "order": 3,
+            "type": "marturity"
+        },
+        {
+            "id": 31,
+            "area_id": 19,
+            "name": "Kekuatan Jumlah Personil Pengamanan",
+            "description": "Gambaran atau sketsa yang menjelaskan tentang personel pengamanan dalam SMP Obvitnas dan Objek Tertentu",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 4,
+            "type": "marturity"
+        },
+        {
+            "id": 32,
+            "area_id": 20,
+            "name": "Standar Kemampuan Pelaksana Pengamanan",
+            "description": "Ukuran tertentu baik kriteria maupun pedoman yang digunakan oleh pelaksana pengamanan",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 33,
+            "area_id": 21,
+            "name": "Monitoring dan Evaluasi SMP",
+            "description": "Bentuk kegiatan untuk memantau, mengevaluasi, memperbaiki, mengalokasikan anggaran dan sumber daya lainnya dalam rangka pencapaian tujuan penerapan SMP",
+            "reference": "Perpol 07 Tahun 2019",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 36,
+            "area_id": 16,
+            "name": "test pelaporan",
+            "description": "hahahaa",
+            "reference": "123",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 37,
+            "area_id": 23,
+            "name": "tes",
+            "description": "tes",
+            "reference": "tes",
+            "order": 1,
+            "type": "kpi"
+        }
+    ],
+    "levels": [
+        {
+            "id": 24,
+            "sub_area_id": 8,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Unit memiliki rencana Program Kerja Bidang Keamanan yang tertuang dalam usulan RKAP tahun berjalan.",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 25,
+            "sub_area_id": 8,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Unit memiliki Program Kerja dan menyediakan anggaran bidang Keamanan yang tertuang dalam SKKO sesuai prioritas berdasarkan mitigasi risiko.",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 26,
+            "sub_area_id": 8,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Unit memiliki Program Kerja dan menyediakan anggaran bidang Keamanan yang tertuang dalam SKKO sesuai prioritas berdasarkan mitigasi risiko, memiliki target rencana realisasi dan monitoring penyerapan anggaran.",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 27,
+            "sub_area_id": 8,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Unit memiliki Program Kerja dan menyediakan anggaran bidang Keamanan yang tertuang dalam SKKO sesuai prioritas berdasarkan mitigasi risiko, memiliki target rencana realisasi dan monitoring penyerapan anggaran serta evaluasi OFI AFI terhadap program kerja yang belum dapat dilaksanakan.",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 28,
+            "sub_area_id": 8,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Unit memiliki Program Kerja dan menyediakan anggaran bidang Keamanan yang tertuang dalam SKKO sesuai prioritas berdasarkan mitigasi risiko, memiliki target rencana realisasi, monitoring penyerapan anggaran dan evaluasi OFI AFI terhadap program kerja yang belum dapat dilaksanakan serta memiliki roadmap jangka panjang bidang keamanan (5 tahun).",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 29,
+            "sub_area_id": 9,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Tim SMP telah mengikuti pelatihan SMP minimal 2 pegawai",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 30,
+            "sub_area_id": 9,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Tim SMP telah mengikuti pelatihan SMP minimal 2 pegawai dan sertifikasi SMP minimal 1 pegawai",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 31,
+            "sub_area_id": 9,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Tim SMP telah mengikuti pelatihan SMP minimal 2 pegawai dan sertifikasi SMP minimal 2 pegawai",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 32,
+            "sub_area_id": 9,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Seluruh Tim SMP telah mengikuti pelatihan SMP dan sertifikasi SMP minimal 2 pegawai",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 33,
+            "sub_area_id": 9,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Seluruh Tim SMP telah mengikuti pelatihan sertifikasi SMP",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 34,
+            "sub_area_id": 10,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Unit telah melaksanakan sosialisasi internal sistem pengamanan kepada 50% pegawai dan 35% tenaga alih daya .",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 35,
+            "sub_area_id": 10,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Unit telah melaksanakan sosialisasi internal sistem pengamanan kepada 100% pegawai dan 50% tenaga alih daya .",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 36,
+            "sub_area_id": 10,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Unit telah melaksanakan sosialisasi internal sistem pengamanan kepada 100% pegawai dan 50% tenaga alih daya serta sosialisasi kebijakan pengamanan unit pada masyarakat lingkungan sekitar.",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 37,
+            "sub_area_id": 10,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Unit telah melaksanakan sosialisasi internal sistem pengamanan kepada 100% pegawai dan 100% tenaga alih daya serta sosialisasi kebijakan pengamanan unit pada masyarakat lingkungan sekitar.",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 38,
+            "sub_area_id": 10,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Unit telah melaksanakan sosialisasi internal sistem pengamanan kepada 100% pegawai dan 100% tenaga alih daya serta sosialisasi kebijakan pengamanan unit pada masyarakat lingkungan sekitar dan melakukan evaluasi OFI AFI pelaksanaan sosialisasi tersebut.",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 39,
+            "sub_area_id": 11,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "SM atau Manajer Unit  melaksanakan Inspeksi bidang keamanan sesuai target jumlah dan waktu (1 bulan sekali) tanpa catatan dan hasil temuan inspeksi.",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 40,
+            "sub_area_id": 11,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "SM atau Manajer Unit  melaksanakan Inspeksi bidang keamanan sesuai target jumlah dan waktu (1 bulan sekali), memberikan catatan temuan, memiliki eviden hasil temuan inspeksi dan  melakukan monitoring tindak lanjut hasil temuan inspeksi.",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 41,
+            "sub_area_id": 11,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "SM atau Manajer Unit dan Manajer Bidang atau Asman (60%) melaksanakan Inspeksi bidang keamanan sesuai target jumlah dan waktu (1 bulan sekali), memberikan catatan temuan, memiliki eviden hasil temuan dan monitoring tindak lanjut serta tidak ada temuan berulang  dalam satu lokasi yang sama.",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 42,
+            "sub_area_id": 11,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "SM atau Manajer Unit dan Manajer Bidang atau Asman (100%) melaksanakan Inspeksi bidang keamanan sesuai target jumlah dan waktu (1 bulan sekali), memberikan catatan temuan, memiliki eviden hasil temuan dan monitoring tindak lanjut serta tidak ada temuan berulang  dalam satu lokasi yang sama.",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 43,
+            "sub_area_id": 11,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "SM atau Manajer Unit dan Manajer Bidang atau Asman (100%)  melaksanakan Inspeksi bidang keamanan melebihi target jumlah dan waktu (lebih dari 1 bulan sekali secara konsisten di dalam periode penilaian matlev), memberikan catatan temuan, memiliki eviden hasil temuan dan monitoring tindak lanjut, tidak ada temuan berulang dalam satu lokasi yang sama.",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 44,
+            "sub_area_id": 12,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Unit sudah memiliki infrastruktur dan mengimplementasikan pengamanan Tahap 1.",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 45,
+            "sub_area_id": 12,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Unit sudah memiliki infrastruktur dan mengimplementasikan pengamanan Tahap 1 termasuk  seluruh aset bangunan yang dikelola.",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 46,
+            "sub_area_id": 12,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Unit  sudah memiliki infrastruktur dan mengimplementasikan pengamanan Tahap 2.",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 47,
+            "sub_area_id": 12,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Unit sudah memiliki infrastruktur dan mengimplementasikan pengamanan Tahap 2 dan sudah mengimpementasikan 50% sistem keamanan Tahap 3 termasuk  seluruh aset bangunan yang dikelola.",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 48,
+            "sub_area_id": 12,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Unit sudah mengimpementasikan sistem keamanan Tahap 3 termasuk  seluruh aset bangunan yang dikelola.",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 49,
+            "sub_area_id": 13,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Unit telah memiliki Organisasi Pengamanan.",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 50,
+            "sub_area_id": 13,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Unit dan Kawasan Terpadu\/Unit Layanan telah memiliki Organisasi Pengamanan.",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 51,
+            "sub_area_id": 13,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Unit dan Kawasan Terpadu\/Unit Layanan telah memiliki Organisasi Pengamanan serta memiliki dokumen rencana pengamanan (Renpam).",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 52,
+            "sub_area_id": 13,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Unit dan Kawasan Terpadu  telah memiliki Organisasi Pengamanan serta memiliki dokumen rencana pengamanan (Renpam) dan Renpam Khusus (contoh : renpam siaga hari raya, Acara kenegaraan, Tamu VVIP, dll)",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 53,
+            "sub_area_id": 13,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Unit dan Kawasan Terpadu  telah memiliki Organisasi Pengamanan, memiliki dokumen rencana pengamanan (Renpam) dan Renpam Khusus (contoh : renpam siaga hari raya, Acara kenegaraan, Tamu VVIP, dll) serta melakukan evaluasi OFI AFI realisasi seluruh Renpam.",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 54,
+            "sub_area_id": 14,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Audit BUJP hanya dilakukan pada BUJP minimal 1 (satu) kali per tahun",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 55,
+            "sub_area_id": 14,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Audit BUJP dilakukan pada BUJP Unit minimal 1 (satu) kali per triwulan",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 56,
+            "sub_area_id": 14,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Audit BUJP dilakukan pada BUJP Unit, memiliki jadwal dan penanggung jawab tindak lanjut temuan ketidaksesuaian serta temuan ketidaksesuaian 50% selesai.",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 57,
+            "sub_area_id": 14,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Audit BUJP dilakukan pada BUJP Unit , memiliki jadwal dan penanggung jawab tindak lanjut temuan ketidaksesuaian serta temuan ketidaksesuaian 100% selesai.",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 58,
+            "sub_area_id": 14,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Audit BUJP dilakukan pada BUJP , memiliki jadwal & penanggung jawab tindak lanjut temuan ketidaksesuaian, temuan ketidaksesuaian 100% selesai dan evaluasi OFI AFI.",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 59,
+            "sub_area_id": 15,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Unit memiliki Rencana Kontijensi Pengamanan (Renkon) 1 kejadian.",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 60,
+            "sub_area_id": 15,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Unit Imemiliki Rencana Kontijensi Pengamanan 1 kejadian dan melakukan simulasi 1 kejadian",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 61,
+            "sub_area_id": 15,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Unit Imemiliki Rencana Kontijensi Pengamanan 2 kejadian",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 62,
+            "sub_area_id": 15,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Unit Imemiliki Rencana Kontijensi Pengamanan 2 kejadian dan melakukan simulasi 2 kejadian",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 63,
+            "sub_area_id": 15,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Unit Imemiliki Rencana Kontijensi Pengamanan 2 kejadian dan melakukan simulasi 2 kejadian serta dilakukan evaluasi OFI AFI secara berkala (1 tahun sekali).",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 64,
+            "sub_area_id": 16,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Unit  memiliki prosedur tetap Pencegahan Tindak Pidana Terorisme.",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 65,
+            "sub_area_id": 16,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Unit  memiliki prosedur tetap dan program kerja Pencegahan Tindak Pidana Terorisme.",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 66,
+            "sub_area_id": 16,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Unit memiliki prosedur tetap dan program kerja pencegahan Tindak Pidana Terorisme serta telah melakukan sosialisasi internal kepada 50% pegawai dan 35% pegawai dan TAD",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 67,
+            "sub_area_id": 16,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Unit memiliki prosedur tetap dan program kerja pencegahan Tindak Pidana Terorisme serta telah melakukan sosialisasi internal kepada 100% pegawai dan 50% pegawai dan TAD",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 68,
+            "sub_area_id": 16,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Unit memiliki prosedur tetap dan program kerja pencegahan Tindak Pidana Terorisme serta telah melakukan sosialisasi internal kepada 100% pegawai dan 100% pegawai dan TAD.",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 69,
+            "sub_area_id": 17,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Tim Sistem Menajemen Pengamanan (SMP) sudah terbentuk berdasarkan Surat Keputusan Pimpinan Unit\/kawasan terpadu dan telah memiliki workplan implementasi SMP.",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 70,
+            "sub_area_id": 17,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Tim Sistem Menajemen Pengamanan (SMP) sudah terbentuk berdasarkan Surat Keputusan Pimpinan Unit\/kawasan terpadu dan telah memiliki workplan implementasi SMP serta telah menyusun minimal 15 dokumen SMP yang ditandatangani oleh Pimpinan Unit\/kawasan terpadu dan\/atau Manager Representative (MR) sesuai dengan Perpol 07 Tahun 2019.",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 71,
+            "sub_area_id": 17,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Tim Sistem Menajemen Pengamanan (SMP) sudah terbentuk berdasarkan Surat Keputusan Pimpinan Unit\/kawasan terpadu dan telah memiliki workplan implementasi SMP serta telah menyusun lebih dari 15 dokumen SMP yang ditandatangani oleh Pimpinan Unit\/kawasan terpadu dan\/atau Manager Representative (MR) sesuai dengan Perpol 07 Tahun 2019.",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 72,
+            "sub_area_id": 17,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Tim Sistem Menajemen Pengamanan (SMP) sudah terbentuk berdasarkan Surat Keputusan Pimpinan Unit\/kawasan terpadu, telah memiliki workplan implementasi SMP dan telah menyusun lebih dari 25 dokumen SMP yang ditandatangani oleh Pimpinan Unit\/kawasan terpadu dan\/atau Manager Representative (MR).",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 73,
+            "sub_area_id": 17,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Tim Sistem Menajemen Pengamanan (SMP) sudah terbentuk berdasarkan Surat Keputusan Pimpinan Unit\/kawasan terpadu, telah memiliki workplan implementasi SMP dan telah menyusun lebih dari 25 dokumen SMP yang ditandatangani oleh Pimpinan Unit\/kawasan terpadu dan\/atau Manager Representative (MR)  serta telah melaksanakan Bintek SMP Internal (supervisi, asistensi, verifikasi) sesuai dengan Perpol 07 Tahun 2019.",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 74,
+            "sub_area_id": 18,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Pengelola keamanan unit telah memiliki 1 orang sertifikasi Gada Utama.",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 75,
+            "sub_area_id": 18,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Pengelola keamanan unit telah memiliki 2 orang sertifikasi Gada Utama.",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 76,
+            "sub_area_id": 18,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Pengelola keamanan unit telah memiliki 2 orang sertifikasi Gada Utama serta 50% pegawai pemilik sertifikat Gada Utama melakukan Pembinaan Teknis kepada Satpam.",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 77,
+            "sub_area_id": 18,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Pengelola keamanan unit telah memiliki 2 orang sertifikasi Gada Utama serta 100% pegawai pemilik sertifikat Gada Utama melakukan Pembinaan Teknis kepada Satpam.",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 78,
+            "sub_area_id": 18,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Pengelola keamanan unit telah memiliki 2 orang sertifikasi Gada Utama serta 100% pegawai pemilik sertifikat Gada Utama melakukan Pembinaan Teknis kepada Satpam serta terdapat evaluasi OFI AFI.",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 79,
+            "sub_area_id": 19,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Unit melakukan  koordinasi pengamanan dengan TNI\/ POLRI dalam waktu 6 bulan sekali",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 80,
+            "sub_area_id": 19,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Unit melakukan  koordinasi pengamanan dengan TNI\/ POLRI dalam waktu 3 bulan sekali",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 81,
+            "sub_area_id": 19,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Unit melakukan  koordinasi pengamanan dengan TNI\/ POLRI dalam waktu 1 bulan sekali",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 82,
+            "sub_area_id": 19,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Unit melakukan  koordinasi pengamanan dengan TNI\/ POLRI dalam waktu 1 bulan sekali serta memiliki program CSR bersama stakeholder.",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 83,
+            "sub_area_id": 19,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Unit  melakukan koordinasi dan kerjasama pengamanan dengan TNI\/POLRI dalam bentuk Pedoman Kerja Teknis (PKT) .",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 84,
+            "sub_area_id": 20,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Unit melaksanakan pelaporan keamanan ke Divisi HSSE setiap bulan sesuai target waktu.",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 85,
+            "sub_area_id": 20,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Unit melaksanakan pelaporan keamanan ke Divisi HSSE  setiap bulan sesuai  kelengkapan eviden laporan dan target waktu.",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 86,
+            "sub_area_id": 20,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Unit melaksanakan pelaporan keamanan ke Divisi HSSE  setiap bulan dan self asessment matlev sesuai  kelengkapan eviden laporan  sesuai target waktu",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 87,
+            "sub_area_id": 20,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Unit melaksanakan pelaporan keamanan ke Divisi HSSE  setiap bulan dan self asessment matlev sesuai  kelengkapan eviden laporan  lebih cepat dari target waktu (tanggal 1-9 setiap bulannya)",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 88,
+            "sub_area_id": 20,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Unit melaksanakan pelaporan keamanan ke Divisi HSSE  setiap bulan dan self asessment matlev sesuai  kelengkapan eviden laporan  lebih cepat dari target waktu (tanggal 1-9 setiap bulannya) dan hasil skoring verifikasi sama dengan skoring self assessment.",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 89,
+            "sub_area_id": 21,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Unit melakukan Self Asessment Audit Internal SMP pada Unit khususnya unit Obvitnas.",
+            "order": 1,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 90,
+            "sub_area_id": 21,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Unit melakukan Self Asessment Audit Internal SMP pada Unit khususnya unit Obvitnas serta menyelesaikan 50% temuan SA",
+            "order": 2,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 91,
+            "sub_area_id": 21,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Unit melakukan Self Asessment Audit Internal SMP pada Unit khususnya unit Obvitnas serta menyelesaikan 100% temuan SA",
+            "order": 3,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 92,
+            "sub_area_id": 21,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Unit telah dilakukan Audit Internal SMP oleh Tim Kantor Pusat dan telah menyelesaikan 50% temuan LHA",
+            "order": 4,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 93,
+            "sub_area_id": 21,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Unit telah dilakukan Audit Internal SMP oleh Tim Kantor Pusat dan telah menyelesaikan 100% temuan LHA",
+            "order": 5,
+            "type": "kpi",
+            "total_evidence": null
+        },
+        {
+            "id": 94,
+            "sub_area_id": 22,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Terdapat dokumen kebijakan pengamanan yang bertanggal dan di tanda tangani pimpinan puncak organisasi, ditetapkan sesuai dengan perkiraan ancaman didasarkan pada sifat dan skala risiko keamanan, dan dievaluasi secara berkala serta adanya Struktur Organisasi Pengamanan termasuk tanggung jawab & wewenang juga terdapat alokasi anggaran dan\/atau biaya pengamanan serta Sumber Daya Dan Infrastruktur terinventarisasi guna menunjang Penerapan SMP",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 95,
+            "sub_area_id": 22,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nKebijakan pengamanan dikomunikasikan kepada pihak internal organisasi (unsur manajemen dan pegawai\/karyawan) dan pihak eksternal organisasi (masyarakat lingkungan sekitar) serta terdapat ketentuan untuk melaksanakan Audit SMP & mekanisme pelaksanaan Tinjauan manajemen  tentang penerapan SMP sesuai dengan ketentuan yang berlaku",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 96,
+            "sub_area_id": 22,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 97,
+            "sub_area_id": 22,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 98,
+            "sub_area_id": 22,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat catatan hasil pelaksanaan dan tindak lanjut tinjauan manajemen SMP yang disahkan oleh pimpinan puncak Obvitnas dan objek tertentu dan terdapat bukti peningkatan berkelanjutan penerapan  SMP",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 99,
+            "sub_area_id": 23,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Terdapat dokumen kerangka kerja dan panduan praktis dalam melaksanakan manajemen resiko pengamanan dan analisis resiko pengamanan dalam bentuk catatan tabel hasil penilaian yang dibuat oleh perusahaan\/PAM Internal serta penetapan sumber data dan informasi sebagai dasar dalam penilaian resiko pengamanan organisasi",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 100,
+            "sub_area_id": 23,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nTerdapat Hasil manajemen resiko pengamanan dikerjakan oleh personel yang memiliki kompetensi yang relevan dan penilaian ulang (re-assesment) risiko pengamanan serta Penetapan dan pelaksanaan pengamanan langsung dalam bentuk pengerahan dan penggelaran kekuatan beserta sarana prasarana pengamanan",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 101,
+            "sub_area_id": 23,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 102,
+            "sub_area_id": 23,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 103,
+            "sub_area_id": 23,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat Penetapan dan pelaksanaan pengamanan tidak langsung dalam bentuk pemantauan, pengawasan dan penerimaan laporan dari pengelola obvitnas dan objek tertentu dan penetapan pengendalian operasional pengamanan langsung dan tidak langsung terhadap objek pengamanan serta Pengukuran efektivitas pelaksanaan bentuk pengamanan",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 104,
+            "sub_area_id": 24,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Terdapat pengerahan dan penempatan personel pengamanan sesuai dengan struktur organisasi yang telah ditetapkan, pelaksanaan pengamanan terbuka dan tertutup sesuai dengan cara bertindak yang telah ditetapkan dalam bentuk dokumen kebijakan pengamanan dan terdapat bukti penerapan pengendalian operasional pengamanan terbuka serta pengukuran efektivitas pelaksanaan pengamanan terbuka atau tertutup dalam bentuk laporan anev",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 105,
+            "sub_area_id": 24,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nAdanya penetapan sifat pengamanan terbuka dan tertutup sesuai dengan analisis risiko yang telah ditetapkan oleh pimpinan dan terdapat infrastruktur\/fasilitas dan alat bantu pengamanan yang digunakan dalam pengamanan terbuka dan tertutup yang di pastikan dalam kondisi layak pakai serta pembagian zona sesuai dengan hasil analisis resiko pengamanan (zona bebas, zona terbatas dan zona terlarang) disertai bukti penerapan pengendalian pengamanan terbuka dan tertutup terhadap pengadaan, distribusi, penerimaan dan penyimpanan  barang dan jasa",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 106,
+            "sub_area_id": 24,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 107,
+            "sub_area_id": 24,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 108,
+            "sub_area_id": 24,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat pengendalian operasional pelaksanaan pengamanan terbuka dan tertutup & bukti evaluasi secara periodik terhadap pelaksanaan pengamanan oleh internal yang ditempatkan oleh BUJP atau pengguna jasa pengamanan dan\/atau oleh jasa pengamanan yang ditugaskan oleh Polri",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 109,
+            "sub_area_id": 25,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Penetapan sasaran pengamanan telah sesuai dengan identifikasi potensi kerawanan, terukur dengan indikator yang jelas, selaras dengan kebijakan pengamanan dan adanya pemanfaatan dan pengelolaan sumber daya organisasi, peralatan dan perlengkapan untuk mendukung sasaran pengamanan serta Terdapat penunjukkan penanggung jawab dalam penetapan dan evaluasi di setiap fungsi yang relevan pada tingkatan organisasi",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 110,
+            "sub_area_id": 25,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nTerdapat pernyataan terdokumentasi menetapkan, menerapkan, dan memelihara tujuan dan sasaran pengamanan disetiap fungsi dan Pelaksanaan program pengamanan harus dipantau, ditinjau, dicatat secara berkala, terencana, menetapkan target waktu & terdapat tindak lanjut hasil rekomendasi penilaian risiko pengamanan dan mitigasi risikonya serta pemastian bahwa setiap dokumen memiliki status yang teridentifikasi (klasifikasi dokumen) termasuk perubahan dan revisi terbaru",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 111,
+            "sub_area_id": 25,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 112,
+            "sub_area_id": 25,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 113,
+            "sub_area_id": 25,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat pemastian dokumen eksternal yang dibutuhkan telah diidentifikasi dan dikendalikan serta  catatan prosedur SMP dan pemastian distribusi catatan prosedurnya",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 114,
+            "sub_area_id": 26,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Terdapat penetapan area pengamanan berdasarkan analisis resiko pengamanan yang dibagi menjadi zona sesuai dengan kebutuhan (zona bebas, zona terbatas, zona terlarang) dan area pengamanan dalam kawasan obvitnas dan objek tertentu antara lain:  \r\na. Lokasi produksi                                                \r\nb. Perkantoran                                                                                                   \r\nc. Pergudangan                                                                                                  \r\nd. Perparkiran                                                                                                    \r\ne. Instalasi penting",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 115,
+            "sub_area_id": 26,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nTerdapat area pengamanan di dalam dan di luar kawasan obvitnas atau objek tertentu dan Lingkungan sekitar di luar kawasan obvitnas dan objek tertentu",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 116,
+            "sub_area_id": 26,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 117,
+            "sub_area_id": 26,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 118,
+            "sub_area_id": 26,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 dengan :\r\nKesesuaian implementasi Level 3",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 119,
+            "sub_area_id": 27,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Penetapan mekanisme Komando dan Pengendalian (Kodal) dalam kondisi normal dan analisis keadaan darurat pada pengelola Obvitnas atau Objek Tertentu serta terdapat penetapan personel di setiap fungsi yang relevan di organisasi yang bertanggung jawab melaksanakan penanganan dan pemulihan keadaan darurat kemananan",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 120,
+            "sub_area_id": 27,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nAdanya penetapan mekanisme kodal dalam kondisi kontingensi  berada pada Polri dan\/atau dapat meminta bantuan TNI dan terdapat kegiatan simulasi tanggap darurat dalam kondisi kontingensi terhadap mekanisme kodal yang telah ditetapkan serta pengukuran efektivitas kinerja mekanisme kodal baik dalam kondisi normal maupun kontingensi",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 121,
+            "sub_area_id": 27,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 122,
+            "sub_area_id": 27,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 123,
+            "sub_area_id": 27,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat kegiatan  partisipasi, konsultasi dan komunikasi dalam mekanisme kodal dengan pihak internal (seluruh tingkatan dan fungsi yang ada) dan eksternal dalam rangka penerapan SMP.",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 124,
+            "sub_area_id": 28,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Terdapat penunjukan perwakilan manajemen dan perangkatnya oleh pimpinan puncak, penetapan struktur organisasi pengamanan, penetapan klasifikasi dokumen\/informasi organisasi, dan  prosedur tentang mitigasi manajemen risiko pengamanan untuk setiap fungsi yang didokumentasikan dan dikomunikasikan serta terdapat Sarana prasarana yang terinventarisasi untuk menerapkan SMP",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 125,
+            "sub_area_id": 28,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nTerdapat daftar rekapitulasi dan dokumen ketentuan peraturan perundang-undangan di bidang keamanan yang dievaluasi secara periodik dan disosialisasikan serta terdapat prosedur tentang koordinasi dengan instansi terkait dalam penanganan keadaan darurat pada situasi kontingensi",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 126,
+            "sub_area_id": 28,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 127,
+            "sub_area_id": 28,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 128,
+            "sub_area_id": 28,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat prosedur penanganan keamanan dan system informasi dan prosedur penetapan level keamanan sesuai identifikasi tingkat ancaman (aman, rawan, kontigensi).",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 129,
+            "sub_area_id": 29,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Terdapat penetapan area pengamanan di dalam dan di luar kawasan serta Lingkungan sekitar di luar kawasan obvitnas dan objek tertentu",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 130,
+            "sub_area_id": 29,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nTerdapat penataan tata ruang area pengamanan ditetapkan dengan klasifikasi zona oleh pengelola sesuai  potensi ancaman dan karakteristik area dan pengklasifikasian area pengamanan dalam bentuk pembatas (barrier) secara fisik atau simbol",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 131,
+            "sub_area_id": 29,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 132,
+            "sub_area_id": 29,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 133,
+            "sub_area_id": 29,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat bukti penetapan dan pengendalian klasifikasi area pengamanan dan pembinaan dan pengawasan terhadap area pengamanan.",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 134,
+            "sub_area_id": 30,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Terdapat bukti terdokumentasi berupa dokumen rencana pengamanan kontingensi dan rencana pengamanan kegiatan masing-masing fungsi\/departemen\/bagian tentang penyelenggaraan manajemen pengamanan secara ringkas dan jelas terhadap potensi ancaman, sasaran, sumber daya dukung dan strategi pencapaiannya (konsep pengamanan, target pengamanan, dan cara bertindak) selama periode atau waktu tertentu",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 135,
+            "sub_area_id": 30,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nTerdapat perencanaan pengamanan kontingensi, berisi kebijakan dan kewenangan secara tertulis tentang keadaan darurat (kontingensi) serta penyelenggaraan manajemen keamanan pada masing-masing fungsi\/departemen\/bagian sesuai dengan dokumen rencana pengamanannya",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 136,
+            "sub_area_id": 30,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 137,
+            "sub_area_id": 30,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 138,
+            "sub_area_id": 30,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat evaluasi penyelenggaraan manajemen keamanan masing-masing fungsi\/departemen\/bagian  secara berkala paling sedikit 2 kali dalam setahun",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 139,
+            "sub_area_id": 31,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Terdapat catatan yang terdokumentasi tentang jumlah personel pengamanan sesuai dengan kebutuhan",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 140,
+            "sub_area_id": 31,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nTerdapat kekuatan jumlah personel pengamanan internal yang cukup terdiri atas beberapa regu yang dibagi dalam shift",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 141,
+            "sub_area_id": 31,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 142,
+            "sub_area_id": 31,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 143,
+            "sub_area_id": 31,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat kekuatan jumlah personel pengamanan oleh Polri yang disesuaikan dengan kontrak kerjasama",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 144,
+            "sub_area_id": 32,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Terdapat pembinaan teknis terhadap kemampuan personel pengamanan internal dan program pelatihan kemampuan anggota pengamanan internal serta prosedur tentang pengelolaan pelatihan personel pengamanan internal terkait aspek kompetensi pengamanan",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 145,
+            "sub_area_id": 32,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nTerdapat catatan hasil analisis dan evaluasi efektivitas pelaksanaan program pelatihan dan catatan hasil identifikasi dan proses analisis kebutuhan pelatihan kompetensi pengamanan serta prosedur tentang membangun kesadaran pengamanan terhadap setiap personel atau karyawan atau mitra kerja pada perusahaan",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 146,
+            "sub_area_id": 32,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 147,
+            "sub_area_id": 32,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 148,
+            "sub_area_id": 32,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat kualifikasi,kemampuan fisik jasmani & rohani dan rekam jejak perilaku anggota Polri dalam pelaksanaan pengamanan",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 149,
+            "sub_area_id": 33,
+            "level": "Fire Fighting (Melakukan tindakan setelah ada kejadian)",
+            "description": "Terdapat prosedur dan mekanisme pemantauan dan pengukuran yang berkaitan dengan kinerja pengamanan secara menyeluruh dan catatan hasil pemantauan dan pengukuran ketidaksesuaian serta tindak lanjutnya serta terdapat prosedur yang terdokumentasi mengenai pelaporan internal & eksternal",
+            "order": 1,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 150,
+            "sub_area_id": 33,
+            "level": "Stabilizing (Bertindak sebatas merespon kejadian)",
+            "description": "Level 1 ditambah :\r\nTerdapat catatan hasil pemantauan pelaksanaan perencanaan dan program SMP yang telah ditetapkan dan catatan bukti pelaporan internal dan eksternal serta  prosedur yang terdokumentasi tentang penanganan ketidaksesuaian, tindakan perbaikan dan pencegahannya",
+            "order": 2,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 151,
+            "sub_area_id": 33,
+            "level": "Preventing (Ada usaha untuk melakukan pencegahan)",
+            "description": "Level 2 ditambah :\r\nKesesuaian implementasi Level 1",
+            "order": 3,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 152,
+            "sub_area_id": 33,
+            "level": "Optimizing (Adanya usaha optimasi sumberdaya & improvement)",
+            "description": "Level 3 ditambah :\r\nKesesuaian implementasi Level 2",
+            "order": 4,
+            "type": "marturity",
+            "total_evidence": null
+        },
+        {
+            "id": 153,
+            "sub_area_id": 33,
+            "level": "Excellence (Mencapai keunggulan optimasi sumberdaya & continuous improvement)",
+            "description": "Level 4 ditambah :\r\nTerdapat prosedur pemeliharaan dan kalibrasi yang terdokumentasi untuk peralatan dan  catatan hasil pelaksanaan pemeliharaan dan kalibrasi peralatan untuk kegiatan pemantauan dan pengukuran yang dipersyaratkan",
+            "order": 5,
+            "type": "marturity",
+            "total_evidence": null
+        }
+    ],
+    "notes": [
+        {
+            "id": 35,
+            "level_id": 24,
+            "note": "Dokumen RKAP yang berisikan program kerja bidang keamanan Unit.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 36,
+            "level_id": 25,
+            "note": "level 1 + SKKO yang ditandatangani + Prioritas program berdasarkan RKAP bidang keamanan berbasis risiko.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 37,
+            "level_id": 26,
+            "note": "Level 2 + target rencana realisasi + monitoring penyerapan anggaran biaya pemeliharaan dan administrasi.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 38,
+            "level_id": 27,
+            "note": "Level 3 + OFI AFI terhadap program kerja yang belum dapat dilaksanakan.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 39,
+            "level_id": 28,
+            "note": "Level 4 + Roadmap Jangka Panjang bidang keamanan Unit",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 40,
+            "level_id": 29,
+            "note": "Sertifikat Pelatihan SMP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 41,
+            "level_id": 30,
+            "note": "lv 1 + Sertifikat Auditor SMP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 42,
+            "level_id": 31,
+            "note": "lv 2 + Sertifikat Auditor SMP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 43,
+            "level_id": 32,
+            "note": "Level 3 + Sertifikat Pelatihan SMP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 44,
+            "level_id": 33,
+            "note": "Sertifikat Auditor SMP",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 45,
+            "level_id": 34,
+            "note": "Dokumentasi foto, undangan sosialisasi, materi, absensi dan daftar hadir",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 46,
+            "level_id": 35,
+            "note": "Dokumentasi foto, undangan sosialisasi, materi, absensi dan daftar hadir",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 47,
+            "level_id": 36,
+            "note": "Dokumentasi foto, undangan sosialisasi, materi, absensi dan daftar hadir",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 48,
+            "level_id": 37,
+            "note": "Dokumentasi foto, undangan sosialisasi, materi, absensi dan daftar hadir",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 49,
+            "level_id": 38,
+            "note": "Level 4 +  evaluasi OFI AFI.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 50,
+            "level_id": 39,
+            "note": "Pelaksanaan inspeksi sesuai target jumlah & waktu tanpa catatan dan hasil temuan inspeksi.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 51,
+            "level_id": 40,
+            "note": "Pelaksanaan inspeksi sesuai target jumlah & waktu + hasil temuan inspeksi + monitoring tindak lanjut.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 52,
+            "level_id": 41,
+            "note": "Level 2 + inspeksi Manajer Bidang atau Asman (60%) + tidak ada temuan berulang  dalam satu lokasi yang sama.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 53,
+            "level_id": 42,
+            "note": "Level 3 + inspeksi Manajer Bidang atau Asman (100%) + tidak ada temuan berulang  dalam satu lokasi yang sama.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 54,
+            "level_id": 43,
+            "note": "Level 4 +  lebih dari 1 bulan sekali secara konsisten + tidak ada temuan berulang  dalam satu lokasi yang sama.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 55,
+            "level_id": 44,
+            "note": "Daftar aset bangunan + dokumentasi lokasi penempatan CCTV dan portal",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 56,
+            "level_id": 45,
+            "note": "Daftar aset bangunan + dokumentasi lokasi penempatan CCTV dan portal + peta zonasi keamanan sesuai ARP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 57,
+            "level_id": 46,
+            "note": "Level 2 + tahap 2.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 58,
+            "level_id": 47,
+            "note": "Level 3 + 50% tahap 3.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 59,
+            "level_id": 48,
+            "note": "100% tahap 3.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 60,
+            "level_id": 49,
+            "note": "Struktur organisasi pengamanan Unit .",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 61,
+            "level_id": 50,
+            "note": "Level 1 + kawasan terpadu",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 62,
+            "level_id": 51,
+            "note": "Level 2 + dokumen renpam",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 63,
+            "level_id": 52,
+            "note": "Level 3 + dokumen renpam khusus.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 64,
+            "level_id": 53,
+            "note": "Level 4 + OFI AFI.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 65,
+            "level_id": 54,
+            "note": "Undangan + Absensi + Dokumentasi (foto) + Berita acara Audit BUJP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 66,
+            "level_id": 55,
+            "note": "Undangan + Absensi + Dokumentasi (foto) + Berita acara Audit BUJP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 67,
+            "level_id": 56,
+            "note": "level 2 + temuan ketidaksesuaian 50% selesai.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 68,
+            "level_id": 57,
+            "note": "level 3 + temuan ketidaksesuaian 100% selesai.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 69,
+            "level_id": 58,
+            "note": "level 4 + OFI AFI.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 70,
+            "level_id": 59,
+            "note": "Dokumen Renkon",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 71,
+            "level_id": 60,
+            "note": "Lvl 1+ Dokumen Simulasi (daftar hadir dan dokumentasi)",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 72,
+            "level_id": 61,
+            "note": "Level 2 + Dokumen Renkon 1 kejadian .",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 73,
+            "level_id": 62,
+            "note": "Level 3 + Dokumen Simulasi (daftar hadir dan dokumentasi).",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 74,
+            "level_id": 63,
+            "note": "Level 4 + evaluasi OFI AFI.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 75,
+            "level_id": 64,
+            "note": "Dokumen prosedur tetap  Pencegahan Tindak Pidana Terorisme.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 76,
+            "level_id": 65,
+            "note": "Lvl 1 + program kerja Pencegahan Tindak Pidana Terorisme.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 77,
+            "level_id": 66,
+            "note": "Level 2 + absensi pegawai.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 78,
+            "level_id": 67,
+            "note": "Level 3 + absensi pegawai.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 79,
+            "level_id": 68,
+            "note": "Level 4 + absensi pegawai.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 80,
+            "level_id": 69,
+            "note": "SK Tim Implementasi SMP + Workplan SMP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 81,
+            "level_id": 70,
+            "note": "Level 1 + minimal 15 dokumen SMP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 82,
+            "level_id": 71,
+            "note": "level 2 + lebih dari 15 Dokumen SMP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 83,
+            "level_id": 72,
+            "note": "level 3 + Berita Acara Bintek SMP.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 84,
+            "level_id": 73,
+            "note": "level 4 +  lebih dari 25 Dokumen SMP + Evaluasi OFI dan AFI.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 85,
+            "level_id": 74,
+            "note": "Sertifikat Gada Utama.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 86,
+            "level_id": 75,
+            "note": "Sertifikat Gada Utama.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 87,
+            "level_id": 76,
+            "note": "Level 2 + 50% pegawai bersertifikat melaksanakan Bintek + Dokumentasi (foto).",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 88,
+            "level_id": 77,
+            "note": "Level 3 + 100% pegawai bersertifikat melaksanakan Bintek.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 89,
+            "level_id": 78,
+            "note": "Level 4 + evaluasi OFI AFI",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 90,
+            "level_id": 79,
+            "note": "Dokumentasi foto koordinasi pengamanan (berbubuh tanggal)",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 91,
+            "level_id": 80,
+            "note": "Dokumentasi foto koordinasi pengamanan (berbubuh tanggal)",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 92,
+            "level_id": 81,
+            "note": "Dokumentasi foto koordinasi pengamanan (berbubuh tanggal)",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 93,
+            "level_id": 82,
+            "note": "Lvl 3 + Dokumen Program CSR",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 94,
+            "level_id": 83,
+            "note": "Level 4 + PKT",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 95,
+            "level_id": 84,
+            "note": "Laporan keamanan bulanan",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 96,
+            "level_id": 85,
+            "note": "Laporan keamanan bulanan sesuai format",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 97,
+            "level_id": 86,
+            "note": "Level 2 + Self assessment matlev",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 98,
+            "level_id": 87,
+            "note": "Level 3 (pada tanggal 4-8 setiap bulannya).",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 99,
+            "level_id": 88,
+            "note": "Level 4 + Skoring self assessment = skoring verifikasi.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 100,
+            "level_id": 89,
+            "note": "Hasil Self Asessment",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 101,
+            "level_id": 90,
+            "note": "Level 1 + 50% LHA terselesaikan",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 102,
+            "level_id": 91,
+            "note": "Level 1 + 100% LHA terselesaikan",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 103,
+            "level_id": 92,
+            "note": "Dokumen Audit + 50% LHA terselesaikan.",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 104,
+            "level_id": 93,
+            "note": "level 4 + 100% LHA terselesaikan..",
+            "order": 1,
+            "type": "kpi"
+        },
+        {
+            "id": 105,
+            "level_id": 95,
+            "note": "Lv 1 ditambah :\r\n1. Bukti Sosialisasi Kebijakan kepada Internal (karyawan & TAD)\r\n2. Prosedur \/ IK Audit SMP\r\n3. IK Tinjauan Manajemen\r\n4. Pelaksanaan RTM (Materi, Notulen, dan Absensi)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 106,
+            "level_id": 96,
+            "note": "Lv 2 ditambah :\r\n1. Rencana Kebutuhan Pengamanan yg didasari (luas area, risiko, nilai aset)\r\n2. Daftar inventarisasi Pengamanan",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 107,
+            "level_id": 97,
+            "note": "Lv 3 ditambah :\r\n1. Bukti Sosialisasi Kebijakan kepada Eksternal (masyarakat ring 1)\r\n2. Pelaksanaan Audit SMP\r\n3. LHA Audit SMP\r\n4. Tindak Lanjut LHA",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 108,
+            "level_id": 98,
+            "note": "Lv 4 ditambah :\r\n1. Sertifikat Lead Auditor SMP\r\n2. Monitoring pembahasan RTM\r\n3. update ARP & OTP",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 109,
+            "level_id": 99,
+            "note": "1. PRO\/IK manajemen risiko pengamanan",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 110,
+            "level_id": 100,
+            "note": "Lv 1 ditambah :\r\n1. IK pengamanan internal\r\n2. Risk register\/profil risiko unit",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 111,
+            "level_id": 101,
+            "note": "Lv 2 ditambah :\r\n1. Peta kerawanan internal dan eksternal\r\n2. Data Kejadian internal(1 tahun terakhir)\r\n3. ARP fungsi (Analisis Risiko Pengamanan)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 112,
+            "level_id": 102,
+            "note": "Lv 3 ditambah :\r\n1. Sertifikat Kompetensi risiko CRMP\/CRMO\/LAD\/QRMA\r\n2. ARP (Analisis Risiko Pengamanan) Awal\r\n3. ARP (Analisis Risiko Pengamanan) Akhir\r\n4. Implementasi lapangan (sarpras dan ploting anggota)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 113,
+            "level_id": 103,
+            "note": "Lv 4 ditambah :\r\n1. Laporan pamobvit\r\n2. SLA BUJP",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 114,
+            "level_id": 104,
+            "note": "1. IK & Form Operasional\r\n2. IK Pengendalian Akses (Orang, Barang, Kendaraan)\r\n3. Laporan Bulanan BUJP\r\n4. Laporan Bulanan Pengelola",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 115,
+            "level_id": 105,
+            "note": "Lv 1 ditambah :\r\n1. Daftar Penempatan CCTV\r\n2. IK Pengendalian Area Pengamanan\r\n3. IK Penerimaan, Pengeluaran, dan Penyimpanan Barang",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 116,
+            "level_id": 106,
+            "note": "Lv 2 ditambah :\r\n1. Implementasi Lapangan (buku mutasi, buku tamu, buku serah terima barang, dll)\r\n2. Audit BUJP",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 117,
+            "level_id": 107,
+            "note": "Lv 3 ditambah :\r\n1. Foto Larangan Drone\r\n2. Rambu Area Pengamanan\r\n3. Surat Jalan, Pas Masuk\/Keluar, Dokumentasi penerimaan barang (taging)\r\n4. Bukti penerimaan barang dan jasa",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 118,
+            "level_id": 108,
+            "note": "Lv 4 ditambah :\r\n1.  Evaluasi JASPAM PAMOBVIT",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 119,
+            "level_id": 109,
+            "note": "1. Sasaran Tujuan Pengamanan (OTP)\r\n2. Kontrak BUJP\r\n3. SK Tim SMP",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 120,
+            "level_id": 110,
+            "note": "Lv 1 ditambah :\r\n1. Prosedur pengendalian dokumen dan catatan\r\n2. Daftar Induk Dokumen & Rekaman",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 121,
+            "level_id": 111,
+            "note": "Lv 2 ditambah :\r\n1. Sasaran Tujuan Pengamanan (OTP)\r\nMasing-Masing Fungsi",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 122,
+            "level_id": 112,
+            "note": "Lv 3 ditambah :\r\n1. Monitoring dan Evaluasi OTP",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 123,
+            "level_id": 113,
+            "note": "Lv 4 ditambah :\r\n1. Bukti AMS Dokumen Eksternal\r\n2. Distribusi dokumen SMP",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 124,
+            "level_id": 114,
+            "note": "1. Manual Pengamanan",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 125,
+            "level_id": 115,
+            "note": "Lv 1 ditambah :\r\n1. Layout Area Pengamanan (terdapat keterangan objek)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 126,
+            "level_id": 116,
+            "note": "Lv 2 ditambah :\r\n1. Layout Ring 1 (Area Batas Pagar terluar yg bersampingan dengan Desa\/RT\/Kelurahan\/Kecamatan)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 127,
+            "level_id": 117,
+            "note": "Lv 3 ditambah :\r\n1. Daftar Rekap Perimeter \/ Akses",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 128,
+            "level_id": 118,
+            "note": "Lv 4 ditambah :\r\n1.Plang Obvitnas dengan Kepmen terbaru",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 129,
+            "level_id": 119,
+            "note": "1. Prosedur Kesiagaan Dan Tanggap Darurat\r\n2. SK Tim Tanggap Darurat",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 130,
+            "level_id": 120,
+            "note": "Lv 1 ditambah :\r\n1. Renpam",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 131,
+            "level_id": 121,
+            "note": "Lv 2 ditambah :\r\n2. Renkon",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 132,
+            "level_id": 122,
+            "note": "Lv 3 ditambah :\r\n1. Pelaksanaan Simulasi Tanggap Darurat",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 133,
+            "level_id": 123,
+            "note": "Lv 4 ditambah :\r\n1. Laporan Simulasi & Evaluasi Tanggap darurat",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 134,
+            "level_id": 124,
+            "note": "1. KepDir Kebijakan Pengelolaan Informasi, Data dan Dokumen perusahaan 2010\r\n2. Pedoman AMS",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 135,
+            "level_id": 125,
+            "note": "Lv 1 ditambah :\r\n1. IK Identifikasi peraturan perundang-undangan",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 136,
+            "level_id": 126,
+            "note": "Lv 2 ditambah :\r\n1. STO Pengamanan\r\n2. Sosialisasi SK Tim SMP\r\n3. Foto Dokumentasi sarana prasarana",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 137,
+            "level_id": 127,
+            "note": "Lv 3 ditambah :\r\n1.Bukti Perubahan Dokumen\r\n2. Bukti Sosialiasi internal terkait peraturan dan perundangan (Undangan, Daftar Hadir, Materi, Dokumentasi",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 138,
+            "level_id": 128,
+            "note": "Lv 4 ditambah :\r\n1. Edir Standar Prosedur Pencegahan Terorisme\r\n2. IK terorisme\r\n3. Kepdir No.067.DIR.2017 - Pedoman dan Kebijakan Umum Tata Kelola Teknologi Informasi PT PJB",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 139,
+            "level_id": 129,
+            "note": "1. Layout area pengamanan kawasan Ring 1",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 140,
+            "level_id": 130,
+            "note": "Lv 1 ditambah :\r\n1. Layout area \/ Zonasi dengan info pembatas\/pagar",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 141,
+            "level_id": 131,
+            "note": "Lv 2 ditambah :\r\n1. Foto batas-batas wilayah",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 142,
+            "level_id": 132,
+            "note": "Lv 3 ditambah :\r\n1. Dokumentasi Simbol\/Rambu\r\n2. Dokumentasi CCTV dan monitoring pada area",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 143,
+            "level_id": 133,
+            "note": "Lv 4 ditambah :\r\n1. Patroli kawasan (Jadwal dan pelaksanaannya)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 144,
+            "level_id": 134,
+            "note": "1. Prosedur Kesiagaan Dan Tanggap Darurat",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 145,
+            "level_id": 135,
+            "note": "Lv 1 ditambah :\r\n1. Rencana Tanggap Darurat",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 146,
+            "level_id": 136,
+            "note": "Lv 2 ditambah :\r\n1. IK pengamanan terkait masing-masing bidang",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 147,
+            "level_id": 137,
+            "note": "Lv 3 ditambah :\r\n1. Pelaksanaan RTM kedua (terkait progres monitoring RTM)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 148,
+            "level_id": 138,
+            "note": "Lv 4 ditambah :\r\n1. Bukti evaluasi prosedur \/ IK masing-masing fungsi terkait pengamanan",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 149,
+            "level_id": 139,
+            "note": "1. Data Kejadian Internal dan Crime Indeks",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 150,
+            "level_id": 140,
+            "note": "Lv 1 ditambah :\r\n1. Data Tingkat kerawanan Unit",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 151,
+            "level_id": 141,
+            "note": "Lv 2 ditambah :\r\n1. Data Ploting personil Satpam dan TNI\/POLRI",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 152,
+            "level_id": 142,
+            "note": "Lv 3 ditambah :\r\n1. PKT Jasa Pengamanan\r\n2. Surat Perintah Tugas",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 153,
+            "level_id": 143,
+            "note": "Lv 4 ditambah :\r\n1. CV anggota sesuai sprint",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 154,
+            "level_id": 144,
+            "note": "1.Prosedur Pelatihan,Kepedulian dan Kompetensi Pengamanan\r\n2. Rengiat (didalamnya terdapat rencana pelatihan)\r\n3. Data personil dan kualifikasi(KTA, Sertifikat BUJP)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 155,
+            "level_id": 145,
+            "note": "Lv 1 ditambah :\r\n1. Prosedur Komunikasi dan sosialisasi\r\n2. Prosedur Safety dan security Induction",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 156,
+            "level_id": 146,
+            "note": "Lv 2 ditambah :\r\n1. Rencana Pelatihan (LNA)\r\n2. Laporan Pelaksanaan Pelatihan\r\n3. Sertifikat Kursus spesialisasi",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 157,
+            "level_id": 147,
+            "note": "Lv 3 ditambah :\r\n1. Risk Register (terkait kebutuhan pelatihan personil pengamanan)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 158,
+            "level_id": 148,
+            "note": "Lv 4 ditambah :\r\n1. Laporan Analisa dan Evaluasi Kegiatan Pelatihan (BUJP)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 159,
+            "level_id": 149,
+            "note": "1. Prosedur Pemantauan dan Penilaian Kinerja Pengamanan\r\n2. Prosedur Pelaporan",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 160,
+            "level_id": 150,
+            "note": "Lv 1 ditambah :\r\n1. Rencana Kerja dan Pemantauan Program Pengamanan\r\n2. Prosedur Ketidaksesuaian\r\n3. Prosedur Audit",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 161,
+            "level_id": 151,
+            "note": "Lv 2 ditambah :\r\n1. Monitoring OTP\r\n2. Monitoring Program Kerja",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 162,
+            "level_id": 152,
+            "note": "Lv 3 ditambah :\r\n1. Laporan dan program tindak lanjut ketidaksesuaian (laporan audit)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 163,
+            "level_id": 153,
+            "note": "Lv 4 ditambah :\r\n1. Laporan Bulanan Pengelola ke Polda \/ Polres (Bila ada PKT)\r\n2. Laporan BUJP ke Binmas (Tiap SMT)",
+            "order": 1,
+            "type": "marturity"
+        },
+        {
+            "id": 164,
+            "level_id": 94,
+            "note": "1. Kebijakan Sistem Manajemen Terintegrasi yang ditandatangani Dirut PT PLN NP 2. Komitmen Implementasi SMP yang ditandatangi SM\/ MUP 3. Perdir No 047.P\/DIR\/2024 tentang kebijakan strategis manajemen risk terintegrasi PT PLN NP 4. IK penilaian ARP 5. RKAU (fokus keamanan) 6. Rencana Kerja Keamanan",
+            "order": 1,
+            "type": "marturity"
+        }
+    ]
+}

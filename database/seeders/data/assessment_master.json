@@ -1,0 +1,565 @@
+{
+    "categories": [
+        {
+            "id": 2,
+            "name": "B. METHODE",
+            "order": 2
+        },
+        {
+            "id": 3,
+            "name": "C. MATERIAL",
+            "order": 3
+        },
+        {
+            "id": 4,
+            "name": "D. MACHINE",
+            "order": 4
+        },
+        {
+            "id": 5,
+            "name": "E. MONEY",
+            "order": 5
+        },
+        {
+            "id": 9,
+            "name": "A. MAN",
+            "order": 1
+        }
+    ],
+    "questions": [
+        {
+            "id": 53,
+            "category_id": 2,
+            "indicator": "Melaksanakan kegiatan dan monitoring pengamanan harian, mingguan, dan bulanan",
+            "order": 1
+        },
+        {
+            "id": 54,
+            "category_id": 2,
+            "indicator": "Memahami dan melaksanakan pengamanan sesuai SOP dan Intruksi Kerja",
+            "order": 2
+        },
+        {
+            "id": 55,
+            "category_id": 2,
+            "indicator": "Menjaga integritas dalam menjalankan tugas",
+            "order": 3
+        },
+        {
+            "id": 56,
+            "category_id": 2,
+            "indicator": "Meningkatkan Kepemimpinan,kekompakan,semangat dan loyalitas",
+            "order": 4
+        },
+        {
+            "id": 57,
+            "category_id": 2,
+            "indicator": "Melakukan performance dialog dari hasil evaluasi dan menetapkan rencana tindakan perbaikan secara periodik, harian, mingguan, bulanan.",
+            "order": 5
+        },
+        {
+            "id": 58,
+            "category_id": 3,
+            "indicator": "Laporan penggunaan radio komunikasi (HT)",
+            "order": 1
+        },
+        {
+            "id": 59,
+            "category_id": 3,
+            "indicator": "Menggunakan perangkat patrol security guard",
+            "order": 2
+        },
+        {
+            "id": 60,
+            "category_id": 3,
+            "indicator": "Menggunakan perangkat pengamanan (Metal Detector, Under vehicle inspection sistem, Mirror Detector, Lampu Lalin , Visitor Manajemen Sistem, CCTV, dan Portal)",
+            "order": 3
+        },
+        {
+            "id": 61,
+            "category_id": 4,
+            "indicator": "Menyediakan sarana kerja (Kendaraan Roda 4\/kendaraan roda 2\/sepeda\/bbm) yang sesuai standar",
+            "order": 1
+        },
+        {
+            "id": 62,
+            "category_id": 4,
+            "indicator": "Menyediakan peralatan kerja sesuai standar",
+            "order": 2
+        },
+        {
+            "id": 63,
+            "category_id": 5,
+            "indicator": "Ketepatan pembayaran upah satuan pengamanan",
+            "order": 1
+        },
+        {
+            "id": 64,
+            "category_id": 5,
+            "indicator": "Proses penagihan berkas",
+            "order": 2
+        },
+        {
+            "id": 65,
+            "category_id": 9,
+            "indicator": "Cadangan Orang",
+            "order": 2
+        },
+        {
+            "id": 66,
+            "category_id": 9,
+            "indicator": "TESTING 1",
+            "order": 1
+        }
+    ],
+    "levels": [
+        {
+            "id": 203,
+            "question_id": 53,
+            "level": 1,
+            "level_description": "Hanya melaksanakan kegiatan pengamanan rutin harian, mingguan dan bulanan",
+            "order": 1
+        },
+        {
+            "id": 204,
+            "question_id": 53,
+            "level": 2,
+            "level_description": "Melaksanakan kegiatan pengamanan  rutin dan melakukan monitoring bulanan",
+            "order": 2
+        },
+        {
+            "id": 205,
+            "question_id": 53,
+            "level": 3,
+            "level_description": "Melaksanakan kegiatan pengamanan  rutin dan melakukan monitoring mingguan",
+            "order": 3
+        },
+        {
+            "id": 206,
+            "question_id": 53,
+            "level": 4,
+            "level_description": "Melaksanakan kegiatan pengamanan  rutin dan melakukan monitoring harian",
+            "order": 4
+        },
+        {
+            "id": 207,
+            "question_id": 53,
+            "level": 5,
+            "level_description": "Melaksanakan kegiatan pengamanan  rutin dan melakukan monitoring harian serta melakukan evaluasi",
+            "order": 5
+        },
+        {
+            "id": 208,
+            "question_id": 54,
+            "level": 1,
+            "level_description": "25% personil satuan pengamanan sudah memahami dan melaksanakan SOP dan IK",
+            "order": 1
+        },
+        {
+            "id": 209,
+            "question_id": 54,
+            "level": 2,
+            "level_description": "50% personil satuan pengamanan sudah memahami dan melaksanakan SOP dan IK",
+            "order": 2
+        },
+        {
+            "id": 210,
+            "question_id": 54,
+            "level": 3,
+            "level_description": "75% personil satuan pengamanan sudah memahami dan melaksanakan SOP dan IK",
+            "order": 3
+        },
+        {
+            "id": 211,
+            "question_id": 54,
+            "level": 4,
+            "level_description": "100% personil satuan pengamanan sudah memahami dan melaksanakan SOP dan IK",
+            "order": 4
+        },
+        {
+            "id": 212,
+            "question_id": 54,
+            "level": 5,
+            "level_description": "100% personil satuan pengamanan sudah memahami dan melaksanakan SOP dan IK, evaluasi serta mengusulkan updating SOP dan IK",
+            "order": 5
+        },
+        {
+            "id": 213,
+            "question_id": 55,
+            "level": 1,
+            "level_description": "Belum ada komitmen menejemen BUJP terkait SMAP",
+            "order": 1
+        },
+        {
+            "id": 214,
+            "question_id": 55,
+            "level": 2,
+            "level_description": "Sudah ada komitmen menejemen BUJP terkait SMAP tetapi belum disosialisasikan ke seluruh satuan pengamanan",
+            "order": 2
+        },
+        {
+            "id": 215,
+            "question_id": 55,
+            "level": 3,
+            "level_description": "Sudah ada komitmen menajemen BUJP terkait SMAP dan sudah disosialisasikan ke seluruh satuan pengamanan",
+            "order": 3
+        },
+        {
+            "id": 216,
+            "question_id": 55,
+            "level": 4,
+            "level_description": "Sudah ada komitmen menejemen BUJP terkait SMAP dan sudah disosialisasikan ke seluruh satuan pengamanan serta 50% sudah menandatangani peryataan pakta integritas",
+            "order": 4
+        },
+        {
+            "id": 217,
+            "question_id": 55,
+            "level": 5,
+            "level_description": "Sudah ada komitmen menejemen BUJP terkait SMAP dan sudah disosialisasikan ke seluruh satuan pengamanan serta 100% sudah menandatangani peryataan pakta integritas",
+            "order": 5
+        },
+        {
+            "id": 218,
+            "question_id": 56,
+            "level": 1,
+            "level_description": "Serah Terima Tugas Harian dilaksanakan dan sesuai SOP\/IK serta tidak melaksanakan  ke SAMAPTAAN satu kali sebulan",
+            "order": 1
+        },
+        {
+            "id": 219,
+            "question_id": 56,
+            "level": 2,
+            "level_description": "Serah Terima Tugas Harian dilaksanakan dan sesuai SOP\/IK serta melaksanakan  ke SAMAPTAAN satu kali sebulan 50% diikuti oleh personil satuan pengamanan",
+            "order": 2
+        },
+        {
+            "id": 220,
+            "question_id": 56,
+            "level": 3,
+            "level_description": "Serah Terima Tugas Harian dilaksanakan dan sesuai SOP\/IK serta melaksanakan  ke SAMAPTAAN satu kali sebulan 100% diikuti oleh personil satuan pengamanan",
+            "order": 3
+        },
+        {
+            "id": 221,
+            "question_id": 56,
+            "level": 4,
+            "level_description": "Serah Terima Tugas Harian dilaksanakan dan sesuai SOP\/IK serta melaksanakan  ke SAMAPTAAN lebih dari satu kali sebulan 100% diikuti oleh personil satuan pengamanan",
+            "order": 4
+        },
+        {
+            "id": 222,
+            "question_id": 56,
+            "level": 5,
+            "level_description": "Serah Terima Tugas Harian dilaksanakan dan sesuai SOP\/IK serta melaksanakan  ke SAMAPTAAN lebih dari satu kali sebulan 100% diikuti oleh personil satuan pengamanan dan melaksanakan capacity building\/emgath 1 tahun sekali",
+            "order": 5
+        },
+        {
+            "id": 223,
+            "question_id": 57,
+            "level": 1,
+            "level_description": "Tidak adanya pertemuan rutin (apel , COC, Safety briefing, knowledge sharing, dll)",
+            "order": 1
+        },
+        {
+            "id": 224,
+            "question_id": 57,
+            "level": 2,
+            "level_description": "Adanya pertemuan rutin antara petugas lapangan untuk menindaklanjuti hasil evaluasi namun output rencana tindakannya belum ada",
+            "order": 2
+        },
+        {
+            "id": 225,
+            "question_id": 57,
+            "level": 3,
+            "level_description": "Adanya pertemuan antara petugas lapangan dan komandan regu untuk menindaklanjuti hasil evaluasi beserta rencana tindakan perbaikan, namun pelaksanaannya tidak dimonitor",
+            "order": 3
+        },
+        {
+            "id": 226,
+            "question_id": 57,
+            "level": 4,
+            "level_description": "Adanya pertemuan antara komandan regu\/ kepala satpam dengan manajemen untuk menindaklanjuti hasil evaluasi beserta rencana tindakan perbaikan, dan dimonitor setiap bulan",
+            "order": 4
+        },
+        {
+            "id": 227,
+            "question_id": 57,
+            "level": 5,
+            "level_description": "Adanya pertemuan antara  komandan regu\/ kepala satpam dengan manajemen untuk menindaklanjuti hasil evaluasi beserta rencana tindakan perbaikan, dan dimonitor setiap hari",
+            "order": 5
+        },
+        {
+            "id": 228,
+            "question_id": 58,
+            "level": 1,
+            "level_description": "Tidak ada monitoring",
+            "order": 1
+        },
+        {
+            "id": 229,
+            "question_id": 58,
+            "level": 2,
+            "level_description": "sudah ada monitoring ketersediaan alat komunikasi tapi tidak ada laporan serah terima secara tertulis",
+            "order": 2
+        },
+        {
+            "id": 230,
+            "question_id": 58,
+            "level": 3,
+            "level_description": "Dilakukan monitoring ketersediaan alat komunikasi setiap pergantian shift secara konsisten",
+            "order": 3
+        },
+        {
+            "id": 231,
+            "question_id": 58,
+            "level": 4,
+            "level_description": "Dilakukan monitoring ketersediaan alat komunikasi dan serah terima secara tertulis setiap pergantian shift dengan konsisten",
+            "order": 4
+        },
+        {
+            "id": 232,
+            "question_id": 58,
+            "level": 5,
+            "level_description": "Dilakukan monitoring serah terima ketersediaan alat komunikasi setiap pergantian shift  di buatkan Berita Acara dan dilakukan pemeliharaan",
+            "order": 5
+        },
+        {
+            "id": 233,
+            "question_id": 59,
+            "level": 1,
+            "level_description": "Tidak ada monitoring",
+            "order": 1
+        },
+        {
+            "id": 234,
+            "question_id": 59,
+            "level": 2,
+            "level_description": "sudah ada monitoring ketersediaan perangkat patrol tapi tidak ada laporan serah terima secara tertulis",
+            "order": 2
+        },
+        {
+            "id": 235,
+            "question_id": 59,
+            "level": 3,
+            "level_description": "Dilakukan monitoring ketersediaan perangkat patrol dan serah terima secara tertulis setiap pergantian shift belum konsisten",
+            "order": 3
+        },
+        {
+            "id": 236,
+            "question_id": 59,
+            "level": 4,
+            "level_description": "Dilakukan monitoring ketersediaan perangkat patrol dan serah terima secara tertulis setiap pergantian shift dengan konsisten",
+            "order": 4
+        },
+        {
+            "id": 237,
+            "question_id": 59,
+            "level": 5,
+            "level_description": "Dilakukan monitoring ketersediaan perangkat patrol dan serah terima secara tertulis setiap pergantian shift dengan konsisten dan telah melakukan pemeliharaan secara terjadwal",
+            "order": 5
+        },
+        {
+            "id": 238,
+            "question_id": 60,
+            "level": 1,
+            "level_description": "Tidak disediakan perangkat pengamanan",
+            "order": 1
+        },
+        {
+            "id": 239,
+            "question_id": 60,
+            "level": 2,
+            "level_description": "Perangkat pengamanan tersedia digunakan tidak ada  laporan serah terima secara tertulis",
+            "order": 2
+        },
+        {
+            "id": 240,
+            "question_id": 60,
+            "level": 3,
+            "level_description": "Perangkat pengamanan tersedia digunakan dan ada laporan serah terima secara tertulis",
+            "order": 3
+        },
+        {
+            "id": 241,
+            "question_id": 60,
+            "level": 4,
+            "level_description": "Perangkat pengamanan tersedia digunakan dan ada laporan serah terima secara tertulis serta dilakukan monitoring",
+            "order": 4
+        },
+        {
+            "id": 242,
+            "question_id": 60,
+            "level": 5,
+            "level_description": "Dilakukan monitoring  perangkat pengamanan dan serah terima secara tertulis setiap pergantian shift dengan konsisten dan telah melakukan pemeliharaan secara terjadwal",
+            "order": 5
+        },
+        {
+            "id": 243,
+            "question_id": 61,
+            "level": 1,
+            "level_description": "Kondisi tidak standar (tidak layak)",
+            "order": 1
+        },
+        {
+            "id": 244,
+            "question_id": 61,
+            "level": 2,
+            "level_description": "Tidak sesuai spesifikasi yang dibutuhkan",
+            "order": 2
+        },
+        {
+            "id": 245,
+            "question_id": 61,
+            "level": 3,
+            "level_description": "sesuai spesifikasi dan lengkap (sesuai dengan kontrak)",
+            "order": 3
+        },
+        {
+            "id": 246,
+            "question_id": 61,
+            "level": 4,
+            "level_description": "sesuai spesifikasi dan lengkap (sesuai dengan kontrak) dan mendapatkan perawatan secara rutin",
+            "order": 4
+        },
+        {
+            "id": 247,
+            "question_id": 61,
+            "level": 5,
+            "level_description": "Mempunyai sarana cadangan jika terjadi kerusakan pada salah satu sarana",
+            "order": 5
+        },
+        {
+            "id": 248,
+            "question_id": 62,
+            "level": 1,
+            "level_description": "peralatan kerja tidak lengkap",
+            "order": 1
+        },
+        {
+            "id": 249,
+            "question_id": 62,
+            "level": 2,
+            "level_description": "peralatan kerja ada tapi tidak sesuai spesifikasi",
+            "order": 2
+        },
+        {
+            "id": 250,
+            "question_id": 62,
+            "level": 3,
+            "level_description": "peralatan lengkap dan sesuai standar",
+            "order": 3
+        },
+        {
+            "id": 251,
+            "question_id": 62,
+            "level": 4,
+            "level_description": "peralatan lengkap dan spesifikasinya sudah melebihi standar yang ditentukan dalam kontrak",
+            "order": 4
+        },
+        {
+            "id": 252,
+            "question_id": 62,
+            "level": 5,
+            "level_description": "Mempunyai peralatan kerja cadangan (peralatan kerja utama)",
+            "order": 5
+        },
+        {
+            "id": 253,
+            "question_id": 63,
+            "level": 1,
+            "level_description": "Pembayaran upah dilakukan diatas tanggal 15 bulan berikutnya",
+            "order": 1
+        },
+        {
+            "id": 254,
+            "question_id": 63,
+            "level": 2,
+            "level_description": "Pembayaran upah dilakukan diatas tanggal 5 bulan berikutnya",
+            "order": 2
+        },
+        {
+            "id": 255,
+            "question_id": 63,
+            "level": 3,
+            "level_description": "Pembayan upah dibayarkan antara tanggal 1 - 5",
+            "order": 3
+        },
+        {
+            "id": 256,
+            "question_id": 63,
+            "level": 4,
+            "level_description": "Pembayaran upah dilakukan kurang dari tanggal 1",
+            "order": 4
+        },
+        {
+            "id": 257,
+            "question_id": 63,
+            "level": 5,
+            "level_description": "Pembayaran upah, BPJS dan DPLK dilakukan sebelum tanggal 1 bulan berikutnya",
+            "order": 5
+        },
+        {
+            "id": 258,
+            "question_id": 64,
+            "level": 1,
+            "level_description": "Berkas tagihan masuk setelah tanggal 15 bulan berikutnya, lampiran tidak lengkap",
+            "order": 1
+        },
+        {
+            "id": 259,
+            "question_id": 64,
+            "level": 2,
+            "level_description": "Berkas tagihan masuk antara tanggal 10-15 bulan berikutnya, lampiran tidak lengkap",
+            "order": 2
+        },
+        {
+            "id": 260,
+            "question_id": 64,
+            "level": 3,
+            "level_description": "Berkas tagihan masuk antara tanggal 10-15 bulan berikutnya, lampiran lengkap",
+            "order": 3
+        },
+        {
+            "id": 261,
+            "question_id": 64,
+            "level": 4,
+            "level_description": "Berkas tagihan masuk antara tanggal 5-10 bulan berikutnya, lampiran lengkap",
+            "order": 4
+        },
+        {
+            "id": 262,
+            "question_id": 64,
+            "level": 5,
+            "level_description": "Berkas tagihan masuk antara tanggal 1-5 bulan berikutnya, lampiran lengkap",
+            "order": 5
+        },
+        {
+            "id": 263,
+            "question_id": 65,
+            "level": 1,
+            "level_description": "Cadangan Orang",
+            "order": 1
+        },
+        {
+            "id": 267,
+            "question_id": 65,
+            "level": 2,
+            "level_description": "cadangan orang lagi",
+            "order": 2
+        },
+        {
+            "id": 268,
+            "question_id": 66,
+            "level": 1,
+            "level_description": "level pertamanya",
+            "order": 1
+        },
+        {
+            "id": 269,
+            "question_id": 65,
+            "level": 3,
+            "level_description": "cadangan tiga",
+            "order": 3
+        }
+    ]
+}
